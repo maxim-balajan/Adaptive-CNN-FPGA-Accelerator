@@ -1,14 +1,15 @@
 #pragma once
-#include "layer.h"
+#include "../matrix.h"
 
 using namespace std;
 
-class Convolution: public Layer {
+class Convolution {
 private:
-    matrix kernel;
+    matrix_4d output_buffer;
+    matrix_2d kernel;
 
 public:
-    Convolution(matrix kernel, size_t batching, size_t x, size_t y, size_t layers);
+    Convolution(matrix_2d kernel, size_t batching, size_t x, size_t y, size_t layers);
 
-    virtual matrix calc(matrix input) override;
+    matrix_4d calc(matrix_4d input);
 };

@@ -1,11 +1,9 @@
 #include "dense.h"
 
-#include <iostream>
+Dense::Dense(matrix_1d weights, size_t batching, size_t x) : weights(weights), output_buffer(init_matrix_2d(batching, x)) {}
 
-Dense::Dense(matrix weights, size_t batching, size_t x) : weights(weights) {
+matrix_2d Dense::calc(matrix_2d input) {
     // TODO
-}
 
-matrix Dense::calc(matrix input) {
-    // TODO
+    return output_buffer;
 }

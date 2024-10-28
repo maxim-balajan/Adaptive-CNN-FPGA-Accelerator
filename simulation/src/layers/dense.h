@@ -1,14 +1,15 @@
 #pragma once
-#include "layer.h"
+#include "../matrix.h"
 
 using namespace std;
 
-class Dense: public Layer {
+class Dense {
 private:
-    matrix weights;
+    matrix_2d output_buffer;
+    matrix_1d weights;
 
 public:
-    Dense(matrix weights, size_t);
+    Dense(matrix_1d weights, size_t batching, size_t x);
 
-    virtual matrix calc(matrix input) override;
+    matrix_2d calc(matrix_2d input);
 };

@@ -1,14 +1,16 @@
 #pragma once
-#include "layer.h"
+#include "../matrix.h"
 
 using namespace std;
 
-class MaxPolling: public Layer {
+class MaxPolling {
 private:
-    // TODO
+    matrix_4d output_buffer;
+    size_t pooling_size;
 
 public:
-    MaxPolling(size_t batching, size_t x, size_t y, size_t layers);
+    // pooling is defined here to be quadratically all the time
+    MaxPolling(size_t pooling_size, size_t batching, size_t x, size_t y, size_t layers);
 
-    virtual matrix calc(matrix input) override;
+    matrix_4d calc(matrix_4d input);
 };
