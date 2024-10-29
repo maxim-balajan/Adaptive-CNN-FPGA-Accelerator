@@ -1,9 +1,9 @@
 #include <iostream>
 
-
 #include "layers/max_polling.h"
 #include "layers/flatten.h"
 
+#include "parsing/parser.h"
 
 using namespace std;
 
@@ -33,6 +33,8 @@ int main() {
     }
 
     cout << endl;
+
+    parse("../../training/mnist.onnx");
 
     return 0;
 }
