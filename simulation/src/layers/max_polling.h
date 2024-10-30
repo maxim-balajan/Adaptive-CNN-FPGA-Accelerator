@@ -10,7 +10,7 @@ private:
 
 public:
     // pooling is defined here to be quadratically all the time
-    MaxPolling(size_t pooling_size, size_t batching, size_t x, size_t y, size_t layers);
+    MaxPolling(size_t pooling_size, size_t batching, size_t x, size_t y, size_t output_channel);
 
     Matrix calc(Matrix input);
 };

@@ -4,6 +4,10 @@
 
 Convolution::Convolution(Matrix kernel, Matrix bias, size_t batching, size_t x, size_t y, size_t output_channel) : kernel(kernel), bias(bias), output_buffer({batching, x, y, output_channel}) {}
 
+float Convolution::relu(float val) {
+    return val < 0 ? 0 : val;
+}
+
 Matrix Convolution::calc(Matrix input) {
     for (size_t batch_id = 0; batch_id < input.shape()[0]; batch_id++)
     {
@@ -15,7 +19,7 @@ Matrix Convolution::calc(Matrix input) {
                 {
                     for (size_t y_id = kernel.shape()[3]; y_id < input.shape()[2] - kernel.shape()[3]; y_id++)
                     {
-                        int64_t tmp = 0;
+                        float tmp = 0;
                         // Do computation of kernel matrices over input matrices
                         for (size_t kx_id = 0; kx_id < kernel.shape()[2]; kx_id++)
                         {
@@ -37,9 +41,8 @@ Matrix Convolution::calc(Matrix input) {
             {
                 for (size_t outch_id = 0; outch_id < output_buffer.shape()[3]; outch_id++)
                 {
-                    output_buffer[{batch_id, x_id, y_id, outch_id}] += bias[outch_id];
-                    // Activation (ReLU)
-                    output_buffer[{batch_id, x_id, y_id, outch_id}] = output_buffer[{batch_id, x_id, y_id, outch_id}] > 0 ? output_buffer[{batch_id, x_id, y_id, outch_id}] : 0;
+                    // Addition of Bias and Activation (ReLU)
+                    output_buffer[{batch_id, x_id, y_id, outch_id}] = relu(output_buffer[{batch_id, x_id, y_id, outch_id}] + bias[outch_id]);
                 }
             }
         }

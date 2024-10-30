@@ -13,4 +13,5 @@ public:
     Convolution(Matrix kernel, Matrix bias, size_t batching, size_t x, size_t y, size_t output_channel);
 
     Matrix calc(Matrix input);
+    float relu(float val);
 };
