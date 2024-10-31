@@ -8,7 +8,7 @@ float Convolution::relu(float val) {
     return val < 0 ? 0 : val;
 }
 
-Matrix Convolution::calc(Matrix input) {
+Matrix& Convolution::calc(Matrix& input) {
     for (size_t batch_id = 0; batch_id < input.shape()[0]; batch_id++)
     {
         for (size_t inch_id = 0; inch_id < input.shape()[3]; inch_id++)
@@ -25,7 +25,8 @@ Matrix Convolution::calc(Matrix input) {
                         {
                             for (size_t ky_id = 0; ky_id < kernel.shape()[3]; ky_id++)
                             {
-                                tmp += input[{batch_id, x_id + kx_id - 1, y_id + ky_id - 1, inch_id}] * kernel[{outch_id, inch_id, kx_id, ky_id}];
+                                // TODO is this correct?
+                                tmp += input[{batch_id, x_id + kx_id - kernel.shape()[2] / 2, y_id + ky_id - kernel.shape()[3] / 2, inch_id}] * kernel[{outch_id, inch_id, kx_id, ky_id}];
                             }
                         }
 

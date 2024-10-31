@@ -5,6 +5,6 @@
 class Layer {
 public:
     virtual ~Layer() {}
-    virtual Matrix calc(Matrix input) = 0;
+    virtual Matrix& calc(Matrix& input) = 0;
 
 };

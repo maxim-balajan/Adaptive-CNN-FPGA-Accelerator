@@ -392,19 +392,19 @@ vector<unique_ptr<Layer>> parse(const string &filename, unsigned int batching) {
 
     // print some model infos
     print_info("Producer", model.producer_name(), model.producer_version());
-    for (auto x : model.opset_import()) {
-        print_info("Opset Import", x.domain(), x.version());
-    }
-    print_info("Domain", model.domain());
     print_info("Documentation", model.doc_string());
-    for (auto x : model.metadata_props()) {
-        print_info("Metadata Props", x.key(), x.value());
-    }
-    print_info("Graph name", model.graph().name());
-    print_info("Graph Documentation", model.graph().doc_string());
-    for (auto x : model.graph().metadata_props()) {
-        print_info("Graph Metadata Props", x.key(), x.value());
-    }
+    // for (auto x : model.opset_import()) {
+    //     print_info("Opset Import", x.domain(), x.version());
+    // }
+    // print_info("Domain", model.domain());
+    // for (auto x : model.metadata_props()) {
+    //     print_info("Metadata Props", x.key(), x.value());
+    // }
+    // print_info("Graph name", model.graph().name());
+    // print_info("Graph Documentation", model.graph().doc_string());
+    // for (auto x : model.graph().metadata_props()) {
+    //     print_info("Graph Metadata Props", x.key(), x.value());
+    // }
     for (auto x : model.graph().input()) {
         print_value_info_proto("Graph Input", x);
     }

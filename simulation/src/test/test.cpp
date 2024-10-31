@@ -7,42 +7,6 @@
 
 using namespace std;
 
-void print_matrix3d(Matrix m) {
-    for (size_t i = 0; i < m.shape()[0]; i++)
-    {
-        for (size_t j = 0; j < m.shape()[3]; j++)
-        {
-            for (size_t k = 0; k < m.shape()[2]; k++)
-            {
-                for (size_t l = 0; l < m.shape()[1]; l++)
-                {
-                    cout << m[{i, l, k, j}] << " ";
-                }
-
-                cout << endl;
-                
-            }
-
-            cout << endl << "----------------------" << endl;
-            
-        }
-    }
-    
-}
-
-void print_matrix2d(Matrix m) {
-    for (size_t i = 0; i < m.shape()[0]; i++)
-    {
-        for (size_t j = 0; j < m.shape()[1]; j++)
-        {
-            cout << m[{i,j}] << " ";
-        }
-        
-        cout << endl;
-    }
-    
-}
-
 Matrix create_Input_Matrix1() {
         // create input matrix
     Matrix input({1,5,5,2});
@@ -170,7 +134,7 @@ int convolution_test() {
     Convolution conv(kernel, bias, 1, 3, 3, 1);
     Matrix output_buffer = conv.calc(input);
 
-    print_matrix3d(output_buffer);
+    cout << "{convolution_test}\n" << output_buffer << endl;
 
     return 0;           
 }
@@ -180,7 +144,7 @@ int maxpolling_test() {
 
     MaxPolling mpoll(2, 1, 2, 2, 1);
 
-    print_matrix3d(mpoll.calc(input));
+    cout << "{create_Input_Matrix2}\n" << mpoll.calc(input) << endl;
 
     return 0;
 }
@@ -188,7 +152,7 @@ int maxpolling_test() {
 int dense_test() {
     Matrix weight = create_Input_Matrix3();
 
-    print_matrix2d(weight);
+    cout << "{Weights}\n" << weight << endl;
 
     Matrix bias({3});
 
@@ -200,10 +164,9 @@ int dense_test() {
     input[{0,2}] = 1;
     input[{0,3}] = 1;
 
-    print_matrix2d(input);
+    cout << "{Input}\n" << input << endl;
 
-    print_matrix2d(den.calc(input));
-
+    cout << "{create_Input_Matrix3}\n" << den.calc(input) << endl;
 
     return 0;
 }

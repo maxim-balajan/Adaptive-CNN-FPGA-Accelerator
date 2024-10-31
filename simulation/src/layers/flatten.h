@@ -11,5 +11,5 @@ private:
 public:
     Flatten(size_t batching, size_t x);
 
-    virtual Matrix calc(Matrix input) override;
+    virtual Matrix& calc(Matrix& input) override;
 };

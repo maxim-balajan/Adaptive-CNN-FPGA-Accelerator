@@ -6,7 +6,7 @@ Dense::Dense(Matrix weights, Matrix bias, bool enable_softmax, size_t batching, 
     , enable_softmax(enable_softmax)
     , output_buffer({batching, x}) {}
 
-Matrix Dense::softmax(Matrix input) {
+Matrix& Dense::softmax(Matrix& input) {
     for (size_t batch_id = 0; batch_id < input.shape()[0]; batch_id++)
     {
         size_t max_id = 0;
@@ -32,7 +32,7 @@ Matrix Dense::softmax(Matrix input) {
     return input;
 }
 
-Matrix Dense::calc(Matrix input)
+Matrix& Dense::calc(Matrix& input)
 {
     for (size_t batch_id = 0; batch_id < input.shape()[0]; batch_id++)
     {

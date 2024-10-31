@@ -51,6 +51,15 @@ inline void GenericMatrix<T>::set_data(const vector<T>& data) {
 }
 
 template<typename T>
+template<size_t N>
+inline void GenericMatrix<T>::set_data(const array<T, N>& data) {
+    assertm(data.size() == total_size(), "Data has to be the same size as this matrix!");
+    for (int i = 0; i < data.size(); i++) {
+        matrix_data[i] = data[i];
+    }
+}
+
+template<typename T>
 constexpr size_t GenericMatrix<T>::total_size() const {
     return matrix_data.size();
 }

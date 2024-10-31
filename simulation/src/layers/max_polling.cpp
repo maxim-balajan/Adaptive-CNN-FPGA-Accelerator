@@ -5,7 +5,7 @@
 
 MaxPolling::MaxPolling(size_t pooling_size, size_t batching, size_t x, size_t y, size_t output_channel) : pooling_size(pooling_size), output_buffer({batching, x, y, output_channel}) {}
 
-Matrix MaxPolling::calc(Matrix input)
+Matrix& MaxPolling::calc(Matrix& input)
 {
     for (size_t batch_id = 0; batch_id < input.shape()[0]; batch_id++)
     {

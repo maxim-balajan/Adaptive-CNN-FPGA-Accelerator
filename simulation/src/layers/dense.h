@@ -14,6 +14,6 @@ private:
 public:
     Dense(Matrix weights, Matrix bias, bool enable_softmax, size_t batching, size_t x);
 
-    Matrix softmax(Matrix input);
-    virtual Matrix calc(Matrix input) override;
+    Matrix& softmax(Matrix& input);
+    virtual Matrix& calc(Matrix& input) override;
 };

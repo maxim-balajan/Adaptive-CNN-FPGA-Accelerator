@@ -8,7 +8,6 @@
 
 #define FORMAT_MATRIX_WITH_LINE_BREAK 1
 
-
 using namespace std;
 
 template<typename T>
@@ -28,6 +27,10 @@ public:
     inline const vector<size_t>& shape() const;
     inline constexpr size_t total_size() const;
     inline void flatten();
+
+    template<size_t N>
+    inline void set_data(const array<T, N>& content);
+
     inline void set_data(const vector<T>& content);
     inline void reinterpret_dimensions(const vector<size_t>& dimensions);
 
@@ -49,11 +52,16 @@ public:
         // calculate the postion of the matrix element
         size_t curr_position = 0;
         size_t curr_multiplier = 1;
+        int i =0;
         for (const auto [index, dimension_size] : views::reverse(views::zip(positions, dimensions))) {
-            assertm(index < dimension_size, "position out of bounds");
+            if (index >= dimension_size) {
+                throw new exception();
+            }
+//            assertm(index < dimension_size, "position out of bounds");
 
             curr_position += index * curr_multiplier;
             curr_multiplier *= dimension_size;
+            i++;
         }
         return matrix_data[curr_position];
     }
@@ -79,7 +87,7 @@ public:
 
         return *this;
     }
-
+/*
     // multiple each cell value of `other` with each corresponding cell this matrix
     inline constexpr GenericMatrix& operator=(const GenericMatrix& other) {
         assertm(this->dimensions == other.dimensions, "the dimensions of the two matrixes have to match");
@@ -90,6 +98,7 @@ public:
 
         return *this;
     }
+*/
 };
 
 #include "matrix.tpp"
