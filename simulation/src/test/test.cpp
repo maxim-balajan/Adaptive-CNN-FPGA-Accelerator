@@ -190,7 +190,9 @@ int dense_test() {
 
     print_matrix2d(weight);
 
-    Dense den(weight, 1, 3);
+    Matrix bias({3});
+
+    Dense den(weight, bias, 1, 3);
 
     Matrix input({1, 4});
     input[{0,0}] = 1;
