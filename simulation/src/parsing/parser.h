@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
+#include <memory>
+#include "../layers/layer.h"
 
 using namespace std;
 
-void parse(const string &filename);
+vector<unique_ptr<Layer>> parse(const string &filename, unsigned int batching = 1);

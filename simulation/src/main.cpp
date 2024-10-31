@@ -26,7 +26,7 @@ int main() {
     Matrix res = flatten.calc(test);
     cout << res << endl;
 
-    parse("../../training/mnist.onnx");
+    vector<unique_ptr<Layer>> layers = parse("../../training/mnist.onnx", 1);
 
     // Convolution test
     convolution_test();

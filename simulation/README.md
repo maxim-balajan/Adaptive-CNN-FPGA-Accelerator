@@ -13,6 +13,6 @@ Deep learning simulation for running interference for MNIST.
 mkdir build
 cd build
 cmake ..
-ninja # alternatively, you can use "make"
+make
 ./simulation
 ```

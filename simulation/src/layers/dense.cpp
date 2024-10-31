@@ -1,6 +1,10 @@
 #include "dense.h"
 
-Dense::Dense(Matrix weights, Matrix bias, size_t batching, size_t x) : weights(weights), bias(bias), output_buffer({batching, x}) {}
+Dense::Dense(Matrix weights, Matrix bias, bool enable_softmax, size_t batching, size_t x)
+    : weights(weights)
+    , bias(bias)
+    , enable_softmax(enable_softmax)
+    , output_buffer({batching, x}) {}
 
 Matrix Dense::softmax(Matrix input) {
     for (size_t batch_id = 0; batch_id < input.shape()[0]; batch_id++)
@@ -45,5 +49,9 @@ Matrix Dense::calc(Matrix input)
         }
     }
 
-    return softmax(output_buffer);
+    if (enable_softmax) {
+        softmax(output_buffer);
+    }
+
+    return output_buffer;
 }

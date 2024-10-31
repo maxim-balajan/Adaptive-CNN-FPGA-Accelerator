@@ -192,7 +192,7 @@ int dense_test() {
 
     Matrix bias({3});
 
-    Dense den(weight, bias, 1, 3);
+    Dense den(weight, bias, false, 1, 3);
 
     Matrix input({1, 4});
     input[{0,0}] = 1;

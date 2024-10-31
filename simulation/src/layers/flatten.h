@@ -1,14 +1,15 @@
 #pragma once
 #include "../matrix.h"
+#include "layer.h"
 
 using namespace std;
 
-class Flatten {
+class Flatten: public Layer {
 private:
     Matrix output_buffer;
 
 public:
     Flatten(size_t batching, size_t x);
 
-    Matrix calc(Matrix input);
+    virtual Matrix calc(Matrix input) override;
 };

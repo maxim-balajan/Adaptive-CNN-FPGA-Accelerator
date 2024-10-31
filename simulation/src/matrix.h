@@ -6,6 +6,9 @@
 
 #include <iostream>
 
+#define FORMAT_MATRIX_WITH_LINE_BREAK 1
+
+
 using namespace std;
 
 template<typename T>
@@ -19,13 +22,13 @@ private:
 
 public:
     GenericMatrix(initializer_list<size_t> dimensions);
+    GenericMatrix(vector<size_t> dimensions);
+    GenericMatrix(initializer_list<size_t> dimensions, vector<T> initial_vals);
 
     inline const vector<size_t>& shape() const;
-
     inline constexpr size_t total_size() const;
-
     inline void flatten();
-
+    inline void set_data(const vector<T>& content);
     inline void reinterpret_dimensions(const vector<size_t>& dimensions);
 
     inline constexpr T& operator[](size_t abs_position) {
@@ -42,6 +45,7 @@ public:
     inline constexpr T& operator[](initializer_list<size_t> positions) {
         assertm(dimensions.size() == positions.size(), "Dimensions do not match!");
 
+        // TODO: could be optimized by pre calculating the multipliers
         // calculate the postion of the matrix element
         size_t curr_position = 0;
         size_t curr_multiplier = 1;
