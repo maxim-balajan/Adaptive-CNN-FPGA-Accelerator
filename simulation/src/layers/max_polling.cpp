@@ -34,7 +34,7 @@ Matrix MaxPolling::calc(Matrix input)
 
                     out_y_id++;
                 }
-
+                out_y_id = 0;
                 out_x_id++;
             }
         }

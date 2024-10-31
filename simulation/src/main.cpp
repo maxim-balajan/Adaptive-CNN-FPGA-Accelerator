@@ -2,8 +2,11 @@
 
 #include "layers/max_polling.h"
 #include "layers/flatten.h"
+#include "layers/convolution.h"
+#include "layers/dense.h"
 
 #include "parsing/parser.h"
+#include "test/test.h"
 
 using namespace std;
 
@@ -24,6 +27,11 @@ int main() {
     cout << res << endl;
 
     parse("../../training/mnist.onnx");
+
+    // Convolution test
+    convolution_test();
+    maxpolling_test();
+    dense_test();
 
     return 0;
 }
