@@ -12,7 +12,7 @@ Matrix Dense::calc(Matrix input)
 
             for (size_t x_id = 0; x_id < input.shape()[1]; x_id++)
             {
-                tmp += weights[{x_id, wy_id}] * input[x_id];
+                tmp += weights[{x_id, wy_id}] * input[{batch_id, x_id}];
             }
 
             output_buffer[{batch_id, wy_id}] = tmp;
