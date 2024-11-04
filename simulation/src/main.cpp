@@ -1,4 +1,5 @@
 #include <iostream>
+#include <chrono>
 
 #include "layers/max_polling.h"
 #include "layers/flatten.h"
@@ -22,14 +23,19 @@ void inference(vector<unique_ptr<Layer>>& layers) {
     input.set_data(data);
 
     Matrix& curr_input = input;
+    chrono::steady_clock::time_point begin = chrono::steady_clock::now();
 
     for (auto& layer : layers) {
         cout << "calc" << endl;
         curr_input = layer.get()->calc(curr_input);
     }
+    chrono::steady_clock::time_point end = chrono::steady_clock::now();
 
+    cout << "Inference complete in " << chrono::duration_cast<chrono::milliseconds>(end - begin).count() << "ms!\n";
     cout << "--- Result ---\n";
+
     cout << curr_input << endl;
+
 }
 
 int main() {
