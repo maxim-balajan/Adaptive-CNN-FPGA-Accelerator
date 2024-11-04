@@ -38,9 +38,9 @@ int main() {
     inference(layers);
 
     // Convolution test
-    // convolution_test();
-    // maxpolling_test();
-    // dense_test();
+     //convolution_test();
+     //maxpolling_test();
+     //dense_test();
 
     return 0;
 }

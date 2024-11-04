@@ -11,20 +11,18 @@ Matrix& MaxPolling::calc(Matrix& input)
     {
         for (size_t ch_id = 0; ch_id < input.shape()[3]; ch_id++)
         {
-            size_t x_win_len = input.shape()[1] / pooling_size;
-            size_t y_win_len = input.shape()[2] / pooling_size;
             size_t out_x_id = 0;
             size_t out_y_id = 0;
 
-            for (size_t x_id = 0; x_id < input.shape()[1]; x_id += x_win_len)
+            for (size_t x_id = 0; x_id < input.shape()[1]; x_id += pooling_size)
             {
-                for (size_t y_id = 0; y_id < input.shape()[2]; y_id += y_win_len)
+                for (size_t y_id = 0; y_id < input.shape()[2]; y_id += pooling_size)
                 {
                     vector<float> tmp;
                     // Store all values of window in list
-                    for (size_t kx_id = 0; kx_id < x_win_len; kx_id++)
+                    for (size_t kx_id = 0; kx_id < pooling_size; kx_id++)
                     {
-                        for (size_t ky_id = 0; ky_id < y_win_len; ky_id++)
+                        for (size_t ky_id = 0; ky_id < pooling_size; ky_id++)
                         {
                             tmp.push_back(input[{batch_id, x_id + kx_id, y_id + ky_id, ch_id}]);
                         }
