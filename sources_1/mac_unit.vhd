@@ -29,7 +29,7 @@ architecture rtl of mac_unit is
 
 begin
 
-	COMB_PROC : process (clk) is
+	DELAY_PROC : process (clk) is
 	begin
 
 		if rising_edge(clk) then
@@ -44,14 +44,14 @@ begin
 			end if;
 		end if;
 
-	end process COMB_PROC;
+	end process DELAY_PROC;
 
-	-- Calculations of inputs; delayed by one cycle through COMB_PROC
+	-- Calculations of inputs; delayed by one cycle through DELAY_PROC
 	s_mult_result <= s_input * s_weight;
 	s_add_result  <= s_mult_result + signed(s_partial_sum);
 
 	-- Setting of output signals
 	partial_result <= std_logic_vector(s_add_result);
-	input_delay <= std_logic_vector(s_input);
+	input_delay    <= std_logic_vector(s_input);
 
 end architecture rtl;
