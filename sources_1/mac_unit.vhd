@@ -46,9 +46,12 @@ begin
 
 	end process COMB_PROC;
 
+	-- Calculations of inputs; delayed by one cycle through COMB_PROC
 	s_mult_result <= s_input * s_weight;
 	s_add_result  <= s_mult_result + signed(s_partial_sum);
 
+	-- Setting of output signals
 	partial_result <= std_logic_vector(s_add_result);
+	input_delay <= std_logic_vector(s_input);
 
 end architecture rtl;
