@@ -14,21 +14,21 @@ entity sys_array is
 	port (
 		clk           : in std_logic;
 		reset         : in std_logic;
-		weights       : in matrix_2d(0 to weight_width - 1, 0 to weight_height - 1)(vector_length - 1 downto 0);
-		inputs        : in matrix_2d(0 to input_width - 1, 0 to weight_width - 1)(vector_length - 1 downto 0);
-		results       : out matrix_2d(0 to input_width - 1, 0 to weight_height - 1)(3 * vector_length - 1 downto 0);
+		weights       : in matrix_2d(0 to weight_width - 1)(0 to weight_height - 1)(vector_length - 1 downto 0);
+		inputs        : in matrix_2d(0 to input_width - 1)(0 to weight_width - 1)(vector_length - 1 downto 0);
+		results       : out matrix_2d(0 to input_width - 1)( 0 to weight_height - 1)(3 * vector_length - 1 downto 0);
 		comp_complete : out std_logic
 	);
 end entity sys_array;
 
 architecture rtl of sys_array is
 
-	signal s_results : matrix_2d(0 to input_width - 1, 0 to weight_height - 1)(vector_length - 1 downto 0);
+	signal s_results : matrix_2d(0 to input_width - 1)(0 to weight_height - 1)(vector_length - 1 downto 0);
 	-- we need one more input_vector signal in y-direction in order to meet bounds
-	signal s_input_vectors : matrix_2d(0 to weight_width - 1, 0 to weight_height)(vector_length - 1 downto 0);
+	signal s_input_vectors : matrix_2d(0 to weight_width - 1)(0 to weight_height)(vector_length - 1 downto 0);
 	-- we need one more partial_sum signal in x-direction in order to meet bounds
-	signal s_partial_sum  : matrix_2d(0 to weight_width, 0 to weight_height - 1)(3 * vector_length - 1 downto 0);
-	signal s_input_buffer : matrix_2d(0 to weight_width + input_width - 1, 0 to weight_width - 1)(vector_length - 1 downto 0);
+	signal s_partial_sum  : matrix_2d(0 to weight_width)(0 to weight_height - 1)(3 * vector_length - 1 downto 0);
+	signal s_input_buffer : matrix_2d(0 to weight_width + input_width - 1)(0 to weight_width - 1)(vector_length - 1 downto 0);
 
 begin
 
@@ -45,7 +45,7 @@ begin
 
 					for y_id in 0 to weight_width - 1 loop
 
-						s_input_buffer(x_id + y_id, y_id) <= inputs(x_id, y_id);
+						s_input_buffer(x_id + y_id)(y_id) <= inputs(x_id)(y_id);
 
 					end loop;
 
@@ -55,15 +55,15 @@ begin
 				-- shift every buffer by one value
 				for input_buffer_y_id in 0 to weight_width - 1 loop
 
-					s_input_vectors(input_buffer_y_id, 0) <= s_input_buffer(0, input_buffer_y_id);
+					s_input_vectors(input_buffer_y_id)(0) <= s_input_buffer(0)(input_buffer_y_id);
 
 					for input_buffer_x_id in 1 to weight_width + input_width - 1 loop
 
-						s_input_buffer(input_buffer_x_id - 1, input_buffer_y_id) <= s_input_buffer(input_buffer_x_id, input_buffer_y_id);
+						s_input_buffer(input_buffer_x_id - 1)(input_buffer_y_id) <= s_input_buffer(input_buffer_x_id)(input_buffer_y_id);
 
 					end loop;
 
-					s_input_buffer(weight_width + input_width - 1, input_buffer_y_id) <= (others => '0');
+					s_input_buffer(weight_width + input_width - 1)(input_buffer_y_id) <= (others => '0');
 
 				end loop;
 
@@ -85,11 +85,11 @@ begin
 				port map (
 					clk            => clk,
 					reset          => reset,
-					input_vector   => s_input_vectors(x_id, y_id),
-					weight_vector  => weights(x_id, y_id),
-					partial_sum    => s_partial_sum(x_id, y_id),
-					input_delay    => s_input_vectors(x_id, y_id + 1),
-					partial_result => s_partial_sum(x_id + 1, y_id)
+					input_vector   => s_input_vectors(x_id)(y_id),
+					weight_vector  => weights(x_id)(y_id),
+					partial_sum    => s_partial_sum(x_id)(y_id),
+					input_delay    => s_input_vectors(x_id)(y_id + 1),
+					partial_result => s_partial_sum(x_id + 1)(y_id)
 				);
 
 		end generate y_generate_block;
@@ -99,8 +99,12 @@ begin
 	WRITE_BACK_PROC : process (clk) is
 	begin
 
-		if rising_edge(clk) then
-		-- TODO: write back and add s_partial_sum(high, y_id) to s_results
+		if rising_edge(clk) and reset = '0' then
+			-- TODO: write back and add s_partial_sum(high, y_id) to s_results
+			for y_id in 0 to weight_height - 1 loop
+
+			end loop;
+
 		end if;
 
 	end process WRITE_BACK_PROC;

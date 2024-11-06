@@ -1,0 +1,43 @@
+indent:
+  tokens:
+    use_clause:
+      keyword:
+        token_after_library_clause: current
+        token_if_no_matching_library_clause: current
+rule:
+  global:
+    indent_style: smart_tabs
+  group:
+    case::label:
+      disable: True
+    case::name:
+      disable: True
+    naming:
+      disable: True
+  conditional_waveforms_001:
+    allow_single_line: yes
+  if_002:
+    parenthesis: remove
+  instantiation_034:
+    method: "entity"
+  port_007:
+    spaces_after: 1
+    spaces_before: 1
+  port_008:
+    spaces_after: 1
+    spaces_before: 1
+  port_009:
+    spaces_after: 1
+    spaces_before: 1
+  case_007:
+    disable: True
+  case_009:
+    disable: True
+  case_010:
+    disable: True
+  case_012:
+    disable: True
+  case_200:
+    style: no_blank_line
+  case_201:
+    style: no_blank_line
