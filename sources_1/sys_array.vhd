@@ -23,7 +23,7 @@ end entity sys_array;
 
 architecture rtl of sys_array is
 
-	signal s_results : matrix_2d(0 to input_width - 1)(0 to weight_height - 1)(vector_length - 1 downto 0);
+	signal s_results : matrix_2d(0 to input_width - 1)(0 to weight_height - 1)(3 * vector_length - 1 downto 0);
 	-- we need one more input_vector signal in y-direction in order to meet bounds
 	signal s_input_vectors : matrix_2d(0 to weight_width - 1)(0 to weight_height)(vector_length - 1 downto 0);
 	-- we need one more partial_sum signal in x-direction in order to meet bounds
@@ -85,6 +85,7 @@ begin
 				port map (
 					clk            => clk,
 					reset          => reset,
+					valid          => open,
 					input_vector   => s_input_vectors(x_id)(y_id),
 					weight_vector  => weights(x_id)(y_id),
 					partial_sum    => s_partial_sum(x_id)(y_id),

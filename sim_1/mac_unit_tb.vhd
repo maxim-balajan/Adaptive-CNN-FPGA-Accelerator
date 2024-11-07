@@ -16,6 +16,7 @@ architecture bench of mac_unit_tb is
 	-- Ports
 	signal clk            : std_logic := '0';
 	signal reset          : std_logic;
+	signal valid          : std_logic;
 	signal input_vector   : std_logic_vector(vector_length - 1 downto 0);
 	signal weight_vector  : std_logic_vector(vector_length - 1 downto 0);
 	signal partial_sum    : std_logic_vector(3 * vector_length - 1 downto 0);
@@ -31,6 +32,7 @@ begin
 		port map (
 			clk            => clk,
 			reset          => reset,
+			valid          => valid,
 			input_vector   => input_vector,
 			weight_vector  => weight_vector,
 			partial_sum    => partial_sum,
@@ -38,14 +40,15 @@ begin
 			partial_result => partial_result
 		);
 
-    clk <= not clk after clk_period/2;
+	clk <= not clk after clk_period / 2;
 
-    reset <= '1' after 0 ns, '0' after 10 ns;
-    input_vector <= x"08" after 0 ns, x"FF" after 20 ns;
-    weight_vector <= x"06" after 0 ns, x"0A" after 20 ns;
-    partial_sum <=  x"000020" after 0 ns, x"00000F" after 20 ns;
+	valid         <= '1';
+	reset         <= '1' after 0 ns, '0' after 10 ns;
+	input_vector  <= x"08" after 0 ns, x"FF" after 20 ns;
+	weight_vector <= x"06" after 0 ns, x"0A" after 20 ns;
+	partial_sum   <= x"000020" after 0 ns, x"00000F" after 20 ns;
 
-    clk_process : process is
+	clk_process : process is
 	begin
 
 		wait for 40 ns;
