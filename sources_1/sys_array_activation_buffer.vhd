@@ -22,8 +22,9 @@ architecture rtl of sys_array_activation_buffer is
 
 	-- notice the buffer has space for input_width + 1 elements
 	-- this is to ensure a "0" element at the last index
-	signal s_buffer  : matrix_1d(0 to input_width)(vector_length - 1 downto 0);
-	signal s_read_id : unsigned(integer(ceil(log2(real(input_width)))) downto 0);
+	signal s_buffer            : matrix_1d(0 to input_width)(vector_length - 1 downto 0);
+	signal s_read_id           : unsigned(integer(ceil(log2(real(input_width)))) downto 0);
+	signal s_result_activation : std_logic_vector(result_activation'range);
 
 begin
 
@@ -35,9 +36,10 @@ begin
 				s_buffer                       <= (others => (others => '0'));
 				s_buffer(0 to input_width - 1) <= din;
 				s_read_id                      <= (others => '0');
+				s_result_activation            <= (others => '0');
 			else
 				if en = '1' then
-					result_activation <= s_buffer(to_integer(s_read_id));
+					s_result_activation <= s_buffer(to_integer(s_read_id));
 					-- if last element of s_buffer is reached the buffer is empty
 					-- and should always return the "0" element
 					if s_read_id /= input_width then
@@ -45,11 +47,13 @@ begin
 					end if;
 				else
 					-- if reading is not allowed return "0" as activation input
-					result_activation <= (others => '0');
+					s_result_activation <= (others => '0');
 				end if;
 			end if;
 		end if;
 
 	end process READ_PROC;
+
+	result_activation <= s_result_activation;
 
 end architecture rtl;
