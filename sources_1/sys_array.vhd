@@ -89,6 +89,7 @@ begin
 					input_vector   => s_input_vectors(x_id)(y_id),
 					weight_vector  => weights(x_id)(y_id),
 					partial_sum    => s_partial_sum(x_id)(y_id),
+					valid_delay    => open,
 					input_delay    => s_input_vectors(x_id)(y_id + 1),
 					partial_result => s_partial_sum(x_id + 1)(y_id)
 				);

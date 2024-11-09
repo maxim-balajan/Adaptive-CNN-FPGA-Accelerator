@@ -36,6 +36,7 @@ begin
 			input_vector   => input_vector,
 			weight_vector  => weight_vector,
 			partial_sum    => partial_sum,
+			valid_delay    => open,
 			input_delay    => input_delay,
 			partial_result => partial_result
 		);
