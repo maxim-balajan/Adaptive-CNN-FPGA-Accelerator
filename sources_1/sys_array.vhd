@@ -26,7 +26,7 @@ architecture rtl of sys_array is
 	signal s_enable_matrix : matrix_1d(0 to weight_width)(maximum(weight_width, weight_height) - 1 downto 0);
 	-- this is necessary to delay enable bits by one cyle, otherwise they will reach the result buffers one cycle early
 	signal s_enable_result_buffer : std_logic_vector(weight_height - 1 downto 0);
-	signal s_partial_sums  : matrix_2d(0 to weight_width)(0 to weight_height - 1)(3 * vector_length - 1 downto 0);
+	signal s_partial_sums         : matrix_2d(0 to weight_width)(0 to weight_height - 1)(3 * vector_length - 1 downto 0);
 	-- activation_input is transposed => y,x,Vector Length
 	signal s_activation_input : matrix_2d(0 to weight_height)(0 to weight_width - 1)(vector_length - 1 downto 0);
 	signal s_buffer_full_vec  : std_logic_vector(weight_height - 1 downto 0);
@@ -48,9 +48,10 @@ begin
 					s_partial_sums(s_partial_sums'low)(i) <= (others => '0');
 
 				end loop;
+
 				s_enable_result_buffer <= (others => '0');
 			else
-				s_enable_result_buffer <= s_enable_matrix(s_enable_matrix'high)(s_enable_result_buffer'range);	
+				s_enable_result_buffer <= s_enable_matrix(s_enable_matrix'high)(s_enable_result_buffer'range);
 			end if;
 		end if;
 

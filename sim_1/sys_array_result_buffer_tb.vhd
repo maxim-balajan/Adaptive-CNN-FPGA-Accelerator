@@ -19,7 +19,7 @@ architecture bench of sys_array_result_buffer_tb is
 	signal reset         : std_logic;
 	signal en            : std_logic;
 	signal din           : std_logic_vector(3 * vector_length - 1 downto 0);
-	signal buffer_full : std_logic;
+	signal buffer_full   : std_logic;
 	signal result_buffer : matrix_1d(0 to input_width - 1)(vector_length - 1 downto 0);
 
 begin
@@ -34,7 +34,7 @@ begin
 			reset         => reset,
 			en            => en,
 			din           => din,
-			buffer_full => buffer_full,
+			buffer_full   => buffer_full,
 			result_buffer => result_buffer
 		);
 
