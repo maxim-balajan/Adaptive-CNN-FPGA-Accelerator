@@ -52,9 +52,8 @@ begin
 	end process DELAY_PROC;
 
 	-- Calculations of inputs; delayed by one cycle through DELAY_PROC
-	-- only do calculations if valid bit is set (can probably also be removed)
 	s_mult_result <= s_input * s_weight;
-	s_add_result  <= s_mult_result + signed(s_partial_sum) when valid = '1' else (others => '0');
+	s_add_result  <= s_mult_result + signed(s_partial_sum);
 
 	-- Setting of output signals
 	valid_delay    <= s_valid;

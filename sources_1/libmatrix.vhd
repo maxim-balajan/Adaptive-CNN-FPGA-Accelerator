@@ -27,7 +27,7 @@ package body libmatrix is
 
 	function transpose_matrix2d (input : matrix_2d) return matrix_2d is
 
-		variable tmp : matrix_2d(input'range)(input(input'low)'range)(input(input'low)(input'low)'range);
+		variable tmp : matrix_2d(input(input'low)'range)(input'range)(input(input'low)(input'low)'range);
 
 	begin
 

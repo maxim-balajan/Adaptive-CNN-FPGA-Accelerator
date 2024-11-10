@@ -18,7 +18,10 @@ end entity sys_array_control_unit;
 
 architecture rtl of sys_array_control_unit is
 
-	signal s_rem_en_bits : unsigned(integer(ceil(log2(real(input_width)))) - 1 downto 0);
+	-- This is probably a bad way to do this!
+	-- A extra enable bit is pipelined through the MACs because they are necessary to read from activation memory
+	-- (this shouldnt break anything because the result buffers stop taking inputs, when they are full. So no wrong values are being stored)
+	signal s_rem_en_bits : unsigned(integer(ceil(log2(real(input_width + 1)))) downto 0);
 	signal s_enable_bits : std_logic_vector(maximum(weight_width, weight_height) - 1 downto 0);
 
 begin
@@ -28,7 +31,7 @@ begin
 
 		if rising_edge(clk) then
 			if reset = '1' then
-				s_rem_en_bits <= to_unsigned(input_width, s_rem_en_bits'length);
+				s_rem_en_bits <= to_unsigned(input_width + 1, s_rem_en_bits'length);
 				s_enable_bits <= (others => '0');
 			else
 				-- Shift valid bits via shift register for input_width amount of cycles
