@@ -103,3 +103,7 @@
 */*/*/bd/*/ip/*/*.tcl
 hw_handoff
 ipshared
+
+### Few more files
+*.vdb
+*.wcfg
