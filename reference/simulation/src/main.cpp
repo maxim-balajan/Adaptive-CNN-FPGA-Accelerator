@@ -42,7 +42,7 @@ void inference(vector<unique_ptr<Layer>>& layers) {
 int main() {
     std::cout << "Starting RADL MINST Simulation..." << std::endl;
 
-    vector<unique_ptr<Layer>> layers = parse("../../training/mnist.onnx", 3);
+    vector<unique_ptr<Layer>> layers = parse("../../training/export/original_model.onnx", 3);
 
     inference(layers);
 
