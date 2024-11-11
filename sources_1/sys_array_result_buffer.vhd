@@ -23,7 +23,6 @@ architecture rtl of sys_array_result_buffer is
 
 	signal s_buffer      : matrix_1d(0 to input_width - 1)(vector_length - 1 downto 0);
 	signal s_write_id    : unsigned(integer(ceil(log2(real(input_width)))) downto 0);
-	signal s_buffer_full : std_logic;
 
 begin
 
@@ -34,18 +33,12 @@ begin
 			if reset = '1' then
 				s_buffer      <= (others => (others => '0'));
 				s_write_id    <= (others => '0');
-				s_buffer_full <= '0';
 			else
 				if en = '1' then
 					-- if buffer is full, do not take new elements into the buffer
 					if to_integer(s_write_id) /= input_width then
 						s_buffer(to_integer(s_write_id)) <= din(vector_length - 1 downto 0);
 						s_write_id                       <= s_write_id + 1;
-					else
-						-- write index reached oob value, thus buffer full
-						-- this could potentially be decided a cycle earlier
-						-- for now keep it as it is (for stability reasons)
-						s_buffer_full <= '1';
 					end if;
 				end if;
 			end if;
@@ -54,6 +47,7 @@ begin
 	end process WRITE_PROC;
 
 	result_buffer <= s_buffer;
-	buffer_full   <= s_buffer_full;
+	-- write index reached oob value, thus buffer full
+	buffer_full   <= s_write_id ?= input_width;
 
 end architecture rtl;
