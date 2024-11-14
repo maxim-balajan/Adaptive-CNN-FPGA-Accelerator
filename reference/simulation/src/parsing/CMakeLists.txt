@@ -1,2 +1,2 @@
-target_sources(simulation PRIVATE parser.cpp)
+target_sources(simulation PRIVATE)
 

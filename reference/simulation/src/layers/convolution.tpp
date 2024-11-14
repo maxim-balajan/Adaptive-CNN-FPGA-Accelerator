@@ -2,13 +2,21 @@
 
 #include <iostream>
 
-Convolution::Convolution(Matrix kernel, Matrix bias, size_t batching, size_t x, size_t y, size_t output_channel) : kernel(kernel), bias(bias), output_buffer({batching, x, y, output_channel}) {}
+template<typename T>
+Convolution<T>::Convolution(Matrix<T> kernel, Matrix<T> bias, size_t batching, size_t x, size_t y, size_t output_channel)
+    : kernel(kernel)
+    , bias(bias)
+    , output_buffer({batching, x, y, output_channel}) {}
 
-float Convolution::relu(float val) {
-    return val < 0 ? 0 : val;
+namespace {
+    template<typename T>
+    inline T relu(T val) {
+        return val < 0 ? 0 : val;
+    }
 }
 
-Matrix& Convolution::calc(Matrix& input) {
+template<typename T>
+Matrix<T>& Convolution<T>::calc(Matrix<T>& input) {
     for (size_t batch_id = 0; batch_id < input.shape()[0]; batch_id++)
     {
         for (size_t inch_id = 0; inch_id < input.shape()[3]; inch_id++)
@@ -19,7 +27,7 @@ Matrix& Convolution::calc(Matrix& input) {
                 {
                     for (size_t y_id = 0; y_id <= input.shape()[2] - kernel.shape()[3]; y_id++)
                     {
-                        float tmp = 0;
+                        T tmp = 0;
                         // Do computation of kernel matrices over input matrices
                         for (size_t kx_id = 0; kx_id < kernel.shape()[2]; kx_id++)
                         {

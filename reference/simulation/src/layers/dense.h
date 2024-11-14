@@ -4,16 +4,18 @@
 
 using namespace std;
 
-class Dense: public Layer {
+template<typename T>
+class Dense: public Layer<T> {
 private:
-    Matrix output_buffer;
-    Matrix weights;
-    Matrix bias;
+    Matrix<T> output_buffer;
+    Matrix<T> weights;
+    Matrix<T> bias;
     bool enable_softmax;
 
 public:
-    Dense(Matrix weights, Matrix bias, bool enable_softmax, size_t batching, size_t x);
+    Dense(Matrix<T> weights, Matrix<T> bias, bool enable_softmax, size_t batching, size_t x);
 
-    Matrix& softmax(Matrix& input);
-    virtual Matrix& calc(Matrix& input) override;
+    virtual Matrix<T>& calc(Matrix<T>& input) override;
 };
+
+#include "dense.tpp"

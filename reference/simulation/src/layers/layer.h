@@ -2,9 +2,10 @@
 
 #include "../matrix.h"
 
+template<typename T>
 class Layer {
 public:
     virtual ~Layer() {}
-    virtual Matrix& calc(Matrix& input) = 0;
+    virtual Matrix<T>& calc(Matrix<T>& input) = 0;
 
 };

@@ -1,15 +1,15 @@
 #include <iostream>
 
-#include "../layers/max_polling.h"
+#include "../layers/max_pooling.h"
 #include "../layers/flatten.h"
 #include "../layers/convolution.h"
 #include "../layers/dense.h"
 
 using namespace std;
 
-Matrix create_Input_Matrix1() {
+Matrix<float> create_Input_Matrix1() {
         // create input matrix
-    Matrix input({1,5,5,2});
+    Matrix<float> input({1,5,5,2});
 
     input[{0,0,0,0}] = 3;
     input[{0,1,0,0}] = 3;
@@ -66,8 +66,8 @@ Matrix create_Input_Matrix1() {
     return input;
 }
 
-Matrix create_Input_Matrix2() {
-    Matrix input({1,4,4,1});
+Matrix<float> create_Input_Matrix2() {
+    Matrix<float> input({1,4,4,1});
 
     input[{0,0,0,0}] = 4;
     input[{0,1,0,0}] = 6;
@@ -89,8 +89,8 @@ Matrix create_Input_Matrix2() {
     return input;
 }
 
-Matrix create_Input_Matrix3() {
-    Matrix input({4, 3});
+Matrix<float> create_Input_Matrix3() {
+    Matrix<float> input({4, 3});
     for (size_t i = 0; i < input.shape()[1]; i++)
     {
         for (size_t j = 0; j < input.shape()[0]; j++)
@@ -105,10 +105,10 @@ Matrix create_Input_Matrix3() {
 
 int convolution_test() {
     // create input matrix
-    Matrix input = create_Input_Matrix1();
+    Matrix<float> input = create_Input_Matrix1();
 
     // creation of kernel matrix
-    Matrix kernel({1,2,3,3});
+    Matrix<float> kernel({1,2,3,3});
     kernel[{0,0,0,0}] = 0;
     kernel[{0,0,1,0}] = 1;
     kernel[{0,0,2,0}] = 2;
@@ -129,10 +129,10 @@ int convolution_test() {
     kernel[{0,1,1,2}] = 1;
     kernel[{0,1,2,2}] = 1;
 
-    Matrix bias({1});
+    Matrix<float> bias({1});
 
     Convolution conv(kernel, bias, 1, 3, 3, 1);
-    Matrix output_buffer = conv.calc(input);
+    Matrix<float> output_buffer = conv.calc(input);
 
     cout << "{convolution_test}\n" << output_buffer << endl;
 
@@ -140,9 +140,9 @@ int convolution_test() {
 }
 
 int maxpolling_test() {
-    Matrix input = create_Input_Matrix2();
+    Matrix<float> input = create_Input_Matrix2();
 
-    MaxPolling mpoll(2, 1, 2, 2, 1);
+    MaxPooling<float> mpoll(2, 1, 2, 2, 1);
 
     cout << "{create_Input_Matrix2}\n" << mpoll.calc(input) << endl;
 
@@ -150,15 +150,15 @@ int maxpolling_test() {
 }
 
 int dense_test() {
-    Matrix weight = create_Input_Matrix3();
+    Matrix<float> weight = create_Input_Matrix3();
 
     cout << "{Weights}\n" << weight << endl;
 
-    Matrix bias({3});
+    Matrix<float> bias({3});
 
     Dense den(weight, bias, false, 1, 3);
 
-    Matrix input({1, 4});
+    Matrix<float> input({1, 4});
     input[{0,0}] = 1;
     input[{0,1}] = 1;
     input[{0,2}] = 1;

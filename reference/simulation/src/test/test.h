@@ -2,12 +2,12 @@
 
 #include "../matrix.h"
 
-void print_matrix3d(Matrix m);
+void print_matrix3d(Matrix<float> m);
 
-void print_matrix2d(Matrix m);
+void print_matrix2d(Matrix<float> m);
 
-Matrix create_Input_Matrix1();
-Matrix create_Input_Matrix3();
+Matrix<float> create_Input_Matrix1();
+Matrix<float> create_Input_Matrix3();
 
 int convolution_test();
 

@@ -1,1 +1,1 @@
-target_sources(simulation PRIVATE convolution.cpp dense.cpp flatten.cpp flatten.cpp max_polling.cpp)
+target_sources(simulation PRIVATE)

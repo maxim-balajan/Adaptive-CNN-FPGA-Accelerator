@@ -11,7 +11,7 @@
 using namespace std;
 
 template<typename T>
-class GenericMatrix {
+class Matrix {
 private:
     // list of dimension sizes
     vector<size_t> dimensions;
@@ -20,9 +20,9 @@ private:
     vector<T> matrix_data;
 
 public:
-    GenericMatrix(initializer_list<size_t> dimensions);
-    GenericMatrix(vector<size_t> dimensions);
-    GenericMatrix(initializer_list<size_t> dimensions, vector<T> initial_vals);
+    Matrix(initializer_list<size_t> dimensions);
+    Matrix(vector<size_t> dimensions);
+    Matrix(initializer_list<size_t> dimensions, vector<T> initial_vals);
 
     inline const vector<size_t>& shape() const;
     inline constexpr size_t total_size() const;
@@ -67,7 +67,7 @@ public:
     }
 
     // add each cell value of `other` to this matrix
-    inline constexpr GenericMatrix& operator+=(const GenericMatrix& other) {
+    inline constexpr Matrix& operator+=(const Matrix& other) {
         assertm(this->dimensions == other.dimensions, "the dimensions of the two matrixes have to match");
 
         for (auto [curr, add] : views::zip(this->matrix_data, other.matrix_data)) {
@@ -78,7 +78,7 @@ public:
     }
 
     // multiple each cell value of `other` with each corresponding cell this matrix
-    inline constexpr GenericMatrix& operator*=(const GenericMatrix& other) {
+    inline constexpr Matrix& operator*=(const Matrix& other) {
         assertm(this->dimensions == other.dimensions, "the dimensions of the two matrixes have to match");
 
         for (auto [curr, add] : views::zip(this->matrix_data, other.matrix_data)) {
@@ -89,7 +89,7 @@ public:
     }
 /*
     // multiple each cell value of `other` with each corresponding cell this matrix
-    inline constexpr GenericMatrix& operator=(const GenericMatrix& other) {
+    inline constexpr Matrix& operator=(const Matrix& other) {
         assertm(this->dimensions == other.dimensions, "the dimensions of the two matrixes have to match");
 
         for (auto [curr, add] : views::zip(this->matrix_data, other.matrix_data)) {
@@ -102,6 +102,3 @@ public:
 };
 
 #include "matrix.tpp"
-
-using Matrix = GenericMatrix<float>;
-

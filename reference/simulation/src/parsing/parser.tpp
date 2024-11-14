@@ -11,7 +11,7 @@
 #include "../layers/convolution.h"
 #include "../layers/dense.h"
 #include "../layers/flatten.h"
-#include "../layers/max_polling.h"
+#include "../layers/max_pooling.h"
 
 using namespace std;
 
@@ -98,12 +98,12 @@ namespace {
     }
 
     template<typename T>
-    GenericMatrix<T> parse_matrix(const onnx::TensorProto& tensor) {
+    Matrix<T> parse_matrix(const onnx::TensorProto& tensor) {
         throw new ParsingException("parse_matrix not supported for this datatype!");
     }
 
     template<>
-    GenericMatrix<float> parse_matrix(const onnx::TensorProto& tensor) {
+    Matrix<float> parse_matrix(const onnx::TensorProto& tensor) {
         if (tensor.data_location() != onnx::TensorProto::DEFAULT) {
             throw ParsingException("External storage of data is not supported!");
         }
@@ -117,7 +117,7 @@ namespace {
             dimensions.push_back(static_cast<size_t>(dim));
         }
 
-        Matrix matrix(dimensions);
+        Matrix<float> matrix(dimensions);
         if (tensor.float_data().size() != 0) {
             // cool, data is already stored as floats
             assertm(tensor.float_data().size() == matrix.total_size(), "Tensor data has to match its shape!");
@@ -141,7 +141,7 @@ namespace {
     }
 
     template<>
-    GenericMatrix<int64_t> parse_matrix(const onnx::TensorProto& tensor) {
+    Matrix<int64_t> parse_matrix(const onnx::TensorProto& tensor) {
         if (tensor.data_location() != onnx::TensorProto::DEFAULT) {
             throw ParsingException("External storage of data is not supported!");
         }
@@ -155,7 +155,7 @@ namespace {
             dimensions.push_back(static_cast<size_t>(dim));
         }
 
-        GenericMatrix<int64_t> matrix(dimensions);
+        Matrix<int64_t> matrix(dimensions);
         if (tensor.int64_data().size() != 0) {
             // cool, data is already stored as ints
             assertm(tensor.int64_data().size() == matrix.total_size(), "Tensor data has to match its shape!");
@@ -180,7 +180,7 @@ namespace {
     }
 
     template<typename T>
-    GenericMatrix<T> find_matrix(const google::protobuf::RepeatedPtrField<onnx::TensorProto>& tensors, const string& name) {
+    Matrix<T> find_matrix(const google::protobuf::RepeatedPtrField<onnx::TensorProto>& tensors, const string& name) {
         for (const auto& tensor : tensors) {
             if (tensor.name() == name) {
                 return parse_matrix<T>(tensor);
@@ -226,12 +226,13 @@ namespace {
         }
     }
 
-    vector<unique_ptr<Layer>> initialize_layers(onnx::ModelProto& model, unsigned int batching) {
+    template<typename T>
+    vector<unique_ptr<Layer<T>>> initialize_layers(onnx::ModelProto& model, unsigned int batching) {
         auto graph = model.graph();
   
         cout << "Parsing layers..." << endl;
 
-        vector<unique_ptr<Layer>> layers;
+        vector<unique_ptr<Layer<T>>> layers;
         vector<size_t> curr_dimensions = parse_dimensions(graph.input()[0]);
         for (int i = 0; i < graph.node().size(); i++) {
             auto curr_node = graph.node()[i];
@@ -247,7 +248,7 @@ namespace {
 
                     // lets hope that matrices are just stored this way...
                     // if the order changes here, we are fucked :)
-                    Matrix kernel = find_matrix<float>(graph.initializer(), curr_node.input()[1]);
+                    Matrix<T> kernel = find_matrix<T>(graph.initializer(), curr_node.input()[1]);
                     assertm(kernel.shape().size() == 4, "Kernel has to be 4D!");
                     if (kernel.shape()[2] != kernel.shape()[3]) {
                         throw new ParsingException("We only support 2D filter in the conv layer!");
@@ -256,7 +257,7 @@ namespace {
                     size_t channel_count = kernel.shape()[0];
                     size_t filter_size = kernel.shape()[2];
 
-                    Matrix bias = find_matrix<float>(graph.initializer(), curr_node.input()[2]);
+                    Matrix<T> bias = find_matrix<T>(graph.initializer(), curr_node.input()[2]);
                     assertm(bias.shape().size() == 1, "Bias has to be 1D!");
 
                     // update dimensions
@@ -264,8 +265,8 @@ namespace {
                     curr_dimensions[1] -= filter_size - 1;
                     curr_dimensions[2] = channel_count;
 
-                    Convolution convolution(kernel, bias, batching, curr_dimensions[0], curr_dimensions[1], curr_dimensions[2]);
-                    layers.push_back(make_unique<Convolution>(convolution));
+                    Convolution<T> convolution(kernel, bias, batching, curr_dimensions[0], curr_dimensions[1], curr_dimensions[2]);
+                    layers.push_back(make_unique<Convolution<T>>(convolution));
 
                     cout << "Convolution(..., ..., " << batching << ", " << curr_dimensions[0] << ", ";
                     cout << curr_dimensions[1] << ", " << curr_dimensions[2] << ")";
@@ -288,8 +289,8 @@ namespace {
                 curr_dimensions[0] /= pool_size;
                 curr_dimensions[1] /= pool_size;
 
-                MaxPolling pooling(pool_size, batching, curr_dimensions[0], curr_dimensions[1], curr_dimensions[2]);
-                layers.push_back(make_unique<MaxPolling>(pooling));
+                MaxPooling<T> pooling(pool_size, batching, curr_dimensions[0], curr_dimensions[1], curr_dimensions[2]);
+                layers.push_back(make_unique<MaxPooling<T>>(pooling));
 
                 cout << "MaxPooling(" << pool_size << ", " << batching << ", ";
                 cout << curr_dimensions[0] << ", " << curr_dimensions[1] << ")";
@@ -317,17 +318,17 @@ namespace {
                         throw new ParsingException("invalid amount of inputs!");
                     }
 
-                    Matrix weights = find_matrix<float>(graph.initializer(), curr_node.input()[1]);
+                    Matrix<T> weights = find_matrix<T>(graph.initializer(), curr_node.input()[1]);
                     assertm(weights.shape().size() == 2, "Weights have to be a 2D matrix!");
                     assertm(weights.shape()[0] == curr_dimensions[0],
                         "First dimension of weights have to match current dimensions!");
                     
-                    Matrix bias = find_matrix<float>(graph.initializer(), add_node.input()[1]);
+                    Matrix<T> bias = find_matrix<T>(graph.initializer(), add_node.input()[1]);
                     
                     curr_dimensions[0] = weights.shape()[1];
 
-                    Dense dense(weights, bias, softmax, batching, curr_dimensions[0]);
-                    layers.push_back(make_unique<Dense>(dense));
+                    Dense<T> dense(weights, bias, softmax, batching, curr_dimensions[0]);
+                    layers.push_back(make_unique<Dense<T>>(dense));
 
                     cout << "Dense(..., " << softmax << ", " << batching << ", " << curr_dimensions[0] << ")";
                 } else {
@@ -340,7 +341,7 @@ namespace {
                     throw new ParsingException("invalid amount of inputs!");
                 }
 
-                GenericMatrix<int64_t> dimensions = find_matrix<int64_t>(graph.initializer(), curr_node.input()[1]);
+                Matrix<int64_t> dimensions = find_matrix<int64_t>(graph.initializer(), curr_node.input()[1]);
                 if (dimensions.total_size() != 2) {
                     cout << "Reshape[ignored]";
                 } else {
@@ -351,8 +352,8 @@ namespace {
                     curr_dimensions.clear();
                     curr_dimensions.push_back(size);
 
-                    Flatten flatten(batching, size);
-                    layers.push_back(make_unique<Flatten>(flatten));
+                    Flatten<T> flatten(batching, size);
+                    layers.push_back(make_unique<Flatten<T>>(flatten));
 
                     cout << "Flatten(" << batching << ", " << curr_dimensions[0] << ")";
                 }
@@ -377,7 +378,8 @@ namespace {
     }
 }
 
-vector<unique_ptr<Layer>> parse(const string &filename, unsigned int batching) {
+template<typename T>
+vector<unique_ptr<Layer<T>>> parse(const string &filename, unsigned int batching) {
     fstream file;
     file.open(filename, fstream::in | fstream::binary);
 
@@ -412,5 +414,5 @@ vector<unique_ptr<Layer>> parse(const string &filename, unsigned int batching) {
         print_value_info_proto("Graph Output", x);
     }
 
-    return initialize_layers(model, batching);
+    return initialize_layers<T>(model, batching);
 }

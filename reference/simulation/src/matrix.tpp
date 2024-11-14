@@ -5,7 +5,7 @@
 #include <initializer_list>
 
 template<typename T>
-GenericMatrix<T>::GenericMatrix(initializer_list<size_t> input_dimensions): dimensions(input_dimensions.size()) {
+Matrix<T>::Matrix(initializer_list<size_t> input_dimensions): dimensions(input_dimensions.size()) {
     assertm(input_dimensions.size() > 0, "input dimensions have to be > 0");
     
     size_t total_matrix_size = 1;
@@ -20,7 +20,7 @@ GenericMatrix<T>::GenericMatrix(initializer_list<size_t> input_dimensions): dime
 }
 
 template<typename T>
-GenericMatrix<T>::GenericMatrix(vector<size_t> input_dimensions): dimensions(input_dimensions.size()) {
+Matrix<T>::Matrix(vector<size_t> input_dimensions): dimensions(input_dimensions.size()) {
     assertm(input_dimensions.size() > 0, "input dimensions have to be > 0");
 
     size_t total_matrix_size = 1;
@@ -35,24 +35,24 @@ GenericMatrix<T>::GenericMatrix(vector<size_t> input_dimensions): dimensions(inp
 }
 
 template<typename T>
-GenericMatrix<T>::GenericMatrix(initializer_list<size_t> dimensions, vector<T> initial_vals): GenericMatrix(dimensions) {
+Matrix<T>::Matrix(initializer_list<size_t> dimensions, vector<T> initial_vals): Matrix(dimensions) {
     set_data(initial_vals);
 }
 
 template<typename T>
-const vector<size_t>& GenericMatrix<T>::shape() const {
+const vector<size_t>& Matrix<T>::shape() const {
     return dimensions;
 }
 
 template<typename T>
-inline void GenericMatrix<T>::set_data(const vector<T>& data) {
+inline void Matrix<T>::set_data(const vector<T>& data) {
     assertm(data.size() == total_size(), "Data has to be the same size as this matrix!");
     matrix_data = data;
 }
 
 template<typename T>
 template<size_t N>
-inline void GenericMatrix<T>::set_data(const array<T, N>& data) {
+inline void Matrix<T>::set_data(const array<T, N>& data) {
     assertm(data.size() == total_size(), "Data has to be the same size as this matrix!");
     for (int i = 0; i < data.size(); i++) {
         matrix_data[i] = data[i];
@@ -60,24 +60,24 @@ inline void GenericMatrix<T>::set_data(const array<T, N>& data) {
 }
 
 template<typename T>
-constexpr size_t GenericMatrix<T>::total_size() const {
+constexpr size_t Matrix<T>::total_size() const {
     return matrix_data.size();
 }
 
 
 template<typename T>
-inline void GenericMatrix<T>::flatten() {
+inline void Matrix<T>::flatten() {
     reinterpret_dimensions(vector<size_t>(total_size()));
 }
 
 template<typename T>
-inline void GenericMatrix<T>::reinterpret_dimensions(const vector<size_t>& dimensions) {
+inline void Matrix<T>::reinterpret_dimensions(const vector<size_t>& dimensions) {
     this->dimensions.clear();
     this->dimensions.insert(this->dimensions.end(), dimensions.begin(), dimensions.end());
 }
 
 template<typename T>
-std::ostream& operator<<(std::ostream &out, GenericMatrix<T> const& data) {
+std::ostream& operator<<(std::ostream &out, Matrix<T> const& data) {
     vector<size_t> dimension_multipliers(data.shape());
 
     // first calculate the multiplier for each dimension

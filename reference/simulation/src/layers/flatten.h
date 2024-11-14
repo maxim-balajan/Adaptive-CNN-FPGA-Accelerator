@@ -4,12 +4,15 @@
 
 using namespace std;
 
-class Flatten: public Layer {
+template<typename T>
+class Flatten: public Layer<T> {
 private:
-    Matrix output_buffer;
+    Matrix<T> output_buffer;
 
 public:
     Flatten(size_t batching, size_t x);
 
-    virtual Matrix& calc(Matrix& input) override;
+    virtual Matrix<T>& calc(Matrix<T>& input) override;
 };
+
+#include "flatten.tpp"

@@ -5,4 +5,7 @@
 
 using namespace std;
 
-vector<unique_ptr<Layer>> parse(const string &filename, unsigned int batching = 1);
+template<typename T>
+vector<unique_ptr<Layer<T>>> parse(const string &filename, unsigned int batching = 1);
+
+#include "parser.tpp"

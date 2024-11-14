@@ -4,15 +4,17 @@
 
 using namespace std;
 
-class Convolution: public Layer {
+template<typename T>
+class Convolution: public Layer<T> {
 private:
-    Matrix output_buffer;
-    Matrix kernel;
-    Matrix bias;
+    Matrix<T> output_buffer;
+    Matrix<T> kernel;
+    Matrix<T> bias;
 
 public:
-    Convolution(Matrix kernel, Matrix bias, size_t batching, size_t x, size_t y, size_t output_channel);
+    Convolution(Matrix<T> kernel, Matrix<T> bias, size_t batching, size_t x, size_t y, size_t output_channel);
 
-    virtual Matrix& calc(Matrix& input) override;
-    float relu(float val);
+    virtual Matrix<T>& calc(Matrix<T>& input) override;
 };
+
+#include "convolution.tpp"
