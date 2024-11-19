@@ -16,4 +16,5 @@ add_library(proto ${PROTO_HEADER} ${PROTO_SRC})
 add_executable(simulation ${SOURCE_FILES})
 target_link_libraries(simulation proto ${PROTOBUF_LIBRARY})
 
+add_subdirectory(lib)
 add_subdirectory(src)

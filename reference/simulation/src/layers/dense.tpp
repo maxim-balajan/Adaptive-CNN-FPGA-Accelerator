@@ -10,7 +10,7 @@ Dense<T>::Dense(Matrix<T> weights, Matrix<T> bias, bool enable_softmax, size_t b
 
 namespace {
     template<typename T>
-    inline Matrix<T>& softmax(Matrix<T>& input) {
+    inline void softmax(Matrix<T>& input) {
         for (size_t batch_id = 0; batch_id < input.shape()[0]; batch_id++)
         {
             size_t max_id = 0;
@@ -32,13 +32,11 @@ namespace {
             input[{batch_id, max_id}] = 1;
             
         }
-
-        return input;
     }
 }
 
 template<typename T>
-Matrix<T>& Dense<T>::calc(Matrix<T>& input)
+const Matrix<T>& Dense<T>::calc(const Matrix<T>& input)
 {
     for (size_t batch_id = 0; batch_id < input.shape()[0]; batch_id++)
     {
@@ -54,6 +52,7 @@ Matrix<T>& Dense<T>::calc(Matrix<T>& input)
             output_buffer[{batch_id, wy_id}] = tmp + bias[{wy_id}];
         }
     }
+//    cout << "Dense output " << output_buffer << "\n";
 
     if (enable_softmax) {
         softmax(output_buffer);

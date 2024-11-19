@@ -8,14 +8,14 @@ template<typename T>
 class Dense: public Layer<T> {
 private:
     Matrix<T> output_buffer;
-    Matrix<T> weights;
-    Matrix<T> bias;
+    const Matrix<T> weights;
+    const Matrix<T> bias;
     bool enable_softmax;
 
 public:
     Dense(Matrix<T> weights, Matrix<T> bias, bool enable_softmax, size_t batching, size_t x);
 
-    virtual Matrix<T>& calc(Matrix<T>& input) override;
+    virtual const Matrix<T>& calc(const Matrix<T>& input) override;
 };
 
 #include "dense.tpp"

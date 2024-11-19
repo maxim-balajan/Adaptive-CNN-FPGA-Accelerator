@@ -7,6 +7,8 @@
 // include our onnx proto model
 #include <onnx.pb.h>
 
+#include "util.h"
+
 #include "parser.h"
 #include "../layers/convolution.h"
 #include "../layers/dense.h"
@@ -16,19 +18,6 @@
 using namespace std;
 
 namespace {
-    
-    class ParsingException : public exception {
-        private:
-            const char* what_val;
-        public:
-            ParsingException() : what_val("Some parsing went wrong...") {};
-            ParsingException(const char* what): what_val(what) {};
-            ParsingException(const string what): what_val(what.c_str()) {};
-
-            virtual const char* what() const noexcept override {
-                return what_val;
-            }
-    };
 
     template<typename TYPE>
     inline bool _should_print(TYPE &val) {

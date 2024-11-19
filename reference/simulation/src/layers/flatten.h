@@ -12,7 +12,7 @@ private:
 public:
     Flatten(size_t batching, size_t x);
 
-    virtual Matrix<T>& calc(Matrix<T>& input) override;
+    virtual const Matrix<T>& calc(const Matrix<T>& input) override;
 };
 
 #include "flatten.tpp"

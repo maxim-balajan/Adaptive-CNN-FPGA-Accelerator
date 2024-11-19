@@ -8,13 +8,13 @@ template<typename T>
 class Convolution: public Layer<T> {
 private:
     Matrix<T> output_buffer;
-    Matrix<T> kernel;
-    Matrix<T> bias;
+    const Matrix<T> kernel;
+    const Matrix<T> bias;
 
 public:
     Convolution(Matrix<T> kernel, Matrix<T> bias, size_t batching, size_t x, size_t y, size_t output_channel);
 
-    virtual Matrix<T>& calc(Matrix<T>& input) override;
+    virtual const Matrix<T>& calc(const Matrix<T>& input) override;
 };
 
 #include "convolution.tpp"

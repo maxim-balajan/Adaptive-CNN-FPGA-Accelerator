@@ -16,7 +16,7 @@ namespace {
 }
 
 template<typename T>
-Matrix<T>& Convolution<T>::calc(Matrix<T>& input) {
+const Matrix<T>& Convolution<T>::calc(const Matrix<T>& input) {
     for (size_t batch_id = 0; batch_id < input.shape()[0]; batch_id++)
     {
         for (size_t inch_id = 0; inch_id < input.shape()[3]; inch_id++)
@@ -27,6 +27,11 @@ Matrix<T>& Convolution<T>::calc(Matrix<T>& input) {
                 {
                     for (size_t y_id = 0; y_id <= input.shape()[2] - kernel.shape()[3]; y_id++)
                     {
+                        if (inch_id == 0)
+                        {
+                            output_buffer[{batch_id, x_id, y_id, outch_id}] = 0;
+                        }
+
                         T tmp = 0;
                         // Do computation of kernel matrices over input matrices
                         for (size_t kx_id = 0; kx_id < kernel.shape()[2]; kx_id++)

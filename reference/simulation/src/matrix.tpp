@@ -77,6 +77,46 @@ inline void Matrix<T>::reinterpret_dimensions(const vector<size_t>& dimensions) 
 }
 
 template<typename T>
+inline void Matrix<T>::copy_to(Matrix<T>& destination) const {
+    assertm(this->dimensions == destination.dimensions, "the dimensions of the two matrixes have to match");
+
+    for (auto [curr, dest] : views::zip(this->matrix_data, destination.matrix_data)) {
+        dest = curr;
+    }
+}
+
+template<typename T>
+void Matrix<T>::print_hashes(size_t views) const {
+    assert(this->matrix_data.size() % views == 0);
+    size_t size = this->matrix_data.size() / views;
+
+    cout << "hashes: [";
+    for (int i = 0; i < views; i++) {
+        if (i != 0) {
+            cout << ", ";
+        }
+        cout << calc_hash(i * size, (i + 1) * size);
+    }
+    cout << "]\n";
+}
+
+template<typename T>
+size_t Matrix<T>::calc_hash(size_t start, size_t end) const {
+    assert(start <= end);
+    assert(end <= this->matrix_data.size());
+
+    size_t seed = end - start;
+    for(int i = start; i < end; i++) {
+        size_t x = (size_t) this->matrix_data[i];
+        x = ((x >> 16) ^ x) * 0x45d9f3b;
+        x = ((x >> 16) ^ x) * 0x45d9f3b;
+        x = (x >> 16) ^ x;
+        seed ^= x + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+    }
+    return (size_t) seed;
+}
+
+template<typename T>
 std::ostream& operator<<(std::ostream &out, Matrix<T> const& data) {
     vector<size_t> dimension_multipliers(data.shape());
 

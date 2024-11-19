@@ -1,0 +1,2 @@
+target_include_directories(simulation PRIVATE libnpy)
+target_include_directories(simulation PRIVATE argparse)

@@ -14,7 +14,7 @@ public:
     // pooling is defined here to be quadratically all the time
     MaxPooling(size_t pooling_size, size_t batching, size_t x, size_t y, size_t output_channel);
 
-    virtual Matrix<T>& calc(Matrix<T>& input) override;
+    virtual const Matrix<T>& calc(const Matrix<T>& input) override;
 };
 
 #include "max_pooling.tpp"

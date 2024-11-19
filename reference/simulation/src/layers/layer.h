@@ -6,6 +6,6 @@ template<typename T>
 class Layer {
 public:
     virtual ~Layer() {}
-    virtual Matrix<T>& calc(Matrix<T>& input) = 0;
+    virtual const Matrix<T>& calc(const Matrix<T>& input) = 0;
 
 };
