@@ -1,7 +1,6 @@
 #pragma once
 
-#include "../matrix.h"
-
+#include "../data/matrix.h"
 void print_matrix3d(Matrix<float> m);
 
 void print_matrix2d(Matrix<float> m);

@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <ranges>
-#include "assert.h"
+#include "../assert.h"
 
 #include <iostream>
 

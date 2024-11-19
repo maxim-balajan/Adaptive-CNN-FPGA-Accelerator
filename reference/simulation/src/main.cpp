@@ -12,7 +12,7 @@
 #include "test/test.h"
 #include "util.h"
 
-#include "matrix_view.h"
+#include "data/matrix_view.h"
 
 using namespace std;
 

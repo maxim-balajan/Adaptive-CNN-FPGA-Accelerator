@@ -1,6 +1,6 @@
 #include <npy.hpp>
 #include <string>
-#include "../matrix.h"
+#include "../data/matrix.h"
 #include "util.h"
 
 using namespace std;
