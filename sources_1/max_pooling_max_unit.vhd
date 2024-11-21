@@ -42,7 +42,7 @@ begin
 					else
 						s_output <= input2;
 					end if;
-					s_finished <= '1';-- after 1 ns;
+					s_finished <= '1'; -- after 1 ns;
 				else
 					s_finished <= '0';
 				end if;
@@ -50,7 +50,8 @@ begin
 		end if;
 
 	end process MAIN_PROCESS;
-	
+
 	finished <= s_finished;
-	output <= s_output;
+	output   <= s_output;
+
 end architecture Behavioral;
