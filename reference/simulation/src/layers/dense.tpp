@@ -1,4 +1,5 @@
 #include "dense.h"
+#include "../parsing/data_converter.h"
 
 template<typename T>
 Dense<T>::Dense(Matrix<T> weights, Matrix<T> bias, bool enable_softmax, size_t batching, size_t x)
@@ -26,10 +27,10 @@ namespace {
             // Fill vector with 0s and single 1
             for (size_t x_id = 0; x_id < input.shape()[1]; x_id++)
             {
-                input[{batch_id, x_id}] = 0;
+                input[{batch_id, x_id}] = convert_data<float, T>(0.0f);
             }
 
-            input[{batch_id, max_id}] = 1;
+            input[{batch_id, max_id}] = convert_data<float, T>(1.0f);
             
         }
     }
@@ -42,7 +43,7 @@ const Matrix<T>& Dense<T>::calc(const Matrix<T>& input)
     {
         for (size_t wy_id = 0; wy_id < weights.shape()[1]; wy_id++)
         {
-            T tmp = 0;
+            T tmp = convert_data<float, T>(0.0f);
 
             for (size_t x_id = 0; x_id < input.shape()[1]; x_id++)
             {

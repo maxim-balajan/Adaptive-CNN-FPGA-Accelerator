@@ -14,6 +14,7 @@
 #include "../layers/dense.h"
 #include "../layers/flatten.h"
 #include "../layers/max_pooling.h"
+#include "data_converter.h"
 
 using namespace std;
 
@@ -88,17 +89,8 @@ namespace {
 
     template<typename T>
     Matrix<T> parse_matrix(const onnx::TensorProto& tensor) {
-        throw new ParsingException("parse_matrix not supported for this datatype!");
-    }
-
-    template<>
-    Matrix<float> parse_matrix(const onnx::TensorProto& tensor) {
         if (tensor.data_location() != onnx::TensorProto::DEFAULT) {
             throw ParsingException("External storage of data is not supported!");
-        }
-
-        if (tensor.data_type() != onnx::TensorProto::FLOAT) {
-            throw ParsingException("Tensor does not store FLOAT values!");
         }
 
         vector<size_t> dimensions;
@@ -106,63 +98,53 @@ namespace {
             dimensions.push_back(static_cast<size_t>(dim));
         }
 
-        Matrix<float> matrix(dimensions);
+        Matrix<T> matrix(dimensions);
         if (tensor.float_data().size() != 0) {
+            if (tensor.data_type() != onnx::TensorProto::FLOAT) {
+                throw ParsingException("Float data but data type is not float?!");
+            }
+
             // cool, data is already stored as floats
             assertm(tensor.float_data().size() == matrix.total_size(), "Tensor data has to match its shape!");
             for (int i = 0; i < tensor.float_data().size(); i++) {
-                matrix[i] = tensor.float_data()[i];
+                float item = tensor.float_data()[i];
+                matrix[i] = convert_data<float, T>(item);
             }
-        } else if (tensor.raw_data().size() != 0) {
-            // data is stored in as binary data, convert it now
-            assertm(tensor.raw_data().size() == matrix.total_size() * 4, "Tensor data has to match its shape!");
-            for (int i = 0; i < tensor.raw_data().size(); i += 4) {
-                const char *ptr = &(tensor.raw_data()[0]) + i;
-                const float *float_ptr = reinterpret_cast<const float*>(ptr);
 
-                matrix[i/4] = *float_ptr;
+        } else if (tensor.int64_data().size() != 0) {
+            if (tensor.data_type() != onnx::TensorProto::INT64) {
+                throw ParsingException("Int64 data but data type is not int64?!");
             }
-        } else {
-            throw ParsingException("Data not found!");
-        }
 
-        return matrix;
-    }
-
-    template<>
-    Matrix<int64_t> parse_matrix(const onnx::TensorProto& tensor) {
-        if (tensor.data_location() != onnx::TensorProto::DEFAULT) {
-            throw ParsingException("External storage of data is not supported!");
-        }
-
-        if (tensor.data_type() != onnx::TensorProto::INT64) {
-            throw ParsingException("Tensor does not store INT64 values!");
-        }
-
-        vector<size_t> dimensions;
-        for (auto dim : tensor.dims()) {
-            dimensions.push_back(static_cast<size_t>(dim));
-        }
-
-        Matrix<int64_t> matrix(dimensions);
-        if (tensor.int64_data().size() != 0) {
             // cool, data is already stored as ints
             assertm(tensor.int64_data().size() == matrix.total_size(), "Tensor data has to match its shape!");
             for (int i = 0; i < tensor.int64_data().size(); i++) {
-                matrix[i] = tensor.int64_data()[i];
+                int64_t item = tensor.int64_data()[i];
+                matrix[i] = convert_data<int64_t, T>(item);
             }
         } else if (tensor.raw_data().size() != 0) {
-            assertm(tensor.raw_data().size() == matrix.total_size() * 8, "Tensor data has to match its shape!");
-            int8_t bytes[8];
-            for (int i = 0; i < tensor.raw_data().size(); i += 8) {
-                for (int j = 0; j < 8; j++) {
-                    bytes[j] = tensor.raw_data()[i + j];
+            // data is stored in as binary data, convert it now
+            if (tensor.data_type() == onnx::TensorProto::FLOAT) {
+                assertm(tensor.raw_data().size() == matrix.total_size() * 4, "Tensor data has to match its shape!");
+                for (int i = 0; i < tensor.raw_data().size(); i += 4) {
+                    const char *ptr = &(tensor.raw_data()[0]) + i;
+                    const float *float_ptr = reinterpret_cast<const float*>(ptr);
+
+                    matrix[i/4] = convert_data<float, T>(*float_ptr);
                 }
-                int64_t *data = reinterpret_cast<int64_t*>(&bytes);
-                matrix[i/8] = *data;
+            } else if (tensor.data_type() == onnx::TensorProto::INT64) {
+                assertm(tensor.raw_data().size() == matrix.total_size() * 8, "Tensor data has to match its shape!");
+                int8_t bytes[8];
+                for (int i = 0; i < tensor.raw_data().size(); i += 8) {
+                    for (int j = 0; j < 8; j++) {
+                        bytes[j] = tensor.raw_data()[i + j];
+                    }
+                    int64_t *data = reinterpret_cast<int64_t*>(&bytes);
+                    matrix[i/8] = convert_data<int64_t, T>(*data);
+                }
             }
         } else {
-            throw ParsingException("Data not found!");
+            throw ParsingException("Matrix data not found!");
         }
 
         return matrix;
@@ -218,7 +200,7 @@ namespace {
     template<typename T>
     vector<unique_ptr<Layer<T>>> initialize_layers(onnx::ModelProto& model, unsigned int batching) {
         auto graph = model.graph();
-  
+
         cout << "Parsing layers..." << endl;
 
         vector<unique_ptr<Layer<T>>> layers;

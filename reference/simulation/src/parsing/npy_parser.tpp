@@ -1,6 +1,7 @@
 #include <npy.hpp>
 #include <string>
 #include "../data/matrix.h"
+#include "data_converter.h"
 #include "util.h"
 
 using namespace std;
@@ -17,7 +18,7 @@ Matrix<TO> parse_matrix(string path) {
 
     Matrix<TO> res(shape);
     for (int i = 0; i < res.total_size(); i++) {
-        res[i] = static_cast<TO>(data[i]);
+        res[i] = convert_data<FROM, TO>(data[i]);
     }
 
     return res;

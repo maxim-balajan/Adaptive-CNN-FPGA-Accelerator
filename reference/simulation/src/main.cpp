@@ -73,12 +73,16 @@ struct RunBenchmarkOptions {
 };
 
 int run_benchmark(RunBenchmarkOptions options) {
+//    using TargetType = FPUInt8<7>;
+    using TargetType = float;
+
     auto & [ verbose, image_count, batching ] = options;
 
     cout << "Loading data..." << endl;
-    vector<unique_ptr<Layer<float>>> layers = parse<float>("../../training/export/original_model.onnx", batching);
-    Matrix<float> input_data = parse_matrix<double, float>("../../training/export/mnist/x_test.npy");
-    Matrix<float> output_data = parse_matrix<double, float>("../../training/export/mnist/y_test.npy");
+    vector<unique_ptr<Layer<TargetType>>> layers = parse<TargetType>("../../training/export/original_model.onnx", batching);
+    Matrix<TargetType> input_data = parse_matrix<double, TargetType>("../../training/export/mnist/x_test.npy");
+
+    Matrix<TargetType> output_data = parse_matrix<double, TargetType>("../../training/export/mnist/y_test.npy");
 
     assert(input_data.shape()[0] == output_data.shape()[0]);
     if (image_count == -1) {
@@ -100,8 +104,8 @@ int run_benchmark(RunBenchmarkOptions options) {
         return 1;
     }
 
-    MatrixView<float> input_data_view(input_data, batching);
-    MatrixView<float> output_data_view(output_data, batching);
+    MatrixView<TargetType> input_data_view(input_data, batching);
+    MatrixView<TargetType> output_data_view(output_data, batching);
 
     cout << "Starting RADL MINST Simulation with " << image_count << " images to process (batch_size=" << batching << ")..." << endl;
 
@@ -112,7 +116,7 @@ int run_benchmark(RunBenchmarkOptions options) {
 
     int i = 0;
     do {
-        InferenceStats stats = test_inference<float>(layers, input_data_view.get_current(), output_data_view.get_current(), verbose);
+        InferenceStats stats = test_inference<TargetType>(layers, input_data_view.get_current(), output_data_view.get_current(), verbose);
         total_stats.latency_ms += stats.latency_ms;
         total_stats.correct += stats.correct;
 

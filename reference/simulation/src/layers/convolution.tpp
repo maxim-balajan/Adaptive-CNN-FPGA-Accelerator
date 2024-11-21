@@ -1,4 +1,5 @@
 #include "convolution.h"
+#include "../parsing/data_converter.h"
 
 #include <iostream>
 
@@ -11,7 +12,7 @@ Convolution<T>::Convolution(Matrix<T> kernel, Matrix<T> bias, size_t batching, s
 namespace {
     template<typename T>
     inline T relu(T val) {
-        return val < 0 ? 0 : val;
+        return val < convert_data<float, T>(0.0f) ? convert_data<float, T>(0.0f) : val;
     }
 }
 
@@ -29,10 +30,10 @@ const Matrix<T>& Convolution<T>::calc(const Matrix<T>& input) {
                     {
                         if (inch_id == 0)
                         {
-                            output_buffer[{batch_id, x_id, y_id, outch_id}] = 0;
+                            output_buffer[{batch_id, x_id, y_id, outch_id}] = convert_data<float, T>(0.0f);
                         }
 
-                        T tmp = 0;
+                        T tmp = convert_data<float, T>(0.0f);
                         // Do computation of kernel matrices over input matrices
                         for (size_t kx_id = 0; kx_id < kernel.shape()[2]; kx_id++)
                         {
