@@ -21,8 +21,8 @@ end entity sys_array_result_buffer;
 
 architecture rtl of sys_array_result_buffer is
 
-	signal s_buffer      : matrix_1d(0 to input_width - 1)(vector_length - 1 downto 0);
-	signal s_write_id    : unsigned(integer(ceil(log2(real(input_width)))) downto 0);
+	signal s_buffer   : matrix_1d(0 to input_width - 1)(vector_length - 1 downto 0);
+	signal s_write_id : unsigned(integer(ceil(log2(real(input_width)))) downto 0);
 
 begin
 
@@ -31,8 +31,8 @@ begin
 
 		if rising_edge(clk) then
 			if reset = '1' then
-				s_buffer      <= (others => (others => '0'));
-				s_write_id    <= (others => '0');
+				s_buffer   <= (others => (others => '0'));
+				s_write_id <= (others => '0');
 			else
 				if en = '1' then
 					-- if buffer is full, do not take new elements into the buffer
@@ -48,6 +48,6 @@ begin
 
 	result_buffer <= s_buffer;
 	-- write index reached oob value, thus buffer full
-	buffer_full   <= s_write_id ?= input_width;
+	buffer_full <= s_write_id ?= input_width;
 
 end architecture rtl;

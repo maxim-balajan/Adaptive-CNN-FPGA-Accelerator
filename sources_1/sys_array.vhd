@@ -109,7 +109,6 @@ begin
 					valid          => s_enable_matrix(x_id)(y_id),
 					input_vector   => s_activation_input(y_id)(x_id),
 					weight_vector  => weights(x_id)(y_id),
-					initial_value  => (others => '0'),
 					partial_sum    => s_partial_sums(x_id)(y_id),
 					valid_delay    => s_enable_matrix(x_id + 1)(y_id),
 					input_delay    => s_activation_input(y_id + 1)(x_id),

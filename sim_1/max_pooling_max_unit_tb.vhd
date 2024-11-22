@@ -40,17 +40,19 @@ begin
 			finished  => finished
 		);
 
-    clk   <= not clk after clk_period / 2;
-    reset <= '1' after 0 ns, '0' after  1.5 * clk_period;
-    input1_en    <= '0' after 0 ns, '1' after 2 * clk_period;
-    input2_en    <= '0' after 0 ns, '1' after 2.5 * clk_period, '0' after 6 * clk_period;
-    input1 <= "01101001" after 0 ns, "00001111" after 4 * clk_period, "10010110" after 5 * clk_period;
-    input2 <= "00111111" after 0 ns, "00000000" after 4 * clk_period, "00101010" after 5 * clk_period;
+	clk       <= not clk after clk_period / 2;
+	reset     <= '1' after 0 ns, '0' after  1.5 * clk_period;
+	input1_en <= '0' after 0 ns, '1' after 2 * clk_period;
+	input2_en <= '0' after 0 ns, '1' after 2.5 * clk_period, '0' after 6 * clk_period;
+	input1    <= "01101001" after 0 ns, "00001111" after 4 * clk_period, "10010110" after 5 * clk_period;
+	input2    <= "00111111" after 0 ns, "00000000" after 4 * clk_period, "00101010" after 5 * clk_period;
 
-    WAITFORRES : process is
+	WAITFORRES : process is
 	begin
+
 		wait for 10 * clk_period;
 		finish;
+
 	end process WAITFORRES;
 
 end architecture bench;

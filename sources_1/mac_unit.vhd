@@ -13,7 +13,6 @@ entity mac_unit is
 		valid          : in std_logic;
 		input_vector   : in std_logic_vector(vector_length - 1 downto 0);
 		weight_vector  : in std_logic_vector(vector_length - 1 downto 0);
-		initial_value  : in std_logic_vector(3 * vector_length - 1 downto 0);
 		partial_sum    : in std_logic_vector(3 * vector_length - 1 downto 0);
 		valid_delay    : out std_logic;
 		input_delay    : out std_logic_vector(vector_length - 1 downto 0);
@@ -41,7 +40,7 @@ begin
 				s_valid       <= '0';
 				s_input       <= (others => '0');
 				s_weight      <= (others => '0');
-				s_partial_sum <= signed(initial_value);
+				s_partial_sum <= (others => '0');
 			else
 				s_valid       <= valid;
 				s_input       <= signed(input_vector);
