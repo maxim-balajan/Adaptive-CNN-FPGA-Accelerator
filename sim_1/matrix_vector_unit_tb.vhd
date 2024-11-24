@@ -1,6 +1,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+use ieee.math_real.all;
 use work.libmatrix.all;
 use std.env.finish;
 
@@ -12,8 +13,8 @@ architecture bench of matrix_vector_unit_tb is
 	-- Clock period
 	constant clk_period : time := 5 ns;
 	-- Generics
-	constant weight_width  : integer := 4;
-	constant weight_height : integer := 3;
+	constant weight_width  : integer := 1024;
+	constant weight_height : integer := 800;
 	constant vector_length : integer := 8;
 	-- Ports
 	signal clk              : std_logic := '1';
@@ -39,6 +40,8 @@ begin
 			reset            => reset,
 			en               => en,
 			weights          => weights,
+			actual_weight_width => std_logic_vector(to_unsigned(4, integer(ceil(log2(real(weight_width)))) + 1)),
+			actual_weight_heigth => std_logic_vector(to_unsigned(3, integer(ceil(log2(real(weight_height)))) + 1)),
 			inputs           => inputs,
 			bias             => bias,
 			bram_enable_line => bram_enable_line,
@@ -57,8 +60,10 @@ begin
 	--           x"05" after 6 * clk_period, x"06" after  7 * clk_period;
 
 	-- (3x4)
-	weights <= (x"01", x"02", x"03") after 0 ns;
-	inputs  <= (x"01", x"00", x"FE", x"03");
+	weights(0 to 2) <= (x"01", x"02", x"03") after 0 ns;
+	weights(3 to weights'high) <= (others => (others => '0')) after 0 ns;
+	inputs(0 to 3)  <= (x"01", x"00", x"FE", x"03") after 0 ns;
+	inputs(4 to inputs'high) <= (others => (others => '0')) after 0 ns;
 	bias    <= x"00" after 0 ns, x"02" after 3 * clk_period, x"03" after 4 * clk_period, x"04" after 5 * clk_period;
 
 	TB : process is

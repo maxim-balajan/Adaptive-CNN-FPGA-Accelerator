@@ -7,20 +7,22 @@ use work.libmatrix.all;
 entity matrix_vector_unit is
 	generic (
 		-- weight_width == input_height
-		weight_width  : integer := 400;
-		weight_height : integer := 120;
+		weight_width  : integer := 1024;
+		weight_height : integer := 784;
 		vector_length : integer := 8
 	);
 	port (
-		clk              : in std_logic;
-		reset            : in std_logic;
-		en               : in std_logic;
-		weights          : in matrix_1d(0 to weight_height - 1)(vector_length - 1 downto 0);
-		inputs           : in matrix_1d(0 to weight_width - 1)(vector_length - 1 downto 0);
-		bias             : in std_logic_vector(vector_length - 1 downto 0);
-		bram_enable_line : out std_logic_vector(0 to weight_height);
-		results          : out matrix_1d(0 to weight_height - 1)(vector_length - 1 downto 0);
-		comp_complete    : out std_logic
+		clk                  : in std_logic;
+		reset                : in std_logic;
+		en                   : in std_logic;
+		actual_weight_width  : in std_logic_vector(integer(ceil(log2(real(weight_width)))) downto 0);
+		actual_weight_heigth : in std_logic_vector(integer(ceil(log2(real(weight_height)))) downto 0);
+		weights              : in matrix_1d(0 to weight_height - 1)(vector_length - 1 downto 0);
+		inputs               : in matrix_1d(0 to weight_width - 1)(vector_length - 1 downto 0);
+		bias                 : in std_logic_vector(vector_length - 1 downto 0);
+		bram_enable_line     : out std_logic_vector(0 to weight_height);
+		results              : out matrix_1d(0 to weight_height - 1)(vector_length - 1 downto 0);
+		comp_complete        : out std_logic
 	);
 end entity matrix_vector_unit;
 
@@ -41,6 +43,9 @@ architecture rtl of matrix_vector_unit is
 	signal s_input_line       : matrix_1d(0 to weight_height)(vector_length - 1 downto 0);
 	signal s_partial_results  : matrix_1d(0 to weight_height - 1)(3 * vector_length - 1 downto 0);
 
+	signal s_actual_weight_width  : unsigned(integer(ceil(log2(real(weight_width)))) downto 0);
+	signal s_actual_weight_height : unsigned(integer(ceil(log2(real(weight_height)))) downto 0);
+
 begin
 
 	process (clk) is
@@ -55,6 +60,9 @@ begin
 				s_bias_en                        <= '0';
 				s_input_line(s_input_line'low)   <= (others => '0');
 				s_bias_enable_line               <= (others => '0');
+				-- when resetting the unit set the actual weight_width and weight_height for further computation
+				s_actual_weight_width  <= unsigned(actual_weight_width);
+				s_actual_weight_height <= unsigned(actual_weight_heigth);
 			else
 				s_enable_bits(s_enable_bits'low) <= s_en;
 				s_bias_enable_line               <= (others => '0');
@@ -64,7 +72,7 @@ begin
 					s_input_line(s_input_line'low) <= inputs(to_integer(s_inputs_pipelined));
 				end if;
 				-- Demultiplex bias to correct MAC
-				if s_current_bias_id /= weight_height then
+				if s_current_bias_id /= s_actual_weight_height then
 					s_current_bias_id                                 <= s_current_bias_id + 1;
 					s_bias_enable_line(to_integer(s_current_bias_id)) <= '1';
 					s_bias_en                                         <= '1';
@@ -72,7 +80,7 @@ begin
 					s_bias_en <= '0';
 				end if;
 				-- If enable bit is bufferd through all MACs then a input value is finished with it's computation
-				if s_enable_bits(s_enable_bits'high) = '1' then
+				if s_enable_bits(to_integer(s_actual_weight_height)) = '1' then
 					s_inputs_finished <= s_inputs_finished + 1;
 				end if;
 			end if;
@@ -128,10 +136,10 @@ begin
 	end process WRITE_RESULT_PROC;
 
 	-- This is necessary so that no illegal values are pipelined into the unit
-	s_en <= en when s_inputs_pipelined /= weight_width else '0';
+	s_en <= en when s_inputs_pipelined /= s_actual_weight_width else '0';
 
 	results          <= s_output_results;
-	comp_complete    <= std_logic_vector(s_inputs_finished) ?= std_logic_vector(to_unsigned(weight_width, s_inputs_finished'length));
+	comp_complete    <= std_logic_vector(s_inputs_finished) ?= std_logic_vector(s_actual_weight_width);
 	bram_enable_line <= s_enable_bits(0 to weight_height - 1) & s_bias_en;
 
 end architecture rtl;
