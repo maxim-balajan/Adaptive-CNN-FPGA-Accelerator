@@ -24,9 +24,10 @@ end entity matrix_vector_mac_unit;
 
 architecture rtl of matrix_vector_mac_unit is
 
-	signal s_mac_en, s_bias_en : std_logic;
-	signal s_input             : signed(vector_length - 1 downto 0);
-	signal s_partial_sum       : signed(3 * vector_length - 1 downto 0);
+	signal s_mac_en      : std_logic;
+	signal s_bias_en     : std_logic;
+	signal s_input       : signed(vector_length - 1 downto 0);
+	signal s_partial_sum : signed(3 * vector_length - 1 downto 0);
 
 	signal s_mult_result      : signed(2 * vector_length - 1 downto 0);
 	signal s_add_result       : signed(3 * vector_length - 1 downto 0);
