@@ -18,7 +18,10 @@ Matrix<TO> parse_matrix(string path) {
 
     Matrix<TO> res(shape);
     for (int i = 0; i < res.total_size(); i++) {
+//        cout << data[i];
         res[i] = convert_data<FROM, TO>(data[i]);
+//        cout << ", " << res[i] << endl;
+        
     }
 
     return res;

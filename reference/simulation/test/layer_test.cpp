@@ -4,6 +4,7 @@
 #include "../layers/flatten.h"
 #include "../layers/convolution.h"
 #include "../layers/dense.h"
+#include "../data/matrix.h"
 
 using namespace std;
 

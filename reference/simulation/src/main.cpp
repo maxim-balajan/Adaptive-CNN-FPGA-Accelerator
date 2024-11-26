@@ -9,7 +9,6 @@
 
 #include "parsing/parser.h"
 #include "parsing/npy_parser.h"
-#include "test/test.h"
 #include "util.h"
 
 #include "data/matrix_view.h"
@@ -72,9 +71,8 @@ struct RunBenchmarkOptions {
     int batching;
 };
 
+template<typename TargetType>
 int run_benchmark(RunBenchmarkOptions options) {
-//    using TargetType = FPUInt8<7>;
-    using TargetType = float;
 
     auto & [ verbose, image_count, batching ] = options;
 
@@ -189,7 +187,11 @@ int main(int argc, char* argv[]) {
         return 0;
     }
 
-    run_benchmark(options);
+//    using TargetType = FPInt32<30>;
+    using TargetType = FPInt8<7>;
+//    using TargetType = float;
+
+    run_benchmark<TargetType>(options);
 
     return 0;
 }
