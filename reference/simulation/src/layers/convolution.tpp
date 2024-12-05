@@ -1,5 +1,6 @@
 #include "convolution.h"
 #include "../parsing/data_converter.h"
+#include "../util.h"
 
 #include <iostream>
 
@@ -7,7 +8,7 @@ template<typename T>
 Convolution<T>::Convolution(Matrix<T> kernel, Matrix<T> bias, size_t batching, size_t x, size_t y, size_t output_channel)
     : kernel(kernel)
     , bias(bias)
-    , output_buffer({batching, x, y, output_channel}) {}
+    , output_buffer({batching, output_channel, x, y}) {}
 
 namespace {
     template<typename T>

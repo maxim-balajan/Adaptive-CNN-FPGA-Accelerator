@@ -8,12 +8,14 @@
 #include "layers/dense.h"
 
 #include "parsing/parser.h"
+#include "parsing/quant_parser.h"
 #include "parsing/npy_parser.h"
 #include "util.h"
 
 #include "data/matrix_view.h"
 
 using namespace std;
+using namespace ParsingUtil;
 
 
 template<typename T>
@@ -33,6 +35,10 @@ struct InferenceStats {
 
 template<typename T>
 InferenceStats test_inference(const vector<unique_ptr<Layer<T>>>& layers, const Matrix<T>& input, const Matrix<T>& excepted_output, bool verbose) {
+    if (verbose) {
+        cout << "Input" << input << endl;
+    }
+
     chrono::steady_clock::time_point begin = chrono::steady_clock::now();
 
     const Matrix<T>& output = inference(layers, input);
@@ -45,7 +51,7 @@ InferenceStats test_inference(const vector<unique_ptr<Layer<T>>>& layers, const 
 
     if (verbose) {
         cout << "Expected output " << excepted_output << "\n";
-        cout << "Real output " << output << "\n";
+        cout << "Real output " << output << endl;
     }
 
     for (size_t i = 0; i < output.shape()[0]; i++) {
@@ -77,10 +83,17 @@ int run_benchmark(RunBenchmarkOptions options) {
     auto & [ verbose, image_count, batching ] = options;
 
     cout << "Loading data..." << endl;
-    vector<unique_ptr<Layer<TargetType>>> layers = parse<TargetType>("../../training/export/original_model.onnx", batching);
-    Matrix<TargetType> input_data = parse_matrix<double, TargetType>("../../training/export/mnist/x_test.npy");
 
-    Matrix<TargetType> output_data = parse_matrix<double, TargetType>("../../training/export/mnist/y_test.npy");
+    QuantArguments quant_args {
+        -1, // scale
+        -1  // zero_point
+    };
+    auto layers = parse_quantized<TargetType>("../../training/Lenet_qonnx.onnx", batching, quant_args);
+    assert(quant_args.scale != -1);
+    assert(quant_args.zero_point != -1);
+
+    Matrix<TargetType> input_data = parse_quantized_matrix<float, TargetType>("../../training/export/mnist/x_test.npy", quant_args);
+    Matrix<TargetType> output_data = parse_matrix<float, TargetType>("../../training/export/mnist/y_test.npy");
 
     assert(input_data.shape()[0] == output_data.shape()[0]);
     if (image_count == -1) {
@@ -139,7 +152,7 @@ int run_benchmark(RunBenchmarkOptions options) {
     cout << "Total inference duration: " << ((1.0*total_stats.latency_ms)/1000) << "s\n";
     cout << "Avg inference duration: " << ((1.0*total_stats.latency_ms)/image_count) << "ms\n";
     cout << "Avg accuracy: " << ((100 * total_stats.correct)/image_count) << "%" << endl;
-    
+
     return 0;
 }
 
@@ -180,15 +193,14 @@ int main(int argc, char* argv[]) {
         .image_count = parser.get<int>("image-count"),
         .batching = parser.get<int>("batching")
     };
-    cout << "y" << endl;
 
     if (argc == 2 && strcmp(argv[1], "--help") == 0) {
         print_help();
         return 0;
     }
 
-//    using TargetType = FPInt32<30>;
-    using TargetType = FPInt8<7>;
+//    using TargetType = FPInt32<10>;
+    using TargetType = FPInt8<2>;
 //    using TargetType = float;
 
     run_benchmark<TargetType>(options);

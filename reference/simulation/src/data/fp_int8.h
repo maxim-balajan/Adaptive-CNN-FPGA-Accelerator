@@ -119,7 +119,7 @@ public:
 
 template<int8_t POINT_POS>
 std::ostream& operator<<(std::ostream &out, FPInt8<POINT_POS> const& data) {
-    /*
+    
     char res[8];
     for (int i = 0; i < 8; i++) {
         res[i] = '0';
@@ -167,12 +167,12 @@ std::ostream& operator<<(std::ostream &out, FPInt8<POINT_POS> const& data) {
     }
     
     return out;
-    */
+    /*
    double val = data.get_val();
    val = val / (1 << POINT_POS);
    out << val;
    return out;
-}
+*/}
 
 // template<int8_t POINT_POS>
 // using FPInt = FPInt8;

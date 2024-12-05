@@ -117,6 +117,24 @@ size_t Matrix<T>::calc_hash(size_t start, size_t end) const {
 }
 
 template<typename T>
+Matrix<T> transpose_2d(const Matrix<T>& input) {
+    vector<size_t> dims;
+
+    for (int i = input.shape().size() - 1; i >= 0; i--) {
+        dims.push_back(input.shape()[i]);
+    }
+
+    Matrix<T> res(dims);
+    for (size_t x = 0; x < input.shape()[0]; x++) {
+        for (size_t y = 0; y < input.shape()[1]; y++) {
+            res[{y,x}] = input[{x,y}];
+        }
+    }
+
+    return res;
+}
+
+template<typename T>
 std::ostream& operator<<(std::ostream &out, Matrix<T> const& data) {
     vector<size_t> dimension_multipliers(data.shape());
 

@@ -4,7 +4,7 @@
 #include <algorithm>
 
 template<typename T>
-MaxPooling<T>::MaxPooling(size_t pooling_size, size_t batching, size_t x, size_t y, size_t output_channel) : pooling_size(pooling_size), output_buffer({batching, x, y, output_channel}) {}
+MaxPooling<T>::MaxPooling(size_t pooling_size, size_t batching, size_t x, size_t y, size_t output_channel) : pooling_size(pooling_size), output_buffer({batching, output_channel, x, y}) {}
 
 template<typename T>
 const Matrix<T>& MaxPooling<T>::calc(const Matrix<T>& input)

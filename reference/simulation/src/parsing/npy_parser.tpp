@@ -26,3 +26,20 @@ Matrix<TO> parse_matrix(string path) {
 
     return res;
 }
+
+template<typename FROM, typename TO>
+Matrix<TO> parse_quantized_matrix(string path, QuantArguments quant_args) {
+        Matrix<FROM> original_matrix = parse_matrix<FROM, FROM>(path);
+
+        original_matrix *= (1/quant_args.scale);
+        original_matrix += quant_args.zero_point;
+
+        // convert to target type
+        Matrix<TO> dest(original_matrix.shape());
+
+        for (int i = 0; i < original_matrix.total_size(); i++) {
+            dest[i] = convert_data<FROM, TO>(original_matrix[i]);
+        }
+
+        return dest;
+}

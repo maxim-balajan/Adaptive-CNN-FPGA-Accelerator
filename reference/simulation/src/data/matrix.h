@@ -91,7 +91,7 @@ public:
     }
 
     // add each cell value of `other` to this matrix
-    inline constexpr Matrix& operator+=(const Matrix& other) const {
+    inline constexpr Matrix& operator+=(const Matrix& other) {
         assertm(this->dimensions == other.dimensions, "the dimensions of the two matrixes have to match");
 
         for (auto [curr, add] : views::zip(this->matrix_data, other.matrix_data)) {
@@ -112,6 +112,25 @@ public:
         return *this;
     }
 
+    inline constexpr Matrix& operator+=(const T& val) {
+        for (auto& curr : this->matrix_data) {
+            curr += val;
+        }
+
+        return *this;
+    }
+
+    inline constexpr Matrix& operator*=(const T& val) {
+        for (auto& curr : this->matrix_data) {
+            curr *= val;
+        }
+
+        return *this;
+    }
+
 };
+
+template<typename T>
+Matrix<T> transpose_2d(const Matrix<T>& input);
 
 #include "matrix.tpp"
