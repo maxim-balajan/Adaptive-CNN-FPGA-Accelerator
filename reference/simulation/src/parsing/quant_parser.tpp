@@ -163,8 +163,8 @@ namespace {
                 cout << curr_dimensions[0] << ", " << curr_dimensions[1] << ")";
 
             } else if (curr_node.op_type() == "Gemm") {
-                if (curr_dimensions.size() != 1) {
-                    throw ParsingException("Dense requires a 1D input");
+                if (curr_dimensions.size() != 2) {
+                    throw ParsingException("Dense requires a 2D input");
                 }
 
                 auto prev_nodes = get_previous_nodes(curr_node, graph);
@@ -180,18 +180,18 @@ namespace {
                 Matrix<T> weights_t = parse_quantized_initializer_matrix<T>(graph, prev_nodes[1].name());
                 Matrix<T> weights = transpose_2d(weights_t);
                 assertm(weights.shape().size() == 2, "Weights have to be a 2D matrix!");
-                assertm(weights.shape()[0] == curr_dimensions[0],
+                assertm(weights.shape()[0] == curr_dimensions[1],
                     "First dimension of weights have to match current dimensions!");
 
                 Matrix<T> bias_t = parse_quantized_initializer_matrix<T>(graph, prev_nodes[2].name());                
                 Matrix<T> bias = transpose_2d(bias_t);
-                curr_dimensions[0] = weights.shape()[1];
+                curr_dimensions[1] = weights.shape()[1];
 
                 bool softmax = !get_next_node(curr_node, graph).has_value();
-                Dense<T> dense(weights, bias, softmax, batching, curr_dimensions[0]);
+                Dense<T> dense(weights, bias, softmax, batching, curr_dimensions[1]);
                 layers.push_back(make_unique<Dense<T>>(dense));
 
-                cout << "Dense(..., " << softmax << ", " << batching << ", " << curr_dimensions[0] << ")";
+                cout << "Dense(..., " << softmax << ", " << batching << ", " << curr_dimensions[1] << ")";
             
             } else if (curr_node.op_type() == "Transpose") {
                 cout << "Transpose[Ignored]";
@@ -205,10 +205,12 @@ namespace {
                     cout << "Reshape[ignored]";
                 } else {
                     size_t size = 1;
-                    for (auto& dim: curr_dimensions) {
-                        size *= dim;
+                    for (int i = 1; i < curr_dimensions.size(); i++) {
+                        size *= curr_dimensions[i];
                     }
                     curr_dimensions.clear();
+
+                    curr_dimensions.push_back(batching);
                     curr_dimensions.push_back(size);
 
                     Flatten<T> flatten(batching, size);
