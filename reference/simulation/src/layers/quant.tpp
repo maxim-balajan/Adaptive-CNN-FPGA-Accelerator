@@ -2,7 +2,7 @@
 #include "../assert.h"
 
 template<typename T>
-Quant<T>::Quant(vector<size_t> dimensions, T zero_point, T inv_scale)
+Quant<T>::Quant(vector<size_t> dimensions, T inv_scale, T zero_point)
     : output_buffer(dimensions)
     , zero_point(zero_point)
     , inv_scale(inv_scale) {}

@@ -10,7 +10,7 @@ private:
     T inv_scale;
 
 public:
-    Quant(vector<size_t> dimensions, T zero_point, T scale);
+    Quant(vector<size_t> dimensions, T inv_scale, T zero_point);
 
     virtual const Matrix<T>& calc(const Matrix<T>& input) override;
 };

@@ -4,6 +4,9 @@
 
 using namespace std;
 
+// uncomment to print floats with radix 10 
+#define PRINT_10_REPR_FLOATS
+
 namespace {
     int8_t handle_overflow_8(int16_t val) {
         if (val > INT8_MAX) {
@@ -137,7 +140,7 @@ public:
 
 template<int8_t POINT_POS>
 std::ostream& operator<<(std::ostream &out, FPInt8<POINT_POS> const& data) {
-    
+#ifndef PRINT_10_REPR_FLOATS
     char res[8];
     for (int i = 0; i < 8; i++) {
         res[i] = '0';
@@ -185,12 +188,10 @@ std::ostream& operator<<(std::ostream &out, FPInt8<POINT_POS> const& data) {
     }
     
     return out;
-    /*
-   double val = data.get_val();
-   val = val / (1 << POINT_POS);
-   out << val;
-   return out;
-*/}
-
-// template<int8_t POINT_POS>
-// using FPInt = FPInt8;
+#else
+    double val = data.get_val();
+    val = val / (1 << POINT_POS);
+    out << val;
+    return out;
+#endif
+}
