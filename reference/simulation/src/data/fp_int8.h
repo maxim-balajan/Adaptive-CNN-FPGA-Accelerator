@@ -14,6 +14,24 @@ namespace {
             return static_cast<int8_t>(val);
         }
     }
+    int8_t handle_overflow_8_double(double val) {
+        if (val > INT8_MAX) {
+            return INT8_MAX;
+        } else if (val < INT8_MIN) {
+            return INT8_MIN;
+        } else {
+            return static_cast<int8_t>(val);
+        }
+    }
+    int8_t handle_overflow_8_64(int64_t val) {
+        if (val > INT8_MAX) {
+            return INT8_MAX;
+        } else if (val < INT8_MIN) {
+            return INT8_MIN;
+        } else {
+            return static_cast<int8_t>(val);
+        }
+    }
 }
 
 // fixed point int
@@ -37,14 +55,14 @@ public:
         int16_t multiplier = static_cast<int16_t>(1) << POINT_POS;
         input *= multiplier;
 
-        value = handle_overflow_8(input);
+        value = handle_overflow_8_double(input);
     }
 
     FPInt8(int64_t input) {
         int16_t multiplier = static_cast<int16_t>(1) << POINT_POS;
         input *= multiplier;
 
-        value = handle_overflow_8(input);
+        value = handle_overflow_8_64(input);
     }
 
     // arithmetic operators
