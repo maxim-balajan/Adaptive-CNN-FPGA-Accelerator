@@ -200,8 +200,8 @@ int main(int argc, char* argv[]) {
     }
 
 //    using TargetType = FPInt32<10>;
-    using TargetType = FPInt8<0>;
-//    using TargetType = float;
+//    using TargetType = FPInt8<0>;
+    using TargetType = float;
 
     run_benchmark<TargetType>(options);
 

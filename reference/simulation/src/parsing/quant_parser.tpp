@@ -32,7 +32,7 @@ namespace {
         // we just expect the inputs to be in that sequence... (if not then well...)
         Matrix<float> original_matrix = find_matrix<float>(graph.initializer(), node.input()[0]);
         float scale = find_scalar<float>(graph.initializer(), node.input()[1]);
-        float offset = find_scalar<float>(graph.initializer(), node.input()[3]);
+        float offset = find_scalar<float>(graph.initializer(), node.input()[2]);
 
         original_matrix *= (1/scale);
         original_matrix += offset;
@@ -221,7 +221,7 @@ namespace {
 
             } else if (curr_node.op_type() == "Quant") {
                 float raw_scale = find_scalar<float>(graph.initializer(), curr_node.input()[1]);
-                float raw_offset = find_scalar<float>(graph.initializer(), curr_node.input()[3]);
+                float raw_offset = find_scalar<float>(graph.initializer(), curr_node.input()[2]);
 
                 if (curr_node.name() == prev_node.name()) {
                     cout << "Quant[Ignored]";
