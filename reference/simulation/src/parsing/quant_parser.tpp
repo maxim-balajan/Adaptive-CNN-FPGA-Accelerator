@@ -161,7 +161,7 @@ namespace {
                 cout << curr_dimensions[2] << ", " << curr_dimensions[3] << ")";
 
                 // skip relu and quant layer as we combine them into the convolution layer
-                curr_node = relu.value();
+                curr_node = quant_after_relu.value();
             } else if (curr_node.op_type() == "MaxPool") {
                 const onnx::AttributeProto& kernel_shape = find_attribute(curr_node.attribute(), "kernel_shape");
                 array<int64_t, 2> kernel_shape_parsed = parse_shape<2>(kernel_shape);

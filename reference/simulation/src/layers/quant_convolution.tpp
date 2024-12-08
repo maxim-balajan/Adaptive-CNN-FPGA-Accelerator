@@ -37,12 +37,6 @@ const Matrix<T>& QuantConvolution<T, ACC>::calc(const Matrix<T>& input) {
                 {
                     for (size_t y_id = 0; y_id <= input.shape()[3] - kernel.shape()[3]; y_id++)
                     {
-                        // This resets the value when a new convolution is performed with the same instance of Convolution
-                        if (inch_id == 0)
-                        {
-                            output_buffer[{batch_id, outch_id, x_id, y_id}] = convert_data<float, ACC>(0.0f);
-                        }
-
                         ACC tmp = convert_data<float, ACC>(0.0f);
                         // Do computation of kernel matrices over input matrices
                         for (size_t kx_id = 0; kx_id < kernel.shape()[2]; kx_id++)

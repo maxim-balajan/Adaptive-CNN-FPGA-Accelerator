@@ -202,9 +202,10 @@ int main(int argc, char* argv[]) {
         print_help();
         return 0;
     }
-    // For now AccType and TargetType need to be the same! Remove assert when changed codebase!
-    using TargetType = FPInt32<0>;
-    using AccumulatorType = FPInt32<0>;
+    // For now AccType and TargetType need to be the same if special type is used!
+    // Currently only int16_t (or larger) works for TargetType for what ever reason
+    using TargetType = int16_t;
+    using AccumulatorType = int32_t;
 
     run_benchmark<TargetType, AccumulatorType>(options);
 
