@@ -87,6 +87,13 @@ public:
         return FPInt8(handle_overflow_8(tmp));    
     }
 
+    FPInt8 operator*(const float scale) const {
+        int16_t tmp = value;
+        tmp *= scale;
+
+        return FPInt8(handle_overflow_8(tmp));
+    }
+
     FPInt8& operator+=(const FPInt8& other) {
         int16_t new_val = static_cast<int16_t>(value) + static_cast<int16_t>(other.value);
         value = handle_overflow_8(new_val);

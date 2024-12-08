@@ -18,6 +18,8 @@
 #include "../layers/flatten.h"
 #include "../layers/max_pooling.h"
 #include "../layers/quant.h"
+#include "../layers/quant_convolution.h"
+#include "../layers/quant_dense.h"
 #include "data_converter.h"
 
 using namespace std;
@@ -111,11 +113,24 @@ namespace {
                 if (!relu.has_value() || relu.value().op_type() != "Relu") {
                     throw ParsingException("Relu needs to be placed after conv!");
                 }
+                auto quant_after_relu = get_next_node(relu.value(), graph);
+                if (!quant_after_relu.has_value() || quant_after_relu.value().op_type() != "Quant") {
+                    throw ParsingException("Quant needs to be placed after Relu!");
+                }
+                // retrieve s_y of quant layer
+                float s_y = find_scalar<float>(graph.initializer(), quant_after_relu.value().input()[1]);              
 
                 auto prev_nodes = get_previous_nodes(curr_node, graph);
                 if (prev_nodes.size() != 3) {
                     throw new ParsingException("invalid amount of inputs!");
                 }
+                auto prev_input = prev_nodes[0];
+                if (prev_nodes[0].op_type() == "MaxPool")
+                {
+                    prev_input = get_previous_nodes(prev_input, graph)[0];
+                }
+                
+                float s_x = find_scalar<float>(graph.initializer(), prev_input.input()[1]);
 
                 // lets hope that matrices are just stored this way...
                 Matrix<T> kernel = parse_quantized_initializer_matrix<T>(graph, prev_nodes[1].name());
@@ -124,24 +139,28 @@ namespace {
                     throw new ParsingException("We only support 2D filter in the conv layer!");
                 }
 
+                float s_w = find_scalar<float>(graph.initializer(), prev_nodes[1].input()[1]);
+
                 size_t channel_count = kernel.shape()[0];
                 size_t filter_size = kernel.shape()[2];
 
                 Matrix<T> bias = parse_quantized_initializer_matrix<T>(graph, prev_nodes[2].name());
                 assertm(bias.shape().size() == 1, "Bias has to be 1D!");
 
+                float s_b = find_scalar<float>(graph.initializer(), prev_nodes[2].input()[1]);
+
                 // update dimensions
                 curr_dimensions[1] = channel_count;
                 curr_dimensions[2] -= filter_size - 1;
                 curr_dimensions[3] -= filter_size - 1;
 
-                Convolution<T> convolution(kernel, bias, batching, curr_dimensions[2], curr_dimensions[3], curr_dimensions[1]);
-                layers.push_back(make_unique<Convolution<T>>(convolution));
+                QuantConvolution<T> convolution(kernel, bias, batching, curr_dimensions[2], curr_dimensions[3], curr_dimensions[1], s_b, s_x, s_w, s_y);
+                layers.push_back(make_unique<QuantConvolution<T>>(convolution));
 
-                cout << "Convolution(..., ..., " << curr_dimensions[0] << ", " << curr_dimensions[1] << ", ";
+                cout << "QuantConv(..., ..., " << curr_dimensions[0] << ", " << curr_dimensions[1] << ", ";
                 cout << curr_dimensions[2] << ", " << curr_dimensions[3] << ")";
 
-                // skip relu as we combine them into the convolution layer
+                // skip relu and quant layer as we combine them into the convolution layer
                 curr_node = relu.value();
             } else if (curr_node.op_type() == "MaxPool") {
                 const onnx::AttributeProto& kernel_shape = find_attribute(curr_node.attribute(), "kernel_shape");
@@ -171,7 +190,12 @@ namespace {
                 if (prev_nodes.size() != 3) {
                     throw new ParsingException("invalid amount of inputs!");
                 }
-
+                // retrieve scale vector of input
+                auto prev_input = prev_nodes[0];
+                while (prev_input.op_type() != "Quant") {
+                    prev_input = get_previous_nodes(prev_input, graph)[0];
+                }
+                float s_x = find_scalar<float>(graph.initializer(), prev_input.input()[1]);
 
                 if (curr_node.input().size() != 3) {
                     throw new ParsingException("invalid amount of inputs!");
@@ -182,16 +206,29 @@ namespace {
                 assertm(weights.shape().size() == 2, "Weights have to be a 2D matrix!");
                 assertm(weights.shape()[0] == curr_dimensions[1],
                     "First dimension of weights have to match current dimensions!");
+                // retrieve scale value of weight matrix
+                float s_w = find_scalar<float>(graph.initializer(), prev_nodes[1].input()[1]);
 
                 Matrix<T> bias_t = parse_quantized_initializer_matrix<T>(graph, prev_nodes[2].name());                
                 Matrix<T> bias = transpose_2d(bias_t);
                 curr_dimensions[1] = weights.shape()[1];
+                // retrieve scale value of bias vector
+                float s_b = find_scalar<float>(graph.initializer(), prev_nodes[2].input()[1]);
+                // retrieve s_y from following quant layer
+                auto quant_layer = get_next_node(curr_node, graph);
+                if (!quant_layer.has_value() || quant_layer.value().op_type() != "Quant") {
+                    throw ParsingException("Quant needs to be placed after Gemm!");
+                }
 
-                bool softmax = !get_next_node(curr_node, graph).has_value();
-                Dense<T> dense(weights, bias, softmax, batching, curr_dimensions[1]);
-                layers.push_back(make_unique<Dense<T>>(dense));
+                float s_y = find_scalar<float>(graph.initializer(), quant_layer.value().input()[1]);
 
-                cout << "Dense(..., " << softmax << ", " << batching << ", " << curr_dimensions[1] << ")";
+                bool softmax = !get_next_node(quant_layer.value(), graph).has_value();
+                QuantDense<T> dense(weights, bias, softmax, batching, curr_dimensions[1], s_b, s_x, s_w, s_y);
+                layers.push_back(make_unique<QuantDense<T>>(dense));
+
+                cout << "QuantDense(..., " << softmax << ", " << batching << ", " << curr_dimensions[1] << ")";
+                // skip quant layer
+                curr_node = quant_layer.value();
             
             } else if (curr_node.op_type() == "Transpose") {
                 cout << "Transpose[Ignored]";
@@ -228,13 +265,16 @@ namespace {
                     quant_args.scale = raw_scale;
                     quant_args.zero_point = raw_offset;
                 } else {
-                    T offset = convert_data<float, T>(raw_offset);
-                    T inv_scale = convert_data<float, T>(1/raw_scale);
-                    
-                    Quant<T> quant(curr_dimensions, inv_scale, offset);
-                    layers.push_back(make_unique<Quant<T>>(quant));
+                    // This case currently will not occur
+                    // still there for legacy, but could be removed I guess
 
-                    cout << "Quant(" << inv_scale << ", " << offset << ")";
+                    //T offset = convert_data<float, T>(raw_offset);
+                    //T inv_scale = convert_data<float, T>(1/raw_scale);
+                    
+                    //Quant<T> quant(curr_dimensions, inv_scale, offset);
+                    //layers.push_back(make_unique<Quant<T>>(quant));
+
+                    //cout << "Quant(" << inv_scale << ", " << offset << ")";
                 }
 
             } else if (curr_node.op_type() == "Relu") {

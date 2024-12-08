@@ -84,6 +84,13 @@ public:
         return FPInt32(handle_overflow_32(tmp));    
     }
 
+    FPInt32 operator*(const float scale) const {
+        int64_t tmp = value;
+        tmp *= scale;
+
+        return FPInt32(handle_overflow_32(tmp));
+    }
+
     FPInt32& operator+=(const FPInt32& other) {
         int64_t new_val = static_cast<int64_t>(value) + static_cast<int64_t>(other.value);
         value = handle_overflow_32(new_val);

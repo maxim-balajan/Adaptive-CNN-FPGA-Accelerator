@@ -17,11 +17,14 @@
 using namespace std;
 using namespace ParsingUtil;
 
+#define quote(x) #x
+
 
 template<typename T>
 const Matrix<T>& inference(const vector<unique_ptr<Layer<T>>>& layers, const Matrix<T>& input) {
     const Matrix<T> *curr_input = &input;
     for (auto& layer : layers) {
+    //    std::cout<<typeid(layer).name()<<"\t"<< quote(layer) <<"\n";
         curr_input = &layer.get()->calc(*curr_input);
     }
 
@@ -199,9 +202,9 @@ int main(int argc, char* argv[]) {
         return 0;
     }
 
-//    using TargetType = FPInt32<10>;
+//  using TargetType = int64_t;
+   using TargetType = FPInt32<0>;
 //    using TargetType = FPInt8<0>;
-    using TargetType = float;
 
     run_benchmark<TargetType>(options);
 
