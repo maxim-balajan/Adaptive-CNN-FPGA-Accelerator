@@ -55,7 +55,7 @@ public:
         // calculate the postion of the matrix element
         size_t curr_position = 0;
         size_t curr_multiplier = 1;
-        int i =0;
+        int i = 0;
         for (const auto [index, dimension_size] : views::reverse(views::zip(positions, dimensions))) {
             if (index >= dimension_size) {
                 throw new exception();

@@ -91,13 +91,13 @@ namespace {
         return {};
     }
 
-    template<typename T>
-    vector<unique_ptr<Layer<T>>> initialize_quant_layers(onnx::ModelProto& model, unsigned int batching, QuantArguments& quant_args) {
+    template<typename T, typename ACC>
+    vector<unique_ptr<Layer<T, ACC>>> initialize_quant_layers(onnx::ModelProto& model, unsigned int batching, QuantArguments& quant_args) {
         auto graph = model.graph();
 
         cout << "Parsing layers..." << endl;
 
-        vector<unique_ptr<Layer<T>>> layers;
+        vector<unique_ptr<Layer<T, ACC>>> layers;
         vector<size_t> curr_dimensions = parse_dimensions(graph.input()[0]);
         curr_dimensions[0] = batching;
 
@@ -154,8 +154,8 @@ namespace {
                 curr_dimensions[2] -= filter_size - 1;
                 curr_dimensions[3] -= filter_size - 1;
 
-                QuantConvolution<T> convolution(kernel, bias, batching, curr_dimensions[2], curr_dimensions[3], curr_dimensions[1], s_b, s_x, s_w, s_y);
-                layers.push_back(make_unique<QuantConvolution<T>>(convolution));
+                QuantConvolution<T, ACC> convolution(kernel, bias, batching, curr_dimensions[2], curr_dimensions[3], curr_dimensions[1], s_b, s_x, s_w, s_y);
+                layers.push_back(make_unique<QuantConvolution<T, ACC>>(convolution));
 
                 cout << "QuantConv(..., ..., " << curr_dimensions[0] << ", " << curr_dimensions[1] << ", ";
                 cout << curr_dimensions[2] << ", " << curr_dimensions[3] << ")";
@@ -175,8 +175,8 @@ namespace {
                 curr_dimensions[2] /= pool_size;
                 curr_dimensions[3] /= pool_size;
 
-                MaxPooling<T> pooling(pool_size, batching, curr_dimensions[2], curr_dimensions[3], curr_dimensions[1]);
-                layers.push_back(make_unique<MaxPooling<T>>(pooling));
+                MaxPooling<T, ACC> pooling(pool_size, batching, curr_dimensions[2], curr_dimensions[3], curr_dimensions[1]);
+                layers.push_back(make_unique<MaxPooling<T, ACC>>(pooling));
 
                 cout << "MaxPooling(" << pool_size << ", " << batching << ", ";
                 cout << curr_dimensions[0] << ", " << curr_dimensions[1] << ")";
@@ -223,8 +223,8 @@ namespace {
                 float s_y = find_scalar<float>(graph.initializer(), quant_layer.value().input()[1]);
 
                 bool softmax = !get_next_node(quant_layer.value(), graph).has_value();
-                QuantDense<T> dense(weights, bias, softmax, batching, curr_dimensions[1], s_b, s_x, s_w, s_y);
-                layers.push_back(make_unique<QuantDense<T>>(dense));
+                QuantDense<T, ACC> dense(weights, bias, softmax, batching, curr_dimensions[1], s_b, s_x, s_w, s_y);
+                layers.push_back(make_unique<QuantDense<T, ACC>>(dense));
 
                 cout << "QuantDense(..., " << softmax << ", " << batching << ", " << curr_dimensions[1] << ")";
                 // skip quant layer
@@ -250,8 +250,8 @@ namespace {
                     curr_dimensions.push_back(batching);
                     curr_dimensions.push_back(size);
 
-                    Flatten<T> flatten(batching, size);
-                    layers.push_back(make_unique<Flatten<T>>(flatten));
+                    Flatten<T, ACC> flatten(batching, size);
+                    layers.push_back(make_unique<Flatten<T, ACC>>(flatten));
 
                     cout << "Flatten(" << batching << ", " << curr_dimensions[0] << ")";
                 }
@@ -271,8 +271,8 @@ namespace {
                     //T offset = convert_data<float, T>(raw_offset);
                     //T inv_scale = convert_data<float, T>(1/raw_scale);
                     
-                    //Quant<T> quant(curr_dimensions, inv_scale, offset);
-                    //layers.push_back(make_unique<Quant<T>>(quant));
+                    //Quant<T, ACC> quant(curr_dimensions, inv_scale, offset);
+                    //layers.push_back(make_unique<Quant<T, ACC>>(quant));
 
                     //cout << "Quant(" << inv_scale << ", " << offset << ")";
                 }
@@ -305,8 +305,8 @@ namespace {
     }
 }
 
-template<typename T>
-vector<unique_ptr<Layer<T>>> parse_quantized(const string &filename, unsigned int batching, QuantArguments& args) {
+template<typename T, typename ACC>
+vector<unique_ptr<Layer<T, ACC>>> parse_quantized(const string &filename, unsigned int batching, QuantArguments& args) {
     fstream file;
     file.open(filename, fstream::in | fstream::binary);
 
@@ -341,5 +341,5 @@ vector<unique_ptr<Layer<T>>> parse_quantized(const string &filename, unsigned in
         print_value_info_proto("Graph Output", x);
     }
 
-    return initialize_quant_layers<T>(model, batching, args);
+    return initialize_quant_layers<T, ACC>(model, batching, args);
 }

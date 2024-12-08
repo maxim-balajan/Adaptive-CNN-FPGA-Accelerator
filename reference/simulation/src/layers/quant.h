@@ -2,8 +2,8 @@
 #include "../data/matrix.h"
 #include "layer.h"
 
-template<typename T>
-class Quant: public Layer<T> {
+template<typename T, typename ACC>
+class Quant: public Layer<T, ACC> {
 private:
     Matrix<T> output_buffer;
     T zero_point;

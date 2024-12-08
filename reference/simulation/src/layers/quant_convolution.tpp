@@ -4,8 +4,8 @@
 
 #include <iostream>
 
-template<typename T>
-QuantConvolution<T>::QuantConvolution(Matrix<T> kernel, Matrix<T> bias, size_t batching, size_t x, size_t y, size_t output_channel, float s_b, float s_x, float s_w, float s_y)
+template<typename T, typename ACC>
+QuantConvolution<T, ACC>::QuantConvolution(Matrix<T> kernel, Matrix<T> bias, size_t batching, size_t x, size_t y, size_t output_channel, float s_b, float s_x, float s_w, float s_y)
     : kernel(kernel)
     , bias(bias)
     , output_buffer({batching, output_channel, x, y})
@@ -14,8 +14,18 @@ QuantConvolution<T>::QuantConvolution(Matrix<T> kernel, Matrix<T> bias, size_t b
     , s_w(s_w)
     , s_y(s_y) {}
 
-template<typename T>
-const Matrix<T>& QuantConvolution<T>::calc(const Matrix<T>& input) {
+namespace {
+    template<typename ACC>
+    inline ACC relu_ACC(ACC val) {
+        return val < convert_data<float, ACC>(0.0f) ? convert_data<float, ACC>(0.0f) : val;
+    }
+}
+
+template<typename T, typename ACC>
+const Matrix<T>& QuantConvolution<T, ACC>::calc(const Matrix<T>& input) {
+
+    Matrix<ACC> t(output_buffer.shape());
+
     for (size_t batch_id = 0; batch_id < input.shape()[0]; batch_id++)
     {
         // Compute Convolution of quantized input, quantized bias and quantized weight matrix
@@ -27,13 +37,13 @@ const Matrix<T>& QuantConvolution<T>::calc(const Matrix<T>& input) {
                 {
                     for (size_t y_id = 0; y_id <= input.shape()[3] - kernel.shape()[3]; y_id++)
                     {
-                        // This resets the value when a new convolution is performed with the same instance of Convolution<T>
+                        // This resets the value when a new convolution is performed with the same instance of Convolution
                         if (inch_id == 0)
                         {
-                            output_buffer[{batch_id, outch_id, x_id, y_id}] = convert_data<float, T>(0.0f);
+                            output_buffer[{batch_id, outch_id, x_id, y_id}] = convert_data<float, ACC>(0.0f);
                         }
 
-                        T tmp = convert_data<float, T>(0.0f);
+                        ACC tmp = convert_data<float, ACC>(0.0f);
                         // Do computation of kernel matrices over input matrices
                         for (size_t kx_id = 0; kx_id < kernel.shape()[2]; kx_id++)
                         {
@@ -43,7 +53,7 @@ const Matrix<T>& QuantConvolution<T>::calc(const Matrix<T>& input) {
                             }
                         }
 
-                        output_buffer[{batch_id, outch_id, x_id, y_id}] += tmp;
+                        t[{batch_id, outch_id, x_id, y_id}] += tmp;
                     }
                 }
             }
@@ -56,7 +66,7 @@ const Matrix<T>& QuantConvolution<T>::calc(const Matrix<T>& input) {
                 for (size_t outch_id = 0; outch_id < output_buffer.shape()[1]; outch_id++)
                 {
                     // Addition of Bias and Activation (ReLU)
-                    output_buffer[{batch_id, outch_id, x_id, y_id}] = relu(output_buffer[{batch_id, outch_id, x_id, y_id}] * ((s_x * s_w) / s_y) + bias[outch_id] * (s_b / s_y));
+                    output_buffer[{batch_id, outch_id, x_id, y_id}] = relu_ACC(t[{batch_id, outch_id, x_id, y_id}] * ((s_x * s_w) / s_y) + bias[outch_id] * (s_b / s_y));
                 }
             }
         }

@@ -3,11 +3,11 @@
 
 #include <ranges>
 
-template<typename T>
-Flatten<T>::Flatten(size_t batching, size_t x) : output_buffer({batching, x}) {}
+template<typename T, typename ACC>
+Flatten<T, ACC>::Flatten(size_t batching, size_t x) : output_buffer({batching, x}) {}
 
-template<typename T>
-const Matrix<T>& Flatten<T>::calc(const Matrix<T>& input) {
+template<typename T, typename ACC>
+const Matrix<T>& Flatten<T, ACC>::calc(const Matrix<T>& input) {
     assertm(output_buffer.total_size() == input.total_size(), "Dimensions must match");
 
     for (auto i = 0; i < output_buffer.total_size(); i++) {

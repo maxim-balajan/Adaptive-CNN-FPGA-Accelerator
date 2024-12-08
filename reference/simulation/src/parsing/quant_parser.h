@@ -10,7 +10,7 @@ struct QuantArguments {
     float zero_point;
 };
 
-template<typename T>
-tuple<vector<unique_ptr<Layer<T>>>, QuantArguments> parse_quantized(const string &filename, unsigned int batching = 1);
+template<typename T, typename ACC>
+tuple<vector<unique_ptr<Layer<T, ACC>>>, QuantArguments> parse_quantized(const string &filename, unsigned int batching = 1);
 
 #include "quant_parser.tpp"

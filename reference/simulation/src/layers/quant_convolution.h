@@ -4,8 +4,8 @@
 
 using namespace std;
 
-template<typename T>
-class QuantConvolution: public Layer<T> {
+template<typename T, typename ACC>
+class QuantConvolution: public Layer<T, ACC> {
 private:
     Matrix<T> output_buffer;
     const Matrix<T> kernel;

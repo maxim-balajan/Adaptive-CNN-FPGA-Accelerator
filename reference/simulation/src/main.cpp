@@ -13,15 +13,16 @@
 #include "util.h"
 
 #include "data/matrix_view.h"
+#include "assert.h"
 
 using namespace std;
 using namespace ParsingUtil;
 
-#define quote(x) #x
+//#define quote(x) #x
 
 
-template<typename T>
-const Matrix<T>& inference(const vector<unique_ptr<Layer<T>>>& layers, const Matrix<T>& input) {
+template<typename T, typename ACC>
+const Matrix<T>& inference(const vector<unique_ptr<Layer<T, ACC>>>& layers, const Matrix<T>& input) {
     const Matrix<T> *curr_input = &input;
     for (auto& layer : layers) {
     //    std::cout<<typeid(layer).name()<<"\t"<< quote(layer) <<"\n";
@@ -36,8 +37,8 @@ struct InferenceStats {
     unsigned int correct;
 };
 
-template<typename T>
-InferenceStats test_inference(const vector<unique_ptr<Layer<T>>>& layers, const Matrix<T>& input, const Matrix<T>& excepted_output, bool verbose) {
+template<typename T, typename ACC>
+InferenceStats test_inference(const vector<unique_ptr<Layer<T, ACC>>>& layers, const Matrix<T>& input, const Matrix<T>& excepted_output, bool verbose) {
     if (verbose) {
         cout << "Input" << input << endl;
     }
@@ -80,7 +81,7 @@ struct RunBenchmarkOptions {
     int batching;
 };
 
-template<typename TargetType>
+template<typename TargetType, typename AccumulatorType>
 int run_benchmark(RunBenchmarkOptions options) {
 
     auto & [ verbose, image_count, batching ] = options;
@@ -91,7 +92,7 @@ int run_benchmark(RunBenchmarkOptions options) {
         -1, // scale
         -1  // zero_point
     };
-    auto layers = parse_quantized<TargetType>("../../training/Lenet_qonnx.onnx", batching, quant_args);
+    auto layers = parse_quantized<TargetType, AccumulatorType>("../../training/Lenet_qonnx.onnx", batching, quant_args);
     assert(quant_args.scale != -1);
     assert(quant_args.zero_point != -1);
 
@@ -130,7 +131,7 @@ int run_benchmark(RunBenchmarkOptions options) {
 
     int i = 0;
     do {
-        InferenceStats stats = test_inference<TargetType>(layers, input_data_view.get_current(), output_data_view.get_current(), verbose);
+        InferenceStats stats = test_inference<TargetType, AccumulatorType>(layers, input_data_view.get_current(), output_data_view.get_current(), verbose);
         total_stats.latency_ms += stats.latency_ms;
         total_stats.correct += stats.correct;
 
@@ -201,12 +202,11 @@ int main(int argc, char* argv[]) {
         print_help();
         return 0;
     }
+    // For now AccType and TargetType need to be the same! Remove assert when changed codebase!
+    using TargetType = FPInt32<0>;
+    using AccumulatorType = FPInt32<0>;
 
-//  using TargetType = int64_t;
-   using TargetType = FPInt32<0>;
-//    using TargetType = FPInt8<0>;
-
-    run_benchmark<TargetType>(options);
+    run_benchmark<TargetType, AccumulatorType>(options);
 
     return 0;
 }

@@ -1,8 +1,8 @@
 #include "quant_dense.h"
 #include "../parsing/data_converter.h"
 
-template<typename T>
-QuantDense<T>::QuantDense(Matrix<T> weights, Matrix<T> bias, bool enable_softmax, size_t batching, size_t x, float s_b, float s_x, float s_w, float s_y)
+template<typename T, typename ACC>
+QuantDense<T, ACC>::QuantDense(Matrix<T> weights, Matrix<T> bias, bool enable_softmax, size_t batching, size_t x, float s_b, float s_x, float s_w, float s_y)
     : weights(weights)
     , bias(bias)
     , enable_softmax(enable_softmax)
@@ -13,14 +13,14 @@ QuantDense<T>::QuantDense(Matrix<T> weights, Matrix<T> bias, bool enable_softmax
     , s_y(s_y) {}
 
 
-template<typename T>
-const Matrix<T>& QuantDense<T>::calc(const Matrix<T>& input)
+template<typename T, typename ACC>
+const Matrix<T>& QuantDense<T, ACC>::calc(const Matrix<T>& input)
 {
     for (size_t batch_id = 0; batch_id < input.shape()[0]; batch_id++)
     {
         for (size_t wy_id = 0; wy_id < weights.shape()[1]; wy_id++)
         {
-            T tmp = convert_data<float, T>(0.0f);
+            ACC tmp = convert_data<float, ACC>(0.0f);
 
             for (size_t x_id = 0; x_id < input.shape()[1]; x_id++)
             {

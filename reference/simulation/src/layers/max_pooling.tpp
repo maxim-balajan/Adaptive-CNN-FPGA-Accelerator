@@ -3,11 +3,11 @@
 #include <iostream>
 #include <algorithm>
 
-template<typename T>
-MaxPooling<T>::MaxPooling(size_t pooling_size, size_t batching, size_t x, size_t y, size_t output_channel) : pooling_size(pooling_size), output_buffer({batching, output_channel, x, y}) {}
+template<typename T, typename ACC>
+MaxPooling<T, ACC>::MaxPooling(size_t pooling_size, size_t batching, size_t x, size_t y, size_t output_channel) : pooling_size(pooling_size), output_buffer({batching, output_channel, x, y}) {}
 
-template<typename T>
-const Matrix<T>& MaxPooling<T>::calc(const Matrix<T>& input)
+template<typename T, typename ACC>
+const Matrix<T>& MaxPooling<T, ACC>::calc(const Matrix<T>& input)
 {
     for (size_t batch_id = 0; batch_id < input.shape()[0]; batch_id++)
     {

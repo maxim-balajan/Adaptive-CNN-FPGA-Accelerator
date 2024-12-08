@@ -1,8 +1,8 @@
 #include "dense.h"
 #include "../parsing/data_converter.h"
 
-template<typename T>
-Dense<T>::Dense(Matrix<T> weights, Matrix<T> bias, bool enable_softmax, size_t batching, size_t x)
+template<typename T, typename ACC>
+Dense<T, ACC>::Dense(Matrix<T> weights, Matrix<T> bias, bool enable_softmax, size_t batching, size_t x)
     : weights(weights)
     , bias(bias)
     , enable_softmax(enable_softmax)
@@ -36,8 +36,8 @@ namespace {
     }
 }
 
-template<typename T>
-const Matrix<T>& Dense<T>::calc(const Matrix<T>& input)
+template<typename T, typename ACC>
+const Matrix<T>& Dense<T, ACC>::calc(const Matrix<T>& input)
 {
     for (size_t batch_id = 0; batch_id < input.shape()[0]; batch_id++)
     {

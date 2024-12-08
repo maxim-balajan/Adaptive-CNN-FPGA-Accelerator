@@ -21,13 +21,13 @@ using namespace std;
 using namespace ParsingUtil;
 
 namespace {
-    template<typename T>
-    vector<unique_ptr<Layer<T>>> initialize_layers(onnx::ModelProto& model, unsigned int batching) {
+    template<typename T, typename ACC>
+    vector<unique_ptr<Layer<T, ACC>>> initialize_layers(onnx::ModelProto& model, unsigned int batching) {
         auto graph = model.graph();
 
         cout << "Parsing layers..." << endl;
 
-        vector<unique_ptr<Layer<T>>> layers;
+        vector<unique_ptr<Layer<T, ACC>>> layers;
         vector<size_t> curr_dimensions = parse_dimensions(graph.input()[0]);
         for (int i = 0; i < graph.node().size(); i++) {
             auto curr_node = graph.node()[i];
@@ -60,8 +60,8 @@ namespace {
                     curr_dimensions[1] -= filter_size - 1;
                     curr_dimensions[2] = channel_count;
 
-                    Convolution<T> convolution(kernel, bias, batching, curr_dimensions[0], curr_dimensions[1], curr_dimensions[2]);
-                    layers.push_back(make_unique<Convolution<T>>(convolution));
+                    Convolution<T, ACC> convolution(kernel, bias, batching, curr_dimensions[0], curr_dimensions[1], curr_dimensions[2]);
+                    layers.push_back(make_unique<Convolution<T, ACC>>(convolution));
 
                     cout << "Convolution(..., ..., " << batching << ", " << curr_dimensions[0] << ", ";
                     cout << curr_dimensions[1] << ", " << curr_dimensions[2] << ")";
@@ -84,8 +84,8 @@ namespace {
                 curr_dimensions[0] /= pool_size;
                 curr_dimensions[1] /= pool_size;
 
-                MaxPooling<T> pooling(pool_size, batching, curr_dimensions[0], curr_dimensions[1], curr_dimensions[2]);
-                layers.push_back(make_unique<MaxPooling<T>>(pooling));
+                MaxPooling<T, ACC> pooling(pool_size, batching, curr_dimensions[0], curr_dimensions[1], curr_dimensions[2]);
+                layers.push_back(make_unique<MaxPooling<T, ACC>>(pooling));
 
                 cout << "MaxPooling(" << pool_size << ", " << batching << ", ";
                 cout << curr_dimensions[0] << ", " << curr_dimensions[1] << ")";
@@ -122,8 +122,8 @@ namespace {
                     
                     curr_dimensions[0] = weights.shape()[1];
 
-                    Dense<T> dense(weights, bias, softmax, batching, curr_dimensions[0]);
-                    layers.push_back(make_unique<Dense<T>>(dense));
+                    Dense<T, ACC> dense(weights, bias, softmax, batching, curr_dimensions[0]);
+                    layers.push_back(make_unique<Dense<T, ACC>>(dense));
 
                     cout << "Dense(..., " << softmax << ", " << batching << ", " << curr_dimensions[0] << ")";
                 } else {
@@ -147,8 +147,8 @@ namespace {
                     curr_dimensions.clear();
                     curr_dimensions.push_back(size);
 
-                    Flatten<T> flatten(batching, size);
-                    layers.push_back(make_unique<Flatten<T>>(flatten));
+                    Flatten<T, ACC> flatten(batching, size);
+                    layers.push_back(make_unique<Flatten<T, ACC>>(flatten));
 
                     cout << "Flatten(" << batching << ", " << curr_dimensions[0] << ")";
                 }
@@ -173,8 +173,8 @@ namespace {
     }
 }
 
-template<typename T>
-vector<unique_ptr<Layer<T>>> parse(const string &filename, unsigned int batching) {
+template<typename T, typename ACC>
+vector<unique_ptr<Layer<T, ACC>>> parse(const string &filename, unsigned int batching) {
     fstream file;
     file.open(filename, fstream::in | fstream::binary);
 
@@ -209,5 +209,5 @@ vector<unique_ptr<Layer<T>>> parse(const string &filename, unsigned int batching
         print_value_info_proto("Graph Output", x);
     }
 
-    return initialize_layers<T>(model, batching);
+    return initialize_layers<T, ACC>(model, batching);
 }

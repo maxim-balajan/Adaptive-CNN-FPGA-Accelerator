@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../data/matrix.h"
-template<typename T>
+template<typename T, typename ACC>
 class Layer {
 public:
     virtual ~Layer() {}

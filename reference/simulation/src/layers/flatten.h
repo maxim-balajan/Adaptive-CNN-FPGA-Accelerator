@@ -4,8 +4,8 @@
 
 using namespace std;
 
-template<typename T>
-class Flatten: public Layer<T> {
+template<typename T, typename ACC>
+class Flatten: public Layer<T, ACC> {
 private:
     Matrix<T> output_buffer;
 

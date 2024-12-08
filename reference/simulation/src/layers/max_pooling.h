@@ -4,8 +4,8 @@
 
 using namespace std;
 
-template<typename T>
-class MaxPooling: public Layer<T> {
+template<typename T, typename ACC>
+class MaxPooling: public Layer<T, ACC> {
 private:
     Matrix<T> output_buffer;
     size_t pooling_size;

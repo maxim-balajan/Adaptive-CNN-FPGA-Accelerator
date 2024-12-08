@@ -4,8 +4,8 @@
 
 #include <iostream>
 
-template<typename T>
-Convolution<T>::Convolution(Matrix<T> kernel, Matrix<T> bias, size_t batching, size_t x, size_t y, size_t output_channel)
+template<typename T, typename ACC>
+Convolution<T, ACC>::Convolution(Matrix<T> kernel, Matrix<T> bias, size_t batching, size_t x, size_t y, size_t output_channel)
     : kernel(kernel)
     , bias(bias)
     , output_buffer({batching, output_channel, x, y}) {}
@@ -17,8 +17,8 @@ namespace {
     }
 }
 
-template<typename T>
-const Matrix<T>& Convolution<T>::calc(const Matrix<T>& input) {
+template<typename T, typename ACC>
+const Matrix<T>& Convolution<T, ACC>::calc(const Matrix<T>& input) {
     for (size_t batch_id = 0; batch_id < input.shape()[0]; batch_id++)
     {
         for (size_t inch_id = 0; inch_id < input.shape()[1]; inch_id++)
