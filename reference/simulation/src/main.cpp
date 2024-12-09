@@ -125,7 +125,9 @@ int run_benchmark(RunBenchmarkOptions options) {
         .latency_ms = 0,
         .correct = 0
     };
+    // Print doubles with two subdigits
     std::cout << std::setprecision(2) << std::fixed;
+    
     int i = 0;
     do {
         InferenceStats stats = test_inference<TargetType, AccumulatorType>(layers, input_data_view.get_current(), output_data_view.get_current(), verbose);
@@ -152,7 +154,8 @@ int run_benchmark(RunBenchmarkOptions options) {
     cout << "--- Result ---\n";
     cout << "Total inference duration: " << ((1.0*total_stats.latency_ms)/1000) << "s\n";
     cout << "Avg inference duration: " << ((1.0*total_stats.latency_ms)/image_count) << "ms\n";
-    cout << "Avg accuracy: " << ((100 * total_stats.correct)/image_count) << "%" << endl;
+    cout << "Total misses: " << image_count - total_stats.correct << " of " << image_count << " images" << endl;
+    cout << "Avg accuracy: " << ((100 * ((double) total_stats.correct))/image_count) << "%" << endl;
 
     return 0;
 }
