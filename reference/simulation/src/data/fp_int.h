@@ -21,8 +21,10 @@ private:
 
     static T handle_overflow(int64_t val) {
         if (val > MAX_VAL) {
+            // cout << "overflow max" << endl;
             return MAX_VAL;
         } else if (val < MIN_VAL) {
+            // cout << "overflow min" << endl;
             return MIN_VAL;
         } else {
             return static_cast<T>(val);
@@ -30,8 +32,10 @@ private:
     }
     static T handle_overflow_double(double val) {
         if (val > MAX_VAL) {
+            // cout << "overflow max" << endl;
             return MAX_VAL;
         } else if (val < MIN_VAL) {
+            // cout << "overflow min" << endl;
             return MIN_VAL;
         } else {
             return static_cast<T>(val);
@@ -39,8 +43,10 @@ private:
     }
     static T handle_overflow_64(int64_t val) {
         if (val > MAX_VAL) {
+            // cout << "overflow max" << endl;
             return MAX_VAL;
         } else if (val < MIN_VAL) {
+            // cout << "overflow min" << endl;
             return MIN_VAL;
         } else {
             return static_cast<T>(val);
@@ -53,14 +59,14 @@ public:
     FPInt(float input): FPInt(static_cast<double>(input)) {}
 
     FPInt(double input) {
-        ACC_T multiplier = static_cast<ACC_T>(1) << POINT_POS;
+        int64_t multiplier = static_cast<int64_t>(1) << POINT_POS;
         input *= multiplier;
 
         value = handle_overflow_double(input);
     }
 
     FPInt(int64_t input) {
-        ACC_T multiplier = static_cast<ACC_T>(1) << POINT_POS;
+        int64_t multiplier = static_cast<int64_t>(1) << POINT_POS;
         input *= multiplier;
 
         value = handle_overflow_64(input);
@@ -87,7 +93,9 @@ public:
 
     FPInt operator*(const float scale) const {
         ACC_T tmp = value;
-        tmp *= scale;
+        int64_t multiplier = static_cast<int64_t>(1) << POINT_POS;
+
+        tmp *= (scale * multiplier);
 
         return FPInt(handle_overflow(tmp));
     }

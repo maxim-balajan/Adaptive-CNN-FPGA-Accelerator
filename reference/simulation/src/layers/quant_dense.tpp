@@ -24,7 +24,7 @@ const Matrix<T>& QuantDense<T, ACC>::calc(const Matrix<T>& input)
 
             for (size_t x_id = 0; x_id < input.shape()[1]; x_id++)
             {
-                tmp += convert_data<T, ACC>(weights[{x_id, wy_id}] * input[{batch_id, x_id}]);
+                tmp += convert_data<T, ACC>(weights[{x_id, wy_id}]) * convert_data<T, ACC>(input[{batch_id, x_id}]);
             }
 
             ACC res = tmp * ((s_x * s_w) / s_y) + convert_data<T, ACC>(bias[{wy_id}]) * (s_b / s_y);

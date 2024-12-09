@@ -43,7 +43,7 @@ const Matrix<T>& QuantConvolution<T, ACC>::calc(const Matrix<T>& input) {
                         {
                             for (size_t ky_id = 0; ky_id < kernel.shape()[3]; ky_id++)
                             {
-                                tmp += convert_data<T, ACC>(input[{batch_id, inch_id, x_id + kx_id, y_id + ky_id}] * kernel[{outch_id, inch_id, kx_id, ky_id}]);
+                                tmp += convert_data<T, ACC>(input[{batch_id, inch_id, x_id + kx_id, y_id + ky_id}]) * convert_data<T, ACC>(kernel[{outch_id, inch_id, kx_id, ky_id}]);
                             }
                         }
 
