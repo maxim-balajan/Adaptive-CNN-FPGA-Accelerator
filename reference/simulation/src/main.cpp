@@ -125,7 +125,7 @@ int run_benchmark(RunBenchmarkOptions options) {
         .latency_ms = 0,
         .correct = 0
     };
-
+    std::cout << std::setprecision(2) << std::fixed;
     int i = 0;
     do {
         InferenceStats stats = test_inference<TargetType, AccumulatorType>(layers, input_data_view.get_current(), output_data_view.get_current(), verbose);
@@ -139,7 +139,7 @@ int run_benchmark(RunBenchmarkOptions options) {
         }
         cout << " completed in " << stats.latency_ms << "ms!";
 
-        cout << " (current accuracy: " << ((100 * total_stats.correct)/(i * batching)) << "%)" << endl;
+        cout << " (current accuracy: " << ((100 * ((double) total_stats.correct))/(i * batching)) << "%)" << endl;
     
 
         if (i * batching >= image_count) {
