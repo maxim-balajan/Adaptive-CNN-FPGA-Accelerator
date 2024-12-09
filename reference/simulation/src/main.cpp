@@ -18,9 +18,6 @@
 using namespace std;
 using namespace ParsingUtil;
 
-//#define quote(x) #x
-
-
 template<typename T, typename ACC>
 const Matrix<T>& inference(const vector<unique_ptr<Layer<T, ACC>>>& layers, const Matrix<T>& input) {
     const Matrix<T> *curr_input = &input;
