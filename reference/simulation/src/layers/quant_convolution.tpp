@@ -43,7 +43,7 @@ const Matrix<T>& QuantConvolution<T, ACC>::calc(const Matrix<T>& input) {
                         {
                             for (size_t ky_id = 0; ky_id < kernel.shape()[3]; ky_id++)
                             {
-                                tmp += input[{batch_id, inch_id, x_id + kx_id, y_id + ky_id}] * kernel[{outch_id, inch_id, kx_id, ky_id}];
+                                tmp += convert_data<T, ACC>(input[{batch_id, inch_id, x_id + kx_id, y_id + ky_id}] * kernel[{outch_id, inch_id, kx_id, ky_id}]);
                             }
                         }
 
@@ -59,8 +59,10 @@ const Matrix<T>& QuantConvolution<T, ACC>::calc(const Matrix<T>& input) {
             {
                 for (size_t outch_id = 0; outch_id < output_buffer.shape()[1]; outch_id++)
                 {
+                    ACC res = relu_ACC(t[{batch_id, outch_id, x_id, y_id}] * ((s_x * s_w) / s_y) + convert_data<T, ACC>(bias[outch_id]) * (s_b / s_y));
+
                     // Addition of Bias and Activation (ReLU)
-                    output_buffer[{batch_id, outch_id, x_id, y_id}] = relu_ACC(t[{batch_id, outch_id, x_id, y_id}] * ((s_x * s_w) / s_y) + bias[outch_id] * (s_b / s_y));
+                    output_buffer[{batch_id, outch_id, x_id, y_id}] = convert_data<ACC, T>(res);
                 }
             }
         }

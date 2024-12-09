@@ -1,5 +1,5 @@
 #include <iostream>
-#include "../src/data/fp_int32.h"
+#include "../src/data/fp_int.h"
 
 int main() {
     FPInt32<20> fp1(0.00021);

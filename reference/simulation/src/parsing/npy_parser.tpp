@@ -3,6 +3,7 @@
 #include "../data/matrix.h"
 #include "data_converter.h"
 #include "util.h"
+#include "quant_parser.h"
 
 using namespace std;
 

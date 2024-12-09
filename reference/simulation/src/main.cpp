@@ -36,9 +36,6 @@ struct InferenceStats {
 
 template<typename T, typename ACC>
 InferenceStats test_inference(const vector<unique_ptr<Layer<T, ACC>>>& layers, const Matrix<T>& input, const Matrix<T>& excepted_output, bool verbose) {
-    if (verbose) {
-        cout << "Input" << input << endl;
-    }
 
     chrono::steady_clock::time_point begin = chrono::steady_clock::now();
 
@@ -202,10 +199,9 @@ int main(int argc, char* argv[]) {
         print_help();
         return 0;
     }
-    // For now AccType and TargetType need to be the same if special type is used!
-    // Currently only int16_t (or larger) works for TargetType for what ever reason
-    using TargetType = int16_t;
-    using AccumulatorType = int32_t;
+
+    using TargetType = FPInt8<0>;
+    using AccumulatorType = FPInt16<0>;
 
     run_benchmark<TargetType, AccumulatorType>(options);
 
