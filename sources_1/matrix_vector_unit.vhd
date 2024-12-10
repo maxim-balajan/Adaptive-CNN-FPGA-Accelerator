@@ -8,7 +8,7 @@ entity matrix_vector_unit is
 	generic (
 		-- weight_width == input_height
 		weight_width  : integer := 1024;
-		weight_height : integer := 784;
+		weight_height : integer := 400;
 		vector_length : integer := 8
 	);
 	port (
@@ -112,13 +112,25 @@ begin
 	end generate MAC_GENERATION;
 
 	-- This process is necessary to get vector_length-long slices of s_patrial_results
-	-- Maybe there is a smater way to do this but I dont know how
+	-- It also clips the value in order to correctly deal with overflows
+	-- Maybe there is a smarter way to do this but I dont know how
 	MAPPING_PROC : process (s_partial_results) is
+
+		variable tmp : signed(vector_length - 1 downto 0);
+
 	begin
 
 		for i in s_partial_results'range loop
 
-			s_results(i) <= s_partial_results(i)(vector_length - 1 downto 0);
+			if signed(s_partial_results(i)(vector_length - 1 downto 0)) > 127 then
+				tmp := to_signed(127, tmp'length);
+			elsif signed(s_partial_results(i)(vector_length - 1 downto 0)) < -128 then
+				tmp := to_signed(-128, tmp'length);
+			else
+				tmp := signed(s_partial_results(i)(vector_length - 1 downto 0));
+			end if;
+
+			s_results(i) <= std_logic_vector(tmp);
 
 		end loop;
 
