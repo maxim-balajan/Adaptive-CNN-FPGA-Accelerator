@@ -220,4 +220,7 @@ template<int8_t POINT_POS>
 using FPInt16 = FPInt<POINT_POS, int16_t, int32_t, INT16_MIN, INT16_MAX>;
 
 template<int8_t POINT_POS>
+using FPInt24 = FPInt<POINT_POS, int32_t, int32_t, -8388608, 8388607>;
+
+template<int8_t POINT_POS>
 using FPInt32 = FPInt<POINT_POS, int32_t, int64_t, INT32_MIN, INT32_MAX>;

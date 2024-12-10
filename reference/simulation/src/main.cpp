@@ -149,6 +149,7 @@ int run_benchmark(RunBenchmarkOptions options) {
     cout << "Inference finished!\n";
     cout << "\n";
     cout << "--- Result ---\n";
+    cout << "Accumulator-Type: FPInt24<0>" << endl;
     cout << "Total inference duration: " << ((1.0*total_stats.latency_ms)/1000) << "s\n";
     cout << "Avg inference duration: " << ((1.0*total_stats.latency_ms)/image_count) << "ms\n";
     cout << "Total misses: " << image_count - total_stats.correct << " of " << image_count << " images" << endl;
@@ -201,7 +202,7 @@ int main(int argc, char* argv[]) {
     }
 
     using TargetType = FPInt8<0>;
-    using AccumulatorType = FPInt16<0>;
+    using AccumulatorType = FPInt24<0>;
 
     run_benchmark<TargetType, AccumulatorType>(options);
 
