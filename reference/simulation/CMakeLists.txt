@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.20.0)
 project(simulation)
 
 set(CMAKE_CXX_STANDARD 23)
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++23 -O3")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++23 -O3")
 
 add_executable(simulation ${SOURCE_FILES})
 add_executable(test ${SOURCES})
