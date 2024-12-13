@@ -132,13 +132,13 @@ int run_benchmark(RunBenchmarkOptions options) {
         total_stats.correct += stats.correct;
 
         i++;
-        cout << "[" << ((i * batching * 100) / image_count) << "%] Inference of " << batching << " image";
+        cout << "[" << (((double) (i * batching * 100)) / image_count) << "%] Inference of " << batching << " image";
         if (batching > 1) {
             cout << "s";
         }
         cout << " completed in " << stats.latency_ms << "ms!";
 
-        cout << " (current accuracy: " << ((100 * ((double) total_stats.correct))/(i * batching)) << "%)" << endl;
+        cout << " (current accuracy: " << ((100 * ((double) total_stats.correct))/(i * batching)) << "%)" << "\r";
     
 
         if (i * batching >= image_count) {
@@ -146,7 +146,7 @@ int run_benchmark(RunBenchmarkOptions options) {
         }
     } while(input_data_view.next() && output_data_view.next());
 
-    cout << "Inference finished!\n";
+    cout << endl << "Inference finished!\n";
     cout << "\n";
     cout << "--- Result ---\n";
     cout << "Accumulator-Type: FPInt24<0>" << endl;
