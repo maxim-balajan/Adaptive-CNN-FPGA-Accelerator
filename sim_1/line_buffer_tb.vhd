@@ -47,7 +47,7 @@ begin
 	TB : process is
 	begin
 
-		wait for 80 ns;
+		wait for 90 ns;
 		finish;
 
 	end process TB;

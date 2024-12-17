@@ -34,12 +34,11 @@ architecture rtl of bram_fifo is
 	signal s_empty : std_logic;
 	signal s_full  : std_logic;
 
-	signal s_last_read  : std_logic;
 	signal s_last_write : std_logic;
 
 begin
 
-	s_empty <= std_logic_vector(s_read_pointer) ?= std_logic_vector(s_write_pointer) and s_last_read and not s_last_write;
+	s_empty <= std_logic_vector(s_read_pointer) ?= std_logic_vector(s_write_pointer) and not s_last_write;
 	s_full  <= std_logic_vector(s_read_pointer) ?= std_logic_vector(s_write_pointer) and s_last_write;
 
 	empty <= s_empty;
@@ -52,14 +51,11 @@ begin
 			if reset = '1' then
 				s_read_pointer  <= (others => '0');
 				s_write_pointer <= (others => '0');
-				s_last_read     <= '0';
 				s_last_write    <= '0';
 			else
-				-- Reset of last action values and put them to 0 for now
-				s_last_read <= '0';
+				-- Reset of last write value and put on it 0 for now
 				s_last_write <= '0';
 				if rd_en = '1' and s_empty = '0' then
-					s_last_read <= '1';
 					-- Read from memory
 					dout <= RAM(to_integer(s_read_pointer));
 
@@ -80,9 +76,8 @@ begin
 						s_write_pointer <= (others => '0');
 					end if;
 				end if;
-				-- If neither read nor wright was performed, hold old state and overwrite initial reset statements
+				-- If neither read nor wright was performed, hold old state and overwrite initial reset statement
 				if not (rd_en = '1' and s_empty = '0') and not (wr_en = '1' and (s_full = '0' or rd_en = '1')) then
-					s_last_read <= s_last_read;
 					s_last_write <= s_last_write;
 				end if;
 			end if;
