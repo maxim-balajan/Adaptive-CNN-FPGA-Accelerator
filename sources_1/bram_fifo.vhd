@@ -39,7 +39,7 @@ architecture rtl of bram_fifo is
 
 begin
 
-	s_empty <= std_logic_vector(s_read_pointer) ?= std_logic_vector(s_write_pointer) and not s_last_write;
+	s_empty <= std_logic_vector(s_read_pointer) ?= std_logic_vector(s_write_pointer) and s_last_read and not s_last_write;
 	s_full  <= std_logic_vector(s_read_pointer) ?= std_logic_vector(s_write_pointer) and s_last_write;
 
 	empty <= s_empty;
@@ -55,6 +55,9 @@ begin
 				s_last_read     <= '0';
 				s_last_write    <= '0';
 			else
+				-- Reset of last action values and put them to 0 for now
+				s_last_read <= '0';
+				s_last_write <= '0';
 				if rd_en = '1' and s_empty = '0' then
 					s_last_read <= '1';
 					-- Read from memory
@@ -76,6 +79,11 @@ begin
 					else
 						s_write_pointer <= (others => '0');
 					end if;
+				end if;
+				-- If neither read nor wright was performed, hold old state and overwrite initial reset statements
+				if not (rd_en = '1' and s_empty = '0') and not (wr_en = '1' and (s_full = '0' or rd_en = '1')) then
+					s_last_read <= s_last_read;
+					s_last_write <= s_last_write;
 				end if;
 			end if;
 		end if;
