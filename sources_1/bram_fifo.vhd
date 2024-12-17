@@ -35,6 +35,7 @@ architecture rtl of bram_fifo is
 	signal s_full  : std_logic;
 
 	signal s_last_write : std_logic;
+	signal s_dout       : std_logic_vector(vector_length - 1 downto 0);
 
 begin
 
@@ -44,6 +45,8 @@ begin
 	empty <= s_empty;
 	full  <= s_full;
 
+	dout <= s_dout;
+
 	process (clk, reset) is
 	begin
 
@@ -52,12 +55,13 @@ begin
 				s_read_pointer  <= (others => '0');
 				s_write_pointer <= (others => '0');
 				s_last_write    <= '0';
+				s_dout          <= (others => '0');
 			else
 				-- Reset of last write value and put on it 0 for now
 				s_last_write <= '0';
 				if rd_en = '1' and s_empty = '0' then
 					-- Read from memory
-					dout <= RAM(to_integer(s_read_pointer));
+					s_dout <= RAM(to_integer(s_read_pointer));
 
 					if s_read_pointer /= depth - 1 then
 						s_read_pointer <= s_read_pointer + 1;
