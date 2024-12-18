@@ -116,7 +116,7 @@ int run_benchmark(RunBenchmarkOptions options) {
     MatrixView<TargetType> input_data_view(input_data, batching);
     MatrixView<TargetType> output_data_view(output_data, batching);
 
-    cout << "Starting RADL MINST Simulation with " << image_count << " images to process (batch_size=" << batching << ")..." << endl;
+    cout << "Starting RADL MNIST Simulation with " << image_count << " images to process (batch_size=" << batching << ")..." << endl;
 
     InferenceStats total_stats {
         .latency_ms = 0,
@@ -132,13 +132,23 @@ int run_benchmark(RunBenchmarkOptions options) {
         total_stats.correct += stats.correct;
 
         i++;
+        if (!options.verbose) {
+            cout << "\r";
+        }
+
         cout << "[" << (((double) (i * batching * 100)) / image_count) << "%] Inference of " << batching << " image";
         if (batching > 1) {
             cout << "s";
         }
         cout << " completed in " << stats.latency_ms << "ms!";
 
-        cout << " (current accuracy: " << ((100 * ((double) total_stats.correct))/(i * batching)) << "%)" << "\r";
+        cout << " (current accuracy: " << ((100 * ((double) total_stats.correct))/(i * batching)) << "%)";
+
+        if (options.verbose) {
+            cout << endl;
+        } else {
+            cout << flush;
+        }
     
 
         if (i * batching >= image_count) {
