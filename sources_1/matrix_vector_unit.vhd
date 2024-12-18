@@ -7,8 +7,8 @@ use work.libmatrix.all;
 entity matrix_vector_unit is
 	generic (
 		-- weight_width == input_height
-		weight_width  : integer := 1024;
-		weight_height : integer := 400;
+		weight_width  : integer := 400;
+		weight_height : integer := 120;
 		vector_length : integer := 8
 	);
 	port (

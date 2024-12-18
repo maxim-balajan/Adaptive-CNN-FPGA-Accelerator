@@ -13,9 +13,9 @@ architecture bench of kernel_slider_tb is
 	constant clk_period : time := 10 ns;
 	-- Generics
 	constant vector_length : integer := 8;
-	constant input_width   : integer := 5;
-	constant input_height  : integer := 5;
-	constant kernel_size   : integer := 3;
+	constant input_width   : integer := 10;
+	constant input_height  : integer := 10;
+	constant kernel_size   : integer := 5;
 	-- Ports
 	signal clk                      : std_logic := '0';
 	signal reset                    : std_logic;
@@ -48,7 +48,7 @@ begin
 	x : for j in 0 to input_height - 1 generate
 
 		y : for i in 0 to input_width - 1 generate
-			input_matrix(i)(j) <= std_logic_vector(to_unsigned(i + 5 * j + 1, input_matrix(i)(j)'length));
+			input_matrix(i)(j) <= std_logic_vector(to_unsigned(i + input_width * j + 1, input_matrix(i)(j)'length));
 		end generate y;
 
 	end generate x;
@@ -56,7 +56,7 @@ begin
 	TB : process is
 	begin
 
-		wait for 30 * clk_period;
+		wait for 300 * clk_period;
 		finish;
 
 	end process TB;
