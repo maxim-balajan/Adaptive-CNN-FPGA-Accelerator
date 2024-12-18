@@ -22,6 +22,12 @@ TO convert_data(FROM input) {
 }
 
 template<typename FROM, typename TO>
+requires IsWrapper<FROM>
+TO convert_data(FROM input) {
+    return static_cast<TO>(input.get_val());
+}
+
+template<typename FROM, typename TO>
 TO convert_data(FROM input) {
     return static_cast<TO>(input);
 }

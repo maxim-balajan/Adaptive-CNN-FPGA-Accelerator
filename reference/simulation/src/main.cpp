@@ -15,6 +15,8 @@
 #include "data/matrix_view.h"
 #include "assert.h"
 
+#include "data/int24.h"
+
 using namespace std;
 using namespace ParsingUtil;
 
@@ -22,8 +24,9 @@ template<typename T, typename ACC>
 const Matrix<T>& inference(const vector<unique_ptr<Layer<T, ACC>>>& layers, const Matrix<T>& input) {
     const Matrix<T> *curr_input = &input;
     for (auto& layer : layers) {
-    //    std::cout<<typeid(layer).name()<<"\t"<< quote(layer) <<"\n";
+        // std::cout<<typeid(layer).name()<<"\t"<< quote(layer) <<"\n";
         curr_input = &layer.get()->calc(*curr_input);
+        // std::cout << *curr_input << endl; 
     }
 
     return *curr_input;
@@ -124,7 +127,7 @@ int run_benchmark(RunBenchmarkOptions options) {
     };
     // Print doubles with two subdigits
     std::cout << std::setprecision(2) << std::fixed;
-    
+
     int i = 0;
     do {
         InferenceStats stats = test_inference<TargetType, AccumulatorType>(layers, input_data_view.get_current(), output_data_view.get_current(), verbose);
@@ -159,7 +162,7 @@ int run_benchmark(RunBenchmarkOptions options) {
     cout << endl << "Inference finished!\n";
     cout << "\n";
     cout << "--- Result ---\n";
-    cout << "Accumulator-Type: FPInt24<0>" << endl;
+    // cout << "Accumulator-Type: FPInt24<0>" << endl;
     cout << "Total inference duration: " << ((1.0*total_stats.latency_ms)/1000) << "s\n";
     cout << "Avg inference duration: " << ((1.0*total_stats.latency_ms)/image_count) << "ms\n";
     cout << "Total misses: " << image_count - total_stats.correct << " of " << image_count << " images" << endl;
@@ -211,8 +214,8 @@ int main(int argc, char* argv[]) {
         return 0;
     }
 
-    using TargetType = FPInt8<0>;
-    using AccumulatorType = FPInt24<0>;
+    using TargetType = int32_t;
+    using AccumulatorType = Int24;
 
     run_benchmark<TargetType, AccumulatorType>(options);
 
