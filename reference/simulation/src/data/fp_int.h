@@ -1,6 +1,7 @@
 #pragma once
 #include <cstdint>
 #include <iostream>
+#include "../assert.h"
 
 using namespace std;
 
@@ -91,6 +92,11 @@ public:
         return FPInt(handle_overflow(tmp));    
     }
 
+    FPInt operator/(const FPInt& other) const {
+        assert(POINT_POS == 0);
+        return FPInt(handle_overflow(value / other.value));    
+    }
+
     FPInt operator*(const float scale) const {
         ACC_T tmp = value;
         int64_t multiplier = static_cast<int64_t>(1) << POINT_POS;
@@ -98,6 +104,11 @@ public:
         tmp *= (scale * multiplier);
 
         return FPInt(handle_overflow(tmp));
+    }
+
+    FPInt operator/(const float scale) const {
+        assert(POINT_POS == 0);
+        return FPInt(handle_overflow(value / scale));    
     }
 
     FPInt& operator+=(const FPInt& other) {

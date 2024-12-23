@@ -214,8 +214,8 @@ int main(int argc, char* argv[]) {
         return 0;
     }
 
-    using TargetType = int32_t;
-    using AccumulatorType = Int24;
+    using TargetType = FPInt8<0>;
+    using AccumulatorType = FPInt24<0>;
 
     run_benchmark<TargetType, AccumulatorType>(options);
 
