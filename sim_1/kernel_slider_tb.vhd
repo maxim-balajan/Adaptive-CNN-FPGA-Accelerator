@@ -37,7 +37,7 @@ begin
 			clk                      => clk,
 			reset                    => reset,
 			input_matrix             => input_matrix,
-			kernel_comp              => kernel_comp,
+			kernel_complete          => kernel_comp,
 			kernel_en                => kernel_en,
 			kernel_activation_matrix => kernel_activation_matrix
 		);

@@ -15,7 +15,7 @@ entity kernel_slider is
 		clk                      : in std_logic;
 		reset                    : in std_logic;
 		input_matrix             : in matrix_2d(0 to input_width - 1)(0 to input_height - 1)(vector_length - 1 downto 0);
-		kernel_complete              : out std_logic;
+		kernel_complete          : out std_logic;
 		kernel_en                : out std_logic;
 		kernel_activation_matrix : out matrix_2d(0 to kernel_size - 1)(0 to kernel_size - 1)(vector_length - 1 downto 0)
 	);
@@ -34,8 +34,8 @@ architecture rtl of kernel_slider is
 	signal s_line_buffer_wr_en : std_logic_vector(0 to kernel_size - 1);
 
 	-- Helper signals to dertermine which kernels are valid and when computation needs to end
-	signal s_full_delay  : std_logic_vector(0 to kernel_size);
-	signal s_line_x      : unsigned(integer(ceil(log2(real(input_width)))) - 1 downto 0);
+	signal s_full_delay      : std_logic_vector(0 to kernel_size);
+	signal s_line_x          : unsigned(integer(ceil(log2(real(input_width)))) - 1 downto 0);
 	signal s_kernel_complete : std_logic;
 
 begin
@@ -50,7 +50,7 @@ begin
 				s_current_pixel        <= (others => '0');
 				s_line_buffer_wr_en(0) <= '0';
 				s_line_x               <= (others => '0');
-				s_kernel_complete          <= '0';
+				s_kernel_complete      <= '0';
 			else
 				-- Get current pixel
 				-- And if s_pixel_input_y is OOB, then finish computation
@@ -103,7 +103,8 @@ begin
 		LINE_BUFF : entity work.line_buffer
 			generic map (
 				vector_length => vector_length,
-				-- ung-bunga -1 to solve the timing problem (I don't think you can solve this differently with BRAM blocks and without considerable amount of HW)
+				-- ung-bunga -1 to solve the timing problem 
+				-- (I don't think you can solve this differently with BRAM blocks and without considerable amount of HW)
 				depth => input_width - 1
 			)
 			port map (
@@ -121,6 +122,6 @@ begin
 	-- Set outputs
 	kernel_activation_matrix <= s_kernel_matrix(s_kernel_matrix'low + 1 to s_kernel_matrix'high);
 	kernel_en                <= '1' when s_full_delay(s_full_delay'high) = '1' and (s_line_x < input_width - kernel_size + 1) else '0';
-	kernel_complete              <= s_kernel_complete;
+	kernel_complete          <= s_kernel_complete;
 
 end architecture rtl;
