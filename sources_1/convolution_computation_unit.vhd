@@ -12,8 +12,8 @@ entity convolution_computation_unit is
 	port (
 		clk               : in std_logic;
 		reset             : in std_logic;
-		activation_matrix : in matrix_2d(0 to kernel_size - 1)(0 to kernel_size - 1)(vector_length - 1 downto 0);
-		weight_matrix     : in matrix_2d(0 to kernel_size - 1)(0 to kernel_size - 1)(vector_length - 1 downto 0);
+		activation_matrix : in matrix_2d(0 to kernel_size - 1)(0 to kernel_size - 1)(3 * vector_length - 1 downto 0);
+		weight_matrix     : in matrix_2d(0 to kernel_size - 1)(0 to kernel_size - 1)(3 * vector_length - 1 downto 0);
 		kernel_en         : in std_logic;
 		kernel_complete   : in std_logic;
 		new_pixel         : out std_logic_vector(vector_length - 1 downto 0);
@@ -39,9 +39,10 @@ architecture rtl of convolution_computation_unit is
 begin
 
 	-- Multiplication line that computes all the multiplications for the convolution
+	-- TODO: problems here with array sizes for what ever reason
 	MULT_GEN_1 : for i in activation_matrix'range generate
 
-		MULT_GEN_2 : for j in activation_matrix(activation_matrix'low)'range generate
+		MULT_GEN_2 : for j in activation_matrix(0)'range generate
 			s_multiplication_line(i * kernel_size + j) <= std_logic_vector(signed(activation_matrix(i)(j)) * signed(weight_matrix(i)(j)));
 		end generate MULT_GEN_2;
 
@@ -59,10 +60,10 @@ begin
 			port map (
 				clk                 => clk,
 				reset               => reset,
-				input_matrix        => s_pipeline_signals(i)(0 to integer(ceil(real(kernel_size ** 2) / real(2 ** i)))),
+				input_matrix        => s_pipeline_signals(i)(0 to integer(ceil(real(kernel_size ** 2) / real(2 ** i))) - 1),
 				kernel_en           => s_kernel_en_line(i),
 				kernel_complete     => s_kernel_complete_line(i),
-				output_matrix       => s_pipeline_signals(i + 1)(0 to integer(ceil(real(kernel_size ** 2) / real(2 ** (i + 1))))),
+				output_matrix       => s_pipeline_signals(i + 1)(0 to integer(ceil(real(kernel_size ** 2) / real(2 ** (i + 1)))) - 1),
 				kernel_en_del       => s_kernel_en_line(i + 1),
 				kernel_complete_del => s_kernel_complete_line(i + 1)
 			);

@@ -15,7 +15,7 @@ entity convolution_computation_step is
 		input_matrix        : in matrix_1d(0 to input_width - 1)(vector_length - 1 downto 0);
 		kernel_en           : in std_logic;
 		kernel_complete     : in std_logic;
-		output_matrix       : out matrix_1d(0 to integer(ceil(real(input_width) / 2.)) - 1)(vector_length - 1 downto 0);
+		output_matrix       : out matrix_1d(0 to integer(ceil(real(input_width) / 2.0)) - 1)(vector_length - 1 downto 0);
 		kernel_en_del       : out std_logic;
 		kernel_complete_del : out std_logic
 	);
@@ -25,7 +25,7 @@ architecture rtl of convolution_computation_step is
 
 	-- increase s_input_matrix size by 1 in order to deal with uneven vector lengths correctly and to make HW more maintainable
 	signal s_input_matrix    : matrix_1d(0 to input_width)(vector_length - 1 downto 0);
-	signal s_output_matrix   : matrix_1d(0 to integer(ceil(real(input_width) / 2.)) - 1)(vector_length - 1 downto 0);
+	signal s_output_matrix   : matrix_1d(0 to integer(ceil(real(input_width) / 2.0)) - 1)(vector_length - 1 downto 0);
 	signal s_kernel_en_del   : std_logic;
 	signal s_kernel_comp_del : std_logic;
 
