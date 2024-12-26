@@ -103,7 +103,7 @@ begin
 		LINE_BUFF : entity work.line_buffer
 			generic map (
 				vector_length => vector_length,
-				-- ung-bunga -1 to solve the timing problem 
+				-- ung-bunga -1 to solve the timing problem
 				-- (I don't think you can solve this differently with BRAM blocks and without considerable amount of HW)
 				depth => input_width - 1
 			)

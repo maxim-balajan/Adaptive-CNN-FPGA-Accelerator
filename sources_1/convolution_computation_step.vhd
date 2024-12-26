@@ -51,6 +51,7 @@ begin
 	-- This generates an extra adder for convolution steps with uneven input sizes.
 	-- This will result in extra HW but for our usecase this boils down to 3 adders per conv computation unit,
 	-- whilst making the code much more easily maintainable. But remember that this could be solved more efficiently!
+
 	MAP_GEN : for i in s_output_matrix'range generate
 
 		s_output_matrix(i) <= std_logic_vector(signed(s_input_matrix(2 * i)) + signed(s_input_matrix(2 * i + 1)));
