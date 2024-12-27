@@ -44,7 +44,6 @@ end entity max_pooling;
 
 architecture Behavioral of max_pooling is
 
-	signal s_intermediate_res : matrix_3d(0 to channels - 1)(0 to width - 1)(0 to height - 1)(number_width - 1 downto 0);
 	signal s_finished         : std_logic_vector(0 to channels * (width / kernel_size) * (height / kernel_size) - 1);
 	signal s_output           : matrix_3d(0 to channels - 1)(0 to width / kernel_size - 1)(0 to height / kernel_size - 1)(number_width - 1 downto 0);
 	signal s_en               : std_logic;

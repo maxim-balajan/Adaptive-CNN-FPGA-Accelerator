@@ -46,15 +46,17 @@ begin
 
 	clk               <= not clk after clk_period / 2;
 	reset             <= '1' after 0 ns, '0' after 10 ns;
-	activation_matrix <= (others => (others => (others => '1')));
-	weight_matrix     <= (others => (others => (others => '1')));
-	kernel_en         <= '1';
-	kernel_complete   <= '1';
+	activation_matrix <= (others => (others => (others => '1'))) after 0 ns, 
+	((x"01", x"02", x"03", x"04", x"05"), (x"01", x"02", x"03", x"04", x"05"), (x"01", x"02", x"03", x"04", x"05"), (x"01", x"02", x"03", x"04", x"05"), (x"01", x"02", x"03", x"04", x"05")) after 20 ns;
+	weight_matrix     <= ((x"01", x"02", x"03", x"FC", x"FB"), (x"01", x"02", x"03", x"FC", x"FB"), (x"01", x"02", x"03", x"FC", x"FB"), (x"01", x"02", x"03", x"FC", x"FB"), (x"01", x"02", x"03", x"FC", x"FB")) after 0 ns,
+	((x"FE", x"FF", x"FE", x"FF", x"05"), (x"FE", x"FF", x"FE", x"FF", x"05"), (x"FE", x"FF", x"FE", x"FF", x"05"), (x"01", x"02", x"03", x"04", x"05"), (x"01", x"02", x"03", x"04", x"05")) after 20 ns;
+	kernel_en         <= '1' after 0 ns, '0' after 20 ns,  '1' after 30 ns;
+	kernel_complete   <= '0' after 0 ns, '1' after 30 ns;
 
 	TB : process is
 	begin
 
-		wait for 10 * clk_period;
+		wait for 30 * clk_period;
 		finish;
 
 	end process TB;
