@@ -38,7 +38,7 @@ begin
 
 		if rising_edge(clk) then
 			if reset = '1' then
-				s_line_buffer_wr_en(0) <= '0';
+				s_line_buffer_wr_en(s_line_buffer_wr_en'low) <= '0';
 			else
 				-- Shift values through kernel window
 				s_kernel_matrix(s_kernel_matrix'low + 1 to s_kernel_matrix'high) <= s_kernel_matrix(s_kernel_matrix'low to s_kernel_matrix'high - 1);
