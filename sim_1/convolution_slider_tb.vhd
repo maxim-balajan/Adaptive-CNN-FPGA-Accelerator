@@ -4,10 +4,10 @@ use ieee.numeric_std.all;
 use work.libmatrix.all;
 use std.env.finish;
 
-entity kernel_slider_tb is
-end entity kernel_slider_tb;
+entity convolution_slider_tb is
+end entity convolution_slider_tb;
 
-architecture bench of kernel_slider_tb is
+architecture bench of convolution_slider_tb is
 
 	-- Clock period
 	constant clk_period : time := 10 ns;
@@ -26,7 +26,7 @@ architecture bench of kernel_slider_tb is
 
 begin
 
-	kernel_slider_inst : entity work.kernel_slider
+	conv_slider_inst : entity work.convolution_slider
 		generic map (
 			vector_length => vector_length,
 			input_width   => input_width,
