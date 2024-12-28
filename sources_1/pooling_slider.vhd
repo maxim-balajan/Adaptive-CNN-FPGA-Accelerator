@@ -28,9 +28,10 @@ end entity pooling_slider;
 
 architecture rtl of pooling_slider is
 
+	-- Image dimensions of input (in first convolution this would be 28x28)
 	constant c_old_image_width  : real := real(original_input_width - kernel_size + 1);
 	constant c_old_image_height : real := real(original_input_height - kernel_size + 1);
-
+	-- Image dimensions of output (in first convolution this would be 14x14)
 	constant c_new_image_width  : real := real(original_input_width - kernel_size + 1) / 2.0;
 	constant c_new_image_height : real := real(original_input_height - kernel_size + 1) / 2.0;
 
@@ -40,6 +41,7 @@ architecture rtl of pooling_slider is
 	-- pixel locations of output stream (in first convolution this would be 14x14)
 	signal s_pixel_output_x : unsigned(integer(ceil(log2(c_new_image_width))) - 1 downto 0);
 	signal s_pixel_output_y : unsigned(integer(ceil(log2(c_new_image_height))) downto 0);
+	
 	-- Current pixel to be pipelined
 	signal s_current_pixel : std_logic_vector(vector_length - 1 downto 0);
 
@@ -87,7 +89,7 @@ begin
 	KERNEL_SLIDER_INST : entity work.kernel_slider
 		generic map (
 			vector_length => vector_length,
-			input_width   => original_input_width - kernel_size + 1,
+			input_width   => integer(c_old_image_width),
 			kernel_size   => pooling_size
 		)
 		port map (
@@ -107,8 +109,8 @@ begin
 	             '0';
 
 	-- Set destination of new pooled value
-	s_pixel_output_x <= resize(shift_right(s_pixel_input_x, 1), pixel_x'length);
-	s_pixel_output_y <= resize(shift_right(s_pixel_input_y, 1), pixel_y'length);
+	s_pixel_output_x <= resize(shift_right(s_pixel_input_x, 1), s_pixel_output_x'length);
+	s_pixel_output_y <= resize(shift_right(s_pixel_input_y, 1), s_pixel_output_y'length);
 	pixel_x          <= std_logic_vector(s_pixel_output_x);
 	pixel_y          <= std_logic_vector(s_pixel_output_y);
 
