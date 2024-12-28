@@ -36,8 +36,8 @@ architecture rtl of convolution_slider is
 
 begin
 
-    -- This process computes the current pixel (provided by a regfile for example)
-    -- And also sets a few control signal wether the kernel provided is valid or if all pixels were processed
+	-- This process computes the current pixel (provided by a regfile for example)
+	-- And also sets a few control signal wether the kernel provided is valid or if all pixels were processed
 
 	GET_PIXEL_PROC : process (clk) is
 	begin
@@ -56,7 +56,7 @@ begin
 					s_pixel_input_y <= s_pixel_input_y;
 					s_current_pixel <= (others => '0');
 					-- set s_kernel_comp that needs to be delayed by one cycle before outputting
-					s_kernel_complete <= s_pixel_input_y ?= input_height;
+					s_kernel_complete <= '1';
 				else
 					s_current_pixel <= input_matrix(to_integer(s_pixel_input_x))(to_integer(s_pixel_input_y));
 					s_pixel_input_x <= s_pixel_input_x + 1;
@@ -79,7 +79,7 @@ begin
 
 	end process GET_PIXEL_PROC;
 
-    -- Instantiation of main component that gets all valid (and invalid) kernels
+	-- Instantiation of main component that gets all valid (and invalid) kernels
 
 	KERNEL_SLIDER_INST : entity work.kernel_slider
 		generic map (
@@ -90,12 +90,13 @@ begin
 		port map (
 			clk                      => clk,
 			reset                    => reset,
+			en                       => '1',
 			pixel_stream             => s_current_pixel,
 			init_complete            => s_init_complete,
 			kernel_activation_matrix => kernel_activation_matrix
 		);
 
-    -- These signals are inportant for the computation and pooling unit directly followed after this unit
+	-- These signals are important for the computation and pooling unit directly followed after this unit
 	kernel_en       <= '1' when s_init_complete = '1' and (s_line_x < input_width - kernel_size + 1) else '0';
 	kernel_complete <= s_kernel_complete;
 

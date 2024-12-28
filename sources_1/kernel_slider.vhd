@@ -13,6 +13,7 @@ entity kernel_slider is
 	port (
 		clk                      : in std_logic;
 		reset                    : in std_logic;
+		en                       : in std_logic;
 		pixel_stream             : in std_logic_vector(vector_length - 1 downto 0);
 		init_complete            : out std_logic;
 		kernel_activation_matrix : out matrix_2d(0 to kernel_size - 1)(0 to kernel_size - 1)(vector_length - 1 downto 0)
@@ -39,7 +40,7 @@ begin
 		if rising_edge(clk) then
 			if reset = '1' then
 				s_line_buffer_wr_en(s_line_buffer_wr_en'low) <= '0';
-			else
+			elsif en = '1' then
 				-- Shift values through kernel window
 				s_kernel_matrix(s_kernel_matrix'low + 1 to s_kernel_matrix'high) <= s_kernel_matrix(s_kernel_matrix'low to s_kernel_matrix'high - 1);
 

@@ -83,6 +83,7 @@ begin
 	valid_pixel   <= s_kernel_en_line(s_kernel_en_line'high);
 	comp_complete <= s_kernel_complete_line(s_kernel_complete_line'high);
 	-- Clips the value and integrates ReLu step
+	-- TODO: add bias and shift
 	new_pixel <= (others => '0') when signed(s_pipeline_end) < 0 else
 	             std_logic_vector(to_signed(127, new_pixel'length)) when signed(s_pipeline_end) > 127 else
 	             s_pipeline_end(vector_length - 1 downto 0);

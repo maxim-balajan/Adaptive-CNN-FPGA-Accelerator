@@ -45,18 +45,18 @@ begin
 	clk   <= not clk after clk_period / 2;
 	reset <= '1' after 0 ns, '0' after 10 ns;
 
-	x : for j in 0 to input_height - 1 generate
+	y : for j in 0 to input_height - 1 generate
 
-		y : for i in 0 to input_width - 1 generate
+		x : for i in 0 to input_width - 1 generate
 			input_matrix(i)(j) <= std_logic_vector(to_unsigned(i + input_width * j + 1, input_matrix(i)(j)'length));
-		end generate y;
+		end generate x;
 
-	end generate x;
+	end generate y;
 
 	TB : process is
 	begin
 
-		wait for 300 * clk_period;
+		wait for 110 * clk_period;
 		finish;
 
 	end process TB;
