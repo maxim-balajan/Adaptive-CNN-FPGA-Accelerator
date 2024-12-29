@@ -58,6 +58,7 @@ begin
 					-- set s_kernel_comp that needs to be delayed by one cycle before outputting
 					s_kernel_complete <= '1';
 				else
+					-- TODO: maybe resort to pixel stream, because this takes a lot of HW
 					s_current_pixel <= input_matrix(to_integer(s_pixel_input_x))(to_integer(s_pixel_input_y));
 					s_pixel_input_x <= s_pixel_input_x + 1;
 					if s_pixel_input_x = input_width - 1 then
