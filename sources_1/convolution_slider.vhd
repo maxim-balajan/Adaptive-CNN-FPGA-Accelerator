@@ -12,9 +12,12 @@ entity convolution_slider is
 		kernel_size   : integer := 5
 	);
 	port (
-		clk                      : in std_logic;
-		reset                    : in std_logic;
-		input_matrix             : in matrix_2d(0 to input_width - 1)(0 to input_height - 1)(vector_length - 1 downto 0);
+		clk   : in std_logic;
+		reset : in std_logic;
+		-- Dynamic input slicing is very expensive (roughly 2000 LUTs for one conv_slider => not worth it)
+		-- input_matrix             : in matrix_2d(0 to input_width - 1)(0 to input_height - 1)(vector_length - 1 downto 0);
+		pixel_stream             : in std_logic_vector(vector_length - 1 downto 0);
+		valid_pixel              : in std_logic;
 		kernel_complete          : out std_logic;
 		kernel_en                : out std_logic;
 		kernel_activation_matrix : out matrix_2d(0 to kernel_size - 1)(0 to kernel_size - 1)(vector_length - 1 downto 0)
@@ -49,7 +52,7 @@ begin
 				s_current_pixel   <= (others => '0');
 				s_line_x          <= (others => '0');
 				s_kernel_complete <= '0';
-			else
+			elsif valid_pixel = '1' then
 				-- Get current pixel
 				-- And if s_pixel_input_y is OOB, then finish computation
 				if s_pixel_input_y = input_height then
@@ -58,8 +61,8 @@ begin
 					-- set s_kernel_comp that needs to be delayed by one cycle before outputting
 					s_kernel_complete <= '1';
 				else
-					-- TODO: maybe resort to pixel stream, because this takes a lot of HW
-					s_current_pixel <= input_matrix(to_integer(s_pixel_input_x))(to_integer(s_pixel_input_y));
+					-- s_current_pixel <= input_matrix(to_integer(s_pixel_input_x))(to_integer(s_pixel_input_y));
+					s_current_pixel <= pixel_stream;
 					s_pixel_input_x <= s_pixel_input_x + 1;
 					if s_pixel_input_x = input_width - 1 then
 						s_pixel_input_x <= (others => '0');
@@ -91,7 +94,7 @@ begin
 		port map (
 			clk                      => clk,
 			reset                    => reset,
-			en                       => '1',
+			en                       => valid_pixel,
 			pixel_stream             => s_current_pixel,
 			init_complete            => s_init_complete,
 			kernel_activation_matrix => kernel_activation_matrix

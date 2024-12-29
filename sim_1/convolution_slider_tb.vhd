@@ -19,7 +19,7 @@ architecture bench of convolution_slider_tb is
 	-- Ports
 	signal clk                      : std_logic := '0';
 	signal reset                    : std_logic;
-	signal input_matrix             : matrix_2d(0 to input_width - 1)(0 to input_height - 1)(vector_length - 1 downto 0);
+	signal pixel_stream             : std_logic_vector(vector_length - 1 downto 0);
 	signal kernel_comp              : std_logic;
 	signal kernel_en                : std_logic;
 	signal kernel_activation_matrix : matrix_2d(0 to kernel_size - 1)(0 to kernel_size - 1)(vector_length - 1 downto 0);
@@ -36,7 +36,8 @@ begin
 		port map (
 			clk                      => clk,
 			reset                    => reset,
-			input_matrix             => input_matrix,
+			pixel_stream             => pixel_stream,
+			valid_pixel              => '1',
 			kernel_complete          => kernel_comp,
 			kernel_en                => kernel_en,
 			kernel_activation_matrix => kernel_activation_matrix
@@ -45,13 +46,23 @@ begin
 	clk   <= not clk after clk_period / 2;
 	reset <= '1' after 0 ns, '0' after 10 ns;
 
-	y : for j in 0 to input_height - 1 generate
+	PIXEL_STREAM_PROC : process is
+	begin
 
-		x : for i in 0 to input_width - 1 generate
-			input_matrix(i)(j) <= std_logic_vector(to_unsigned(i + input_width * j + 1, input_matrix(i)(j)'length));
-		end generate x;
+		wait for clk_period;
 
-	end generate y;
+		y : for j in 0 to input_height - 1 loop
+
+			x : for i in 0 to input_width - 1 loop
+
+				pixel_stream <= std_logic_vector(to_unsigned(i + input_width * j + 1, pixel_stream'length));
+				wait for clk_period;
+
+			end loop x;
+
+		end loop y;
+
+	end process PIXEL_STREAM_PROC;
 
 	TB : process is
 	begin
