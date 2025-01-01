@@ -8,7 +8,7 @@ entity kernel_computation_step is
 	generic (
 		vector_length : integer              := 8;
 		input_width   : integer;
-		conv_or_pool  : integer range 0 to 1 := 1
+		conv_or_pool  : integer range 0 to 1 := 0
 	);
 	port (
 		clk                 : in std_logic;
@@ -49,13 +49,14 @@ begin
 
 	end process DELAY_PROC;
 
-	-- This generates an extra adder for convolution steps with uneven input sizes.
-	-- This will result in extra HW but for our usecase this boils down to 3 adders per conv computation unit,
+	-- This generates an extra adder/comperator for all steps with uneven input sizes.
+	-- This will result in extra HW but for our usecase this boils down to 3 adders per conv computation unit and no extra comperators for the pooling,
 	-- whilst making the code much more easily maintainable. But remember that this could be solved more efficiently!
+	-- This unit also does ReLU for uneven vector lengths when using comperation, but this won't happen in our usecase
 
 	MAP_GEN : for i in s_output_matrix'range generate
 
-		CONV_OR_POOL_GEN : if conv_or_pool = 1 generate
+		CONV_OR_POOL_GEN : if conv_or_pool = 0 generate
 			s_output_matrix(i) <= std_logic_vector(signed(s_input_matrix(2 * i)) + signed(s_input_matrix(2 * i + 1)));
 		else generate
 			s_output_matrix(i) <= s_input_matrix(2 * i) when signed(s_input_matrix(2 * i)) > signed(s_input_matrix(2 * i + 1)) else

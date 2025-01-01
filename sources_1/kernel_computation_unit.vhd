@@ -8,8 +8,8 @@ entity kernel_computation_unit is
 	generic (
 		vector_length : integer := 8;
 		kernel_size   : integer := 5;
-		--! conv_or_pool = 1 means Convolution; conv_or_pool = 0 means Pooling
-		conv_or_pool : integer range 0 to 1 := 1
+		--! conv_or_pool = 0 means Convolution; conv_or_pool = 1 means Pooling
+		conv_or_pool : integer range 0 to 1 := 0
 	);
 	port (
 		clk               : in std_logic;
@@ -35,7 +35,7 @@ architecture rtl of kernel_computation_unit is
         return integer is
 	begin
 
-		if c = 1 then
+		if c = 0 then
 			return 3 * vector_length;
 		else
 			return vector_length;
@@ -67,7 +67,7 @@ begin
 
 		MULT_GEN_2 : for j in activation_matrix(activation_matrix'low)'range generate
 
-			CONV_MUL_LINE_GEN : if conv_or_pool = 1 generate
+			CONV_MUL_LINE_GEN : if conv_or_pool = 0 generate
 				-- resize necessary because target signal has to exactly match resulting size of multiplication
 				s_pipeline_start(i * kernel_size + j) <= std_logic_vector(resize(signed(activation_matrix(i)(j)), 2 * activation_matrix(i)(j)'length) * signed(weight_matrix(i)(j)));
 			else generate
@@ -111,7 +111,7 @@ begin
 	valid_pixel   <= s_kernel_en_line(s_kernel_en_line'high);
 	comp_complete <= s_kernel_complete_line(s_kernel_complete_line'high);
 
-	SET_NEW_PIXEL : if conv_or_pool = 1 generate
+	SET_NEW_PIXEL : if conv_or_pool = 0 generate
 		-- Clips the value and integrates ReLu step
 		-- TODO: add bias and shift
 		new_pixel <= (others => '0') when signed(s_pipeline_end) < 0 else

@@ -31,7 +31,7 @@ begin
 		generic map (
 			vector_length => vector_length,
 			kernel_size   => kernel_size,
-			conv_or_pool  => 0
+			conv_or_pool  => 1
 		)
 		port map (
 			clk               => clk,
