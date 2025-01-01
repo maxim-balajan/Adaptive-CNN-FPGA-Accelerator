@@ -11,7 +11,7 @@ entity pooling_slider is
 		original_input_height : integer := 32;
 		kernel_size           : integer := 5;
 		--! HAS TO BE 2 !!! Otherwise HW would break
-		pooling_size : integer := 2
+		pooling_size : integer range 2 to 2 := 2
 	);
 	port (
 		clk                      : in std_logic;

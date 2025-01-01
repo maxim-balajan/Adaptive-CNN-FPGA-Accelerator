@@ -4,10 +4,11 @@ use ieee.numeric_std.all;
 use ieee.math_real.all;
 use work.libmatrix.all;
 
-entity convolution_computation_step is
+entity kernel_computation_step is
 	generic (
-		vector_length : integer := 8;
-		input_width   : integer
+		vector_length : integer              := 8;
+		input_width   : integer;
+		conv_or_pool  : integer range 0 to 1 := 1
 	);
 	port (
 		clk                 : in std_logic;
@@ -19,9 +20,9 @@ entity convolution_computation_step is
 		kernel_en_del       : out std_logic;
 		kernel_complete_del : out std_logic
 	);
-end entity convolution_computation_step;
+end entity kernel_computation_step;
 
-architecture rtl of convolution_computation_step is
+architecture rtl of kernel_computation_step is
 
 	-- increase s_input_matrix size by 1 in order to deal with uneven vector lengths correctly and to make HW more maintainable
 	signal s_input_matrix    : matrix_1d(0 to input_width)(vector_length - 1 downto 0);
@@ -54,7 +55,12 @@ begin
 
 	MAP_GEN : for i in s_output_matrix'range generate
 
-		s_output_matrix(i) <= std_logic_vector(signed(s_input_matrix(2 * i)) + signed(s_input_matrix(2 * i + 1)));
+		CONV_OR_POOL_GEN : if conv_or_pool = 1 generate
+			s_output_matrix(i) <= std_logic_vector(signed(s_input_matrix(2 * i)) + signed(s_input_matrix(2 * i + 1)));
+		else generate
+			s_output_matrix(i) <= s_input_matrix(2 * i) when signed(s_input_matrix(2 * i)) > signed(s_input_matrix(2 * i + 1)) else
+	                      s_input_matrix(2 * i + 1);
+		end generate CONV_OR_POOL_GEN;
 
 	end generate MAP_GEN;
 

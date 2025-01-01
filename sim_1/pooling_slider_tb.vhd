@@ -37,7 +37,7 @@ begin
 			original_input_width  => original_input_width,
 			original_input_height => original_input_height,
 			kernel_size           => kernel_size,
-			pooling_size          => pooling_size
+			pooling_size          => 3
 		)
 		port map (
 			clk                      => clk,
