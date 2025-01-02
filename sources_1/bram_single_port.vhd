@@ -55,9 +55,8 @@ begin
 			if rd_en = '1' then
 				if wr_en = '1' then
 					RAM(to_integer(unsigned(addr))) := din;
-				else
-					dout <= RAM(to_integer(unsigned(addr)));
 				end if;
+				dout <= RAM(to_integer(unsigned(addr)));
 			end if;
 		end if;
 
