@@ -19,7 +19,7 @@ architecture bench of pooling_slider_tb is
 	constant kernel_size           : integer := 5;
 	constant pooling_size          : integer := 2;
 	-- Ports
-	signal clk                      : std_logic := '1';
+	signal clk                      : std_logic := '0';
 	signal reset                    : std_logic;
 	signal pixel_stream             : std_logic_vector(vector_length - 1 downto 0);
 	signal valid_pixel              : std_logic;
@@ -69,9 +69,9 @@ begin
 				wait for clk_period;
 				-- Check that illegal pixels are not pipelined
 				pixel_stream <= (others => '1');
-				valid_pixel <= '0';
-				--wait for clk_period;
-				--wait for clk_period;
+				valid_pixel  <= '0';
+				-- wait for clk_period;
+				wait for clk_period;
 
 			end loop x;
 

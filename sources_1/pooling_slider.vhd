@@ -68,17 +68,17 @@ begin
 					-- Get current pixel
 					s_current_pixel <= pixel_stream;
 					s_current_valid <= valid_pixel;
-
-					-- after init is finished just iterate other the image; disregard overflows by s_pixel_input_y
-					if s_init_complete = '1' then
-						s_pixel_input_x <= s_pixel_input_x + 1;
-						if s_pixel_input_x = integer(c_old_image_width) - 1 then
-							s_pixel_input_x <= (others => '0');
-							s_pixel_input_y <= s_pixel_input_y + 1;
-						end if;
-					end if;
 				else
 					s_current_valid <= '0';
+				end if;
+
+				-- after init is finished just iterate other the image; disregard overflows by s_pixel_input_y
+				if s_init_complete = '1' and s_current_valid = '1' then
+					s_pixel_input_x <= s_pixel_input_x + 1;
+					if s_pixel_input_x = integer(c_old_image_width) - 1 then
+						s_pixel_input_x <= (others => '0');
+						s_pixel_input_y <= s_pixel_input_y + 1;
+					end if;
 				end if;
 
 				-- This will most likely break for other pooling sizes
@@ -112,7 +112,7 @@ begin
 	-- These signals are important for the actual pooling unit directly followed after this unit
 	s_kernel_en <= '1' when s_init_complete = '1'
 	                        and s_current_valid = '1'
-	                        and s_pixel_input_x(s_pixel_input_x'low) = '1'
+	                        and s_pixel_input_x(s_pixel_input_x'low) = '0'
 	                        and s_pixel_input_y(s_pixel_input_y'low) = '0' else
 	               '0';
 
