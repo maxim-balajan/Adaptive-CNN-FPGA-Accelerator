@@ -70,8 +70,8 @@ begin
 				-- Check that illegal pixels are not pipelined
 				pixel_stream <= (others => '1');
 				valid_pixel <= '0';
-				wait for clk_period;
-				wait for clk_period;
+				--wait for clk_period;
+				--wait for clk_period;
 
 			end loop x;
 
