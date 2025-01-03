@@ -31,6 +31,7 @@ begin
 		port map (
 			clk   => clk,
 			reset => reset,
+			en    => '1',
 			wr_en => wr_en,
 			full  => full,
 			din   => din,
