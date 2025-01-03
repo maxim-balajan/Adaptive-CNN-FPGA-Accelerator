@@ -39,16 +39,14 @@ begin
 
 		if rising_edge(clk) then
 			if reset = '1' then
-				s_line_buffer_wr_en(s_line_buffer_wr_en'low) <= '0';
+				-- Is set to one because initial buffer should always write
+				s_line_buffer_wr_en(s_line_buffer_wr_en'low) <= '1';
 			elsif en = '1' then
 				-- Shift values through kernel window
 				s_kernel_matrix(s_kernel_matrix'low + 1 to s_kernel_matrix'high) <= s_kernel_matrix(s_kernel_matrix'low to s_kernel_matrix'high - 1);
 
 				-- Shift full delay line by one
 				s_full_delay(s_full_delay'low + 1 to s_full_delay'high) <= s_full_delay(s_full_delay'low to s_full_delay'high - 1);
-
-				-- Set values for line buffers
-				s_line_buffer_wr_en(s_line_buffer_wr_en'low) <= '1';
 			end if;
 		end if;
 

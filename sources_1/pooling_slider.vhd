@@ -41,13 +41,14 @@ architecture rtl of pooling_slider is
 	-- pixel locations of output stream (in first convolution this would be 14x14)
 	signal s_pixel_output_x : unsigned(integer(ceil(log2(c_new_image_width))) - 1 downto 0);
 	signal s_pixel_output_y : unsigned(integer(ceil(log2(c_new_image_height))) downto 0);
-	
+
 	-- Current pixel to be pipelined
 	signal s_current_pixel : std_logic_vector(vector_length - 1 downto 0);
+	signal s_current_valid : std_logic;
 
 	-- Helper signals to dertermine which kernels are valid and when computation needs to end
 	signal s_init_complete   : std_logic;
-	signal s_kernel_en : std_logic;
+	signal s_kernel_en       : std_logic;
 	signal s_kernel_complete : std_logic;
 
 begin
@@ -61,17 +62,23 @@ begin
 				s_pixel_input_y   <= (others => '0');
 				s_current_pixel   <= (others => '0');
 				s_kernel_complete <= '0';
-			elsif valid_pixel = '1' then
-				-- Get current pixel
-				s_current_pixel <= pixel_stream;
+				s_current_valid   <= '0';
+			else
+				if valid_pixel = '1' then
+					-- Get current pixel
+					s_current_pixel <= pixel_stream;
+					s_current_valid <= valid_pixel;
 
-				-- after init is finished just iterate other the image; disregard overflows by s_pixel_input_y
-				if s_init_complete = '1' then
-					s_pixel_input_x <= s_pixel_input_x + 1;
-					if s_pixel_input_x = integer(c_old_image_width) - 1 then
-						s_pixel_input_x <= (others => '0');
-						s_pixel_input_y <= s_pixel_input_y + 1;
+					-- after init is finished just iterate other the image; disregard overflows by s_pixel_input_y
+					if s_init_complete = '1' then
+						s_pixel_input_x <= s_pixel_input_x + 1;
+						if s_pixel_input_x = integer(c_old_image_width) - 1 then
+							s_pixel_input_x <= (others => '0');
+							s_pixel_input_y <= s_pixel_input_y + 1;
+						end if;
 					end if;
+				else
+					s_current_valid <= '0';
 				end if;
 
 				-- This will most likely break for other pooling sizes
@@ -96,7 +103,7 @@ begin
 		port map (
 			clk                      => clk,
 			reset                    => reset,
-			en                       => valid_pixel,
+			en                       => s_current_valid,
 			pixel_stream             => s_current_pixel,
 			init_complete            => s_init_complete,
 			kernel_activation_matrix => kernel_activation_matrix
@@ -104,10 +111,10 @@ begin
 
 	-- These signals are important for the actual pooling unit directly followed after this unit
 	s_kernel_en <= '1' when s_init_complete = '1'
-	                      and valid_pixel = '1'
-	                      and s_pixel_input_x(s_pixel_input_x'low) = '0'
-	                      and s_pixel_input_y(s_pixel_input_y'low) = '0' else
-	             '0';
+	                        and s_current_valid = '1'
+	                        and s_pixel_input_x(s_pixel_input_x'low) = '1'
+	                        and s_pixel_input_y(s_pixel_input_y'low) = '0' else
+	               '0';
 
 	kernel_en <= s_kernel_en;
 

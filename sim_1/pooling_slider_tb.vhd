@@ -37,7 +37,7 @@ begin
 			original_input_width  => original_input_width,
 			original_input_height => original_input_height,
 			kernel_size           => kernel_size,
-			pooling_size          => 3
+			pooling_size          => 2
 		)
 		port map (
 			clk                      => clk,
@@ -54,7 +54,6 @@ begin
 	clk   <= not clk after clk_period / 2;
 	reset <= '1' after 0 ns, '0' after 2 * clk_period;
 
-	-- WATCH OUT!!! Pixel and valid signal need to be timed correctly and should only be ever set on rising edges, otherwise HW would not work!!!
 	PIXEL_STREAM_PROC : process is
 	begin
 
@@ -71,6 +70,7 @@ begin
 				-- Check that illegal pixels are not pipelined
 				pixel_stream <= (others => '1');
 				valid_pixel <= '0';
+				wait for clk_period;
 				wait for clk_period;
 
 			end loop x;
