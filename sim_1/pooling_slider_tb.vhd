@@ -19,7 +19,7 @@ architecture bench of pooling_slider_tb is
 	constant kernel_size           : integer := 5;
 	constant pooling_size          : integer := 2;
 	-- Ports
-	signal clk                      : std_logic := '0';
+	signal clk                      : std_logic := '1';
 	signal reset                    : std_logic;
 	signal pixel_stream             : std_logic_vector(vector_length - 1 downto 0);
 	signal valid_pixel              : std_logic;
@@ -47,24 +47,30 @@ begin
 			kernel_complete          => kernel_complete,
 			kernel_en                => kernel_en,
 			kernel_activation_matrix => kernel_activation_matrix,
-			pixel_x => pixel_x,
-			pixel_y => pixel_y
+			pixel_x                  => pixel_x,
+			pixel_y                  => pixel_y
 		);
 
-	clk         <= not clk after clk_period / 2;
-	reset       <= '1' after 0 ns, '0' after 10 ns;
-	valid_pixel <= '1';
+	clk   <= not clk after clk_period / 2;
+	reset <= '1' after 0 ns, '0' after 2 * clk_period;
 
+	-- WATCH OUT!!! Pixel and valid signal need to be timed correctly and should only be ever set on rising edges, otherwise HW would not work!!!
 	PIXEL_STREAM_PROC : process is
 	begin
 
-		wait for clk_period;
+		wait for 2 * clk_period;
 
 		y : for j in 0 to original_input_height - kernel_size loop
 
 			x : for i in 0 to original_input_width - kernel_size loop
 
+				-- Check legal pixels
 				pixel_stream <= std_logic_vector(to_unsigned(i + (original_input_width - kernel_size + 1) * j + 1, pixel_stream'length));
+				valid_pixel  <= '1';
+				wait for clk_period;
+				-- Check that illegal pixels are not pipelined
+				pixel_stream <= (others => '1');
+				valid_pixel <= '0';
 				wait for clk_period;
 
 			end loop x;

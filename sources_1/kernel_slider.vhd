@@ -74,6 +74,7 @@ begin
 			port map (
 				clk                 => clk,
 				reset               => reset,
+				en                  => en,
 				wr_en               => s_line_buffer_wr_en(j),
 				full                => open,
 				full_read_and_write => s_line_buffer_wr_en(j + 1),

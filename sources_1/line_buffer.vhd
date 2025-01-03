@@ -12,6 +12,7 @@ entity line_buffer is
 	port (
 		clk                 : in std_logic;
 		reset               : in std_logic;
+		en					: in std_logic;
 		wr_en               : in std_logic;
 		full                : out std_logic; -- this signal can be omitted but is here for legacy purposes
 		full_read_and_write : out std_logic; -- this signal is necessary in order to start writing to next line_bufers
@@ -35,7 +36,7 @@ begin
 		if rising_edge(clk) then
 			if reset = '1' then
 				full_read_and_write <= '0';
-			else
+			elsif en = '1' then
 				full_read_and_write <= full and wr_en;
 			end if;
 		end if;
@@ -50,8 +51,8 @@ begin
 		port map (
 			clk   => clk,
 			reset => reset,
-			wr_en => wr_en,
-			rd_en => s_rd_en,
+			wr_en => wr_en and en,
+			rd_en => s_rd_en and en,
 			full  => s_rd_en,
 			empty => open,
 			din   => din,

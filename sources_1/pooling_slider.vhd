@@ -47,6 +47,7 @@ architecture rtl of pooling_slider is
 
 	-- Helper signals to dertermine which kernels are valid and when computation needs to end
 	signal s_init_complete   : std_logic;
+	signal s_kernel_en : std_logic;
 	signal s_kernel_complete : std_logic;
 
 begin
@@ -71,13 +72,13 @@ begin
 						s_pixel_input_x <= (others => '0');
 						s_pixel_input_y <= s_pixel_input_y + 1;
 					end if;
-					-- This will most likely break for other pooling sizes
-					-- after final pixel has been reached, set complete flag; unga-bunga -3 because we need a half step
-					-- This has to be written exactly like this because otherwise undefined behaviour of HW after completion will mess with this flag
-					-- notice this uses input x coordinate because of the half step, but also uses output y value!
-					if s_pixel_input_x = integer(c_old_image_width) - 3 and s_pixel_output_y = integer(c_new_image_height) - 1 then
-						s_kernel_complete <= '1';
-					end if;
+				end if;
+
+				-- This will most likely break for other pooling sizes
+				-- after final pixel has been reached, set complete flag;
+				-- This has to be written exactly like this because otherwise undefined behaviour of HW after completion will mess with this flag
+				if s_pixel_output_x = integer(c_new_image_width) - 1 and s_pixel_output_y = integer(c_new_image_height) - 1 and s_kernel_en = '1' then
+					s_kernel_complete <= '1';
 				end if;
 			end if;
 		end if;
@@ -102,11 +103,13 @@ begin
 		);
 
 	-- These signals are important for the actual pooling unit directly followed after this unit
-	kernel_en <= '1' when s_init_complete = '1'
+	s_kernel_en <= '1' when s_init_complete = '1'
 	                      and valid_pixel = '1'
 	                      and s_pixel_input_x(s_pixel_input_x'low) = '0'
 	                      and s_pixel_input_y(s_pixel_input_y'low) = '0' else
 	             '0';
+
+	kernel_en <= s_kernel_en;
 
 	-- Set destination of new pooled value
 	s_pixel_output_x <= resize(shift_right(s_pixel_input_x, 1), s_pixel_output_x'length);
