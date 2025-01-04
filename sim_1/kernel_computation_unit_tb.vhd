@@ -29,15 +29,21 @@ begin
 
 	KERNEL_COMPUTATION_UNIT_INST : entity work.kernel_computation_unit
 		generic map (
-			vector_length => vector_length,
-			kernel_size   => kernel_size,
-			conv_or_pool  => 1
+			input_length               => vector_length,
+			output_length              => vector_length,
+			kernel_size                => kernel_size,
+			pool_or_conv               => 1,
+			enable_bias                => 1,
+			enable_multiplication_line => 1,
+			enable_shift               => 1
 		)
 		port map (
 			clk               => clk,
 			reset             => reset,
 			activation_matrix => activation_matrix,
 			weight_matrix     => weight_matrix,
+			shamt             => "001",
+			bias              => x"05",
 			kernel_en         => kernel_en,
 			kernel_complete   => kernel_complete,
 			new_pixel         => new_pixel,

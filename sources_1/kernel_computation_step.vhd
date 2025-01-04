@@ -6,9 +6,9 @@ use work.libmatrix.all;
 
 entity kernel_computation_step is
 	generic (
-		vector_length : integer              := 8;
-		input_width   : integer;
-		conv_or_pool  : integer range 0 to 1 := 0
+		vector_length : natural              := 8;
+		input_width   : natural;
+		pool_or_conv  : integer range 0 to 1 := 1
 	);
 	port (
 		clk                 : in std_logic;
@@ -56,7 +56,7 @@ begin
 
 	MAP_GEN : for i in s_output_matrix'range generate
 
-		CONV_OR_POOL_GEN : if conv_or_pool = 0 generate
+		CONV_OR_POOL_GEN : if pool_or_conv = 1 generate
 			s_output_matrix(i) <= std_logic_vector(signed(s_input_matrix(2 * i)) + signed(s_input_matrix(2 * i + 1)));
 		else generate
 			s_output_matrix(i) <= s_input_matrix(2 * i) when signed(s_input_matrix(2 * i)) > signed(s_input_matrix(2 * i + 1)) else

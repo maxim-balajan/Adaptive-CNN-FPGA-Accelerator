@@ -6,20 +6,30 @@ use work.libmatrix.all;
 
 entity kernel_computation_unit is
 	generic (
-		vector_length : integer := 8;
-		kernel_size   : integer := 5;
-		--! conv_or_pool = 0 means Convolution; conv_or_pool = 1 means Pooling
-		conv_or_pool : integer range 0 to 1 := 0
+		--! pool_or_conv = 1 means Convolution; pool_or_conv = 0 means Pooling
+		pool_or_conv  : integer range 0 to 1                                  := 1;
+		input_length  : natural                                               := 8;
+		output_length : integer range 0 to (3 ** pool_or_conv) * input_length := 8;
+		kernel_size   : natural                                               := 5;
+		--! enables the multiplication line in the beginning (only matters for pool_or_conv = 1)
+		enable_multiplication_line : integer range 0 to pool_or_conv := 1;
+		--! enables the shift before bias additon (only matters for pool_or_conv = 1)
+		enable_shift : integer range 0 to pool_or_conv := 0;
+		--! enables the bias addition before relu at the end (only matters for pool_or_conv = 1 and enable_shift = 1)
+		enable_bias : integer range 0 to enable_shift := 0
 	);
 	port (
 		clk               : in std_logic;
 		reset             : in std_logic;
-		activation_matrix : in matrix_2d(0 to kernel_size - 1)(0 to kernel_size - 1)(vector_length - 1 downto 0);
-		-- only used for convolution; unused for pooling
-		weight_matrix   : in matrix_2d(0 to kernel_size - 1)(0 to kernel_size - 1)(vector_length - 1 downto 0);
+		activation_matrix : in matrix_2d(0 to kernel_size - 1)(0 to kernel_size - 1)(input_length - 1 downto 0);
+		-- only used for some convolutions; unused for pooling
+		weight_matrix : in matrix_2d(0 to kernel_size - 1)(0 to kernel_size - 1)(input_length - 1 downto 0);
+		-- bias and shamt could also be passed as generics (or static port inputs) but for now keep it as it is
+		shamt           : in std_logic_vector(integer(ceil(log2(real(output_length)))) - 1 downto 0);
+		bias            : in std_logic_vector(output_length - 1 downto 0);
 		kernel_en       : in std_logic;
 		kernel_complete : in std_logic;
-		new_pixel       : out std_logic_vector(vector_length - 1 downto 0);
+		new_pixel       : out std_logic_vector(output_length - 1 downto 0);
 		valid_pixel     : out std_logic;
 		comp_complete   : out std_logic
 	);
@@ -35,16 +45,16 @@ architecture rtl of kernel_computation_unit is
         return integer is
 	begin
 
-		if c = 0 then
-			return 3 * vector_length;
+		if c = 1  and enable_multiplication_line = 1 then
+			return 3 * input_length;
 		else
-			return vector_length;
+			return input_length;
 		end if;
 
 	end function get_pipeline_vector_length;
 
 	-- conditionally find out which length the pipeline should have
-	constant c_pipeline_vector_length : integer := get_pipeline_vector_length(conv_or_pool);
+	constant c_pipeline_vector_length : integer := get_pipeline_vector_length(pool_or_conv);
 
 	-- This constant stores the amount of convolution steps that are needed
 	constant c_conv_step_count : integer := integer(ceil(log2(real(kernel_size ** 2))));
@@ -59,15 +69,27 @@ architecture rtl of kernel_computation_unit is
 	signal s_kernel_en_line       : std_logic_vector(0 to c_conv_step_count);
 	signal s_kernel_complete_line : std_logic_vector(0 to c_conv_step_count);
 
+	-- These signals are necessary when shifting
+	signal s_kernel_en_shift       : std_logic;
+	signal s_kernel_complete_shift : std_logic;
+	signal s_pipeline_begin_shift  : std_logic_vector(c_pipeline_vector_length - 1 downto 0);
+	signal s_pipeline_result_shift : std_logic_vector(c_pipeline_vector_length - 1 downto 0);
+
+	-- These signals are necessary when having bias
+	signal s_kernel_en_bias       : std_logic;
+	signal s_kernel_complete_bias : std_logic;
+	signal s_pipeline_begin_bias  : std_logic_vector(c_pipeline_vector_length - 1 downto 0);
+	signal s_pipeline_result_bias : std_logic_vector(c_pipeline_vector_length - 1 downto 0);
+
 begin
 
-	-- Multiplication line that computes all the multiplications for the convolution; only necessary for convolution and not for pooling
+	-- Multiplication line that computes all the multiplications for the convolution; only necessary for convolution
 
 	MULT_GEN_1 : for i in activation_matrix'range generate
 
 		MULT_GEN_2 : for j in activation_matrix(activation_matrix'low)'range generate
 
-			CONV_MUL_LINE_GEN : if conv_or_pool = 0 generate
+			CONV_MUL_LINE_GEN : if pool_or_conv = 1 and enable_multiplication_line = 1 generate
 				-- resize necessary because target signal has to exactly match resulting size of multiplication
 				s_pipeline_start(i * kernel_size + j) <= std_logic_vector(resize(signed(activation_matrix(i)(j)), 2 * activation_matrix(i)(j)'length) * signed(weight_matrix(i)(j)));
 			else generate
@@ -78,7 +100,7 @@ begin
 
 	end generate MULT_GEN_1;
 
-	-- Generate all convolutions steps that are necessary for the addition of all multiplied values
+	-- Generate all convolutions/pooling steps that are necessary for the addition/comparison of all input values
 	-- Basically works like the "Divide by 2"-Algorithm
 
 	KERNEL_STEP_GEN : for i in 0 to c_conv_step_count - 1 generate
@@ -87,7 +109,7 @@ begin
 			generic map (
 				vector_length => c_pipeline_vector_length,
 				input_width   => integer(ceil(real(kernel_size ** 2) / real(2 ** i))),
-				conv_or_pool  => conv_or_pool
+				pool_or_conv  => pool_or_conv
 			)
 			port map (
 				clk                 => clk,
@@ -108,17 +130,81 @@ begin
 	s_kernel_complete_line(s_kernel_complete_line'low) <= kernel_complete;
 
 	-- Set outputs of pipeline
-	valid_pixel   <= s_kernel_en_line(s_kernel_en_line'high);
-	comp_complete <= s_kernel_complete_line(s_kernel_complete_line'high);
 
-	SET_NEW_PIXEL : if conv_or_pool = 0 generate
-		-- Clips the value and integrates ReLu step
-		-- TODO: add bias and shift
-		new_pixel <= (others => '0') when signed(s_pipeline_end) < 0 else
-	             std_logic_vector(to_signed(127, new_pixel'length)) when signed(s_pipeline_end) > 127 else
-	             s_pipeline_end(vector_length - 1 downto 0);
+	SET_NEW_PIXEL : if pool_or_conv = 1 generate
+
+		ADD_SHIFT : if enable_shift = 1 generate
+
+			SHIFT_DELAY_PROC : process (clk) is
+			begin
+
+				if rising_edge(clk) then
+					if reset = '1' then
+						s_kernel_en_shift       <= '0';
+						s_kernel_complete_shift <= '0';
+						s_pipeline_begin_shift  <= (others => '0');
+					else
+						s_kernel_en_shift       <= s_kernel_en_line(s_kernel_en_line'high);
+						s_kernel_complete_shift <= s_kernel_complete_line(s_kernel_complete_line'high);
+						s_pipeline_begin_shift  <= s_pipeline_end;
+					end if;
+				end if;
+
+			end process SHIFT_DELAY_PROC;
+
+			-- Shift can always be a shift right because value will always decrease => no need for multiplexing
+			s_pipeline_result_shift <= std_logic_vector(shift_right(signed(s_pipeline_begin_shift), to_integer(unsigned(shamt))));
+
+			ADD_BIAS : if enable_bias = 1 generate
+
+				BIAS_DELAY_PROC : process (clk) is
+				begin
+
+					if rising_edge(clk) then
+						if reset = '1' then
+							s_kernel_en_bias       <= '0';
+							s_kernel_complete_bias <= '0';
+							s_pipeline_begin_bias  <= (others => '0');
+						else
+							s_kernel_en_bias       <= s_kernel_en_shift;
+							s_kernel_complete_bias <= s_kernel_complete_shift;
+							s_pipeline_begin_bias  <= s_pipeline_result_shift;
+						end if;
+					end if;
+
+				end process BIAS_DELAY_PROC;
+
+				s_pipeline_result_bias <= std_logic_vector(signed(s_pipeline_begin_bias) + signed(bias));
+
+				-- Shift + bias + ReLU + Clipping
+				new_pixel     <= (others => '0') when signed(s_pipeline_result_bias) < 0 else
+	                 std_logic_vector(to_signed(127, new_pixel'length)) when signed(s_pipeline_result_bias) > 127 else
+	                 s_pipeline_result_bias(output_length - 1 downto 0);
+				valid_pixel   <= s_kernel_en_bias;
+				comp_complete <= s_kernel_complete_bias;
+			else generate
+				-- Shift + ReLU + Clipping
+				new_pixel     <= (others => '0') when signed(s_pipeline_result_shift) < 0 else
+	                 std_logic_vector(to_signed(127, new_pixel'length)) when signed(s_pipeline_result_shift) > 127 else
+	                 s_pipeline_result_shift(output_length - 1 downto 0);
+				valid_pixel   <= s_kernel_en_shift;
+				comp_complete <= s_kernel_complete_shift;
+			end generate ADD_BIAS;
+
+		else generate
+			-- ReLU + Clipping
+			new_pixel     <= (others => '0') when signed(s_pipeline_end) < 0 else
+	                 std_logic_vector(to_signed(127, new_pixel'length)) when signed(s_pipeline_end) > 127 else
+	                 s_pipeline_end(output_length - 1 downto 0);
+			valid_pixel   <= s_kernel_en_line(s_kernel_en_line'high);
+			comp_complete <= s_kernel_complete_line(s_kernel_complete_line'high);
+		end generate ADD_SHIFT;
+
 	else generate
-		new_pixel <= s_pipeline_end(vector_length - 1 downto 0);
+		-- Do nothing (only for pooling)
+		new_pixel     <= s_pipeline_end(output_length - 1 downto 0);
+		valid_pixel   <= s_kernel_en_line(s_kernel_en_line'high);
+		comp_complete <= s_kernel_complete_line(s_kernel_complete_line'high);
 	end generate SET_NEW_PIXEL;
 
 end architecture rtl;
