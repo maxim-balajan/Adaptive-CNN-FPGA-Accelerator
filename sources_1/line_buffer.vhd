@@ -6,8 +6,8 @@ use work.libmatrix.all;
 
 entity line_buffer is
 	generic (
-		vector_length : integer := 8;
-		depth         : integer := 32
+		vector_length : natural := 8;
+		depth         : natural := 32
 	);
 	port (
 		clk                 : in std_logic;

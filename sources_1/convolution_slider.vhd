@@ -6,10 +6,10 @@ use work.libmatrix.all;
 
 entity convolution_slider is
 	generic (
-		vector_length : integer := 8;
-		input_width   : integer := 32;
-		input_height  : integer := 32;
-		kernel_size   : integer := 5
+		vector_length : natural := 8;
+		input_width   : natural := 32;
+		input_height  : natural := 32;
+		kernel_size   : natural := 5
 	);
 	port (
 		clk                      : in std_logic;

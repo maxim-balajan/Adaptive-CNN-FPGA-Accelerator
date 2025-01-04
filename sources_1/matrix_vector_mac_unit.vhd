@@ -5,7 +5,7 @@ use ieee.math_real.all;
 
 entity matrix_vector_mac_unit is
 	generic (
-		vector_length : integer := 8
+		vector_length : natural := 8
 	);
 	port (
 		clk            : in std_logic;

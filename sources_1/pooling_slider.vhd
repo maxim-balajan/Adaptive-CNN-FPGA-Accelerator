@@ -6,11 +6,10 @@ use work.libmatrix.all;
 
 entity pooling_slider is
 	generic (
-		vector_length         : integer := 8;
-		original_input_width  : integer := 32;
-		original_input_height : integer := 32;
-		kernel_size           : integer := 5;
-		--! HAS TO BE 2 !!! Otherwise HW would break
+		vector_length         : natural := 8;
+		original_input_width  : natural := 32;
+		original_input_height : natural := 32;
+		kernel_size           : natural := 5;
 		pooling_size : integer range 2 to 2 := 2
 	);
 	port (

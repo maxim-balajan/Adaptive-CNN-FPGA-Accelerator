@@ -7,9 +7,9 @@ use work.libmatrix.all;
 entity matrix_vector_unit is
 	generic (
 		-- weight_width == input_height
-		weight_width  : integer := 400;
-		weight_height : integer := 120;
-		vector_length : integer := 8
+		weight_width  : natural := 400;
+		weight_height : natural := 120;
+		vector_length : natural := 8
 	);
 	port (
 		clk                  : in std_logic;

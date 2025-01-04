@@ -6,8 +6,8 @@ use work.libmatrix.all;
 
 entity bram_fifo is
 	generic (
-		vector_length : integer := 8;
-		depth         : integer := 28
+		vector_length : natural := 8;
+		depth         : natural := 28
 	);
 	port (
 		clk   : in std_logic;

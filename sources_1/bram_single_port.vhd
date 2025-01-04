@@ -6,8 +6,8 @@ use work.libmatrix.all;
 
 entity bram_single_port is
 	generic (
-		vector_length : integer := 8;
-		depth         : integer := 25;
+		vector_length : natural := 8;
+		depth         : natural := 25;
 		data_path     : string  := "../data/test.data"
 	);
 	port (
