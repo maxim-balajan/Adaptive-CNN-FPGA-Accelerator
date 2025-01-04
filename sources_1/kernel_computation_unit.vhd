@@ -7,16 +7,16 @@ use work.libmatrix.all;
 entity kernel_computation_unit is
 	generic (
 		--! pool_or_conv = 1 means Convolution; pool_or_conv = 0 means Pooling
-		pool_or_conv  : integer range 0 to 1                                  := 1;
-		input_length  : natural                                               := 8;
-		output_length : integer range 0 to (3 ** pool_or_conv) * input_length := 8;
-		kernel_size   : natural                                               := 5;
+		pool_or_conv : integer range 0 to 1 := 1;
 		--! enables the multiplication line in the beginning (only matters for pool_or_conv = 1)
 		enable_multiplication_line : integer range 0 to pool_or_conv := 1;
 		--! enables the shift before bias additon (only matters for pool_or_conv = 1)
 		enable_shift : integer range 0 to pool_or_conv := 0;
 		--! enables the bias addition before relu at the end (only matters for pool_or_conv = 1 and enable_shift = 1)
-		enable_bias : integer range 0 to enable_shift := 0
+		enable_bias   : integer range 0 to enable_shift                                     := 0;
+		input_length  : natural                                                             := 8;
+		output_length : integer range 0 to (3 ** enable_multiplication_line) * input_length := 8;
+		kernel_size   : natural                                                             := 5
 	);
 	port (
 		clk               : in std_logic;

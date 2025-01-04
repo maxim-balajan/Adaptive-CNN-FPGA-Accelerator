@@ -12,7 +12,7 @@ entity line_buffer is
 	port (
 		clk                 : in std_logic;
 		reset               : in std_logic;
-		en					: in std_logic;
+		en                  : in std_logic;
 		wr_en               : in std_logic;
 		full                : out std_logic; -- this signal can be omitted but is here for legacy purposes
 		full_read_and_write : out std_logic; -- this signal is necessary in order to start writing to next line_bufers

@@ -6,11 +6,11 @@ use work.libmatrix.all;
 
 entity pooling_slider is
 	generic (
-		vector_length         : natural := 8;
-		original_input_width  : natural := 32;
-		original_input_height : natural := 32;
-		kernel_size           : natural := 5;
-		pooling_size : integer range 2 to 2 := 2
+		vector_length         : natural              := 8;
+		original_input_width  : natural              := 32;
+		original_input_height : natural              := 32;
+		kernel_size           : natural              := 5;
+		pooling_size          : integer range 2 to 2 := 2
 	);
 	port (
 		clk                      : in std_logic;
