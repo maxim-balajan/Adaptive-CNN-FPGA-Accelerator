@@ -11,9 +11,9 @@ entity kernel_computation_unit is
 		--! enables the multiplication line in the beginning (only matters for pool_or_conv = 1)
 		enable_multiplication_line : integer range 0 to 1 := 1;
 		--! enables the shift before bias additon (only matters for pool_or_conv = 1)
-		enable_shift : integer range 0 to 1 := 0;
+		enable_shift : integer range 0 to 1 := 1;
 		--! enables the bias addition before relu at the end (only matters for pool_or_conv = 1 and enable_shift = 1)
-		enable_bias : integer range 0 to 1 := 0;
+		enable_bias : integer range 0 to 1 := 1;
 		--! enables the relu step at the end of the computation (only matters for pool_or_conv = 1)
 		enable_relu   : integer range 0 to 1                                                                  := 1;
 		input_length  : natural                                                                               := 8;
