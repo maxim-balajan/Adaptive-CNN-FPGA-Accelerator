@@ -35,7 +35,8 @@ begin
 			pool_or_conv               => 1,
 			enable_bias                => 1,
 			enable_multiplication_line => 1,
-			enable_shift               => 1
+			enable_shift               => 1,
+			enable_relu                => 1
 		)
 		port map (
 			clk               => clk,
@@ -43,7 +44,7 @@ begin
 			activation_matrix => activation_matrix,
 			weight_matrix     => weight_matrix,
 			shamt             => "001",
-			bias              => x"05",
+			bias              => x"FF",
 			kernel_en         => kernel_en,
 			kernel_complete   => kernel_complete,
 			new_pixel         => new_pixel,

@@ -9,14 +9,16 @@ entity kernel_computation_unit is
 		--! pool_or_conv = 1 means Convolution; pool_or_conv = 0 means Pooling
 		pool_or_conv : integer range 0 to 1 := 1;
 		--! enables the multiplication line in the beginning (only matters for pool_or_conv = 1)
-		enable_multiplication_line : integer range 0 to pool_or_conv := 1;
+		enable_multiplication_line : integer range 0 to 1 := 1;
 		--! enables the shift before bias additon (only matters for pool_or_conv = 1)
-		enable_shift : integer range 0 to pool_or_conv := 0;
+		enable_shift : integer range 0 to 1 := 0;
 		--! enables the bias addition before relu at the end (only matters for pool_or_conv = 1 and enable_shift = 1)
-		enable_bias   : integer range 0 to enable_shift                                     := 0;
-		input_length  : natural                                                             := 8;
-		output_length : integer range 0 to (3 ** enable_multiplication_line) * input_length := 8;
-		kernel_size   : natural                                                             := 5
+		enable_bias : integer range 0 to 1 := 0;
+		--! enables the relu step at the end of the computation (only matters for pool_or_conv = 1)
+		enable_relu   : integer range 0 to 1                                                                  := 1;
+		input_length  : natural                                                                               := 8;
+		output_length : integer range 0 to ((3 ** enable_multiplication_line) ** pool_or_conv) * input_length := 8;
+		kernel_size   : natural                                                                               := 5
 	);
 	port (
 		clk               : in std_logic;
@@ -80,6 +82,17 @@ architecture rtl of kernel_computation_unit is
 	signal s_kernel_complete_bias : std_logic;
 	signal s_pipeline_begin_bias  : std_logic_vector(c_pipeline_vector_length - 1 downto 0);
 	signal s_pipeline_result_bias : std_logic_vector(c_pipeline_vector_length - 1 downto 0);
+
+	-- These signals are necessary when having ReLU
+	signal s_kernel_en_relu       : std_logic;
+	signal s_kernel_complete_relu : std_logic;
+	signal s_pipeline_begin_relu  : std_logic_vector(output_length - 1 downto 0);
+	signal s_pipeline_result_relu : std_logic_vector(output_length - 1 downto 0);
+
+	-- This signals contain the result of the computation (without the ReLU step)
+	signal s_new_pixel     : std_logic_vector(output_length - 1 downto 0);
+	signal s_valid_pixel   : std_logic;
+	signal s_comp_complete : std_logic;
 
 begin
 
@@ -176,35 +189,66 @@ begin
 
 				s_pipeline_result_bias <= std_logic_vector(signed(s_pipeline_begin_bias) + signed(bias));
 
-				-- Shift + bias + ReLU + Clipping
-				new_pixel     <= (others => '0') when signed(s_pipeline_result_bias) < 0 else
-	                 std_logic_vector(to_signed(127, new_pixel'length)) when signed(s_pipeline_result_bias) > 127 else
-	                 s_pipeline_result_bias(output_length - 1 downto 0);
-				valid_pixel   <= s_kernel_en_bias;
-				comp_complete <= s_kernel_complete_bias;
+				-- Shift + bias + Clipping
+				s_new_pixel     <= std_logic_vector(to_signed(-128, s_new_pixel'length)) when signed(s_pipeline_result_bias) < -128 else
+	                   std_logic_vector(to_signed(127, s_new_pixel'length)) when signed(s_pipeline_result_bias) > 127 else
+	                   s_pipeline_result_bias(output_length - 1 downto 0);
+				s_valid_pixel   <= s_kernel_en_bias;
+				s_comp_complete <= s_kernel_complete_bias;
 			else generate
-				-- Shift + ReLU + Clipping
-				new_pixel     <= (others => '0') when signed(s_pipeline_result_shift) < 0 else
-	                 std_logic_vector(to_signed(127, new_pixel'length)) when signed(s_pipeline_result_shift) > 127 else
-	                 s_pipeline_result_shift(output_length - 1 downto 0);
-				valid_pixel   <= s_kernel_en_shift;
-				comp_complete <= s_kernel_complete_shift;
+				-- Shift + Clipping
+				s_new_pixel     <= std_logic_vector(to_signed(-128, s_new_pixel'length)) when signed(s_pipeline_result_shift) < -128 else
+	                   std_logic_vector(to_signed(127, s_new_pixel'length)) when signed(s_pipeline_result_shift) > 127 else
+	                   s_pipeline_result_shift(output_length - 1 downto 0);
+				s_valid_pixel   <= s_kernel_en_shift;
+				s_comp_complete <= s_kernel_complete_shift;
 			end generate ADD_BIAS;
 
 		else generate
-			-- ReLU + Clipping
-			new_pixel     <= (others => '0') when signed(s_pipeline_end) < 0 else
-	                 std_logic_vector(to_signed(127, new_pixel'length)) when signed(s_pipeline_end) > 127 else
-	                 s_pipeline_end(output_length - 1 downto 0);
-			valid_pixel   <= s_kernel_en_line(s_kernel_en_line'high);
-			comp_complete <= s_kernel_complete_line(s_kernel_complete_line'high);
+			-- Clipping
+			s_new_pixel     <= std_logic_vector(to_signed(-128, s_new_pixel'length)) when signed(s_pipeline_end) < -128 else
+	                   std_logic_vector(to_signed(127, s_new_pixel'length)) when signed(s_pipeline_end) > 127 else
+	                   s_pipeline_end(output_length - 1 downto 0);
+			s_valid_pixel   <= s_kernel_en_line(s_kernel_en_line'high);
+			s_comp_complete <= s_kernel_complete_line(s_kernel_complete_line'high);
 		end generate ADD_SHIFT;
 
 	else generate
 		-- Do nothing (only for pooling)
-		new_pixel     <= s_pipeline_end(output_length - 1 downto 0);
-		valid_pixel   <= s_kernel_en_line(s_kernel_en_line'high);
-		comp_complete <= s_kernel_complete_line(s_kernel_complete_line'high);
+		s_new_pixel     <= s_pipeline_end(output_length - 1 downto 0);
+		s_valid_pixel   <= s_kernel_en_line(s_kernel_en_line'high);
+		s_comp_complete <= s_kernel_complete_line(s_kernel_complete_line'high);
 	end generate SET_NEW_PIXEL;
+
+	RELU_GEN : if enable_relu = 1 and pool_or_conv = 1 generate
+
+		RELU_DELAY_PROC : process (clk) is
+		begin
+
+			if rising_edge(clk) then
+				if reset = '1' then
+					s_kernel_en_relu       <= '0';
+					s_kernel_complete_relu <= '0';
+					s_pipeline_begin_relu  <= (others => '0');
+				else
+					s_kernel_en_relu       <= s_valid_pixel;
+					s_kernel_complete_relu <= s_comp_complete;
+					s_pipeline_begin_relu  <= s_new_pixel;
+				end if;
+			end if;
+
+		end process RELU_DELAY_PROC;
+
+		-- ReLU computation
+		s_pipeline_result_relu <= (others => '0') when signed(s_pipeline_begin_relu) < 0 else s_pipeline_begin_relu;
+		-- Set outputs
+		new_pixel     <= s_pipeline_result_relu;
+		valid_pixel   <= s_kernel_en_relu;
+		comp_complete <= s_kernel_complete_relu;
+	else generate
+		new_pixel     <= s_new_pixel;
+		valid_pixel   <= s_valid_pixel;
+		comp_complete <= s_comp_complete;
+	end generate RELU_GEN;
 
 end architecture rtl;
