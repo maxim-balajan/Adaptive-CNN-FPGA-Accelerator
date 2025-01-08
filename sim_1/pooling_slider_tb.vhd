@@ -67,11 +67,13 @@ begin
 				pixel_stream <= std_logic_vector(to_unsigned(i + (original_input_width - kernel_size + 1) * j + 1, pixel_stream'length));
 				valid_pixel  <= '1';
 				wait for clk_period;
-				-- Check that illegal pixels are not pipelined
-				pixel_stream <= (others => '1');
-				valid_pixel  <= '0';
-				-- wait for clk_period;
-				wait for clk_period;
+				if i mod 3 = 0 then
+					-- Check that illegal pixels are not pipelined
+					pixel_stream <= (others => '1');
+					valid_pixel  <= '0';
+					-- wait for clk_period;
+					wait for clk_period;
+				end if;
 
 			end loop x;
 
