@@ -1,8 +1,6 @@
 #include <iostream>
-#include "data/fp_int.h"
-#include "data/int24.h"
-#include "assert_helper.h"
 
+#include <common.h>
 
 void printb(uint16_t v) {
     unsigned int i, s = 1<<((sizeof(v)<<3)-1); // s = only most significant bit at 1

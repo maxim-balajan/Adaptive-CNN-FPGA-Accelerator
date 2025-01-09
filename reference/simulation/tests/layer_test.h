@@ -1,5 +1,5 @@
 #pragma once
-#include "data/matrix.h"
+#include <common.h>
 
 Matrix<float> create_Input_Matrix1();
 Matrix<float> create_Input_Matrix3();

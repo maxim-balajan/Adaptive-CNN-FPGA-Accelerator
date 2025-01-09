@@ -1,6 +1,6 @@
 #pragma once
-#include "data/matrix.h"
-#include "layer.h"
+// #include "data/matrix.h"
+// #include "layer.h"
 
 using namespace std;
 

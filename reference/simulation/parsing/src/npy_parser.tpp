@@ -1,8 +1,6 @@
 #include <npy.hpp>
 #include <string>
-#include "data/matrix.h"
-#include "data/data_converter.h"
-#include "parsing/parsing_util.h"
+#include <common.h>
 #include "quant_parser.h"
 
 using namespace std;

@@ -2,20 +2,8 @@
 #include <chrono>
 #include <argparse.hpp>
 
-#include "layers/max_pooling.h"
-#include "layers/flatten.h"
-#include "layers/convolution.h"
-#include "layers/dense.h"
-
-#include "parsing/parser.h"
-#include "parsing/quant_parser.h"
-#include "parsing/npy_parser.h"
-#include "common_util.h"
-
-#include "data/matrix_view.h"
-#include "assert.h"
-
-#include "data/int24.h"
+#include <common.h>
+#include <parsing.h>
 
 using namespace std;
 using namespace ParsingUtil;

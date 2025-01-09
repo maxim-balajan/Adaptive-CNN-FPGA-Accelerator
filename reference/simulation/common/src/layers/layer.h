@@ -1,6 +1,6 @@
 #pragma once
+// #include "data/matrix.h"
 
-#include "data/matrix.h"
 template<typename T, typename ACC>
 class Layer {
 public:

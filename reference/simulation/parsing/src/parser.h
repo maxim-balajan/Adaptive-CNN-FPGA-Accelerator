@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <memory>
-#include "layers/layer.h"
+#include <common.h>
 
 using namespace std;
 

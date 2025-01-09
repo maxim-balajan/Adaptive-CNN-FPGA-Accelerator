@@ -1,5 +1,5 @@
 #include "quant.h"
-#include "assert_helper.h"
+// #include "assert_helper.h"
 
 template<typename T, typename ACC>
 Quant<T, ACC>::Quant(vector<size_t> dimensions, T inv_scale, T zero_point)

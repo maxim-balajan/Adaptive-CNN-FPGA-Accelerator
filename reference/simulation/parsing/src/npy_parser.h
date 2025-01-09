@@ -1,8 +1,8 @@
 #pragma once
 
-#include "data/matrix.h"
-#include "npy_parser.tpp"
+#include <common.h>
 
 template<typename FROM, typename TO>
 Matrix<TO> parse_matrix(string path);
 
+#include "npy_parser.tpp"

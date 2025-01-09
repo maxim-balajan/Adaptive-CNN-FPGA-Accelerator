@@ -1,10 +1,6 @@
 #include <iostream>
 
-#include "layers/max_pooling.h"
-#include "layers/flatten.h"
-#include "layers/convolution.h"
-#include "layers/dense.h"
-#include "data/matrix.h"
+#include <common.h>
 
 using namespace std;
 

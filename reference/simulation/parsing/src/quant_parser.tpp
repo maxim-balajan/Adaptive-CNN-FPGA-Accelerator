@@ -9,18 +9,7 @@
 
 // include our onnx proto model
 #include <onnx.pb.h>
-
-#include "parsing/parsing_util.h"
-
-#include "quant_parser.h"
-#include "layers/convolution.h"
-#include "layers/dense.h"
-#include "layers/flatten.h"
-#include "layers/max_pooling.h"
-#include "layers/quant.h"
-#include "layers/quant_convolution.h"
-#include "layers/quant_dense.h"
-#include "data/data_converter.h"
+#include <common.h>
 
 using namespace std;
 using namespace ParsingUtil;
