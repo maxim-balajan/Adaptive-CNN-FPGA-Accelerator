@@ -54,8 +54,10 @@ public:
         // calculate the postion of the matrix element
         size_t curr_position = 0;
         size_t curr_multiplier = 1;
-        int i = 0;
-        for (const auto [index, dimension_size] : views::reverse(views::zip(positions, dimensions))) {
+        for (int i = positions.size() - 1; i >= 0; i--) {
+            auto index = (positions.begin())[i];
+            auto dimension_size = dimensions[i];
+
             if (index >= dimension_size) {
                 throw new exception();
             }
@@ -63,7 +65,6 @@ public:
 
             curr_position += index * curr_multiplier;
             curr_multiplier *= dimension_size;
-            i++;
         }
         return matrix_data[curr_position];
     }
@@ -75,8 +76,12 @@ public:
         // calculate the postion of the matrix element
         size_t curr_position = 0;
         size_t curr_multiplier = 1;
-        int i =0;
-        for (const auto [index, dimension_size] : views::reverse(views::zip(positions, dimensions))) {
+
+
+        for (int x = positions.size() - 1; x >= 0; x--) {
+            auto index = (positions.begin())[x];
+            auto dimension_size = dimensions[x];
+
             if (index >= dimension_size) {
                 throw new exception();
             }
@@ -84,7 +89,6 @@ public:
 
             curr_position += index * curr_multiplier;
             curr_multiplier *= dimension_size;
-            i++;
         }
         return matrix_data[curr_position];
     }
@@ -93,7 +97,10 @@ public:
     inline constexpr Matrix& operator+=(const Matrix& other) {
         assertm(this->dimensions == other.dimensions, "the dimensions of the two matrixes have to match");
 
-        for (auto [curr, add] : views::zip(this->matrix_data, other.matrix_data)) {
+        for (int i = 0; i < matrix_data.size(); i++) {
+            auto& curr = this->matrix_data[i];
+            auto& add = other.matrix_data[i];
+
             curr += add;
         }
 
@@ -104,7 +111,9 @@ public:
     inline constexpr Matrix& operator*=(const Matrix& other) {
         assertm(this->dimensions == other.dimensions, "the dimensions of the two matrixes have to match");
 
-        for (auto [curr, add] : views::zip(this->matrix_data, other.matrix_data)) {
+        for (int i = 0; i < matrix_data.size(); i++) {
+            auto& curr = this->matrix_data[i];
+            auto& add = other.matrix_data[i];
             curr *= add;
         }
 

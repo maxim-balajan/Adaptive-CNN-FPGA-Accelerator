@@ -9,7 +9,8 @@ Matrix<T>::Matrix(initializer_list<size_t> input_dimensions): dimensions(input_d
     assertm(input_dimensions.size() > 0, "input dimensions have to be > 0");
     
     size_t total_matrix_size = 1;
-    for (const auto [index, dimension_size] : views::enumerate(input_dimensions)) {
+    for (int index = 0; index < input_dimensions.size(); index++) {
+        auto dimension_size = (input_dimensions.begin())[index];
         assertm(dimension_size != 0, "all dimensions have to be > 0");
 
         dimensions[index] = dimension_size;
@@ -24,7 +25,8 @@ Matrix<T>::Matrix(vector<size_t> input_dimensions): dimensions(input_dimensions.
     assertm(input_dimensions.size() > 0, "input dimensions have to be > 0");
 
     size_t total_matrix_size = 1;
-    for (const auto [index, dimension_size] : views::enumerate(input_dimensions)) {
+    for (int index = 0; index < input_dimensions.size(); index++) {
+        auto dimension_size = (input_dimensions.begin())[index];
         assertm(dimension_size != 0, "all dimensions have to be > 0");
 
         dimensions[index] = dimension_size;
@@ -80,8 +82,8 @@ template<typename T>
 inline void Matrix<T>::copy_to(Matrix<T>& destination) const {
     assertm(this->dimensions == destination.dimensions, "the dimensions of the two matrixes have to match");
 
-    for (auto [curr, dest] : views::zip(this->matrix_data, destination.matrix_data)) {
-        dest = curr;
+    for (int i = 0; i < matrix_data.size(); i++) {
+        destination.matrix_data[i] = this->matrix_data[i];
     }
 }
 
@@ -142,7 +144,7 @@ std::ostream& operator<<(std::ostream &out, Matrix<T> const& data) {
     // with this we can check when to print brackets
     // e.g. this calculates [2,5,2,3] -> [60,30,6,3]
     auto curr_multiplier = 1;
-    for (auto& dim : views::reverse(dimension_multipliers)) {
+    for (auto& dim : ranges::views::reverse(dimension_multipliers)) {
         dim *= curr_multiplier;
         curr_multiplier *= dim;
     }
@@ -150,7 +152,7 @@ std::ostream& operator<<(std::ostream &out, Matrix<T> const& data) {
     int brackets_printed = 0;
     for (auto i = 0; i < data.total_size(); i++) {
         brackets_printed = 0;
-        for (auto mult : views::reverse(dimension_multipliers)) {
+        for (auto mult : ranges::views::reverse(dimension_multipliers)) {
             if (i % mult != 0) {
                 break;
             }
