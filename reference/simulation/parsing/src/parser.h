@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <memory>
-#include <common.h>
+#include <simulation.h>
 
 using namespace std;
 

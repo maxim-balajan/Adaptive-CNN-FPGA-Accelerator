@@ -1,5 +1,4 @@
 #include "dense.h"
-// #include "data/data_converter.h"
 
 template<typename T, typename ACC>
 Dense<T, ACC>::Dense(Matrix<T> weights, Matrix<T> bias, bool enable_softmax, size_t batching, size_t x)

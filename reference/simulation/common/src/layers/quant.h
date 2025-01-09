@@ -1,6 +1,4 @@
 #pragma once
-// #include "data/matrix.h"
-// #include "layer.h"
 
 template<typename T, typename ACC>
 class Quant: public Layer<T, ACC> {

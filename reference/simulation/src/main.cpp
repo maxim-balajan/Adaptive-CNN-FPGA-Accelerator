@@ -2,7 +2,7 @@
 #include <chrono>
 #include <argparse.hpp>
 
-#include <common.h>
+#include <simulation.h>
 #include <parsing.h>
 
 using namespace std;

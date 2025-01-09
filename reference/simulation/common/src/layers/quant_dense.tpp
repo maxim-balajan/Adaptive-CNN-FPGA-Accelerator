@@ -1,5 +1,4 @@
 #include "quant_dense.h"
-// #include "data/data_converter.h"
 
 template<typename T, typename ACC>
 QuantDense<T, ACC>::QuantDense(Matrix<T> weights, Matrix<T> bias, bool enable_softmax, size_t batching, size_t x, float s_b, float s_x, float s_w, float s_y)

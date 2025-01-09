@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include <common.h>
+#include <simulation.h>
 
 using namespace std;
 

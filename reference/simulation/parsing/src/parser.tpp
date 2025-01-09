@@ -8,7 +8,7 @@
 #include <onnx.pb.h>
 
 #include "parser.h"
-#include <common.h>
+#include <simulation.h>
 
 using namespace std;
 using namespace ParsingUtil;

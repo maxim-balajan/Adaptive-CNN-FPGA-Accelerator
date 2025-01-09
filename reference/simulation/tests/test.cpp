@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include <common.h>
+#include <simulation.h>
 
 void printb(uint16_t v) {
     unsigned int i, s = 1<<((sizeof(v)<<3)-1); // s = only most significant bit at 1

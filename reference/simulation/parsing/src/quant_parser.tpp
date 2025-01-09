@@ -9,7 +9,7 @@
 
 // include our onnx proto model
 #include <onnx.pb.h>
-#include <common.h>
+#include <simulation.h>
 
 using namespace std;
 using namespace ParsingUtil;

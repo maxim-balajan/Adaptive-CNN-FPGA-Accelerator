@@ -3,7 +3,6 @@
 #include <iostream>
 #include <stdio.h>
 #include <string.h>
-// #include "assert_helper.h"
 
 template<typename T, typename ACC, uint64_t BIT_CNT, uint64_t SIGN_INDEX>
 class EmulatedInt {

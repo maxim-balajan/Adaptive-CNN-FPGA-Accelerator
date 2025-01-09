@@ -1,6 +1,4 @@
 #include "quant_convolution.h"
-// #include "data/data_converter.h"
-// #include "common_util.h"
 
 #include <iostream>
 

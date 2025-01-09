@@ -1,6 +1,6 @@
 #include <npy.hpp>
 #include <string>
-#include <common.h>
+#include <simulation.h>
 #include "quant_parser.h"
 
 using namespace std;
