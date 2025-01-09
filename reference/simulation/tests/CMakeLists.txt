@@ -1,3 +1,3 @@
-add_executable(tests ${CMAKE_SOURCE_DIR}/tests/test.cpp)
+add_executable(tests ${CMAKE_CURRENT_LIST_DIR}/test.cpp)
 
-target_link_libraries(tests PRIVATE common)
+target_link_libraries(tests PRIVATE simulation)
