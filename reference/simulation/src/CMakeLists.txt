@@ -1,7 +1,6 @@
-target_link_libraries(simulation proto ${PROTOBUF_LIBRARY})
+add_executable(simulation ${CMAKE_SOURCE_DIR}/src/main.cpp)
 
+target_link_libraries(simulation PRIVATE common)
+target_link_libraries(simulation PRIVATE parsing)
+target_link_libraries(simulation PRIVATE argparse)
 
-target_sources(simulation PRIVATE main.cpp)
-add_subdirectory(data)
-add_subdirectory(layers)
-add_subdirectory(parsing)

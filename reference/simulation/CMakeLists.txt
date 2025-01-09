@@ -1,22 +1,15 @@
-cmake_minimum_required(VERSION 3.20.0)
+cmake_minimum_required(VERSION 3.30.0)
 
 project(simulation)
+project(tests)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++23 -O3")
 
-add_executable(simulation ${SOURCE_FILES})
-add_executable(test ${SOURCES})
+include("lib/CMakeLists.txt")
+include("common/CMakeLists.txt")
+include("parsing/CMakeLists.txt")
 
-# find protobuf, include proto lib directory and cmake_bin_dir where proto will be generated, then generate
-find_package(Protobuf REQUIRED)
-include_directories(${Protobuf_INCLUDE_DIRS} ${CMAKE_BINARY_DIR})
-
-# compile .proto file
-protobuf_generate_cpp(PROTO_SRC PROTO_HEADER src/parsing/onnx.proto)
-add_library(proto ${PROTO_HEADER} ${PROTO_SRC})
-
-add_subdirectory(src)
-add_subdirectory(test tests)
-add_subdirectory(lib)
+include(src/CMakeLists.txt)
+include(tests/CMakeLists.txt)
 

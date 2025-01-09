@@ -10,7 +10,7 @@
 #include "parsing/parser.h"
 #include "parsing/quant_parser.h"
 #include "parsing/npy_parser.h"
-#include "util.h"
+#include "common_util.h"
 
 #include "data/matrix_view.h"
 #include "assert.h"
