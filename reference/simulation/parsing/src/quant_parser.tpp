@@ -110,7 +110,7 @@ namespace {
                 float s_y = find_scalar<float>(graph.initializer(), quant_after_relu.value().input()[1]);              
 
                 auto prev_nodes = get_previous_nodes(curr_node, graph);
-                if (prev_nodes.size() != 3) {
+                if (prev_nodes.size() != 2) {
                     throw new ParsingException("invalid amount of inputs!");
                 }
                 auto prev_input = prev_nodes[0];
@@ -133,10 +133,12 @@ namespace {
                 size_t channel_count = kernel.shape()[0];
                 size_t filter_size = kernel.shape()[2];
 
-                Matrix<T> bias = parse_quantized_initializer_matrix<T>(graph, prev_nodes[2].name());
-                assertm(bias.shape().size() == 1, "Bias has to be 1D!");
-
-                float s_b = find_scalar<float>(graph.initializer(), prev_nodes[2].input()[1]);
+                Matrix<T> bias({channel_count});
+                //Matrix<T> bias = parse_quantized_initializer_matrix<T>(graph, prev_nodes[2].name());
+                //assertm(bias.shape().size() == 1, "Bias has to be 1D!");
+                
+                float s_b = 0.f;
+                // float s_b = find_scalar<float>(graph.initializer(), prev_nodes[2].input()[1]);
 
                 // update dimensions
                 curr_dimensions[1] = channel_count;
@@ -170,13 +172,13 @@ namespace {
                 cout << "MaxPooling(" << pool_size << ", " << batching << ", ";
                 cout << curr_dimensions[0] << ", " << curr_dimensions[1] << ")";
 
-            } else if (curr_node.op_type() == "Gemm") {
+            } else if (curr_node.op_type() == "MatMul") {
                 if (curr_dimensions.size() != 2) {
                     throw ParsingException("Dense requires a 2D input");
                 }
 
                 auto prev_nodes = get_previous_nodes(curr_node, graph);
-                if (prev_nodes.size() != 3) {
+                if (prev_nodes.size() != 2) {
                     throw new ParsingException("invalid amount of inputs!");
                 }
                 // retrieve scale vector of input
@@ -186,23 +188,31 @@ namespace {
                 }
                 float s_x = find_scalar<float>(graph.initializer(), prev_input.input()[1]);
 
-                if (curr_node.input().size() != 3) {
+                auto prev_weight = prev_nodes[1];
+                while (prev_weight.op_type() != "Quant") {
+                    prev_weight = get_previous_nodes(prev_weight, graph)[0];
+                }               
+
+                if (curr_node.input().size() != 2) {
                     throw new ParsingException("invalid amount of inputs!");
                 }
 
-                Matrix<T> weights_t = parse_quantized_initializer_matrix<T>(graph, prev_nodes[1].name());
+                Matrix<T> weights_t = parse_quantized_initializer_matrix<T>(graph, prev_weight.name());
                 Matrix<T> weights = transpose_2d(weights_t);
                 assertm(weights.shape().size() == 2, "Weights have to be a 2D matrix!");
                 assertm(weights.shape()[0] == curr_dimensions[1],
                     "First dimension of weights have to match current dimensions!");
                 // retrieve scale value of weight matrix
-                float s_w = find_scalar<float>(graph.initializer(), prev_nodes[1].input()[1]);
+                float s_w = find_scalar<float>(graph.initializer(), prev_weight.input()[1]);
 
-                Matrix<T> bias_t = parse_quantized_initializer_matrix<T>(graph, prev_nodes[2].name());                
-                Matrix<T> bias = transpose_2d(bias_t);
+                // Matrix<T> bias_t = parse_quantized_initializer_matrix<T>(graph, prev_nodes[2].name());                
+                // Matrix<T> bias = transpose_2d(bias_t);
+
+                Matrix<T> bias({weights.shape()[0]});
                 curr_dimensions[1] = weights.shape()[1];
                 // retrieve scale value of bias vector
-                float s_b = find_scalar<float>(graph.initializer(), prev_nodes[2].input()[1]);
+                // float s_b = find_scalar<float>(graph.initializer(), prev_nodes[2].input()[1]);
+                float s_b = 0.f;
                 // retrieve s_y from following quant layer
                 auto quant_layer = get_next_node(curr_node, graph);
                 if (!quant_layer.has_value() || quant_layer.value().op_type() != "Quant") {
