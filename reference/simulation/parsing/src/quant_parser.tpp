@@ -137,7 +137,7 @@ namespace {
                 //Matrix<T> bias = parse_quantized_initializer_matrix<T>(graph, prev_nodes[2].name());
                 //assertm(bias.shape().size() == 1, "Bias has to be 1D!");
                 
-                float s_b = 0.f;
+                float s_b = 0.0f;
                 // float s_b = find_scalar<float>(graph.initializer(), prev_nodes[2].input()[1]);
 
                 // update dimensions
@@ -208,11 +208,11 @@ namespace {
                 // Matrix<T> bias_t = parse_quantized_initializer_matrix<T>(graph, prev_nodes[2].name());                
                 // Matrix<T> bias = transpose_2d(bias_t);
 
-                Matrix<T> bias({weights.shape()[0]});
+                Matrix<T> bias({weights_t.shape()[0]});
                 curr_dimensions[1] = weights.shape()[1];
                 // retrieve scale value of bias vector
                 // float s_b = find_scalar<float>(graph.initializer(), prev_nodes[2].input()[1]);
-                float s_b = 0.f;
+                float s_b = 0.0f;
                 // retrieve s_y from following quant layer
                 auto quant_layer = get_next_node(curr_node, graph);
                 if (!quant_layer.has_value() || quant_layer.value().op_type() != "Quant") {
