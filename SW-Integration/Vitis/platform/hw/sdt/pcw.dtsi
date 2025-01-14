@@ -407,6 +407,7 @@
 		};
 		psu_afi_0: psu_afi@fd360000 {
 			xlnx,rable = <0>;
+			xlnx,is-cache-coherent = <0>;
 			compatible = "xlnx,psu-afi-1.0";
 			status = "okay";
 			xlnx,interconnect-s-axi-masters = "psu_cortexa53_0.M_AXI_DP , & , psu_cortexa53_1.M_AXI_DP , & , psu_cortexa53_2.M_AXI_DP , & , psu_cortexa53_3.M_AXI_DP , & , psu_cortexr5_0.M_AXI_DP , & , psu_cortexr5_1.M_AXI_DP , & , psu_pmu_0.M_AXI_DP";
