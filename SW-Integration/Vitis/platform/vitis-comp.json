@@ -3,7 +3,7 @@
   "type": "PLATFORM",
   "configuration": {
     "description": "",
-    "xsa": "/home/markus/Documents/RADL/SW-Integration/Vivado2/main_design_wrapper.xsa",
+    "xsa": "/home/markus/Documents/RADL/SW-Integration/Vivado/main_design_wrapper.xsa",
     "xsaPathInPlatform": "platform/hw/main_design_wrapper.xsa",
     "emulationXsa": "",
     "emulationXsaPathInPlatform": "",

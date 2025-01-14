@@ -2531,6 +2531,7 @@
                         xlnx,enable-multi-channel = <0x0>;
                         xlnx,num-mm2s-channels = <0x1>;
                         xlnx,c-sg-length-width = <0xe>;
+                        interrupt-names = "mm2s_introut", "s2mm_introut";
                         compatible = "xlnx,axi-dma-7.1", "xlnx,axi-dma-1.00.a";
                         xlnx,c-m-axis-mm2s-tdata-width = <0x20>;
                         xlnx,c-sg-use-stsapp-length = <0x0>;
@@ -2538,12 +2539,14 @@
                         xlnx,mm2s-burst-size = <0x10>;
                         xlnx,c-enable-multi-channel = <0x0>;
                         xlnx,c-num-mm2s-channels = <0x1>;
+                        interrupt-parent = <&gic_a53>;
                         xlnx,include-s2mm-dre = <0x0>;
                         xlnx,c-mm2s-burst-size = <0x10>;
                         status = "okay";
                         xlnx,c-include-s2mm-dre = <0x0>;
                         xlnx,include-mm2s-dre = <0x0>;
                         xlnx,name = "axi_dma_0";
+                        interrupts = <0x0 0x59 0x4 0x0 0x5a 0x4>;
                         xlnx,c-include-sg = <0x0>;
                         xlnx,c-m-axi-s2mm-data-width = <0x20>;
                         xlnx,include-s2mm-sf = <0x1>;
@@ -2577,6 +2580,7 @@
                         phandle = <0xa>;
 
                         dma_channel_a0000000: dma-channel@a0000000 {
+                                interrupts = <0x0 0x59 0x4>;
                                 xlnx,datawidth = <0x20>;
                                 xlnx,device-id = <0x0>;
                                 compatible = "xlnx,axi-dma-mm2s-channel";
@@ -2585,6 +2589,7 @@
                         };
 
                         dma_channel_a0000030: dma-channel@a0000030 {
+                                interrupts = <0x0 0x5a 0x4>;
                                 xlnx,datawidth = <0x20>;
                                 xlnx,device-id = <0x0>;
                                 compatible = "xlnx,axi-dma-s2mm-channel";

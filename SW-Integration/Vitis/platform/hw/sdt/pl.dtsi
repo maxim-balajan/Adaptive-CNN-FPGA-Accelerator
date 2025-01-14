@@ -19,6 +19,7 @@
 			xlnx,enable-multi-channel = <0>;
 			xlnx,num-mm2s-channels = <1>;
 			xlnx,c-sg-length-width = <14>;
+			interrupt-names = "mm2s_introut" , "s2mm_introut";
 			compatible = "xlnx,axi-dma-7.1" , "xlnx,axi-dma-1.00.a";
 			xlnx,c-m-axis-mm2s-tdata-width = <32>;
 			xlnx,c-sg-use-stsapp-length = <0>;
@@ -26,12 +27,14 @@
 			xlnx,mm2s-burst-size = <16>;
 			xlnx,c-enable-multi-channel = <0>;
 			xlnx,c-num-mm2s-channels = <1>;
+			interrupt-parent = <&imux>;
 			xlnx,include-s2mm-dre = <0>;
 			xlnx,c-mm2s-burst-size = <16>;
 			status = "okay";
 			xlnx,c-include-s2mm-dre = <0>;
 			xlnx,include-mm2s-dre = <0>;
 			xlnx,name = "axi_dma_0";
+			interrupts = < 0 89 4 0 90 4 >;
 			xlnx,c-include-sg = <0>;
 			xlnx,c-m-axi-s2mm-data-width = <32>;
 			xlnx,include-s2mm-sf = <1>;
@@ -61,12 +64,14 @@
 			xlnx,c-increase-throughput = <0>;
 			xlnx,c-micro-dma = <0>;
 			dma_channel_a0000000: dma-channel@a0000000 {
+				interrupts = <0 89 4>;
 				xlnx,datawidth = <0x20>;
 				xlnx,device-id = <0x0>;
 				compatible = "xlnx,axi-dma-mm2s-channel";
 				dma-channels = <0x1>;
 			};
 			dma_channel_a0000030: dma-channel@a0000030 {
+				interrupts = <0 90 4>;
 				xlnx,datawidth = <0x20>;
 				xlnx,device-id = <0x0>;
 				compatible = "xlnx,axi-dma-s2mm-channel";
@@ -85,7 +90,7 @@
 			status = "okay";
 			compatible = "xlnx,afi-fpga";
 			resets = <&zynqmp_reset 116>, <&zynqmp_reset 117>, <&zynqmp_reset 118>, <&zynqmp_reset 119>;
-			config-afi = < 0 2>, <1 2>, <2 0>, <3 0>, <4 0>, <5 0>, <6 0>, <7 0>, <8 0>, <9 0>, <10 0>, <11 0>, <12 0>, <13 0>, <14 0x800>, <15 0x000>;
+			config-afi = < 0 2>, <1 2>, <2 0>, <3 0>, <4 2>, <5 2>, <6 0>, <7 0>, <8 0>, <9 0>, <10 0>, <11 0>, <12 0>, <13 0>, <14 0x800>, <15 0x000>;
 		};
 	};
 };
