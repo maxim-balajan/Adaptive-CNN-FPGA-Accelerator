@@ -13,18 +13,26 @@ collect(PROJECT_LIB_DEPS xilstandalone;xiltimer)
 
 
 
-
-
-
-
-set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++23")
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
 
 # collect neccesary libs 
 set(SIMULATION_BASE_DIR ${CMAKE_SOURCE_DIR}/../../../../reference/simulation)
 message(SIMULATION_BASE_DIR=${SIMULATION_BASE_DIR})
 include("${SIMULATION_BASE_DIR}/simulation/CMakeLists.txt")
 
+#set(LIBPARSING_LIB_PATH ${CMAKE_SOURCE_DIR}/../lib/libparsing_protobuf.a)
+#set(LIBPARSING_INCLUDE ${CMAKE_SOURCE_DIR}/../lib)
+#message(LIBPARSING_INCLUDE ${LIBPARSING_INCLUDE})
+#set(LIBPARSING_SO_PATH /usr/lib/x86_64-linux-gnu/libprotobuf.so)
+
+# INSTALL PROTOBUF: sudo apt install protobuf-compiler libprotobuf-dev
+# AND SET THE FOLLOWING TO YOUR PATHS!
+# set(Protobuf_LIBRARIES /usr/lib/x86_64-linux-gnu/libprotobuf.so)
+# set(Protobuf_INCLUDE_DIRS /usr/include)
+# set(Protobuf_INCLUDE_DIR /usr/include)
+# set(Protobuf_PROTOC_EXECUTABLE /usr/bin/protoc)
+# include("${SIMULATION_BASE_DIR}/parsing/CMakeLists.txt")
 
 collect(PROJECT_LIB_DEPS xil)
 collect(PROJECT_LIB_DEPS gcc)
@@ -64,6 +72,7 @@ set_target_properties(${APP_NAME}.elf PROPERTIES LINK_DEPENDS ${USER_LINKER_SCRI
 
 # link our simulation lib
 target_link_libraries(${APP_NAME}.elf simulation)
+# target_link_libraries(${APP_NAME}.elf parsing)
 target_link_libraries(${APP_NAME}.elf -Wl,-T -Wl,\"${USER_LINKER_SCRIPT}\" -L\"${CMAKE_SOURCE_DIR}/\" -L\"${CMAKE_LIBRARY_PATH}/\" -L\"${USER_LINK_DIRECTORIES}/\" -Wl,--start-group,-l${_deps} -Wl,--end-group)
 
 target_compile_definitions(${APP_NAME}.elf PUBLIC ${USER_COMPILE_DEFINITIONS})
