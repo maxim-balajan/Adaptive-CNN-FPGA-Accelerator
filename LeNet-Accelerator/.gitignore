@@ -106,5 +106,4 @@ ipshared
 
 ### Few more files
 *.vdb
-*.wcfg
 LeNet-Accelerator.sim/sim_1/behav/*

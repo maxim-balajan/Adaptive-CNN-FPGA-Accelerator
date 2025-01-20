@@ -14,12 +14,13 @@ entity conv_weight_memory is
 		current_channel      : natural := 1;
 		--! 0 == for one out_chan all in_chan are written; 1 == for one in_chan all out_chan are written
 		init_type : integer range 0 to 1 := 0;
-		data_path : string := "../data/test.data"
+		data_path : string               := "../data/test.data"
 	);
 	port (
 		clk           : in std_logic;
 		reset         : in std_logic;
 		base_addr     : in std_logic_vector(kernel_size ** 2 * total_input_channel ** (1 - init_type) * total_output_channel ** (init_type) - 1 downto 0);
+		mem_valid     : out std_logic;
 		weight_matrix : out matrix_2d(0 to kernel_size - 1)(0 to kernel_size - 1)(vector_length - 1 downto 0)
 	);
 end entity conv_weight_memory;
@@ -71,12 +72,12 @@ begin
 				s_old_addr      <= (others => '0');
 				s_addr          <= (others => '0');
 				s_weight_matrix <= (others => (others => '0'));
-				s_mem_valid <= '0';
+				s_mem_valid     <= '0';
 			else
 				s_old_addr                              <= s_addr;
 				s_addr                                  <= s_addr + 1 when s_addr < kernel_size ** 2 - 1 else s_addr;
 				s_weight_matrix(to_integer(s_old_addr)) <= s_dout;
-				if s_old_addr >= kernel_size**2 - 1 then
+				if s_old_addr >= kernel_size ** 2 - 1 then
 					s_mem_valid <= '1';
 				end if;
 			end if;
@@ -85,6 +86,7 @@ begin
 	end process RESET_PROC;
 
 	s_actual_addr <= std_logic_vector(s_base_addr + s_addr);
+	mem_valid     <= s_mem_valid;
 
 	BRAM_ENT : entity work.bram_single_port
 		generic map (

@@ -33,9 +33,9 @@ package libmemory is
 	impure function read_weight_row (
 		file_name            : in string;
 		vector_length        : in natural;
-		total_rows  		 : in natural;
+		total_rows       : in natural;
 		row_length           : in natural;
-		curr_row   			 : in natural
+		curr_row          : in natural
 	) return matrix_1d;
 
 end package libmemory;
@@ -169,7 +169,7 @@ package body libmemory is
 			-- extra minus 1 because we also have the upper reading for-loop
 			for j in 0 to total_input_channel - 2 loop
 
-				for k in 0 to kernel_size ** 2 loop
+				for k in 0 to kernel_size ** 2 - 1 loop
 
 					readline(mem_file, file_line);
 
@@ -186,9 +186,9 @@ package body libmemory is
 	impure function read_weight_row (
 		file_name            : in string;
 		vector_length        : in natural;
-		total_rows  		 : in natural;
+		total_rows       : in natural;
 		row_length           : in natural;
-		curr_row   			 : in natural
+		curr_row          : in natural
 	) return matrix_1d is
 
 		file     mem_file  : text open read_mode is file_name;
