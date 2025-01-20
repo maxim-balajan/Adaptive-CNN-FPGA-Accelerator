@@ -1,14 +1,14 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 use IEEE.NUMERIC_STD.all;
-use STD.TEXTIO.all;
 use work.libmatrix.all;
+use work.libmemory.all;
 
 entity bram_single_port is
 	generic (
 		vector_length : natural := 8;
-		depth         : natural := 25;
-		data_path     : string  := "../data/test.data"
+		depth         : natural;
+		data          : matrix_1d
 	);
 	port (
 		clk   : in std_logic;
@@ -22,28 +22,7 @@ end entity bram_single_port;
 
 architecture behavioral of bram_single_port is
 
-	impure function init_from_file (
-		file_name: in string
-	) return matrix_1d is
-
-		file     mem_file  : text open read_mode is file_name;
-		variable file_line : line;
-		variable tmp_ram   : matrix_1d(0 to depth - 1)(vector_length - 1 downto 0);
-
-	begin
-
-		for i in tmp_ram'range loop
-
-			readline(mem_file, file_line);
-			hread(file_line, tmp_ram(i));
-
-		end loop;
-
-		return tmp_ram;
-
-	end function init_from_file;
-
-	shared variable RAM : matrix_1d(0 to depth - 1)(vector_length - 1 downto 0) := init_from_file(data_path);
+	shared variable RAM : matrix_1d(0 to depth - 1)(vector_length - 1 downto 0) := data;
 
 begin
 
