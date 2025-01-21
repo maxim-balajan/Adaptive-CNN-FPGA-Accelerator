@@ -1,7 +1,6 @@
 #include <npy.hpp>
 #include <string>
 #include <simulation.h>
-#include "quant_parser.h"
 
 using namespace std;
 
@@ -17,21 +16,18 @@ Matrix<TO> parse_matrix(string path) {
 
     Matrix<TO> res(shape);
     for (int i = 0; i < res.total_size(); i++) {
-//        cout << data[i];
         res[i] = convert_data<FROM, TO>(data[i]);
-//        cout << ", " << res[i] << endl;
-        
     }
 
     return res;
 }
 
 template<typename FROM, typename TO>
-Matrix<TO> parse_quantized_matrix(string path, QuantArguments quant_args) {
+Matrix<TO> parse_quantized_matrix(string path, float scale, float zero_point) {
         Matrix<FROM> original_matrix = parse_matrix<FROM, FROM>(path);
 
-        original_matrix *= (1/quant_args.scale);
-        original_matrix += quant_args.zero_point;
+        original_matrix *= (1/scale);
+        original_matrix += zero_point;
 
         // convert to target type
         Matrix<TO> dest(original_matrix.shape());

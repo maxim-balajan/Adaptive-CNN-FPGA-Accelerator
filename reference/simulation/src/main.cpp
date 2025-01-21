@@ -3,7 +3,8 @@
 #include <argparse.hpp>
 
 #include <simulation.h>
-#include <parsing.h>
+#include <onnx_parser.h>
+#include <npy_parser.h>
 
 using namespace std;
 using namespace ParsingUtil;
@@ -81,7 +82,7 @@ int run_benchmark(RunBenchmarkOptions options) {
     assert(quant_args.scale != -1);
     assert(quant_args.zero_point != -1);
 
-    Matrix<TargetType> input_data = parse_quantized_matrix<float, TargetType>("../../training/export/mnist/x_test.npy", quant_args);
+    Matrix<TargetType> input_data = parse_quantized_matrix<float, TargetType>("../../training/export/mnist/x_test.npy", quant_args.scale, quant_args.zero_point);
     Matrix<TargetType> output_data = parse_matrix<float, TargetType>("../../training/export/mnist/y_test.npy");
 
     assert(input_data.shape()[0] == output_data.shape()[0]);
