@@ -13,13 +13,50 @@ collect(PROJECT_LIB_DEPS xilstandalone;xiltimer)
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
 
 # collect neccesary libs 
+
 set(SIMULATION_BASE_DIR ${CMAKE_SOURCE_DIR}/../../../../reference/simulation)
 message(SIMULATION_BASE_DIR=${SIMULATION_BASE_DIR})
-include("${SIMULATION_BASE_DIR}/simulation/CMakeLists.txt")
+
+include("${SIMULATION_BASE_DIR}/modules.cmake")
 
 #set(LIBPARSING_LIB_PATH ${CMAKE_SOURCE_DIR}/../lib/libparsing_protobuf.a)
 #set(LIBPARSING_INCLUDE ${CMAKE_SOURCE_DIR}/../lib)
@@ -32,7 +69,11 @@ include("${SIMULATION_BASE_DIR}/simulation/CMakeLists.txt")
 # set(Protobuf_INCLUDE_DIRS /usr/include)
 # set(Protobuf_INCLUDE_DIR /usr/include)
 # set(Protobuf_PROTOC_EXECUTABLE /usr/bin/protoc)
+
+# set(LIBPARSING_LIB_PATH ${CMAKE_SOURCE_DIR}/../lib/libparsing_protobuf/libparsing_protobuf.a)
+# set(LIBPARSING_INCLUDE_PATH ${CMAKE_SOURCE_DIR}/../lib/libparsing_protobuf/include)
 # include("${SIMULATION_BASE_DIR}/parsing/CMakeLists.txt")
+# target_include_directories(parsing_protobuf INTERFACE /usr/include)
 
 collect(PROJECT_LIB_DEPS xil)
 collect(PROJECT_LIB_DEPS gcc)
@@ -70,9 +111,9 @@ add_executable(${APP_NAME}.elf ${_sources})
 
 set_target_properties(${APP_NAME}.elf PROPERTIES LINK_DEPENDS ${USER_LINKER_SCRIPT})
 
-# link our simulation lib
+# link our modules
 target_link_libraries(${APP_NAME}.elf simulation)
-# target_link_libraries(${APP_NAME}.elf parsing)
+
 target_link_libraries(${APP_NAME}.elf -Wl,-T -Wl,\"${USER_LINKER_SCRIPT}\" -L\"${CMAKE_SOURCE_DIR}/\" -L\"${CMAKE_LIBRARY_PATH}/\" -L\"${USER_LINK_DIRECTORIES}/\" -Wl,--start-group,-l${_deps} -Wl,--end-group)
 
 target_compile_definitions(${APP_NAME}.elf PUBLIC ${USER_COMPILE_DEFINITIONS})

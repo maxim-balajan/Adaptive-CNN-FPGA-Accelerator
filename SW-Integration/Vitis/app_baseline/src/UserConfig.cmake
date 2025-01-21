@@ -25,6 +25,7 @@ set(USER_UNDEFINED_SYMBOLS
 # Example 3: Adding ${CMAKE_SOURCE_DIR}/data/include to add data/include from this project.
 
 set(USER_INCLUDE_DIRECTORIES
+/usr/include
 )
 
 # -----------------------------------------
@@ -105,7 +106,6 @@ set(USER_LINK_OMIT_ALL_SYMBOL_INFO )
 # Add any libraries to be linked below, they will be added as extra libraries.
 # User need to update USER_LINK_DIRECTORIES below with these library paths.
 set(USER_LINK_LIBRARIES
-
 )
 
 # Add any directories to look for the libraries to be linked.
