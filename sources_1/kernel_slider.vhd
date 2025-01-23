@@ -83,6 +83,7 @@ begin
 	end generate LINE_BUFFER_GEN;
 
 	-- Set outputs
+	-- TODO: Mirror elements in x and y direction
 	kernel_activation_matrix <= s_kernel_matrix(s_kernel_matrix'low + 1 to s_kernel_matrix'high);
 	-- This is important so that Pooling and Convolution know when they have valid kernel
 	init_complete <= s_full_delay(s_full_delay'high);

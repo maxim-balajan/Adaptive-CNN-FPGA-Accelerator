@@ -30,6 +30,12 @@ package libmemory is
 		curr_input_channel   : in natural
 	) return matrix_1d;
 
+	impure function read_scale_value (
+		file_name : in string;
+		vector_length : in natural;
+		current_scale : in natural
+	) return std_logic_vector;
+
 	impure function read_weight_row (
 		file_name            : in string;
 		vector_length        : in natural;
@@ -182,6 +188,32 @@ package body libmemory is
 		return tmp_ram;
 
 	end function read_input_channel;
+
+	impure function read_scale_value (
+		file_name : in string;
+		vector_length : in natural;
+		current_scale : in natural
+	) return std_logic_vector is
+
+		file     mem_file  : text open read_mode is file_name;
+		variable file_line : line;
+		variable tmp_ram   : std_logic_vector(vector_length - 1 downto 0);
+
+	begin
+
+		-- Read until desired line
+		for i in 0 to current_scale - 1 loop
+
+			readline(mem_file, file_line);
+
+		end loop;
+
+		-- Write line to RAM variable and return
+		hread(file_line, tmp_ram);
+
+		return tmp_ram;
+
+	end function read_scale_value;
 
 	impure function read_weight_row (
 		file_name            : in string;
