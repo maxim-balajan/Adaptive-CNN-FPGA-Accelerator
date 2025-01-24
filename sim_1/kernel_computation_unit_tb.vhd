@@ -33,7 +33,7 @@ begin
 			output_length              => vector_length,
 			kernel_size                => kernel_size,
 			pool_or_conv               => 1,
-			enable_bias                => 1,
+			enable_bias                => 0,
 			enable_multiplication_line => 1,
 			enable_shift               => 1,
 			enable_relu                => 1
@@ -43,7 +43,7 @@ begin
 			reset             => reset,
 			activation_matrix => activation_matrix,
 			weight_matrix     => weight_matrix,
-			shamt             => "001",
+			shamt             => x"01",
 			bias              => x"FF",
 			kernel_en         => kernel_en,
 			kernel_complete   => kernel_complete,
@@ -71,7 +71,7 @@ begin
 	      x"02",
 	      x"03",
 	      x"04",
-	      x"05"
+	      x"04"
 	    ),
 	    (
 	      x"01",
@@ -146,7 +146,7 @@ begin
 	      x"FF",
 	      x"FE",
 	      x"FF",
-	      x"05"
+	      x"07"
 	    ),
 	    (
 	      x"FE",
