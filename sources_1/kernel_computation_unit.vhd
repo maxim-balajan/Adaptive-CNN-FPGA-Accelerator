@@ -10,7 +10,7 @@ entity kernel_computation_unit is
 		pool_or_conv : integer range 0 to 1 := 1;
 		--! enables the multiplication line in the beginning (only matters for pool_or_conv = 1)
 		enable_multiplication_line : integer range 0 to 1 := 1;
-		--! enables the shift before bias additon (only matters for pool_or_conv = 1)
+		--! enables the shift before bias addition (only matters for pool_or_conv = 1)
 		enable_shift : integer range 0 to 1 := 1;
 		--! enables the bias addition before relu at the end (only matters for pool_or_conv = 1 and enable_shift = 1)
 		enable_bias : integer range 0 to 1 := 1;
@@ -27,7 +27,7 @@ entity kernel_computation_unit is
 		-- only used for some convolutions; unused for pooling
 		weight_matrix : in matrix_2d(0 to kernel_size - 1)(0 to kernel_size - 1)(input_length - 1 downto 0);
 		-- bias and shamt could also be passed as generics (or static port inputs) but for now keep it as it is
-		shamt           : in std_logic_vector(integer(ceil(log2(real(output_length)))) - 1 downto 0);
+		shamt           : in std_logic_vector(input_length - 1 downto 0);
 		bias            : in std_logic_vector(output_length - 1 downto 0);
 		kernel_en       : in std_logic;
 		kernel_complete : in std_logic;

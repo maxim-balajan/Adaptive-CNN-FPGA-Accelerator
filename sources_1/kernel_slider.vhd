@@ -24,10 +24,12 @@ architecture rtl of kernel_slider is
 
 	-- "Kernel matrix" + 1 because we have to take inputs into consideration
 	signal s_kernel_matrix : matrix_2d(0 to kernel_size)(0 to kernel_size - 1)(vector_length - 1 downto 0);
+	-- This signal contains the values in flipped order
+	signal s_kernel_activation_matrix : matrix_2d(0 to kernel_size - 1)(0 to kernel_size - 1)(vector_length - 1 downto 0);
 	-- Line Buffer wr_en line
 	signal s_line_buffer_wr_en : std_logic_vector(0 to kernel_size - 1);
 
-	-- Helper signal to dertermine when initialization of pipeline is finished
+	-- Helper signal to determine when initialization of pipeline is finished
 	signal s_full_delay : std_logic_vector(0 to kernel_size);
 
 begin
@@ -83,8 +85,19 @@ begin
 	end generate LINE_BUFFER_GEN;
 
 	-- Set outputs
-	-- TODO: Mirror elements in x and y direction
-	kernel_activation_matrix <= s_kernel_matrix(s_kernel_matrix'low + 1 to s_kernel_matrix'high);
+	s_kernel_activation_matrix <= s_kernel_matrix(s_kernel_matrix'low + 1 to s_kernel_matrix'high);
+
+	-- Mirror output elements and write them to output
+	-- Assumption is kernel is quadratic (which it always should be regardless)
+
+	Y_GEN : for y in 0 to kernel_size - 1 generate
+
+		X_GEN : for x in 0 to kernel_size - 1 generate
+			kernel_activation_matrix(kernel_size - 1 - y)(kernel_size - 1 - x) <= s_kernel_activation_matrix(x)(y);
+		end generate X_GEN;
+
+	end generate Y_GEN;
+
 	-- This is important so that Pooling and Convolution know when they have valid kernel
 	init_complete <= s_full_delay(s_full_delay'high);
 
