@@ -37,6 +37,8 @@ architecture rtl of pooling_slider is
 	-- pixel locations of input stream (in first convolution this would be 28x28)
 	signal s_pixel_input_x : unsigned(integer(ceil(log2(c_old_image_width))) - 1 downto 0);
 	signal s_pixel_input_y : unsigned(integer(ceil(log2(c_old_image_height))) downto 0);
+	-- pixel x_coordinate delayed by one cycle; used for keeping control logic in check
+	signal s_pixel_old_input_x : unsigned(integer(ceil(log2(c_old_image_width))) - 1 downto 0);
 	-- pixel locations of output stream (in first convolution this would be 14x14)
 	signal s_pixel_output_x : unsigned(integer(ceil(log2(c_new_image_width))) - 1 downto 0);
 	signal s_pixel_output_y : unsigned(integer(ceil(log2(c_new_image_height))) downto 0);
@@ -45,7 +47,7 @@ architecture rtl of pooling_slider is
 	signal s_current_pixel : std_logic_vector(vector_length - 1 downto 0);
 	signal s_current_valid : std_logic;
 
-	-- Helper signals to dertermine which kernels are valid and when computation needs to end
+	-- Helper signals to determine which kernels are valid and when computation needs to end
 	signal s_init_complete   : std_logic;
 	signal s_kernel_en       : std_logic;
 	signal s_kernel_complete : std_logic;
@@ -57,11 +59,13 @@ begin
 
 		if rising_edge(clk) then
 			if reset = '1' then
-				s_pixel_input_x   <= (others => '0');
-				s_pixel_input_y   <= (others => '0');
-				s_current_pixel   <= (others => '0');
-				s_kernel_complete <= '0';
-				s_current_valid   <= '0';
+				s_pixel_input_x <= (others => '0');
+				s_pixel_input_y <= (others => '0');
+				-- old x coordinate has to be set to -1 because otherwise control logic will break
+				s_pixel_old_input_x <= (others => '1');
+				s_current_pixel     <= (others => '0');
+				s_kernel_complete   <= '0';
+				s_current_valid     <= '0';
 			else
 				if valid_pixel = '1' then
 					-- Get current pixel
@@ -82,9 +86,13 @@ begin
 
 				-- This will most likely break for other pooling sizes
 				-- after final pixel has been reached, set complete flag;
-				-- This has to be written exactly like this because otherwise undefined behaviour of HW after completion will mess with this flag
+				-- This has to be written exactly like this because otherwise undefined behavior of HW after completion will mess with this flag
 				if s_pixel_output_x = integer(c_new_image_width) - 1 and s_pixel_output_y = integer(c_new_image_height) - 1 and s_kernel_en = '1' then
 					s_kernel_complete <= '1';
+				end if;
+				-- This stores the old coordinates in order because otherwise the control signals will be wrong
+				if s_init_complete = '1' then
+					s_pixel_old_input_x <= s_pixel_input_x;
 				end if;
 			end if;
 		end if;
@@ -109,10 +117,12 @@ begin
 		);
 
 	-- These signals are important for the actual pooling unit directly followed after this unit
+
 	s_kernel_en <= '1' when s_init_complete = '1'
-	                        and s_current_valid = '1'
+	                        and s_kernel_complete = '0'
 	                        and s_pixel_input_x(s_pixel_input_x'low) = '0'
-	                        and s_pixel_input_y(s_pixel_input_y'low) = '0' else
+	                        and s_pixel_input_y(s_pixel_input_y'low) = '0'
+	                        and s_pixel_old_input_x(s_pixel_old_input_x'low) = '1' else
 	               '0';
 
 	kernel_en <= s_kernel_en;
