@@ -122,7 +122,7 @@ begin
 	                        and s_kernel_complete = '0'
 	                        and s_pixel_input_x(s_pixel_input_x'low) = '0'
 	                        and s_pixel_input_y(s_pixel_input_y'low) = '0'
-	                        and s_pixel_old_input_x(s_pixel_old_input_x'low) = '1' else
+	                        and s_pixel_old_input_x(s_pixel_old_input_x'low) /= s_pixel_input_x(s_pixel_input_x'low) else
 	               '0';
 
 	kernel_en <= s_kernel_en;

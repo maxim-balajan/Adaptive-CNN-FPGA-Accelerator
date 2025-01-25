@@ -27,11 +27,12 @@ architecture bench of conv_pool_pipeline_tb is
 	constant scale_path                 : string               := "../data/test_scale.data";
 	constant enable_multiplication_line : integer range 0 to 1 := 1;
 	constant enable_shift               : integer range 0 to 1 := 1;
+    -- ReLU is disabled for test purposes, but behavior should be "the same" (just without the ReLU)
 	constant enable_relu                : integer range 0 to 1 := 0;
 
 	constant output_length : integer range 0 to ((3 ** enable_multiplication_line)) * vector_length := 8;
 	-- Ports
-	signal clk               : std_logic := '0';
+	signal clk               : std_logic := '1';
 	signal reset             : std_logic;
 	signal activation_matrix : matrix_2d(0 to kernel_size - 1)(0 to kernel_size - 1)(vector_length - 1 downto 0);
 	signal kernel_en         : std_logic;
@@ -40,6 +41,7 @@ architecture bench of conv_pool_pipeline_tb is
 	signal new_pixel         : std_logic_vector(output_length - 1 downto 0);
 	signal valid_pixel       : std_logic;
 	signal comp_complete     : std_logic;
+    signal start_valid_pixel : std_logic;
 
 	signal s_pixel_stream : std_logic_vector(vector_length - 1 downto 0);
 
@@ -52,9 +54,20 @@ begin
 	begin
 
 		s_pixel_stream <= x"FF";
+        start_valid_pixel <= '1';
 		wait for clk_period;
+        s_pixel_stream <= (others => '0'); 
+        start_valid_pixel <= '0';
+        wait for clk_period;
+        s_pixel_stream <= (others => '0'); 
+        start_valid_pixel <= '0';
+        wait for clk_period;
 		s_pixel_stream <= x"01";
+        start_valid_pixel <= '1';
 		wait for clk_period;
+        s_pixel_stream <= (others => '0'); 
+        start_valid_pixel <= '0';
+        wait for clk_period;
 
 	end process PIXEL_PROC;
 
@@ -69,7 +82,7 @@ begin
 			clk                      => clk,
 			reset                    => reset,
 			pixel_stream             => s_pixel_stream,
-			valid_pixel              => '1',
+			valid_pixel              => start_valid_pixel,
 			kernel_complete          => kernel_complete,
 			kernel_en                => kernel_en,
 			kernel_activation_matrix => activation_matrix
