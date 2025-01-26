@@ -104,6 +104,7 @@ begin
 
 			CONV_MUL_LINE_GEN : if pool_or_conv = 1 and enable_multiplication_line = 1 generate
 				-- resize necessary because target signal has to exactly match resulting size of multiplication
+				-- Multiplication never has to be clipped because the vectors are increased accordingly
 				s_pipeline_start(i * kernel_size + j) <= std_logic_vector(resize(signed(activation_matrix(i)(j)), 2 * activation_matrix(i)(j)'length) * signed(weight_matrix(i)(j)));
 			else generate
 				s_pipeline_start(i * kernel_size + j) <= activation_matrix(i)(j);
@@ -190,15 +191,15 @@ begin
 				s_pipeline_result_bias <= std_logic_vector(signed(s_pipeline_begin_bias) + signed(bias));
 
 				-- Shift + bias + Clipping
-				s_new_pixel     <= std_logic_vector(to_signed(-128, s_new_pixel'length)) when signed(s_pipeline_result_bias) < -128 else
-	                   std_logic_vector(to_signed(127, s_new_pixel'length)) when signed(s_pipeline_result_bias) > 127 else
+				s_new_pixel     <= std_logic_vector(to_signed(- 2 ** (output_length - 1), s_new_pixel'length)) when signed(s_pipeline_result_bias) < (- 2 ** (output_length - 1)) else
+	                   std_logic_vector(to_signed(2 ** (output_length - 1) - 1, s_new_pixel'length)) when signed(s_pipeline_result_bias) > (2 ** (output_length - 1) - 1) else
 	                   s_pipeline_result_bias(output_length - 1 downto 0);
 				s_valid_pixel   <= s_kernel_en_bias;
 				s_comp_complete <= s_kernel_complete_bias;
 			else generate
 				-- Shift + Clipping
-				s_new_pixel     <= std_logic_vector(to_signed(-128, s_new_pixel'length)) when signed(s_pipeline_result_shift) < -128 else
-	                   std_logic_vector(to_signed(127, s_new_pixel'length)) when signed(s_pipeline_result_shift) > 127 else
+				s_new_pixel     <= std_logic_vector(to_signed(- 2 ** (output_length - 1), s_new_pixel'length)) when signed(s_pipeline_result_shift) < (- 2 ** (output_length - 1)) else
+	                   std_logic_vector(to_signed(2 ** (output_length - 1) - 1, s_new_pixel'length)) when signed(s_pipeline_result_shift) > (2 ** (output_length - 1) - 1) else
 	                   s_pipeline_result_shift(output_length - 1 downto 0);
 				s_valid_pixel   <= s_kernel_en_shift;
 				s_comp_complete <= s_kernel_complete_shift;
@@ -206,8 +207,8 @@ begin
 
 		else generate
 			-- Clipping
-			s_new_pixel     <= std_logic_vector(to_signed(-128, s_new_pixel'length)) when signed(s_pipeline_end) < -128 else
-	                   std_logic_vector(to_signed(127, s_new_pixel'length)) when signed(s_pipeline_end) > 127 else
+			s_new_pixel     <= std_logic_vector(to_signed(-2 ** (output_length - 1), s_new_pixel'length)) when signed(s_pipeline_end) < (-2 ** (output_length - 1)) else
+	                   std_logic_vector(to_signed(2 ** (output_length - 1) - 1, s_new_pixel'length)) when signed(s_pipeline_end) > (2 ** (output_length - 1) - 1) else
 	                   s_pipeline_end(output_length - 1 downto 0);
 			s_valid_pixel   <= s_kernel_en_line(s_kernel_en_line'high);
 			s_comp_complete <= s_kernel_complete_line(s_kernel_complete_line'high);
