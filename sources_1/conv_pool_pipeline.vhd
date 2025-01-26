@@ -8,11 +8,12 @@ use work.libmemory.all;
 entity conv_pool_pipeline is
 	generic (
 		--! general generics that are necessary
-		vector_length : natural              := 8;
-		input_width   : natural              := 32;
-		input_height  : natural              := 32;
-		kernel_size   : natural              := 5;
-		pooling_size  : integer range 2 to 2 := 2;
+		input_length   : natural              := 8;
+		input_width    : natural              := 32;
+		input_height   : natural              := 32;
+		kernel_size    : natural              := 5;
+		pooling_size   : integer range 2 to 2 := 2;
+		enable_weights : integer range 0 to 1 := 1;
 
 		--! generics used for initializing BRAM Weight Memory
 		total_input_channel  : natural              := 1;
@@ -24,15 +25,15 @@ entity conv_pool_pipeline is
 		scale_path           : string               := "../data/scale_values.data";
 
 		--! generics used for convolution_comp_unit
-		enable_multiplication_line : integer range 0 to 1                                                   := 1;
-		enable_shift               : integer range 0 to 1                                                   := 1;
-		enable_relu                : integer range 0 to 1                                                   := 1;
-		output_length              : integer range 0 to ((3 ** enable_multiplication_line)) * vector_length := 8
+		enable_multiplication_line : integer range 0 to 1                                                  := 1;
+		enable_shift               : integer range 0 to 1                                                  := 1;
+		enable_relu                : integer range 0 to 1                                                  := 1;
+		output_length              : integer range 0 to ((3 ** enable_multiplication_line)) * input_length := 8
 	);
 	port (
 		clk               : in std_logic;
 		reset             : in std_logic;
-		activation_matrix : in matrix_2d(0 to kernel_size - 1)(0 to kernel_size - 1)(vector_length - 1 downto 0);
+		activation_matrix : in matrix_2d(0 to kernel_size - 1)(0 to kernel_size - 1)(input_length - 1 downto 0);
 		kernel_en         : in std_logic;
 		kernel_complete   : in std_logic;
 		base_addr         : in std_logic_vector(kernel_size ** 2 * total_input_channel ** (1 - init_type) * total_output_channel ** (init_type) - 1 downto 0);
@@ -46,9 +47,9 @@ end entity conv_pool_pipeline;
 architecture rtl of conv_pool_pipeline is
 
 	-- Value used for scaling in the Conv_Comp_Unit
-	constant c_scale_value : std_logic_vector(vector_length - 1 downto 0) := read_scale_value(scale_path, vector_length, current_scale);
+	constant c_scale_value : std_logic_vector(input_length - 1 downto 0) := read_scale_value(scale_path, input_length, current_scale);
 
-	signal s_weight_matrix : matrix_2d(0 to kernel_size - 1)(0 to kernel_size - 1)(vector_length - 1 downto 0);
+	signal s_weight_matrix : matrix_2d(0 to kernel_size - 1)(0 to kernel_size - 1)(input_length - 1 downto 0);
 
 	-- Signal for the output of the Conv_Comp_Unit
 	signal s_conv_pixel    : std_logic_vector(output_length - 1 downto 0);
@@ -62,23 +63,32 @@ architecture rtl of conv_pool_pipeline is
 
 begin
 
-	WEIGHT_MEM : entity work.conv_weight_memory
-		generic map (
-			vector_length        => vector_length,
-			kernel_size          => kernel_size,
-			total_input_channel  => total_input_channel,
-			total_output_channel => total_output_channel,
-			current_channel      => current_channel,
-			init_type            => init_type,
-			data_path            => weight_path
-		)
-		port map (
-			clk           => clk,
-			reset         => reset,
-			base_addr     => base_addr,
-			mem_valid     => weights_valid,
-			weight_matrix => s_weight_matrix
-		);
+	-- For second convolution weights should be disabled because there wont be a multiplication line for the combining pipeline
+
+	WEIGHT_GEN : if enable_weights = 1 generate
+
+		WEIGHT_MEM : entity work.conv_weight_memory
+			generic map (
+				vector_length        => input_length,
+				kernel_size          => kernel_size,
+				total_input_channel  => total_input_channel,
+				total_output_channel => total_output_channel,
+				current_channel      => current_channel,
+				init_type            => init_type,
+				data_path            => weight_path
+			)
+			port map (
+				clk           => clk,
+				reset         => reset,
+				base_addr     => base_addr,
+				mem_valid     => weights_valid,
+				weight_matrix => s_weight_matrix
+			);
+
+	else generate
+		weights_valid   <= '0';
+		s_weight_matrix <= (others => (others => (others => '0')));
+	end generate WEIGHT_GEN;
 
 	CONV_COMP_UNIT : entity work.kernel_computation_unit
 		generic map (
@@ -88,7 +98,7 @@ begin
 			-- Bias is always disabled for us
 			enable_bias   => 0,
 			enable_relu   => enable_relu,
-			input_length  => vector_length,
+			input_length  => input_length,
 			output_length => output_length,
 			kernel_size   => kernel_size
 		)
