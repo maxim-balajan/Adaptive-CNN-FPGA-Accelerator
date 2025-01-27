@@ -8,6 +8,8 @@ entity kernel_computation_unit is
 	generic (
 		--! pool_or_conv = 1 means Convolution; pool_or_conv = 0 means Pooling
 		pool_or_conv : integer range 0 to 1 := 1;
+		--! enables clipping after every addition
+		enable_clip_adder : integer range 0 to 1 := 1;
 		--! enables the multiplication line in the beginning (only matters for pool_or_conv = 1)
 		enable_multiplication_line : integer range 0 to 1 := 1;
 		--! enables the shift before bias addition (only matters for pool_or_conv = 1)
@@ -188,7 +190,21 @@ begin
 
 				end process BIAS_DELAY_PROC;
 
-				s_pipeline_result_bias <= std_logic_vector(signed(s_pipeline_begin_bias) + signed(bias));
+				CLIP_ADD_GEN : if enable_clip_adder = 1 generate
+
+					CLIP_ADD_INST : entity work.clip_adder
+						generic map (
+							vector_length => input_length
+						)
+						port map (
+							din0 => s_pipeline_begin_bias,
+							din1 => bias,
+							dout => s_pipeline_result_bias
+						);
+
+				else generate
+					s_pipeline_result_bias <= std_logic_vector(signed(s_pipeline_begin_bias) + signed(bias));
+				end generate CLIP_ADD_GEN;
 
 				-- Shift + bias + Clipping
 				s_new_pixel     <= std_logic_vector(to_signed(- 2 ** (output_length - 1), s_new_pixel'length)) when signed(s_pipeline_result_bias) < (- 2 ** (output_length - 1)) else

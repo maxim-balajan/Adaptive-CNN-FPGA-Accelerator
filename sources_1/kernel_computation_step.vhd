@@ -6,9 +6,10 @@ use work.libmatrix.all;
 
 entity kernel_computation_step is
 	generic (
-		vector_length : natural              := 8;
-		input_width   : natural;
-		pool_or_conv  : integer range 0 to 1 := 1
+		vector_length     : natural              := 8;
+		input_width       : natural;
+		enable_clip_adder : integer range 0 to 1 := 1;
+		pool_or_conv      : integer range 0 to 1 := 1
 	);
 	port (
 		clk                 : in std_logic;
@@ -57,7 +58,23 @@ begin
 	MAP_GEN : for i in s_output_matrix'range generate
 
 		CONV_OR_POOL_GEN : if pool_or_conv = 1 generate
-			s_output_matrix(i) <= std_logic_vector(signed(s_input_matrix(2 * i)) + signed(s_input_matrix(2 * i + 1)));
+
+			CLIP_GEN : if enable_clip_adder = 1 generate
+
+				CLIP_ADDER_INST : entity work.clip_adder
+					generic map (
+						vector_length => vector_length
+					)
+					port map (
+						din0 => s_input_matrix(2 * i),
+						din1 => s_input_matrix(2 * i + 1),
+						dout => s_output_matrix(i)
+					);
+
+			else generate
+				s_output_matrix(i) <= std_logic_vector(signed(s_input_matrix(2 * i)) + signed(s_input_matrix(2 * i + 1)));
+			end generate CLIP_GEN;
+
 		else generate
 			s_output_matrix(i) <= s_input_matrix(2 * i) when signed(s_input_matrix(2 * i)) > signed(s_input_matrix(2 * i + 1)) else
 	                      s_input_matrix(2 * i + 1);

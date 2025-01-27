@@ -25,6 +25,7 @@ entity conv_pool_pipeline is
 		scale_path           : string               := "../data/scale_values.data";
 
 		--! generics used for convolution_comp_unit
+		enable_clip_adder          : integer range 0 to 1                                                  := 1;
 		enable_multiplication_line : integer range 0 to 1                                                  := 1;
 		enable_shift               : integer range 0 to 1                                                  := 1;
 		enable_relu                : integer range 0 to 1                                                  := 1;
@@ -93,6 +94,7 @@ begin
 	CONV_COMP_UNIT : entity work.kernel_computation_unit
 		generic map (
 			pool_or_conv               => 1,
+			enable_clip_adder          => enable_clip_adder,
 			enable_multiplication_line => enable_multiplication_line,
 			enable_shift               => enable_shift,
 			-- Bias is always disabled for us

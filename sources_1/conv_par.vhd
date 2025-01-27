@@ -10,11 +10,12 @@ use work.libmatrix.all;
 entity conv_par is
 	generic (
 		--! general generics that are necessary
-		vector_length : natural              := 8;
-		input_width   : natural              := 32;
-		input_height  : natural              := 32;
-		kernel_size   : natural              := 5;
-		pooling_size  : integer range 2 to 2 := 2;
+		vector_length     : natural              := 8;
+		input_width       : natural              := 32;
+		input_height      : natural              := 32;
+		kernel_size       : natural              := 5;
+		pooling_size      : integer range 2 to 2 := 2;
+		enable_clip_adder : integer range 0 to 1 := 1;
 
 		--! generics used for initializing BRAM Weight Memory
 		total_input_channel  : natural := 1;
@@ -67,21 +68,22 @@ begin
 
 		PIPELINE_INST : entity work.conv_pool_pipeline
 			generic map (
-				input_length               => vector_length,
-				input_width                => input_width,
-				input_height               => input_height,
-				kernel_size                => kernel_size,
-				pooling_size               => pooling_size,
-				enable_weights             => 1,
-				total_input_channel        => total_input_channel,
-				total_output_channel       => total_output_channel,
-				current_channel            => i,
-				init_type                  => 0,
-				weight_path                => weight_path,
-				current_scale              => current_scale,
-				scale_path                 => scale_path,
-                -- Maybe make the following three generics to generics of this unit?
-                -- For now keep it as is
+				input_length         => vector_length,
+				input_width          => input_width,
+				input_height         => input_height,
+				kernel_size          => kernel_size,
+				pooling_size         => pooling_size,
+				enable_weights       => 1,
+				total_input_channel  => total_input_channel,
+				total_output_channel => total_output_channel,
+				current_channel      => i,
+				init_type            => 0,
+				weight_path          => weight_path,
+				current_scale        => current_scale,
+				scale_path           => scale_path,
+				enable_clip_adder    => enable_clip_adder,
+				-- Maybe make the following three generics to generics of this unit?
+				-- For now keep it as is
 				enable_multiplication_line => 1,
 				enable_shift               => 1,
 				enable_relu                => 1,
@@ -94,12 +96,12 @@ begin
 				kernel_en         => s_kernel_en,
 				kernel_complete   => s_kernel_complete,
 				base_addr         => (others => '0'),
-                -- Weights valid is not necessary for this unit
-                -- but could be usefull in sequential comp.
-				weights_valid     => open,
-				new_pixel         => new_pixels_stream(i),
-				valid_pixel       => s_new_valid_pixels(i),
-				comp_complete     => s_new_pixels_complete(i)
+				-- Weights valid is not necessary for this unit
+				-- but could be usefull in sequential comp.
+				weights_valid => open,
+				new_pixel     => new_pixels_stream(i),
+				valid_pixel   => s_new_valid_pixels(i),
+				comp_complete => s_new_pixels_complete(i)
 			);
 
 		-- Map control signals to output port

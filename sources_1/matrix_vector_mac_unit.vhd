@@ -56,6 +56,7 @@ begin
 
 	-- Calculations of inputs; delayed by one cycle through DELAY_PROC
 	-- weight_vector and bias_vector are implicitly delayed by the BRAM, so no extra delay is needed
+	-- TODO : add clip adder
 	s_mult_result      <= s_input * signed(weight_vector);
 	s_add_result       <= s_mult_result + signed(s_partial_sum) when s_mac_en = '1' else signed(s_partial_sum);
 	s_add_extra_result <= s_add_result + signed(bias_vector) when s_bias_en = '1' else s_add_result;
