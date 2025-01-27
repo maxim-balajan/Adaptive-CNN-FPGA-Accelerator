@@ -87,7 +87,7 @@ begin
 	-- Set outputs
 	s_kernel_activation_matrix <= s_kernel_matrix(s_kernel_matrix'low + 1 to s_kernel_matrix'high);
 
-	-- Mirror output elements and write them to output
+	-- Mirror output elements in x and y direction and write them to output
 	-- Assumption is kernel is quadratic (which it always should be regardless)
 
 	Y_GEN : for y in 0 to kernel_size - 1 generate
