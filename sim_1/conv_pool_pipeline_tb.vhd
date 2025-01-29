@@ -104,6 +104,7 @@ begin
 			weight_path                => weight_path,
 			current_scale              => current_scale,
 			scale_path                 => scale_path,
+			enable_clip_adder          => 1,
 			enable_multiplication_line => enable_multiplication_line,
 			enable_shift               => enable_shift,
 			enable_relu                => enable_relu,
