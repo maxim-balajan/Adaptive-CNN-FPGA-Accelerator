@@ -25,12 +25,13 @@ entity conv_par is
 		scale_path           : string  := "../data/scale_values.data"
 	);
 	port (
-		clk               : in std_logic;
-		reset             : in std_logic;
-		pixel_stream      : in std_logic_vector(vector_length - 1 downto 0);
-		valid_pixel       : in std_logic;
-		new_pixels_stream : out matrix_1d(0 to total_output_channel - 1)(vector_length - 1 downto 0);
-		new_valid_pixels  : out std_logic_vector(0 to total_output_channel - 1)
+		clk                : in std_logic;
+		reset              : in std_logic;
+		pixel_stream       : in std_logic_vector(vector_length - 1 downto 0);
+		valid_pixel        : in std_logic;
+		new_pixels_stream  : out matrix_1d(0 to total_output_channel - 1)(vector_length - 1 downto 0);
+		new_valid_pixel    : out std_logic;
+		new_pixel_complete : out std_logic
 	);
 end entity conv_par;
 
@@ -76,7 +77,7 @@ begin
 				enable_weights       => 1,
 				total_input_channel  => total_input_channel,
 				total_output_channel => total_output_channel,
-				current_channel      => i,
+				current_channel      => i + 1,
 				init_type            => 0,
 				weight_path          => weight_path,
 				current_scale        => current_scale,
@@ -97,15 +98,17 @@ begin
 				kernel_complete   => s_kernel_complete,
 				base_addr         => (others => '0'),
 				-- Weights valid is not necessary for this unit
-				-- but could be usefull in sequential comp.
+				-- but could be useful in sequential comp.
 				weights_valid => open,
 				new_pixel     => new_pixels_stream(i),
 				valid_pixel   => s_new_valid_pixels(i),
 				comp_complete => s_new_pixels_complete(i)
 			);
 
-		-- Map control signals to output port
-		new_valid_pixels(i) <= s_new_valid_pixels(i) and not s_new_pixels_complete(i);
 	end generate PIPELINE_GEN;
+
+	-- All pipelines should hopefully be synchronous
+	new_valid_pixel    <= or s_new_valid_pixels;
+	new_pixel_complete <= or s_new_pixels_complete;
 
 end architecture rtl;
