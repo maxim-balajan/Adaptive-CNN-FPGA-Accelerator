@@ -41,6 +41,10 @@ architecture bench of conv_par_tb is
 
 	signal s_new_pixel_complete, s_new_valid_pixel : std_logic;
 
+	-- expected output of the first convolution
+	constant expected_result_path : string                                                                         := "../data/expected_output_first_conv_pool_7.data";
+	constant expected_output      : matrix_1d(0 to total_output_channel * 14 ** 2 - 1)(vector_length - 1 downto 0) := init_from_file(expected_result_path, vector_length,  total_output_channel * 14 ** 2);
+
 begin
 
 	STREAM_PROC : process (clk) is
@@ -91,29 +95,38 @@ begin
 	clk   <= not clk after clk_period / 2;
 	reset <= '1' after 0 ns, '0' after 2 * clk_period;
 
-	READ_PROC : process (clk) is
+	READ_AND_CHECK_PROC : process (clk) is
 	begin
 
 		if rising_edge(clk) then
-			if s_new_valid_pixel = '1' and s_new_pixel_complete = '0' then
-
+			if (s_new_valid_pixel and not s_new_pixel_complete) = '1' then
+				-- Read and Write to output signal
 				for i in s_output_values'range loop
 
 					s_output_values(i)(s_write_pointer) <= new_pixels_stream(i);
 
 				end loop;
 
-				s_write_pointer                     <= s_write_pointer + 1;
+				s_write_pointer <= s_write_pointer + 1;
+
+				-- Compare with expected result
+				for i in s_output_values'range loop
+
+					assert new_pixels_stream(i) = expected_output(i * 14 ** 2 + s_write_pointer)
+						report "Expected: " & integer'image(to_integer(signed(expected_output(i * 14 ** 2 + s_write_pointer)))) & " | Got: " & integer'image(to_integer(signed(new_pixels_stream(i))))
+						severity FAILURE;
+
+				end loop;
 
 			end if;
 		end if;
 
-	end process READ_PROC;
+	end process READ_AND_CHECK_PROC;
 
 	TB : process is
 	begin
 
-		wait for 300 * clk_period;
+		wait for 3000 * clk_period;
 		finish;
 
 	end process TB;
