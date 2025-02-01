@@ -29,8 +29,8 @@ architecture rtl of bram_streaming_fifo is
 	attribute ram_style of RAM : signal is "block";
 
 	-- Read and write pointers to the memory
-	signal s_read_pointer  : unsigned(integer(ceil(log2(real(depth)))) - 1 downto 0);
-	signal s_write_pointer : unsigned(integer(ceil(log2(real(depth)))) - 1 downto 0);
+	signal s_read_pointer  : unsigned(integer(ceil(log2(real(depth)))) - 1 downto 0);   -- depth is enough for this pointer
+	signal s_write_pointer : unsigned(integer(ceil(log2(real(depth+1)))) - 1 downto 0); -- needs depth+1 because this will be equal to depth when fifo is full
 
 	signal s_empty     : std_logic;
 	signal s_full      : std_logic;
