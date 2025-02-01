@@ -8,5 +8,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++23 -O3")
 include("modules.cmake")
 
 include(src/CMakeLists.txt)
+include(npy_converter/CMakeLists.txt)
 include(tests/CMakeLists.txt)
 

@@ -21,7 +21,7 @@ Matrix<TO> parse_matrix(istream& stream) {
     std::vector<unsigned long int> shape = d.shape;
     bool fortran_order = d.fortran_order;
     if (fortran_order) {
-        throw ParsingException("Fortran order is not supported!");
+        throw std::runtime_error("Fortran order is not supported!");
     }
 
     Matrix<TO> res(shape);

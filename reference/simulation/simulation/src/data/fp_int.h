@@ -156,7 +156,13 @@ public:
         return value >= other.value;
     }
 
-    int8_t get_val() const {
+    int64_t get_val() const {
+        assert(POINT_POS == 0);
+        return value;
+    }
+
+    T get_real_val() const {
+        assert(POINT_POS == 0);
         return value;
     }
 
