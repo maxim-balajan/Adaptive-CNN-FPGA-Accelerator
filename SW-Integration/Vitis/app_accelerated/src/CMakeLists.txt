@@ -15,13 +15,15 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
 
 # collect neccesary libs 
 
+set(DATA_DIR ${CMAKE_SOURCE_DIR}/../../data)
+message(DATA_DIR=${DATA_DIR})
+
 set(SIMULATION_BASE_DIR ${CMAKE_SOURCE_DIR}/../../../../reference/simulation)
 message(SIMULATION_BASE_DIR=${SIMULATION_BASE_DIR})
 
 include("${SIMULATION_BASE_DIR}/modules.cmake")
 
 collect(PROJECT_LIB_DEPS xilstandalone;xiltimer)
-
 
 
 collect(PROJECT_LIB_DEPS xil)
@@ -56,7 +58,36 @@ string(APPEND CMAKE_C_LINK_FLAGS ${USER_LINK_OPTIONS})
 string(APPEND CMAKE_CXX_LINK_FLAGS ${USER_LINK_OPTIONS})
 if(NOT "${_sources}" STREQUAL "")
 add_dependency_on_bsp(_sources)
-add_executable(${APP_NAME}.elf ${_sources})
+
+add_custom_command(
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/data/x_test.bin ${CMAKE_CURRENT_BINARY_DIR}/data/y_test.bin
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${DATA_DIR} ${CMAKE_CURRENT_BINARY_DIR}/data
+)
+message(CMAKE_CXX_LINK_EXECUTABLE ${CMAKE_LINKER})
+add_custom_command(
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/data/x_test.o
+    COMMAND ${CMAKE_LINKER} -r -b binary -o x_test.o x_test.bin
+    DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/data/x_test.bin
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data
+)
+
+add_custom_command(
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/data/y_test.o
+    COMMAND ${CMAKE_LINKER} -r -b binary -o y_test.o y_test.bin
+    DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/data/y_test.bin
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data
+)
+
+set(X_TEST_SYMBOL_PREFIX _binary_x_test_bin)
+set(Y_TEST_SYMBOL_PREFIX _binary_y_test_bin)
+
+configure_file(symbols.h.in symbols.h)
+
+
+add_executable(${APP_NAME}.elf ${_sources} ${CMAKE_CURRENT_BINARY_DIR}/data/x_test.o ${CMAKE_CURRENT_BINARY_DIR}/data/y_test.o)
+
+target_include_directories(${APP_NAME}.elf PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+
 set_target_properties(${APP_NAME}.elf PROPERTIES LINK_DEPENDS ${USER_LINKER_SCRIPT})
 target_link_libraries(${APP_NAME}.elf -Wl,-T -Wl,\"${USER_LINKER_SCRIPT}\" -L\"${CMAKE_SOURCE_DIR}/\" -L\"${CMAKE_LIBRARY_PATH}/\" -L\"${USER_LINK_DIRECTORIES}/\" -Wl,--start-group,-l${_deps} -Wl,--end-group)
 

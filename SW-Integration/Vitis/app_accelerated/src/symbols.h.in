@@ -1,0 +1,18 @@
+#pragma once
+#include <cstddef>
+#include <istream>
+#include <streambuf>
+
+#define X_START @X_TEST_SYMBOL_PREFIX@_start
+#define X_END @X_TEST_SYMBOL_PREFIX@_end
+#define X_SIZE (X_END - X_START)
+
+#define Y_START @Y_TEST_SYMBOL_PREFIX@_start
+#define Y_END @Y_TEST_SYMBOL_PREFIX@_end
+#define Y_SIZE (Y_END - Y_START)
+
+extern char X_START[];
+extern char X_END[];
+
+extern char Y_START[];
+extern char Y_END[];
