@@ -7,9 +7,8 @@ use work.libmatrix.all;
 entity pooling_slider is
 	generic (
 		vector_length         : natural              := 8;
-		original_input_width  : natural              := 32;
-		original_input_height : natural              := 32;
-		kernel_size           : natural              := 5;
+		input_width  : natural              := 28;
+		input_height : natural              := 28;
 		pooling_size          : integer range 2 to 2 := 2
 	);
 	port (
@@ -19,26 +18,21 @@ entity pooling_slider is
 		valid_pixel              : in std_logic;
 		kernel_complete          : out std_logic;
 		kernel_en                : out std_logic;
-		pixel_x                  : out std_logic_vector(integer(ceil(log2(real(original_input_width - kernel_size + 1) / 2.0))) - 1 downto 0);
-		pixel_y                  : out std_logic_vector(integer(ceil(log2(real(original_input_height - kernel_size + 1) / 2.0))) downto 0);
-		kernel_activation_matrix : out matrix_2d(0 to pooling_size - 1)(0 to pooling_size - 1)(vector_length - 1 downto 0)
+		kernel_activation_matrix : out matrix_1d(0 to pooling_size**2 - 1)(vector_length - 1 downto 0)
 	);
 end entity pooling_slider;
 
 architecture rtl of pooling_slider is
 
-	-- Image dimensions of input (in first convolution this would be 28x28)
-	constant c_old_image_width  : real := real(original_input_width - kernel_size + 1);
-	constant c_old_image_height : real := real(original_input_height - kernel_size + 1);
 	-- Image dimensions of output (in first convolution this would be 14x14)
-	constant c_new_image_width  : real := real(original_input_width - kernel_size + 1) / 2.0;
-	constant c_new_image_height : real := real(original_input_height - kernel_size + 1) / 2.0;
+	constant c_new_image_width  : real := real(input_width) / 2.0;
+	constant c_new_image_height : real := real(input_height) / 2.0;
 
 	-- pixel locations of input stream (in first convolution this would be 28x28)
-	signal s_pixel_input_x : unsigned(integer(ceil(log2(c_old_image_width))) - 1 downto 0);
-	signal s_pixel_input_y : unsigned(integer(ceil(log2(c_old_image_height))) downto 0);
+	signal s_pixel_input_x : unsigned(integer(ceil(log2(real(input_width)))) - 1 downto 0);
+	signal s_pixel_input_y : unsigned(integer(ceil(log2(real(input_height)))) downto 0);
 	-- pixel x_coordinate delayed by one cycle; used for keeping control logic in check
-	signal s_pixel_old_input_x : unsigned(integer(ceil(log2(c_old_image_width))) - 1 downto 0);
+	signal s_pixel_old_input_x : unsigned(integer(ceil(log2(real(input_width)))) - 1 downto 0);
 	-- pixel locations of output stream (in first convolution this would be 14x14)
 	signal s_pixel_output_x : unsigned(integer(ceil(log2(c_new_image_width))) - 1 downto 0);
 	signal s_pixel_output_y : unsigned(integer(ceil(log2(c_new_image_height))) downto 0);
@@ -78,7 +72,7 @@ begin
 				-- after init is finished just iterate other the image; disregard overflows by s_pixel_input_y
 				if s_init_complete = '1' and s_current_valid = '1' then
 					s_pixel_input_x <= s_pixel_input_x + 1;
-					if s_pixel_input_x = integer(c_old_image_width) - 1 then
+					if s_pixel_input_x = input_width - 1 then
 						s_pixel_input_x <= (others => '0');
 						s_pixel_input_y <= s_pixel_input_y + 1;
 					end if;
@@ -104,7 +98,7 @@ begin
 	KERNEL_SLIDER_INST : entity work.kernel_slider
 		generic map (
 			vector_length => vector_length,
-			input_width   => integer(c_old_image_width),
+			input_width   => input_width,
 			kernel_size   => pooling_size
 		)
 		port map (
@@ -130,8 +124,6 @@ begin
 	-- Set destination of new pooled value
 	s_pixel_output_x <= resize(shift_right(s_pixel_input_x, 1), s_pixel_output_x'length);
 	s_pixel_output_y <= resize(shift_right(s_pixel_input_y, 1), s_pixel_output_y'length);
-	pixel_x          <= std_logic_vector(s_pixel_output_x);
-	pixel_y          <= std_logic_vector(s_pixel_output_y);
 
 	kernel_complete <= s_kernel_complete;
 

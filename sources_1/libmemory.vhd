@@ -15,7 +15,7 @@ package libmemory is
 	impure function read_output_channel (
 		file_name            : in string;
 		vector_length        : in natural;
-		kernel_size          : in natural;
+		input_amount          : in natural;
 		total_input_channel  : in natural;
 		total_output_channel : in natural;
 		curr_output_channel  : in natural
@@ -24,7 +24,7 @@ package libmemory is
 	impure function read_input_channel (
 		file_name            : in string;
 		vector_length        : in natural;
-		kernel_size          : in natural;
+		input_amount          : in natural;
 		total_input_channel  : in natural;
 		total_output_channel : in natural;
 		curr_input_channel   : in natural
@@ -74,7 +74,7 @@ package body libmemory is
 	impure function read_output_channel (
 		file_name            : in string;
 		vector_length        : in natural;
-		kernel_size          : in natural;
+		input_amount          : in natural;
 		total_input_channel  : in natural;
 		total_output_channel : in natural;
 		curr_output_channel  : in natural
@@ -82,7 +82,7 @@ package body libmemory is
 
 		file     mem_file  : text open read_mode is file_name;
 		variable file_line : line;
-		variable tmp_ram   : matrix_1d(0 to kernel_size * kernel_size * total_input_channel - 1)(vector_length - 1 downto 0);
+		variable tmp_ram   : matrix_1d(0 to input_amount * total_input_channel - 1)(vector_length - 1 downto 0);
 
 		variable actual_curr_output_channel : natural;
 
@@ -125,7 +125,7 @@ package body libmemory is
 	impure function read_input_channel (
 		file_name            : in string;
 		vector_length        : in natural;
-		kernel_size          : in natural;
+		input_amount          : in natural;
 		total_input_channel  : in natural;
 		total_output_channel : in natural;
 		curr_input_channel   : in natural
@@ -133,7 +133,7 @@ package body libmemory is
 
 		file     mem_file  : text open read_mode is file_name;
 		variable file_line : line;
-		variable tmp_ram   : matrix_1d(0 to kernel_size * kernel_size * total_output_channel - 1)(vector_length - 1 downto 0);
+		variable tmp_ram   : matrix_1d(0 to input_amount * total_output_channel - 1)(vector_length - 1 downto 0);
 
 		variable actual_curr_input_channel : natural;
 
@@ -152,7 +152,7 @@ package body libmemory is
 
 		for i in 1 to actual_curr_input_channel - 1 loop
 
-			for j in 0 to kernel_size ** 2 - 1 loop
+			for j in 0 to input_amount - 1 loop
 
 				readline(mem_file, file_line);
 
@@ -164,10 +164,10 @@ package body libmemory is
 		for i in 0 to total_output_channel - 1 loop
 
 			-- Read legal input channel and write them to BRAM
-			for j in 0 to kernel_size ** 2 - 1 loop
+			for j in 0 to input_amount - 1 loop
 
 				readline(mem_file, file_line);
-				hread(file_line, tmp_ram(i * kernel_size * kernel_size + j));
+				hread(file_line, tmp_ram(i * input_amount + j));
 
 			end loop;
 
@@ -175,7 +175,7 @@ package body libmemory is
 			-- extra minus 1 because we also have the upper reading for-loop
 			for j in 0 to total_input_channel - 2 loop
 
-				for k in 0 to kernel_size ** 2 - 1 loop
+				for k in 0 to input_amount - 1 loop
 
 					readline(mem_file, file_line);
 

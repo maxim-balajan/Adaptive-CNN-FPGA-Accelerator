@@ -13,6 +13,7 @@ entity conv_pool_pipeline is
 		input_height   : natural              := 32;
 		kernel_size    : natural              := 5;
 		pooling_size   : integer range 2 to 2 := 2;
+		input_amount   : natural              := 25;
 		enable_weights : integer range 0 to 1 := 1;
 
 		--! generics used for initializing BRAM Weight Memory
@@ -34,10 +35,10 @@ entity conv_pool_pipeline is
 	port (
 		clk               : in std_logic;
 		reset             : in std_logic;
-		activation_matrix : in matrix_2d(0 to kernel_size - 1)(0 to kernel_size - 1)(input_length - 1 downto 0);
+		activation_matrix : in matrix_1d(0 to input_amount - 1)(input_length - 1 downto 0);
 		kernel_en         : in std_logic;
 		kernel_complete   : in std_logic;
-		base_addr         : in std_logic_vector(kernel_size ** 2 * total_input_channel ** (1 - init_type) * total_output_channel ** (init_type) - 1 downto 0);
+		base_addr         : in std_logic_vector(input_amount * total_input_channel ** (1 - init_type) * total_output_channel ** (init_type) - 1 downto 0);
 		weights_valid     : out std_logic;
 		new_pixel         : out std_logic_vector(output_length - 1 downto 0);
 		valid_pixel       : out std_logic;
@@ -50,7 +51,7 @@ architecture rtl of conv_pool_pipeline is
 	-- Value used for scaling in the Conv_Comp_Unit
 	constant c_scale_value : std_logic_vector(input_length - 1 downto 0) := read_scale_value(scale_path, input_length, current_scale);
 
-	signal s_weight_matrix : matrix_2d(0 to kernel_size - 1)(0 to kernel_size - 1)(input_length - 1 downto 0);
+	signal s_weight_matrix : matrix_1d(0 to input_amount - 1)(input_length - 1 downto 0);
 
 	-- Signal for the output of the Conv_Comp_Unit
 	signal s_conv_pixel    : std_logic_vector(output_length - 1 downto 0);
@@ -60,7 +61,9 @@ architecture rtl of conv_pool_pipeline is
 	-- Signal for the output of the Pooling_Slider
 	signal s_pool_en       : std_logic;
 	signal s_pool_complete : std_logic;
-	signal s_pool_matrix   : matrix_2d(0 to pooling_size - 1)(0 to pooling_size - 1)(output_length - 1 downto 0);
+	signal s_pool_matrix   : matrix_1d(0 to pooling_size ** 2 - 1)(output_length - 1 downto 0);
+
+	signal s_flatten_activation_matrix : matrix_1d(0 to input_amount - 1)(input_length - 1 downto 0);
 
 begin
 
@@ -71,7 +74,7 @@ begin
 		WEIGHT_MEM : entity work.conv_weight_memory
 			generic map (
 				vector_length        => input_length,
-				kernel_size          => kernel_size,
+				input_amount         => input_amount,
 				total_input_channel  => total_input_channel,
 				total_output_channel => total_output_channel,
 				current_channel      => current_channel,
@@ -88,7 +91,7 @@ begin
 
 	else generate
 		weights_valid   <= '0';
-		s_weight_matrix <= (others => (others => (others => '0')));
+		s_weight_matrix <= (others => (others => '0'));
 	end generate WEIGHT_GEN;
 
 	CONV_COMP_UNIT : entity work.kernel_computation_unit
@@ -102,7 +105,7 @@ begin
 			enable_relu   => enable_relu,
 			input_length  => input_length,
 			output_length => output_length,
-			kernel_size   => kernel_size
+			input_amount  => input_amount
 		)
 		port map (
 			clk               => clk,
@@ -121,23 +124,19 @@ begin
 	POOL_SLIDER : entity work.pooling_slider
 		generic map (
 			-- Has to be output length if you want to keep e.g. 24-bits
-			vector_length         => output_length,
-			original_input_width  => input_width,
-			original_input_height => input_height,
-			kernel_size           => kernel_size,
-			pooling_size          => pooling_size
+			vector_length => output_length,
+			input_width   => input_width - kernel_size + 1,
+			input_height  => input_height - kernel_size + 1,
+			pooling_size  => pooling_size
 		)
 		port map (
 			clk          => clk,
 			reset        => reset,
 			pixel_stream => s_conv_pixel,
 			-- if complete signal is set, do not pipeline any more valid data
-			valid_pixel     => s_conv_en and not s_conv_complete,
-			kernel_complete => s_pool_complete,
-			kernel_en       => s_pool_en,
-			-- pixel_y and pixel_x are not necessary but still there for legacy purposes
-			pixel_x                  => open,
-			pixel_y                  => open,
+			valid_pixel              => s_conv_en and not s_conv_complete,
+			kernel_complete          => s_pool_complete,
+			kernel_en                => s_pool_en,
 			kernel_activation_matrix => s_pool_matrix
 		);
 
@@ -147,13 +146,13 @@ begin
 			pool_or_conv  => 0,
 			input_length  => output_length,
 			output_length => output_length,
-			kernel_size   => 2
+			input_amount  => pooling_size ** 2
 		)
 		port map (
 			clk               => clk,
 			reset             => reset,
 			activation_matrix => s_pool_matrix,
-			weight_matrix     => (others => (others => (others => '0'))),
+			weight_matrix     => (others => (others => '0')),
 			shamt             => (others => '0'),
 			bias              => (others => '0'),
 			kernel_en         => s_pool_en,

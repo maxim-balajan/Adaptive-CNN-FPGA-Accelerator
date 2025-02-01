@@ -40,7 +40,7 @@ architecture rtl of conv_par is
 	-- Output of the Convolution Slider
 	signal s_kernel_en         : std_logic;
 	signal s_kernel_complete   : std_logic;
-	signal s_activation_matrix : matrix_2d(0 to kernel_size - 1)(0 to kernel_size - 1)(vector_length - 1 downto 0);
+	signal s_activation_matrix : matrix_1d(0 to kernel_size ** 2 - 1)(vector_length - 1 downto 0);
 
 	-- Output of the Pipelines
 	signal s_new_valid_pixels    : std_logic_vector(0 to total_output_channel - 1);

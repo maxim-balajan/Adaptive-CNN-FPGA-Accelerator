@@ -18,7 +18,7 @@ entity convolution_slider is
 		valid_pixel              : in std_logic;
 		kernel_complete          : out std_logic;
 		kernel_en                : out std_logic;
-		kernel_activation_matrix : out matrix_2d(0 to kernel_size - 1)(0 to kernel_size - 1)(vector_length - 1 downto 0)
+		kernel_activation_matrix : out matrix_1d(0 to kernel_size**2 - 1)(vector_length - 1 downto 0)
 	);
 end entity convolution_slider;
 

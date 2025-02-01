@@ -20,14 +20,14 @@ entity kernel_computation_unit is
 		enable_relu   : integer range 0 to 1                                                                  := 1;
 		input_length  : natural                                                                               := 8;
 		output_length : integer range 0 to ((3 ** enable_multiplication_line) ** pool_or_conv) * input_length := 8;
-		kernel_size   : natural                                                                               := 5
+		input_amount  : natural                                                                               := 25
 	);
 	port (
 		clk               : in std_logic;
 		reset             : in std_logic;
-		activation_matrix : in matrix_2d(0 to kernel_size - 1)(0 to kernel_size - 1)(input_length - 1 downto 0);
+		activation_matrix : in matrix_1d(0 to input_amount - 1)(input_length - 1 downto 0);
 		-- only used for some convolutions; unused for pooling
-		weight_matrix : in matrix_2d(0 to kernel_size - 1)(0 to kernel_size - 1)(input_length - 1 downto 0);
+		weight_matrix : in matrix_1d(0 to input_amount - 1)(input_length - 1 downto 0);
 		-- bias and shamt could also be passed as generics (or static port inputs) but for now keep it as it is
 		shamt           : in std_logic_vector(input_length - 1 downto 0);
 		bias            : in std_logic_vector(output_length - 1 downto 0);
@@ -61,13 +61,13 @@ architecture rtl of kernel_computation_unit is
 	constant c_pipeline_vector_length : integer := get_pipeline_vector_length(pool_or_conv);
 
 	-- This constant stores the amount of convolution steps that are needed
-	constant c_conv_step_count : integer := integer(ceil(log2(real(kernel_size ** 2))));
+	constant c_conv_step_count : integer := integer(ceil(log2(real(input_amount))));
 	-- This signal is for all pipelined values that are used for the convolution computation
 	-- it also contains double the amount of signals because it is easier to write that way and shouldn't result in more HW
-	signal s_pipeline_values : matrix_2d(0 to c_conv_step_count)(0 to kernel_size ** 2 - 1)(c_pipeline_vector_length - 1 downto 0);
+	signal s_pipeline_values : matrix_2d(0 to c_conv_step_count)(0 to input_amount - 1)(c_pipeline_vector_length - 1 downto 0);
 	alias  s_pipeline_end    is s_pipeline_values(s_pipeline_values'high)(s_pipeline_values'low);
 	-- This signal contains all multiplications or all start values for comparisions
-	signal s_pipeline_start : matrix_1d(0 to kernel_size ** 2 - 1)(c_pipeline_vector_length - 1 downto 0);
+	signal s_pipeline_start : matrix_1d(0 to input_amount - 1)(c_pipeline_vector_length - 1 downto 0);
 
 	-- These are just the pipelined controll signes
 	signal s_kernel_en_line       : std_logic_vector(0 to c_conv_step_count);
@@ -100,21 +100,17 @@ begin
 
 	-- Multiplication line that computes all the multiplications for the convolution; only necessary for convolution
 
-	MULT_GEN_1 : for i in activation_matrix'range generate
+	MULT_GEN : for i in activation_matrix'range generate
 
-		MULT_GEN_2 : for j in activation_matrix(activation_matrix'low)'range generate
+		CONV_MUL_LINE_GEN : if pool_or_conv = 1 and enable_multiplication_line = 1 generate
+			-- resize necessary because target signal has to exactly match resulting size of multiplication
+			-- Multiplication never has to be clipped because the vectors are increased accordingly
+			s_pipeline_start(i) <= std_logic_vector(resize(signed(activation_matrix(i)), 2 * activation_matrix(i)'length) * signed(weight_matrix(i)));
+		else generate
+			s_pipeline_start(i) <= activation_matrix(i);
+		end generate CONV_MUL_LINE_GEN;
 
-			CONV_MUL_LINE_GEN : if pool_or_conv = 1 and enable_multiplication_line = 1 generate
-				-- resize necessary because target signal has to exactly match resulting size of multiplication
-				-- Multiplication never has to be clipped because the vectors are increased accordingly
-				s_pipeline_start(i * kernel_size + j) <= std_logic_vector(resize(signed(activation_matrix(i)(j)), 2 * activation_matrix(i)(j)'length) * signed(weight_matrix(i)(j)));
-			else generate
-				s_pipeline_start(i * kernel_size + j) <= activation_matrix(i)(j);
-			end generate CONV_MUL_LINE_GEN;
-
-		end generate MULT_GEN_2;
-
-	end generate MULT_GEN_1;
+	end generate MULT_GEN;
 
 	-- Generate all convolutions/pooling steps that are necessary for the addition/comparison of all input values
 	-- Basically works like the "Divide by 2"-Algorithm
@@ -124,16 +120,16 @@ begin
 		KERNEL_STEP_INST : entity work.kernel_computation_step
 			generic map (
 				vector_length => c_pipeline_vector_length,
-				input_width   => integer(ceil(real(kernel_size ** 2) / real(2 ** i))),
+				input_width   => integer(ceil(real(input_amount) / real(2 ** i))),
 				pool_or_conv  => pool_or_conv
 			)
 			port map (
 				clk                 => clk,
 				reset               => reset,
-				input_matrix        => s_pipeline_values(i)(0 to integer(ceil(real(kernel_size ** 2) / real(2 ** i))) - 1),
+				input_matrix        => s_pipeline_values(i)(0 to integer(ceil(real(input_amount) / real(2 ** i))) - 1),
 				kernel_en           => s_kernel_en_line(i),
 				kernel_complete     => s_kernel_complete_line(i),
-				output_matrix       => s_pipeline_values(i + 1)(0 to integer(ceil(real(kernel_size ** 2) / real(2 ** (i + 1)))) - 1),
+				output_matrix       => s_pipeline_values(i + 1)(0 to integer(ceil(real(input_amount) / real(2 ** (i + 1)))) - 1),
 				kernel_en_del       => s_kernel_en_line(i + 1),
 				kernel_complete_del => s_kernel_complete_line(i + 1)
 			);

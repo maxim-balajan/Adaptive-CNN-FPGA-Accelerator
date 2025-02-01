@@ -16,7 +16,7 @@ entity kernel_slider is
 		en                       : in std_logic;
 		pixel_stream             : in std_logic_vector(vector_length - 1 downto 0);
 		init_complete            : out std_logic;
-		kernel_activation_matrix : out matrix_2d(0 to kernel_size - 1)(0 to kernel_size - 1)(vector_length - 1 downto 0)
+		kernel_activation_matrix : out matrix_1d(0 to kernel_size**2 - 1)(vector_length - 1 downto 0)
 	);
 end entity kernel_slider;
 
@@ -93,7 +93,7 @@ begin
 	Y_GEN : for y in 0 to kernel_size - 1 generate
 
 		X_GEN : for x in 0 to kernel_size - 1 generate
-			kernel_activation_matrix(kernel_size - 1 - y)(kernel_size - 1 - x) <= s_kernel_activation_matrix(x)(y);
+			kernel_activation_matrix((kernel_size - 1 - y) * kernel_size + kernel_size - 1 - x) <= s_kernel_activation_matrix(x)(y);
 		end generate X_GEN;
 
 	end generate Y_GEN;
