@@ -119,8 +119,8 @@ begin
 
 				-- Compare with expected result
 
-                assert new_pixels_stream = expected_output(to_integer(signed(s_pixel_output_channel)) * 5 ** 2 + s_write_pointer)
-                    report "Expected: " & integer'image(to_integer(signed(s_pixel_output_channel))* 14 ** 2 + s_write_pointer) & " | Got: " & integer'image(to_integer(signed(new_pixels_stream)))
+                assert new_pixels_stream = expected_output(to_integer(unsigned(s_pixel_output_channel)) * 5 ** 2 + s_write_pointer)
+                  	report "Expected: " & integer'image(to_integer(unsigned(s_pixel_output_channel)) * 5 ** 2 + s_write_pointer) & " | Got: " & integer'image(to_integer(signed(new_pixels_stream)))
                     severity FAILURE;
 
 
@@ -132,7 +132,7 @@ begin
 	TB : process is
 	begin
 
-		wait for 3000 * clk_period;
+		wait for 4000 * clk_period;
 		finish;
 
 	end process TB;

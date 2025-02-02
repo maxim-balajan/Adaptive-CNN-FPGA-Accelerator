@@ -43,6 +43,7 @@ begin
 			if reset = '1' then
 				-- Is set to one because initial buffer should always write
 				s_line_buffer_wr_en(s_line_buffer_wr_en'low) <= '1';
+				s_full_delay(s_full_delay'low + 1 to s_full_delay'high) <= (others => '0');
 			elsif en = '1' then
 				-- Shift values through kernel window
 				s_kernel_matrix(s_kernel_matrix'low + 1 to s_kernel_matrix'high) <= s_kernel_matrix(s_kernel_matrix'low to s_kernel_matrix'high - 1);
