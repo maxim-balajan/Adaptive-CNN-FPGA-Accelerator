@@ -42,3 +42,8 @@ const Matrix<T>& MaxPooling<T, ACC>::calc(const Matrix<T>& input)
 
     return output_buffer;
 }
+
+template<typename T, typename ACC>
+const char* MaxPooling<T, ACC>::name() const {
+    return "MaxPooling";
+}

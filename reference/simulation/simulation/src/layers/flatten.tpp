@@ -15,3 +15,8 @@ const Matrix<T>& Flatten<T, ACC>::calc(const Matrix<T>& input) {
 
     return output_buffer;
 }
+
+template<typename T, typename ACC>
+const char* Flatten<T, ACC>::name() const {
+    return "Flatten";
+}

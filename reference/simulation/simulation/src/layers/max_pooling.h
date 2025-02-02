@@ -13,6 +13,7 @@ public:
     MaxPooling(size_t pooling_size, size_t batching, size_t x, size_t y, size_t output_channel);
 
     virtual const Matrix<T>& calc(const Matrix<T>& input) override;
+    virtual const char* name() const override;
 };
 
 #include "max_pooling.tpp"

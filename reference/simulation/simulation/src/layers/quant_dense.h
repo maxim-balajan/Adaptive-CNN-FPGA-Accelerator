@@ -18,6 +18,7 @@ public:
     QuantDense(Matrix<T> weights, Matrix<T> bias, bool enable_softmax, size_t batching, size_t x, float s_b, float s_x, float s_w, float s_y);
 
     virtual const Matrix<T>& calc(const Matrix<T>& input) override;
+    virtual const char* name() const override;
 };
 
 #include "quant_dense.tpp"

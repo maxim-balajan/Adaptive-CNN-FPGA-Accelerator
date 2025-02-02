@@ -18,3 +18,8 @@ const Matrix<T>& Quant<T, ACC>::calc(const Matrix<T>& input) {
 
     return output_buffer;
 }
+
+template<typename T, typename ACC>
+const char* Quant<T, ACC>::name() const {
+    return "Quant";
+}

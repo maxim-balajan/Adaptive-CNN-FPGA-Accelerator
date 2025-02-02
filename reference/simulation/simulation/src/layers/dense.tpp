@@ -60,3 +60,9 @@ const Matrix<T>& Dense<T, ACC>::calc(const Matrix<T>& input)
 
     return output_buffer;
 }
+
+
+template<typename T, typename ACC>
+const char* Dense<T, ACC>::name() const {
+    return "Dense";
+}

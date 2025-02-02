@@ -64,3 +64,8 @@ const Matrix<T>& Convolution<T, ACC>::calc(const Matrix<T>& input) {
 
     return output_buffer;
 }
+
+template<typename T, typename ACC>
+const char* Convolution<T, ACC>::name() const {
+    return "Convolution";
+}

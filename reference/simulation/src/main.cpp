@@ -13,7 +13,7 @@ template<typename T, typename ACC>
 const Matrix<T>& inference(const vector<unique_ptr<Layer<T, ACC>>>& layers, const Matrix<T>& input) {
     const Matrix<T> *curr_input = &input;
     for (auto& layer : layers) {
-        // std::cout<<typeid(layer).name()<<"\t"<< quote(layer) <<"\n";
+        //std::cout << layer.get()->name() << "\n";
         curr_input = &layer.get()->calc(*curr_input);
         // std::cout << *curr_input << endl; 
     }

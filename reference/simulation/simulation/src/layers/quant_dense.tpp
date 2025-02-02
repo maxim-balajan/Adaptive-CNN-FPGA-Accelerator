@@ -37,3 +37,8 @@ const Matrix<T>& QuantDense<T, ACC>::calc(const Matrix<T>& input)
 
     return output_buffer;
 }
+
+template<typename T, typename ACC>
+const char* QuantDense<T, ACC>::name() const {
+    return "QuantDense";
+}

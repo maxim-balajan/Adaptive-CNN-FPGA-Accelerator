@@ -13,6 +13,7 @@ public:
     Convolution(Matrix<T> kernel, Matrix<T> bias, size_t batching, size_t x, size_t y, size_t output_channel);
 
     virtual const Matrix<T>& calc(const Matrix<T>& input) override;
+    virtual const char* name() const override;
 };
 
 #include "convolution.tpp"

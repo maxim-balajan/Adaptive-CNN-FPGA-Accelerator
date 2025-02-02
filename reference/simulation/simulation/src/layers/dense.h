@@ -14,6 +14,7 @@ public:
     Dense(Matrix<T> weights, Matrix<T> bias, bool enable_softmax, size_t batching, size_t x);
 
     virtual const Matrix<T>& calc(const Matrix<T>& input) override;
+    virtual const char* name() const override;
 };
 
 #include "dense.tpp"
