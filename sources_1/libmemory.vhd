@@ -33,6 +33,7 @@ package libmemory is
 	impure function read_scale_value (
 		file_name : in string;
 		vector_length : in natural;
+		scale_length: in natural;
 		current_scale : in natural
 	) return std_logic_vector;
 
@@ -195,12 +196,14 @@ package body libmemory is
 	impure function read_scale_value (
 		file_name : in string;
 		vector_length : in natural;
+		scale_length: in natural;
 		current_scale : in natural
 	) return std_logic_vector is
 
 		file     mem_file  : text open read_mode is file_name;
 		variable file_line : line;
-		variable tmp_ram   : std_logic_vector(vector_length - 1 downto 0);
+		variable tmp_ram   : std_logic_vector(scale_length - 1 downto 0);
+		variable padding   : std_logic_vector(vector_length - scale_length - 1 downto 0);
 
 	begin
 
@@ -214,7 +217,8 @@ package body libmemory is
 		-- Write line to RAM variable and return
 		hread(file_line, tmp_ram);
 
-		return tmp_ram;
+		padding := (others => '0');
+		return padding & tmp_ram;
 
 	end function read_scale_value;
 

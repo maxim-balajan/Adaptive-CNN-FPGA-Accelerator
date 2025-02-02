@@ -26,6 +26,7 @@ entity conv_pool_pipeline is
 		weight_path          : string               := "../data/layer_weight_0.data";
 		current_scale        : natural              := 1;
 		scale_path           : string               := "../data/scale_values.data";
+		scale_length         : natural              := input_length;
 
 		--! generics used for convolution_comp_unit
 		enable_clip_adder          : integer range 0 to 1                                                  := 1;
@@ -51,7 +52,7 @@ end entity conv_pool_pipeline;
 architecture rtl of conv_pool_pipeline is
 
 	-- Value used for scaling in the Conv_Comp_Unit
-	constant c_scale_value : std_logic_vector(input_length - 1 downto 0) := read_scale_value(scale_path, input_length, current_scale);
+	constant c_scale_value : std_logic_vector(input_length - 1 downto 0) := read_scale_value(scale_path, input_length, scale_length, current_scale);
 
 	signal s_weight_matrix : matrix_1d(0 to input_amount - 1)(input_length - 1 downto 0);
 
