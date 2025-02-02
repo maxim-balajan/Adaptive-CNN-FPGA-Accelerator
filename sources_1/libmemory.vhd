@@ -171,17 +171,20 @@ package body libmemory is
 
 			end loop;
 
-			-- Offset to get input channel of interest of next output channel
-			-- extra minus 1 because we also have the upper reading for-loop
-			for j in 0 to total_input_channel - 2 loop
+			if i < (total_output_channel - 1) then
+				-- Offset to get input channel of interest of next output channel
+				-- extra minus 1 because we also have the upper reading for-loop
+				for j in 0 to total_input_channel - 2 loop
 
-				for k in 0 to input_amount - 1 loop
+					for k in 0 to input_amount - 1 loop
 
-					readline(mem_file, file_line);
+						readline(mem_file, file_line);
+
+					end loop;
 
 				end loop;
+			end if;
 
-			end loop;
 
 		end loop;
 
