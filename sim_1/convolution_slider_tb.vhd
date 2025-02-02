@@ -22,7 +22,7 @@ architecture bench of convolution_slider_tb is
 	signal pixel_stream             : std_logic_vector(vector_length - 1 downto 0);
 	signal kernel_comp              : std_logic;
 	signal kernel_en                : std_logic;
-	signal kernel_activation_matrix : matrix_2d(0 to kernel_size - 1)(0 to kernel_size - 1)(vector_length - 1 downto 0);
+	signal kernel_activation_matrix : matrix_1d(0 to kernel_size**2 - 1)(vector_length - 1 downto 0);
 	signal valid_pixel : std_logic;
 
 begin

@@ -8,11 +8,11 @@ use work.libmemory.all;
 entity conv_pool_pipeline is
 	generic (
 		--! general generics that are necessary
-		input_length   : natural              := 8;
-		input_width    : natural              := 32;
-		input_height   : natural              := 32;
-		kernel_size    : natural              := 5;
-		pooling_size   : integer range 2 to 2 := 2;
+		input_length : natural              := 8;
+		input_width  : natural              := 32;
+		input_height : natural              := 32;
+		kernel_size  : natural              := 5;
+		pooling_size : integer range 2 to 2 := 2;
 		--! this value indicates how many values are streamed into the pipeline. If enable_weights = 1 this should probably be kernel_size**2
 		--! otherwise it could also be a totally different value (e.g. 6)
 		input_amount   : natural              := 25;
@@ -124,10 +124,11 @@ begin
 	POOL_SLIDER : entity work.pooling_slider
 		generic map (
 			-- Has to be output length if you want to keep e.g. 24-bits
-			vector_length => output_length,
-			input_width   => input_width - kernel_size + 1,
-			input_height  => input_height - kernel_size + 1,
-			pooling_size  => pooling_size
+			vector_length         => output_length,
+			original_input_width  => input_width,
+			original_input_height => input_height,
+			kernel_size           => kernel_size,
+			pooling_size          => pooling_size
 		)
 		port map (
 			clk          => clk,

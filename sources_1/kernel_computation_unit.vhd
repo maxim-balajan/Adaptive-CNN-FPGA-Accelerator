@@ -96,18 +96,54 @@ architecture rtl of kernel_computation_unit is
 	signal s_valid_pixel   : std_logic;
 	signal s_comp_complete : std_logic;
 
+	-- This signal is necessary in order to never incorrectly pipeline values
+	signal s_reset_del : std_logic;
+
+	-- Delayed input signals
+	signal s_activation_matrix : matrix_1d(0 to input_amount - 1)(input_length - 1 downto 0);
+	signal s_weight_matrix     : matrix_1d(0 to input_amount - 1)(input_length - 1 downto 0);
+	signal s_kernel_en         : std_logic;
+	signal s_kernel_complete   : std_logic;
+
 begin
 
 	-- Multiplication line that computes all the multiplications for the convolution; only necessary for convolution
+
+	INPUT_DELAY_PROC : process (clk) is
+	begin
+
+		if rising_edge(clk) then
+			if reset = '1' then
+				s_activation_matrix <= (others => (others => '0'));
+				s_weight_matrix     <= (others => (others => '0'));
+				s_kernel_en         <= '0';
+				s_kernel_complete   <= '0';
+				s_reset_del         <= '1';
+			else
+				s_activation_matrix <= activation_matrix;
+				s_weight_matrix     <= weight_matrix;
+				-- Big hack that solves pipelining of illegal value; don't know how to solve this differently
+				if s_reset_del = '1' then
+					s_kernel_en       <= '0';
+					s_kernel_complete <= '0';
+					s_reset_del       <= '0';
+				else
+					s_kernel_en       <= kernel_en;
+					s_kernel_complete <= kernel_complete;
+				end if;
+			end if;
+		end if;
+
+	end process INPUT_DELAY_PROC;
 
 	MULT_GEN : for i in activation_matrix'range generate
 
 		CONV_MUL_LINE_GEN : if pool_or_conv = 1 and enable_multiplication_line = 1 generate
 			-- resize necessary because target signal has to exactly match resulting size of multiplication
 			-- Multiplication never has to be clipped because the vectors are increased accordingly
-			s_pipeline_start(i) <= std_logic_vector(resize(signed(activation_matrix(i)), 2 * activation_matrix(i)'length) * signed(weight_matrix(i)));
+			s_pipeline_start(i) <= std_logic_vector(resize(signed(s_activation_matrix(i)), 2 * s_activation_matrix(i)'length) * signed(s_weight_matrix(i)));
 		else generate
-			s_pipeline_start(i) <= activation_matrix(i);
+			s_pipeline_start(i) <= s_activation_matrix(i);
 		end generate CONV_MUL_LINE_GEN;
 
 	end generate MULT_GEN;
@@ -138,8 +174,8 @@ begin
 
 	-- Set inputs of pipeline
 	s_pipeline_values(s_pipeline_values'low)           <= s_pipeline_start;
-	s_kernel_en_line(s_kernel_en_line'low)             <= kernel_en;
-	s_kernel_complete_line(s_kernel_complete_line'low) <= kernel_complete;
+	s_kernel_en_line(s_kernel_en_line'low)             <= s_kernel_en;
+	s_kernel_complete_line(s_kernel_complete_line'low) <= s_kernel_complete;
 
 	-- Set outputs of pipeline
 

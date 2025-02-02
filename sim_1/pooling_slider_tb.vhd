@@ -25,7 +25,7 @@ architecture bench of pooling_slider_tb is
 	signal valid_pixel              : std_logic;
 	signal kernel_complete          : std_logic;
 	signal kernel_en                : std_logic;
-	signal kernel_activation_matrix : matrix_2d(0 to pooling_size - 1)(0 to pooling_size - 1)(vector_length - 1 downto 0);
+	signal kernel_activation_matrix : matrix_1d(0 to pooling_size**2 - 1)(vector_length - 1 downto 0);
 	signal pixel_x                  : std_logic_vector(integer(ceil(log2(real(original_input_width - kernel_size + 1) / 2.0))) - 1 downto 0);
 	signal pixel_y                  : std_logic_vector(integer(ceil(log2(real(original_input_height - kernel_size + 1) / 2.0))) downto 0);
 
@@ -46,9 +46,7 @@ begin
 			valid_pixel              => valid_pixel,
 			kernel_complete          => kernel_complete,
 			kernel_en                => kernel_en,
-			kernel_activation_matrix => kernel_activation_matrix,
-			pixel_x                  => pixel_x,
-			pixel_y                  => pixel_y
+			kernel_activation_matrix => kernel_activation_matrix
 		);
 
 	clk   <= not clk after clk_period / 2;

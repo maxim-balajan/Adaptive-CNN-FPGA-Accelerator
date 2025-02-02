@@ -25,10 +25,10 @@ architecture bench of conv_weight_memory_tb is
 	signal clk                         : std_logic := '0';
 	signal reset                       : std_logic;
 	signal base_addr                   : std_logic_vector(kernel_size ** 2 * 6 ** (1 - init_type_2) * 16 ** (init_type_2) - 1 downto 0);
-	signal weight_matrices_first_conv  : matrix_3d(0 to 5)(0 to kernel_size - 1)(0 to kernel_size - 1)(vector_length - 1 downto 0);
-	signal weight_matrices_second_conv : matrix_3d(0 to 5)(0 to kernel_size - 1)(0 to kernel_size - 1)(vector_length - 1 downto 0);
-    signal mem_valid_1 : std_logic_vector(1 to 6);
-    signal mem_valid_2 : std_logic_vector(1 to 6);
+	signal weight_matrices_first_conv  : matrix_2d(0 to 5)(0 to kernel_size ** 2 - 1)(vector_length - 1 downto 0);
+	signal weight_matrices_second_conv : matrix_2d(0 to 5)(0 to kernel_size ** 2 - 1)(vector_length - 1 downto 0);
+	signal mem_valid_1                 : std_logic_vector(1 to 6);
+	signal mem_valid_2                 : std_logic_vector(1 to 6);
 
 begin
 
@@ -37,7 +37,7 @@ begin
 		conv_weight_memory_inst : entity work.conv_weight_memory
 			generic map (
 				vector_length        => vector_length,
-				kernel_size          => kernel_size,
+				input_amount         => kernel_size ** 2,
 				total_input_channel  => 1,
 				total_output_channel => 6,
 				current_channel      => i,
@@ -48,7 +48,7 @@ begin
 				clk           => clk,
 				reset         => reset,
 				base_addr     => (others => '0'),
-                mem_valid => mem_valid_1(i),
+				mem_valid     => mem_valid_1(i),
 				weight_matrix => weight_matrices_first_conv(i - 1)
 			);
 
@@ -59,7 +59,7 @@ begin
 		conv_weight_memory_inst : entity work.conv_weight_memory
 			generic map (
 				vector_length        => vector_length,
-				kernel_size          => kernel_size,
+				input_amount         => kernel_size ** 2,
 				total_input_channel  => 6,
 				total_output_channel => 16,
 				current_channel      => i,
@@ -71,7 +71,7 @@ begin
 				reset                              => reset,
 				base_addr(7 downto 0)              => x"19",
 				base_addr(base_addr'high downto 8) => (others => '0'),
-                mem_valid => mem_valid_2(i),
+				mem_valid                          => mem_valid_2(i),
 				weight_matrix                      => weight_matrices_second_conv(i - 1)
 			);
 

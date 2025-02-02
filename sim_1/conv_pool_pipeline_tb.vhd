@@ -35,7 +35,7 @@ architecture bench of conv_pool_pipeline_tb is
 	-- Ports
 	signal clk               : std_logic := '1';
 	signal reset             : std_logic;
-	signal activation_matrix : matrix_2d(0 to kernel_size - 1)(0 to kernel_size - 1)(vector_length - 1 downto 0);
+	signal activation_matrix : matrix_1d(0 to kernel_size**2 - 1)(vector_length - 1 downto 0);
 	signal kernel_en         : std_logic;
 	signal kernel_complete   : std_logic;
 	signal weights_valid     : std_logic;

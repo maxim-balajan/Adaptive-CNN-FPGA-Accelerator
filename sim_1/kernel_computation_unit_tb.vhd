@@ -17,8 +17,8 @@ architecture bench of kernel_computation_unit_tb is
 	-- Ports
 	signal clk               : std_logic := '0';
 	signal reset             : std_logic;
-	signal activation_matrix : matrix_2d(0 to kernel_size - 1)(0 to kernel_size - 1)(vector_length - 1 downto 0);
-	signal weight_matrix     : matrix_2d(0 to kernel_size - 1)(0 to kernel_size - 1)(vector_length - 1 downto 0);
+	signal activation_matrix : matrix_1d(0 to kernel_size ** 2 - 1)(vector_length - 1 downto 0);
+	signal weight_matrix     : matrix_1d(0 to kernel_size ** 2 - 1)(vector_length - 1 downto 0);
 	signal kernel_en         : std_logic;
 	signal kernel_complete   : std_logic;
 	signal new_pixel         : std_logic_vector(vector_length - 1 downto 0);
@@ -31,7 +31,7 @@ begin
 		generic map (
 			input_length               => vector_length,
 			output_length              => vector_length,
-			kernel_size                => kernel_size,
+			input_amount               => kernel_size ** 2,
 			pool_or_conv               => 1,
 			enable_bias                => 0,
 			enable_multiplication_line => 1,
@@ -56,119 +56,101 @@ begin
 	reset             <= '1' after 0 ns, '0' after 10 ns;
 	activation_matrix <=
 	(
-	  others => (others => (others => '1'))
+	  others => (others => '1')
 	) after 0 ns,
 	  (
-	    (
-	      x"01",
-	      x"02",
-	      x"03",
-	      x"04",
-	      x"05"
-	    ),
-	    (
-	      x"01",
-	      x"02",
-	      x"03",
-	      x"04",
-	      x"04"
-	    ),
-	    (
-	      x"01",
-	      x"02",
-	      x"03",
-	      x"04",
-	      x"05"
-	    ),
-	    (
-	      x"01",
-	      x"02",
-	      x"03",
-	      x"04",
-	      x"05"
-	    ),
-	    (
-	      x"01",
-	      x"02",
-	      x"03",
-	      x"04",
-	      x"05"
-	    )
+	    x"01",
+	    x"02",
+	    x"03",
+	    x"04",
+	    x"05"
+	    ,
+	    x"01",
+	    x"02",
+	    x"03",
+	    x"04",
+	    x"04"
+	    ,
+	    x"01",
+	    x"02",
+	    x"03",
+	    x"04",
+	    x"05"
+	    ,
+	    x"01",
+	    x"02",
+	    x"03",
+	    x"04",
+	    x"05"
+	    ,
+	    x"01",
+	    x"02",
+	    x"03",
+	    x"04",
+	    x"05"
 	  ) after 20 ns;
 	weight_matrix     <=
 	(
-	  (
-	    x"01",
-	    x"02",
-	    x"03",
-	    x"FC",
-	    x"FB"
-	  ),
-	  (
-	    x"01",
-	    x"02",
-	    x"03",
-	    x"FC",
-	    x"FB"
-	  ),
-	  (
-	    x"01",
-	    x"02",
-	    x"03",
-	    x"FC",
-	    x"FB"
-	  ),
-	  (
-	    x"01",
-	    x"02",
-	    x"03",
-	    x"FC",
-	    x"FB"
-	  ),
-	  (
-	    x"01",
-	    x"02",
-	    x"03",
-	    x"FC",
-	    x"FB"
-	  )
+	  x"01",
+	  x"02",
+	  x"03",
+	  x"FC",
+	  x"FB"
+	  ,
+	  x"01",
+	  x"02",
+	  x"03",
+	  x"FC",
+	  x"FB"
+	  ,
+	  x"01",
+	  x"02",
+	  x"03",
+	  x"FC",
+	  x"FB"
+	  ,
+	  x"01",
+	  x"02",
+	  x"03",
+	  x"FC",
+	  x"FB"
+	  ,
+	  x"01",
+	  x"02",
+	  x"03",
+	  x"FC",
+	  x"FB"
 	) after 0 ns,
 	  (
-	    (
-	      x"FE",
-	      x"FF",
-	      x"FE",
-	      x"FF",
-	      x"05"
-	    ),
-	    (
-	      x"FE",
-	      x"FF",
-	      x"FE",
-	      x"FF",
-	      x"07"
-	    ),
-	    (
-	      x"FE",
-	      x"FF",
-	      x"FE",
-	      x"FF",
-	      x"05"
-	    ),
-	    (
-	      x"FE",
-	      x"FF",
-	      x"FE",
-	      x"FF",
-	      x"05"
-	    ),
-	    (
-	      x"FE",
-	      x"FF",
-	      x"FE",
-	      x"FF",
-	      x"05"
-	    )
+	    x"FE",
+	    x"FF",
+	    x"FE",
+	    x"FF",
+	    x"05"
+	    ,
+	    x"FE",
+	    x"FF",
+	    x"FE",
+	    x"FF",
+	    x"07"
+	    ,
+	    x"FE",
+	    x"FF",
+	    x"FE",
+	    x"FF",
+	    x"05"
+	    ,
+	    x"FE",
+	    x"FF",
+	    x"FE",
+	    x"FF",
+	    x"05"
+	    ,
+	    x"FE",
+	    x"FF",
+	    x"FE",
+	    x"FF",
+	    x"05"
 	  ) after 20 ns;
 	kernel_en         <= '1' after 0 ns, '0' after 20 ns,  '1' after 30 ns;
 	kernel_complete   <= '0' after 0 ns, '1' after 30 ns;

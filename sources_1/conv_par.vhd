@@ -72,6 +72,7 @@ begin
 				input_length         => vector_length,
 				input_width          => input_width,
 				input_height         => input_height,
+				input_amount         => kernel_size ** 2,
 				kernel_size          => kernel_size,
 				pooling_size         => pooling_size,
 				enable_weights       => 1,
