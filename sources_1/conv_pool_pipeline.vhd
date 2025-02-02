@@ -13,6 +13,8 @@ entity conv_pool_pipeline is
 		input_height   : natural              := 32;
 		kernel_size    : natural              := 5;
 		pooling_size   : integer range 2 to 2 := 2;
+		--! this value indicates how many values are streamed into the pipeline. If enable_weights = 1 this should probably be kernel_size**2
+		--! otherwise it could also be a totally different value (e.g. 6)
 		input_amount   : natural              := 25;
 		enable_weights : integer range 0 to 1 := 1;
 
@@ -62,8 +64,6 @@ architecture rtl of conv_pool_pipeline is
 	signal s_pool_en       : std_logic;
 	signal s_pool_complete : std_logic;
 	signal s_pool_matrix   : matrix_1d(0 to pooling_size ** 2 - 1)(output_length - 1 downto 0);
-
-	signal s_flatten_activation_matrix : matrix_1d(0 to input_amount - 1)(input_length - 1 downto 0);
 
 begin
 
