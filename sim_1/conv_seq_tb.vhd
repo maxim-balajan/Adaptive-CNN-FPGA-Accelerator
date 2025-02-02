@@ -111,7 +111,11 @@ begin
 				-- Read and Write to output signal
                 s_output_values(to_integer(unsigned(s_pixel_output_channel)))(s_write_pointer) <= new_pixels_stream;
 
-				s_write_pointer <= s_write_pointer + 1;
+				if s_write_pointer >= 5 ** 2 - 1 then
+					s_write_pointer <= 0;
+				else
+					s_write_pointer <= s_write_pointer + 1;
+				end if;
 
 				-- Compare with expected result
 

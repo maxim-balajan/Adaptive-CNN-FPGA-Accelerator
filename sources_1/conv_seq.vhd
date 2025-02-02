@@ -46,8 +46,8 @@ architecture rtl of conv_seq is
 	signal s_channel_reset          : std_logic;
 
 	-- fifo control signals
-	signal s_streaming_fifo_rd_en : std_logic;
-	signal s_streaming_fifo_wrap  : std_logic_vector(0 to total_input_channel - 1);
+	signal s_streaming_fifo_rd_en     : std_logic;
+	signal s_streaming_fifo_last_read : std_logic_vector(0 to total_input_channel - 1);
 
 	-- fifo -> conv slider
 	signal s_fifo_conv_pixel_stream : matrix_1d(0 to total_input_channel - 1)(vector_length - 1 downto 0);
@@ -78,12 +78,12 @@ begin
 				s_new_pixel_complete     <= '0';
 				s_channel_reset          <= '1';
 			else
-				if s_streaming_fifo_rd_en ?= '1' and (or s_streaming_fifo_wrap) then
+				if s_streaming_fifo_rd_en ?= '1' and (or s_streaming_fifo_last_read) then
 					-- stop reading from the fifo if we wrapped around
 					s_streaming_fifo_rd_en <= '0';
 				end if;
 
-				if s_channel_comp_complete ?= '1' then
+				if s_channel_comp_complete ?= '1' and s_channel_reset ?= '0' then
 					if s_current_output_channel < total_output_channel - 1 then
 						s_current_output_channel <= s_current_output_channel + 1;
 						s_channel_reset          <= '1';
@@ -92,7 +92,7 @@ begin
 					end if;
 				end if;
 
-				if s_channel_reset ?= '1' then
+				if s_channel_comp_complete ?= '0' and (or s_fifo_conv_pixel_valid) ?= '0' and s_channel_reset ?= '1' then
 					-- reset the whole pipeline to calculate a new output channel
 
 					-- we just start reading in any case and wait if necessary
@@ -112,17 +112,17 @@ begin
 				depth         => input_width * input_height
 			)
 			port map (
-				clk         => clk,
-				reset       => reset,
-				wr_en       => valid_pixel,
-				rd_en       => s_streaming_fifo_rd_en,
-				full        => open,
-				empty       => open,
-				waiting     => open,
-				wrap_around => s_streaming_fifo_wrap(i),
-				dout_valid  => s_fifo_conv_pixel_valid(i),
-				din         => pixel_stream(i),
-				dout        => s_fifo_conv_pixel_stream(i)
+				clk        => clk,
+				reset      => reset,
+				wr_en      => valid_pixel,
+				rd_en      => s_streaming_fifo_rd_en,
+				full       => open,
+				empty      => open,
+				waiting    => open,
+				last_read  => s_streaming_fifo_last_read(i),
+				dout_valid => s_fifo_conv_pixel_valid(i),
+				din        => pixel_stream(i),
+				dout       => s_fifo_conv_pixel_stream(i)
 
 			);
 
@@ -143,14 +143,13 @@ begin
 				kernel_activation_matrix => s_conv_slider_conv_pipeline_kernel_activation_matrix(i)
 			);
 
-		CONV_PIPELINE_INST : entity work.conv_pool_pipeline
+		CONV_PIPELINE_INST : entity work.conv_pipeline
 			generic map (
 				input_amount         => kernel_size ** 2,
 				input_length         => vector_length,
 				input_width          => input_width - (kernel_size - 1),
 				input_height         => input_height - (kernel_size - 1),
 				kernel_size          => kernel_size,
-				pooling_size         => pooling_size,
 				enable_weights       => 1,
 				total_input_channel  => total_input_channel,
 				total_output_channel => total_output_channel,
@@ -190,26 +189,26 @@ begin
 			input_amount               => total_input_channel,
 			input_width                => input_width - (kernel_size - 1),
 			input_height               => input_height - (kernel_size - 1),
-			kernel_size                => kernel_size,
+			kernel_size                => 1,
 			pooling_size               => pooling_size,
 			enable_weights             => 0,
-			total_input_channel        => 1,
+			total_input_channel        => total_input_channel,
 			total_output_channel       => 1,
 			current_channel            => 1,
 			init_type                  => 0,
 			weight_path                => "",
 			current_scale              => current_scale,
 			scale_path                 => scale_path,
-			scale_length			   => vector_length,
+			scale_length               => vector_length,
 			enable_clip_adder          => enable_clip_adder,
-			enable_multiplication_line => 1,
+			enable_multiplication_line => 0,
 			enable_shift               => 1,
 			enable_relu                => 1,
 			output_length              => vector_length
 		)
 		port map (
 			clk               => clk,
-			reset             => reset,
+			reset             => s_channel_reset,
 			activation_matrix => s_conv_pipeline_pool_pipeline_kernel_activation_matrix,
 			kernel_en         => or s_conv_pipeline_pool_pipeline_kernel_en,
 			kernel_complete   => or s_conv_pipeline_pool_pipeline_kernel_complete,

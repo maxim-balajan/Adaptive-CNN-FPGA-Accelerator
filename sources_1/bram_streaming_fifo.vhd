@@ -18,7 +18,7 @@ entity bram_streaming_fifo is
 		rd_en       : in std_logic;  -- note: as long as waiting is set, this signal is ignored
 		full        : out std_logic;
 		empty       : out std_logic;
-		wrap_around : out std_logic; -- is high for the last read before wrapping around
+		last_read   : out std_logic; -- is high for the last read before wrapping around
 		waiting     : out std_logic; -- is true if we are waiting for data to be written
 		dout_valid  : out std_logic; -- is only high when reading existing data or when writing data
 		din         : in std_logic_vector(vector_length - 1 downto 0);
@@ -38,7 +38,6 @@ architecture rtl of bram_streaming_fifo is
 
 	signal s_empty      : std_logic;
 	signal s_full       : std_logic;
-	signal s_last_read  : std_logic;
 	signal s_waiting    : std_logic;
 	signal s_dout_valid : std_logic;
 
@@ -51,11 +50,12 @@ begin
 
 	empty       <= s_empty;
 	full        <= s_full;
-	wrap_around <= s_last_read;
 	waiting     <= s_waiting;
 	dout_valid  <= s_dout_valid;
 
 	dout <= s_dout;
+
+	last_read   <= '1' when to_integer(s_read_pointer) = depth - 1 else '0';
 
 	process (clk, reset) is
 	begin
@@ -88,10 +88,8 @@ begin
 					-- increment the read pointer even if we are waiting
 					if s_read_pointer /= depth - 1 then
 						s_read_pointer <= s_read_pointer + 1;
-						s_last_read    <= '0';
 					else
 						s_read_pointer <= (others => '0');
-						s_last_read    <= '1';
 					end if;
 				end if;
 				if wr_en = '1' and (s_full = '0' or rd_en = '1') then
