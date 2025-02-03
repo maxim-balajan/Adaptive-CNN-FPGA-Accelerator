@@ -8,7 +8,7 @@ use work.libmemory.all;
 entity conv_weight_memory is
 	generic (
 		vector_length        : natural := 8;
-		input_amount          : natural := 25;
+		input_amount         : natural := 25;
 		total_input_channel  : natural := 1;
 		total_output_channel : natural := 6;
 		current_channel      : natural := 1;
