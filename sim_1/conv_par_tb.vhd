@@ -46,6 +46,7 @@ architecture bench of conv_par_tb is
 	constant expected_result_path : string                                                                         := "../data/expected_output_first_conv_pool_7.data";
 	constant expected_output      : matrix_1d(0 to total_output_channel * 14 ** 2 - 1)(vector_length - 1 downto 0) := init_from_file(expected_result_path, vector_length,  total_output_channel * 14 ** 2);
 
+	signal s_test : std_logic;
 begin
 
 	STREAM_PROC : process (clk) is
@@ -55,11 +56,19 @@ begin
 			if reset = '1' then
 				pixel_stream <= (others => '0');
 				valid_pixel  <= '0';
+				s_test <= '0';
+				s_read_pointer <= 0; 
 			else
 				if s_read_pointer < (input_width * input_height) then
-					pixel_stream   <= s_input_stream(s_read_pointer);
-					s_read_pointer <= s_read_pointer + 1;
-					valid_pixel    <= '1';
+					if s_test = '0' then
+						pixel_stream   <= s_input_stream(s_read_pointer);
+						s_read_pointer <= s_read_pointer + 1;
+						valid_pixel    <= '1';
+					else
+						valid_pixel <= '0';
+					end if;
+
+					s_test <= not s_test;
 				else
 					pixel_stream <= (others => '0');
 					valid_pixel  <= '0';
@@ -94,13 +103,15 @@ begin
 		);
 
 	clk   <= not clk after clk_period / 2;
-	reset <= '1' after 0 ns, '0' after 2 * clk_period;
+	reset <= '1' after 0 ns, '0' after 2 * clk_period, '1' after 4000 * clk_period, '0' after 4010 * clk_period;
 
 	READ_AND_CHECK_PROC : process (clk) is
 	begin
 
 		if rising_edge(clk) then
-			if (s_new_valid_pixel and not s_new_pixel_complete) = '1' then
+			if reset = '1' then
+				s_write_pointer <=  0;
+			elsif (s_new_valid_pixel and not s_new_pixel_complete) = '1' then
 				-- Read and Write to output signal
 				for i in s_output_values'range loop
 

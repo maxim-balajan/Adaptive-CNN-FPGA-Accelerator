@@ -48,6 +48,7 @@ architecture bench of conv_seq_tb is
 	constant expected_result_path : string                                                                        := "../data/example_layer_data/4_max_pool_2.data";
 	constant expected_output      : matrix_1d(0 to total_output_channel * 5 ** 2 - 1)(vector_length - 1 downto 0) := init_from_file(expected_result_path, vector_length,  total_output_channel * (5 ** 2));
 
+	signal s_test : std_logic;
 begin
 
 	STREAM_PROC : process (clk) is
@@ -57,14 +58,20 @@ begin
 			if reset = '1' then
 				pixel_stream <= (others => (others => '0'));
 				valid_pixel  <= '0';
+				s_test <= '0';
 			else
 				if s_read_pointer < (input_width * input_height) then
-                    for i in 0 to total_input_channel - 1 loop
-                        pixel_stream(i) <= s_input_stream(i * input_width * input_height + s_read_pointer);
-					end loop;
+					if s_test = '0' then 
+						for i in 0 to total_input_channel - 1 loop
+							pixel_stream(i) <= s_input_stream(i * input_width * input_height + s_read_pointer);
+						end loop;
 
-					s_read_pointer <= s_read_pointer + 1;
-					valid_pixel    <= '1';
+						s_read_pointer <= s_read_pointer + 1;
+						valid_pixel    <= '1';
+					else
+						valid_pixel <= '0';
+					end if;
+					s_test <= not s_test;
 				else
 					pixel_stream <= (others => (others => '0'));
 					valid_pixel  <= '0';

@@ -4,25 +4,22 @@ use ieee.numeric_std.all;
 use ieee.math_real.all;
 use work.libmatrix.all;
 
--- A streaming fifo that additionally blocks when reading data until valid data is available
-
 entity bram_streaming_fifo is
 	generic (
 		vector_length : natural := 8;
 		depth         : natural := 28
 	);
 	port (
-		clk         : in std_logic;
-		reset       : in std_logic;
-		wr_en       : in std_logic;
-		rd_en       : in std_logic;  -- note: as long as waiting is set, this signal is ignored
-		full        : out std_logic;
-		empty       : out std_logic;
-		last_read   : out std_logic; -- is high for the last read before wrapping around
-		waiting     : out std_logic; -- is true if we are waiting for data to be written
-		dout_valid  : out std_logic; -- is only high when reading existing data or when writing data
-		din         : in std_logic_vector(vector_length - 1 downto 0);
-		dout        : out std_logic_vector(vector_length - 1 downto 0)
+		clk        : in std_logic;
+		reset      : in std_logic;
+		read_reset : in std_logic;
+		wr_en      : in std_logic;
+		rd_en      : in std_logic;
+		full       : out std_logic;
+		empty      : out std_logic;
+		din        : in std_logic_vector(vector_length - 1 downto 0);
+		dout       : out std_logic_vector(vector_length - 1 downto 0);
+		dout_valid : out std_logic
 	);
 end entity bram_streaming_fifo;
 
@@ -33,30 +30,27 @@ architecture rtl of bram_streaming_fifo is
 	attribute ram_style of RAM : signal is "block";
 
 	-- Read and write pointers to the memory
-	signal s_read_pointer  : unsigned(integer(ceil(log2(real(depth)))) - 1 downto 0);     -- depth is enough for this pointer
-	signal s_write_pointer : unsigned(integer(ceil(log2(real(depth + 1)))) - 1 downto 0); -- needs depth+1 because this will be equal to depth when fifo is full
+	signal s_read_pointer  : unsigned(integer(ceil(log2(real(depth)))) downto 0);
+	signal s_write_pointer : unsigned(integer(ceil(log2(real(depth)))) downto 0);
 
-	signal s_empty      : std_logic;
-	signal s_full       : std_logic;
-	signal s_waiting    : std_logic;
+	signal s_empty : std_logic;
+	signal s_full  : std_logic;
+
+	signal s_last_write : std_logic;
+	signal s_dout       : std_logic_vector(vector_length - 1 downto 0);
 	signal s_dout_valid : std_logic;
-
-	signal s_dout : std_logic_vector(vector_length - 1 downto 0);
 
 begin
 
-	s_empty   <= '1' when to_integer(s_write_pointer) = 0 else '0';
-	s_full    <= '1' when to_integer(s_write_pointer) = depth else '0';
+	s_empty <= std_logic_vector(s_read_pointer) ?= std_logic_vector(s_write_pointer) and not s_last_write;
+	s_full  <= std_logic_vector(s_read_pointer) ?= std_logic_vector(s_write_pointer) and s_last_write;
 
-	empty       <= s_empty;
-	full        <= s_full;
-	waiting     <= s_waiting;
-	dout_valid  <= s_dout_valid;
+	empty <= s_empty;
+	full  <= s_full;
 
 	dout <= s_dout;
-
-	last_read   <= '1' when to_integer(s_read_pointer) = depth - 1 else '0';
-
+	dout_valid <= s_dout_valid;
+ 
 	process (clk, reset) is
 	begin
 
@@ -64,50 +58,45 @@ begin
 			if reset = '1' then
 				s_read_pointer  <= (others => '0');
 				s_write_pointer <= (others => '0');
+				s_last_write    <= '0';
 				s_dout          <= (others => '0');
-				s_waiting       <= '0';
 				s_dout_valid    <= '0';
 			else
-				s_dout_valid <= '0';
-				if rd_en = '1' and s_waiting = '0' then -- we ignore any additional state changes if we are already waiting
-					if std_logic_vector(s_read_pointer) ?= std_logic_vector(s_write_pointer) then
-						if wr_en = '1' then
-							-- okay we need to read data that is not available yet
-							-- but as the data is currently written in this cycle we can just forward it
-							s_dout <= din;
-							s_dout_valid <= '1';
-						else
-							-- okay data is not available yet, we need to wait for it
-							s_waiting <= '1';
-						end if;
-					else
-						s_dout <= RAM(to_integer(s_read_pointer));
+				-- only accept read_resets if the fifo is already filled
+				-- this resets the read pointer but does not affect the write pointer
+				if read_reset = '1' and s_write_pointer = depth then
+					s_read_pointer <= (others => '0');
+					s_last_write   <= '1';
+					s_dout         <= (others => '0');
+					s_dout_valid   <= '0';
+				else
+					-- Reset of last write value and dout_valid and put on them 0 for now
+					s_last_write <= '0';
+					s_dout_valid <= '0';
+					if rd_en = '1' and s_empty = '0' then
+						-- Read from memory
+						s_dout       <= RAM(to_integer(s_read_pointer));
 						s_dout_valid <= '1';
-					end if;
 
-					-- increment the read pointer even if we are waiting
-					if s_read_pointer /= depth - 1 then
-						s_read_pointer <= s_read_pointer + 1;
-					else
-						s_read_pointer <= (others => '0');
-					end if;
-				end if;
-				if wr_en = '1' and (s_full = '0' or rd_en = '1') then
-					if s_write_pointer /= depth then
-						-- write to memory
-						RAM(to_integer(s_write_pointer)) <= din;
-
-						-- only increment write pointer if there is still space left
-						s_write_pointer <= s_write_pointer + 1;
-					
-						if s_waiting = '1' then
-							s_waiting <= '0';
-							s_dout <= din;
-							s_dout_valid <= '1';
+						-- If last value has been read, don't increment pointer so that in coming cycles read is blocked via empty signal
+						if s_read_pointer /= depth then
+							s_read_pointer <= s_read_pointer + 1;
 						end if;
 					end if;
+					-- Only accept writes if there is still place inside the fifo
+					if s_write_pointer /= depth then
+						if wr_en = '1' and (s_full = '0' or rd_en = '1') then
+							s_last_write <= '1';
+							-- Write to memory
+							RAM(to_integer(s_write_pointer)) <= din;
 
-					
+							s_write_pointer <= s_write_pointer + 1;
+						end if;
+					end if;
+					-- If neither read nor wright was performed, hold old state and overwrite initial reset statement
+					if not (rd_en = '1' and s_empty = '0') and not (s_write_pointer /= depth and wr_en = '1' and (s_full = '0' or rd_en = '1')) then
+						s_last_write <= s_last_write;
+					end if;
 				end if;
 			end if;
 		end if;

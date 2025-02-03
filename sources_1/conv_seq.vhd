@@ -68,7 +68,7 @@ begin
 	new_pixel_complete       <= s_new_pixel_complete;
 	new_pixel_output_channel <= std_logic_vector(s_current_output_channel);
 
-	process (clk, reset) is
+	process (clk) is
 	begin
 
 		if rising_edge(clk) then
@@ -78,11 +78,8 @@ begin
 				s_new_pixel_complete     <= '0';
 				s_channel_reset          <= '1';
 			else
-				if s_streaming_fifo_rd_en ?= '1' and (or s_streaming_fifo_last_read) then
-					-- stop reading from the fifo if we wrapped around
-					s_streaming_fifo_rd_en <= '0';
-				end if;
 
+				-- If Channel is finished and no reset is set, make a channel reset or finish computation
 				if s_channel_comp_complete ?= '1' and s_channel_reset ?= '0' then
 					if s_current_output_channel < total_output_channel - 1 then
 						s_current_output_channel <= s_current_output_channel + 1;
@@ -90,13 +87,14 @@ begin
 					else
 						s_new_pixel_complete <= '1';
 					end if;
+
+					-- don't read during reset (but this could also be omitted)
+					s_streaming_fifo_rd_en <= '0';
 				end if;
 
-				if s_channel_comp_complete ?= '0' and (or s_fifo_conv_pixel_valid) ?= '0' and s_channel_reset ?= '1' then
-					-- reset the whole pipeline to calculate a new output channel
-
-					-- we just start reading in any case and wait if necessary
-					s_channel_reset        <= '0';
+				-- Always try to read from fifo, if reads are illegal, they are blocked by fifo itself
+				if s_channel_comp_complete ?= '0' and s_channel_reset ?= '1' then
+					s_channel_reset <= '0';
 					s_streaming_fifo_rd_en <= '1';
 				end if;
 			end if;
@@ -114,12 +112,11 @@ begin
 			port map (
 				clk        => clk,
 				reset      => reset,
+				read_reset => s_channel_reset,
 				wr_en      => valid_pixel,
 				rd_en      => s_streaming_fifo_rd_en,
 				full       => open,
 				empty      => open,
-				waiting    => open,
-				last_read  => s_streaming_fifo_last_read(i),
 				dout_valid => s_fifo_conv_pixel_valid(i),
 				din        => pixel_stream(i),
 				dout       => s_fifo_conv_pixel_stream(i)
