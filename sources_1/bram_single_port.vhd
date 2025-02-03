@@ -1,6 +1,8 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 use IEEE.NUMERIC_STD.all;
+use ieee.math_real.all;
+
 use work.libmatrix.all;
 use work.libmemory.all;
 
@@ -14,7 +16,7 @@ entity bram_single_port is
 		clk   : in std_logic;
 		rd_en : in std_logic;
 		wr_en : in std_logic;
-		addr  : in std_logic_vector(depth - 1 downto 0);
+		addr  : in std_logic_vector(integer(ceil(log2(real(depth)))) - 1 downto 0);
 		din   : in std_logic_vector(vector_length - 1 downto 0);
 		dout  : out std_logic_vector(vector_length - 1 downto 0)
 	);

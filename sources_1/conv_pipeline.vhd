@@ -41,7 +41,7 @@ entity conv_pipeline is
 		activation_matrix : in matrix_1d(0 to input_amount - 1)(input_length - 1 downto 0);
 		kernel_en         : in std_logic;
 		kernel_complete   : in std_logic;
-		base_addr         : in std_logic_vector(input_amount * total_input_channel ** (1 - init_type) * total_output_channel ** (init_type) - 1 downto 0);
+		base_addr         : in std_logic_vector(integer(ceil(log2(real(input_amount * total_input_channel ** (1 - init_type) * total_output_channel ** (init_type))))) - 1 downto 0);
 		weights_valid     : out std_logic;
 		new_pixel         : out std_logic_vector(output_length - 1 downto 0);
 		valid_pixel       : out std_logic;

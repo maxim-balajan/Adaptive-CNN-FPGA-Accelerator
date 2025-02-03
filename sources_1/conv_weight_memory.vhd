@@ -19,7 +19,7 @@ entity conv_weight_memory is
 	port (
 		clk           : in std_logic;
 		reset         : in std_logic;
-		base_addr     : in std_logic_vector(input_amount * total_input_channel ** (1 - init_type) * total_output_channel ** (init_type) - 1 downto 0);
+		base_addr     : in std_logic_vector(integer(ceil(log2(real(input_amount * total_input_channel ** (1 - init_type) * total_output_channel ** (init_type))))) - 1 downto 0);
 		mem_valid     : out std_logic;
 		weight_matrix : out matrix_1d(0 to input_amount - 1)(vector_length - 1 downto 0)
 	);
@@ -52,10 +52,10 @@ architecture rtl of conv_weight_memory is
 	-- Depth is purely dependent on the init type
 	constant depth : natural := input_amount * total_input_channel ** (1 - init_type) * total_output_channel ** (init_type);
 
-	signal s_old_addr      : unsigned(depth - 1 downto 0);
-	signal s_addr          : unsigned(depth - 1 downto 0);
-	signal s_base_addr     : unsigned(depth - 1 downto 0);
-	signal s_actual_addr   : std_logic_vector(depth - 1 downto 0);
+	signal s_old_addr      : unsigned(integer(ceil(log2(real(depth)))) - 1 downto 0);
+	signal s_addr          : unsigned(integer(ceil(log2(real(depth)))) - 1 downto 0);
+	signal s_base_addr     : unsigned(integer(ceil(log2(real(depth)))) - 1 downto 0);
+	signal s_actual_addr   : std_logic_vector(integer(ceil(log2(real(depth)))) - 1 downto 0);
 	signal s_weight_matrix : matrix_1d(0 to input_amount - 1)(vector_length - 1 downto 0);
 
 	signal s_dout      : std_logic_vector(vector_length - 1 downto 0);

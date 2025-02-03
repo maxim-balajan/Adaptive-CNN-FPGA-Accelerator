@@ -63,6 +63,9 @@ architecture rtl of conv_seq is
 	signal s_conv_pipeline_pool_pipeline_kernel_en                : std_logic_vector(0 to total_input_channel - 1);
 	signal s_conv_pipeline_pool_pipeline_kernel_activation_matrix : matrix_1d(0 to total_input_channel - 1)(accumulator_length - 1 downto 0);
 
+	-- Base_addr register for accumulating the offset for the weights
+	signal s_base_addr : unsigned(integer(ceil(log2(real(kernel_size**2 * total_output_channel)))) - 1 downto 0);
+
 begin
 
 	new_pixel_complete       <= s_new_pixel_complete;
@@ -77,6 +80,7 @@ begin
 				s_streaming_fifo_rd_en   <= '0';
 				s_new_pixel_complete     <= '0';
 				s_channel_reset          <= '1';
+				s_base_addr <= (others => '0'); 
 			else
 
 				-- If Channel is finished and no reset is set, make a channel reset or finish computation
@@ -84,6 +88,8 @@ begin
 					if s_current_output_channel < total_output_channel - 1 then
 						s_current_output_channel <= s_current_output_channel + 1;
 						s_channel_reset          <= '1';
+						-- Increment base addr by kernel_size**2 to offset weights correctly
+						s_base_addr <= s_base_addr + kernel_size ** 2;
 					else
 						s_new_pixel_complete <= '1';
 					end if;
@@ -171,7 +177,7 @@ begin
 				activation_matrix => s_conv_slider_conv_pipeline_kernel_activation_matrix(i),
 				kernel_en         => s_conv_slider_conv_pipeline_kernel_en(i),
 				kernel_complete   => s_conv_slider_conv_pipeline_kernel_complete(i),
-				base_addr         => std_logic_vector(to_unsigned(kernel_size ** 2 * to_integer(s_current_output_channel), kernel_size ** 2 * total_output_channel)),
+				base_addr         => std_logic_vector(s_base_addr),
 				weights_valid     => open,
 				new_pixel         => s_conv_pipeline_pool_pipeline_kernel_activation_matrix(i),
 				valid_pixel       => s_conv_pipeline_pool_pipeline_kernel_en(i),
