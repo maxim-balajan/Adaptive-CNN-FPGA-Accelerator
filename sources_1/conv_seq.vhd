@@ -91,6 +91,8 @@ begin
 						-- Increment base addr by kernel_size**2 to offset weights correctly
 						s_base_addr <= s_base_addr + kernel_size ** 2;
 					else
+						-- This delays complete signal by one cycle! This would be an issue if new_valid_pixel could be '1' after channel_comp = '1'
+						-- but this should never happen, to this is fine for now
 						s_new_pixel_complete <= '1';
 					end if;
 
