@@ -389,9 +389,7 @@ int main(void) {
             goto Done;
         }
 
-        if (COUNTS_PER_SECOND) {
-            xil_printf("Finished. Latency %dns\r\n", ((endTime - start) * 1000 * 1000 * 1000 ) / (COUNTS_PER_SECOND));
-        }
+        xil_printf("Finished. Latency %dns\r\n", ((endTime - start) * 1000 * 1000 * 1000 ) / (COUNTS_PER_SECOND));
 
         /*
          * Test finished, check data
@@ -539,7 +537,6 @@ static void TxIntrHandler(void *Callback) {
      * If Completion interrupt is asserted, then set the TxDone flag
      */
     if ((IrqStatus & XAXIDMA_IRQ_IOC_MASK)) {
-        XTime_GetTime(&endTime);
         TxDone = 1;
     }
 }
@@ -608,6 +605,7 @@ static void RxIntrHandler(void *Callback) {
      * If completion interrupt is asserted, then set RxDone flag
      */
     if ((IrqStatus & XAXIDMA_IRQ_IOC_MASK)) {
+        XTime_GetTime(&endTime);
         RxDone = 1;
     }
 }
