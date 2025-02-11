@@ -1,0 +1,15 @@
+{
+  "name": "app_accumulator",
+  "type": "HOST",
+  "platform": "/home/markus/Documents/RADL/SW-Integration/Vitis/platform_accumulator/export/platform_accumulator/platform_accumulator.xpfm",
+  "domain": "standalone_psu_cortexa53_0",
+  "cpuInstance": "psu_cortexa53_0",
+  "cpuType": "cortex-a53",
+  "os": "standalone",
+  "configuration": {
+    "componentType": "HOST",
+    "hostToolchainConfigurations": []
+  },
+  "domainRealName": "standalone_psu_cortexa53_0",
+  "applicationFlow": "EMBEDDED"
+}
