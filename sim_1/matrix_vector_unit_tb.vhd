@@ -61,19 +61,19 @@ begin
 
 		if rising_edge(clk) then
 			if reset = '1' then
-				input <= (others => '0');
-				en    <= '0';
+				input           <= (others => '0');
+				en              <= '0';
 				s_invalid_delay <= 0;
 			else
 				if s_invalid_delay = 0 then
 					if signed(input) >= signed(c_actual_weight_width) then
-						en    <= '0';
+						en <= '0';
 					else
 						input <= std_logic_vector(signed(input) + 1);
 						en    <= '1';
 					end if;
 				else
-					en    <= '0';
+					en <= '0';
 				end if;
 
 				if s_invalid_delay /= c_input_delay_amount then
@@ -91,7 +91,19 @@ begin
 
 		if rising_edge(clk) then
 			if reset = '1' then
-				weights <= (others => (others => '0'));
+
+				for i in 0 to  to_integer(unsigned(c_actual_weight_height)) - 1 loop
+
+					weights(i) <= std_logic_vector(to_signed(i + 2, weights(i)'length));
+
+				end loop;
+
+				for i in to_integer(unsigned(c_actual_weight_height)) to weights'high loop
+
+					weights(i) <= (others => '0');
+
+				end loop;
+
 			else
 
 				for i in 0 to to_integer(unsigned(c_actual_weight_height)) - 1 loop

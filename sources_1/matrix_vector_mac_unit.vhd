@@ -27,7 +27,7 @@ architecture rtl of matrix_vector_mac_unit is
 	signal s_weight      : signed(vector_length - 1 downto 0);
 	signal s_partial_sum : signed(3 * vector_length - 1 downto 0);
 
-	signal s_mult_result : signed(3 * vector_length - 1 downto 0);
+	signal s_mul_result : signed(3 * vector_length - 1 downto 0);
 	signal s_add_result  : signed(3 * vector_length - 1 downto 0);
 	-- This signal is for the clip adder
 	signal s_tmp_add_result : std_logic_vector(3 * vector_length - 1 downto 0);
@@ -55,14 +55,14 @@ begin
 
 	-- Calculations of inputs; delayed by one cycle through DELAY_PROC
 	-- weight_vector also delayed => BRAM needs enable signals one cycle earlier
-	s_mult_result <= resize(signed(s_input), 2 * s_input'length) * signed(s_weight);
+	s_mul_result <= resize(signed(s_input), 2 * s_input'length) * signed(s_weight);
 
 	CLIP_ADDER_INST : entity work.clip_adder
 		generic map (
-			vector_length => 3 * vector_length
+			vector_length => s_tmp_add_result'length
 		)
 		port map (
-			din0 => std_logic_vector(s_mult_result),
+			din0 => std_logic_vector(s_mul_result),
 			din1 => std_logic_vector(s_partial_sum),
 			dout => s_tmp_add_result
 		);

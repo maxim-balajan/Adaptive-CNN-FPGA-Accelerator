@@ -132,6 +132,7 @@ begin
 	end generate MAP_GEN;
 
 	results       <= s_results;
+	-- This signal is set one cycle to late, but this is not a problem because no illegal values are ever pipelined
 	comp_complete <= std_logic_vector(s_inputs_finished) ?= std_logic_vector(s_actual_weight_width);
 	-- BRAM enable line always needs enable signals one cycle earlier because BRAM access has a cycle delay
 	bram_enable_line <= s_en & s_enable_bits(0 to max_weight_height - 2);
