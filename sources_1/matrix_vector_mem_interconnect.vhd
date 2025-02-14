@@ -8,14 +8,16 @@ use work.libutil.all;
 
 entity matrix_vector_mem_interconnect is
 	generic (
-		max_weight_width  : natural  := 400;
-		max_weight_height : natural  := 120;
-		weight_widths     : int_list := (400, 120, 84);
-		weight_heights    : int_list := (120, 84, 10);
-		base_file_name    : string   := "../data/layer_weight_";
-		first_layer_id    : natural  := 2;
-		file_extension    : string   := ".data";
-		vector_length     : natural  := 8
+		--! max_weight_{width | height} \in weight_{width | height}, otherwise code could break
+		max_weight_width  : natural := 400;
+		max_weight_height : natural := 120;
+		--! len(weight_widths) == len(weight_heights), otherwise code could break
+		weight_widths  : int_list := (400, 120, 84);
+		weight_heights : int_list := (120, 84, 10);
+		base_file_name : string   := "../data/layer_weight_";
+		first_layer_id : natural  := 2;
+		file_extension : string   := ".data";
+		vector_length  : natural  := 8
 	);
 	port (
 		clk              : in std_logic;
@@ -76,24 +78,13 @@ begin
 
 		if rising_edge(clk) then
 			if reset = '1' then
+				addr_line                <= (others => (others => '0'));
 				addr_line(addr_line'low) <= base_addr;
-
-				for i in addr_line'low + 1 to addr_line'high loop
-
-					addr_line(i) <= (others => '0');
-
-				end loop;
-
 			else
 				addr_line(addr_line'low) <= std_logic_vector(unsigned(addr_line(addr_line'low)) + 1)
 	                            when bram_enable_line(bram_enable_line'low) = '1' else addr_line(addr_line'low);
 
-				for i in addr_line'low + 1 to addr_line'high loop
-
-					addr_line(i) <= addr_line(i - 1);
-
-				end loop;
-
+				addr_line(addr_line'low + 1 to addr_line'high) <= addr_line(addr_line'low to addr_line'high - 1);
 			end if;
 		end if;
 
