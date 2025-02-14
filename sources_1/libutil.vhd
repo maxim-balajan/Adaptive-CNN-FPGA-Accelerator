@@ -8,6 +8,10 @@ package libutil is
 
 	type int_list is array(natural range <>) of integer;
 
+	--! List of strings
+
+	type string_list is array(natural range <>) of string;
+
 	--! function that returns the reduction of a list
 
 	function sum_int_list (

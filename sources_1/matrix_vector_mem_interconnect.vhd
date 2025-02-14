@@ -8,16 +8,16 @@ use work.libutil.all;
 
 entity matrix_vector_mem_interconnect is
 	generic (
+		vector_length  : natural     := 8;
 		--! max_weight_{width | height} \in weight_{width | height}, otherwise code could break
 		max_weight_width  : natural := 400;
 		max_weight_height : natural := 120;
-		--! len(weight_widths) == len(weight_heights), otherwise code could break
-		weight_widths  : int_list := (400, 120, 84);
-		weight_heights : int_list := (120, 84, 10);
-		base_file_name : string   := "../data/layer_weight_";
-		first_layer_id : natural  := 2;
-		file_extension : string   := ".data";
-		vector_length  : natural  := 8
+		--! len(weight_widths) == len(weight_heights) == len(weight_paths), otherwise code could break
+		weight_widths  : int_list    := (400, 120, 84);
+		weight_heights : int_list    := (120, 84, 10);
+		weight_paths   : string_list := ("../data/layer_weight_2.data",
+										"../data/layer_weight_3.data",
+										"../data/layer_weight_4.data")
 	);
 	port (
 		clk              : in std_logic;
@@ -39,7 +39,7 @@ architecture rtl of matrix_vector_mem_interconnect is
 	) return matrix_1d is
 
 		variable tmp_ram         : matrix_1d(0 to sum_int_list(weight_widths))(vector_length - 1 downto 0);
-		variable individual_rams : matrix_2d(0 to weight_widths'length - 1)(0 to max_weight_width)(vector_length - 1 downto 0);
+		variable individual_rams : matrix_2d(0 to weight_paths'length - 1)(0 to max_weight_width)(vector_length - 1 downto 0);
 		variable tmp_length      : natural;
 		variable old_tmp_length  : natural;
 
@@ -48,7 +48,7 @@ architecture rtl of matrix_vector_mem_interconnect is
 		-- Get individual RAM values for all layers
 		for i in individual_rams'range loop
 
-			individual_rams(i) := read_weight_row(base_file_name & integer'image(first_layer_id + i) & file_extension,
+			individual_rams(i) := read_weight_row(weight_paths(i),
 	                                      vector_length, weight_heights(i), weight_widths(i), curr_row);
 
 		end loop;
