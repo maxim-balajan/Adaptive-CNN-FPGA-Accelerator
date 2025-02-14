@@ -70,7 +70,7 @@ architecture rtl of matrix_vector_mem_interconnect is
 
 begin
 
-    -- This process sets the base addr and also shifts all values through the chained registers
+	-- This process sets the base addr and also shifts all values through the chained registers
 	ADDR_PROC : process (clk) is
 	begin
 
@@ -85,7 +85,8 @@ begin
 				end loop;
 
 			else
-				addr_line(addr_line'low) <= std_logic_vector(unsigned(addr_line(addr_line'low)) + 1) when bram_enable_line(bram_enable_line'low) = '1' else addr_line(addr_line'low);
+				addr_line(addr_line'low) <= std_logic_vector(unsigned(addr_line(addr_line'low)) + 1)
+	                            when bram_enable_line(bram_enable_line'low) = '1' else addr_line(addr_line'low);
 
 				for i in addr_line'low + 1 to addr_line'high loop
 
