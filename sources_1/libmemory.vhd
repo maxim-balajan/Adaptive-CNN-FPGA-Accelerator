@@ -15,7 +15,7 @@ package libmemory is
 	impure function read_output_channel (
 		file_name            : in string;
 		vector_length        : in natural;
-		input_amount          : in natural;
+		input_amount         : in natural;
 		total_input_channel  : in natural;
 		total_output_channel : in natural;
 		curr_output_channel  : in natural
@@ -24,25 +24,25 @@ package libmemory is
 	impure function read_input_channel (
 		file_name            : in string;
 		vector_length        : in natural;
-		input_amount          : in natural;
+		input_amount         : in natural;
 		total_input_channel  : in natural;
 		total_output_channel : in natural;
 		curr_input_channel   : in natural
 	) return matrix_1d;
 
 	impure function read_scale_value (
-		file_name : in string;
+		file_name     : in string;
 		vector_length : in natural;
-		scale_length: in natural;
+		scale_length  : in natural;
 		current_scale : in natural
 	) return std_logic_vector;
 
 	impure function read_weight_row (
-		file_name            : in string;
-		vector_length        : in natural;
-		total_rows       : in natural;
-		row_length           : in natural;
-		curr_row          : in natural
+		file_name     : in string;
+		vector_length : in natural;
+		total_rows    : in natural;
+		row_length    : in natural;
+		curr_row      : in natural
 	) return matrix_1d;
 
 end package libmemory;
@@ -75,7 +75,7 @@ package body libmemory is
 	impure function read_output_channel (
 		file_name            : in string;
 		vector_length        : in natural;
-		input_amount          : in natural;
+		input_amount         : in natural;
 		total_input_channel  : in natural;
 		total_output_channel : in natural;
 		curr_output_channel  : in natural
@@ -126,7 +126,7 @@ package body libmemory is
 	impure function read_input_channel (
 		file_name            : in string;
 		vector_length        : in natural;
-		input_amount          : in natural;
+		input_amount         : in natural;
 		total_input_channel  : in natural;
 		total_output_channel : in natural;
 		curr_input_channel   : in natural
@@ -184,8 +184,8 @@ package body libmemory is
 					end loop;
 
 				end loop;
-			end if;
 
+			end if;
 
 		end loop;
 
@@ -194,9 +194,9 @@ package body libmemory is
 	end function read_input_channel;
 
 	impure function read_scale_value (
-		file_name : in string;
+		file_name     : in string;
 		vector_length : in natural;
-		scale_length: in natural;
+		scale_length  : in natural;
 		current_scale : in natural
 	) return std_logic_vector is
 
@@ -223,11 +223,11 @@ package body libmemory is
 	end function read_scale_value;
 
 	impure function read_weight_row (
-		file_name            : in string;
-		vector_length        : in natural;
-		total_rows       : in natural;
-		row_length           : in natural;
-		curr_row          : in natural
+		file_name     : in string;
+		vector_length : in natural;
+		total_rows    : in natural;
+		row_length    : in natural;
+		curr_row      : in natural
 	) return matrix_1d is
 
 		file     mem_file  : text open read_mode is file_name;
@@ -253,7 +253,12 @@ package body libmemory is
 
 			for j in tmp_ram'range loop
 
-				readline(mem_file, file_line);
+				-- This is necessary so that concatenating multiple rows works as expected
+				if not endfile(mem_file) then
+					readline(mem_file, file_line);
+				else
+					return tmp_ram;
+				end if;
 
 			end loop;
 
@@ -263,7 +268,13 @@ package body libmemory is
 
 		for i in tmp_ram'range loop
 
-			readline(mem_file, file_line);
+			-- This is necessary so that concatenating multiple rows works as expected
+			if not endfile(mem_file) then
+				readline(mem_file, file_line);
+			else
+				return tmp_ram;
+			end if;
+
 			hread(file_line, tmp_ram(i));
 
 		end loop;

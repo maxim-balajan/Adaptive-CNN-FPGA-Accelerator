@@ -22,9 +22,44 @@ package libmatrix is
 		input : matrix_2d
 	) return matrix_2d;
 
+	--! Function for concatenating two matrix_1d
+
+	function concat_matrix1d (
+		l : matrix_1d;
+		r : matrix_1d
+	) return matrix_1d;
+
 end package libmatrix;
 
 package body libmatrix is
+
+	function concat_matrix1d (
+		l : matrix_1d;
+		r : matrix_1d
+	) return matrix_1d is
+
+		variable tmp : matrix_1d(0 to l'length + r'length - 1)(l(l'low)'range);
+
+	begin
+
+		-- Add elements of l
+		for i in l'range loop
+
+			tmp(i) := l(i);
+
+		end loop;
+
+		-- Add elements of r
+
+		for i in r'range loop
+
+			tmp(l'length + i) := r(i);
+
+		end loop;
+
+		return tmp;
+
+	end function concat_matrix1d;
 
 	function transpose_matrix2d (
 		input : matrix_2d
