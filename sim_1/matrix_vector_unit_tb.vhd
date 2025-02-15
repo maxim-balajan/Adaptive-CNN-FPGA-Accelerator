@@ -38,7 +38,8 @@ begin
 		generic map (
 			max_weight_width  => weight_width,
 			max_weight_height => weight_height,
-			vector_length     => vector_length
+			vector_length     => vector_length,
+			enable_shift      => 1
 		)
 		port map (
 			clk                  => clk,
@@ -48,6 +49,7 @@ begin
 			actual_weight_width  => c_actual_weight_width,
 			actual_weight_height => c_actual_weight_height,
 			input                => input,
+			shamt                => x"01",
 			bram_enable_line     => bram_enable_line,
 			results              => results,
 			comp_complete        => comp_complete

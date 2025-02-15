@@ -9,7 +9,7 @@ use work.libutil.all;
 entity matrix_vector_mem_interconnect is
 	generic (
 		vector_length : natural := 8;
-		--! max_weight_{width | height} \in weight_{width | height}, otherwise code could break
+		--! max_weight_{width | height} \geq max(weight_{widths | heights}), otherwise code could break
 		max_weight_width  : natural := 400;
 		max_weight_height : natural := 120;
 		--! len(weight_widths) == len(weight_heights) == len(weight_paths), otherwise code could break
