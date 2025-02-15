@@ -49,7 +49,7 @@ architecture rtl of matrix_vector_mem_interconnect is
 		for i in individual_rams'range loop
 
 			individual_rams(i)(0 to weight_widths(i) - 1) := read_weight_row(weight_paths(i),
-	                                      vector_length, weight_heights(i), weight_widths(i), curr_row);
+	                                                                 vector_length, weight_heights(i), weight_widths(i), curr_row);
 
 		end loop;
 
@@ -81,9 +81,16 @@ begin
 				addr_line                <= (others => (others => '0'));
 				addr_line(addr_line'low) <= base_addr;
 			else
-				addr_line(addr_line'low) <= std_logic_vector(unsigned(addr_line(addr_line'low)) + 1)
-	                            when bram_enable_line(bram_enable_line'low) = '1' else addr_line(addr_line'low);
-
+				-- Set start of enable pipeline
+				if bram_enable_line(bram_enable_line'low) = '1' then
+					-- This is to prevent OOB errors
+					if unsigned(addr_line(addr_line'low)) >= max_weight_width then
+						addr_line(addr_line'low) <= (others => '0');
+					else
+						addr_line(addr_line'low) <= std_logic_vector(unsigned(addr_line(addr_line'low)) + 1);
+					end if;
+				end if;
+				-- Shift values
 				addr_line(addr_line'low + 1 to addr_line'high) <= addr_line(addr_line'low to addr_line'high - 1);
 			end if;
 		end if;
@@ -96,7 +103,7 @@ begin
 			generic map (
 				vector_length => vector_length,
 				depth         => sum_int_list(weight_widths),
-				data          => get_BRAM_data(i)
+				data          => get_BRAM_data(i + 1)
 			)
 			port map (
 				clk   => clk,
