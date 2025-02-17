@@ -27,8 +27,8 @@ end entity softmax_layer;
 architecture rtl of softmax_layer is
 
 	-- Increase s_input_matrix size by 1 in order to deal with uneven vector lengths correctly and to make HW more maintainable
-	signal s_input_values  : matrix_1d(0 to input_amount)(vector_length - 1 downto 0);
-	signal s_input_indices : matrix_1d(0 to input_amount)(index_length - 1 downto 0);
+	signal s_input_values  : matrix_1d(0 to input_amount - 1)(vector_length - 1 downto 0);
+	signal s_input_indices : matrix_1d(0 to input_amount - 1)(index_length - 1 downto 0);
 	signal s_max_values    : matrix_1d(0 to integer(input_amount / 2) - 1)(vector_length - 1 downto 0);
 	signal s_max_indices   : matrix_1d(0 to integer(input_amount / 2) - 1)(index_length - 1 downto 0);
 	signal s_comp_complete : std_logic;

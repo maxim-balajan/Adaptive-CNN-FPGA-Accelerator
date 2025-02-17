@@ -67,7 +67,7 @@ begin
 	s_pipeline_en(0) <= en;
 	comp_complete <= s_pipeline_en(c_conv_step_count);
 
-	max_index <= s_pipeline_indices(c_conv_step_count)(c_total_inputs - 1);
+	max_index <= s_pipeline_indices(c_conv_step_count)(0);
 
 	-- Forward input values to first pipeline stage
 	FORWARD_VALS: for i in 0 to input_amount - 1 generate
