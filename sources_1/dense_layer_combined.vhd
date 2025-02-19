@@ -1,0 +1,157 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+use ieee.math_real.all;
+use work.libutil.all;
+use work.libmatrix.all;
+use work.libmemory.all;
+
+entity dense_layer_combined is
+	generic (
+		vector_length : natural := 8;
+		-- weight_width == input_height
+		max_weight_width  : natural := 400;
+		max_weight_height : natural := 120;
+		shift_path        : string  := "../data/scale_values.data";
+		-- If you want no shifts give (0, 0, 0, ...) as an input (shift_ids same length as every other list)
+		shift_ids      : int_list    := (3, 4, 5);
+		weight_widths  : int_list    := (400, 120, 84);
+		weight_heights : int_list    := (120, 84, 10);
+		weight_paths   : string_list := ("../data/layer_weight_2.data",
+										             "../data/layer_weight_3.data",
+										             "../data/layer_weight_4.data")
+	);
+	port (
+		clk           : in std_logic;
+		reset         : in std_logic;
+		en            : in std_logic;
+		input         : in std_logic_vector(vector_length - 1 downto 0);
+		results       : out matrix_1d(0 to weight_heights(weight_heights'high) - 1)(vector_length - 1 downto 0);
+		comp_complete : out std_logic
+	);
+end entity dense_layer_combined;
+
+architecture rtl of dense_layer_combined is
+
+	-- This function retrieves all base_addresses necessary for computation
+
+	impure function get_base_addr return matrix_1d is
+
+		variable tmp : matrix_1d(weight_widths'range)(integer(ceil(log2(real(sum_int_list(weight_widths))))) - 1 downto 0);
+
+	begin
+
+		tmp(tmp'low) := (others => '0');
+
+		for i in tmp'low + 1 to tmp'high loop
+
+			tmp(i) := std_logic_vector(to_unsigned(sum_int_list(weight_widths(weight_widths'low to i - 1)), tmp(i)'length));
+
+		end loop;
+
+		return tmp;
+
+	end function get_base_addr;
+
+	constant c_base_addr : matrix_1d(weight_widths'range)(integer(ceil(log2(real(sum_int_list(weight_widths))))) - 1 downto 0) := get_base_addr;
+
+	-- Counter to check which dense iteration we are on
+	signal s_iteration_count : unsigned(integer(ceil(log2(real(weight_paths'length)))) downto 0);
+	-- This signal is for the temporary reset of the dense layer unit
+	signal s_iteration_reset : std_logic;
+	-- This signal indicates if a dense_layer has finished
+	signal s_tmp_complete : std_logic;
+	-- This signal stores the temporary results in order to stream it back to the  input of the dense layer
+	signal s_tmp_results              : matrix_1d(0 to max_weight_height - 1)(vector_length - 1 downto 0);
+	signal s_tmp_results_read_pointer : unsigned(integer(ceil(log2(real(s_tmp_results'length)))) downto 0);
+	-- This signal is feed into the dense layer
+	signal s_input : std_logic_vector(vector_length - 1 downto 0);
+	signal s_en    : std_logic;
+
+	signal s_comp_complete : std_logic;
+	signal s_results       : matrix_1d(0 to max_weight_height - 1)(vector_length - 1 downto 0);
+
+begin
+
+	CONTROL_PROC : process (clk) is
+	begin
+
+		if rising_edge(clk) then
+			if reset = '1' then
+				s_iteration_count          <= (others => '0');
+				s_iteration_reset          <= '1';
+				s_tmp_complete             <= '0';
+				s_input                    <= (others => '0');
+				s_en                       <= '0';
+				s_tmp_results_read_pointer <= (others => '0');
+				s_comp_complete            <= '0';
+			else
+				-- always set iteration reset to 0 for safety
+				s_iteration_reset <= '0';
+				-- if iteration is finished, then increase count and reset the dense layer unit
+				if s_tmp_complete = '1' then
+					-- If all layers have been computed, finish calculation
+					if s_iteration_count >= weight_paths'length - 1 then
+						s_comp_complete <= '1';
+					else
+						s_iteration_count          <= s_iteration_count + 1;
+						s_iteration_reset          <= '1';
+						s_en                       <= '0';
+						s_tmp_results_read_pointer <= (others => '0');
+					end if;
+				elsif s_iteration_count = 0 then
+					s_input <= input;
+					s_en    <= en;
+				else
+					s_input <= s_tmp_results(to_integer(s_tmp_results_read_pointer));
+					s_en    <= '1';
+					if s_tmp_results_read_pointer >= s_tmp_results'length - 1 then
+						s_tmp_results_read_pointer <= (others => '0');
+					else
+						s_tmp_results_read_pointer <= s_tmp_results_read_pointer + 1;
+					end if;
+				end if;
+			end if;
+		end if;
+
+	end process CONTROL_PROC;
+
+	-- This process only stores the result, when the iteration has concluded
+	-- It is necessary so that we can read the old result in order to use it as an input in the next iteration
+	RESULT_REG_PROC : process (s_tmp_complete) is
+	begin
+
+		if rising_edge(s_tmp_complete) then
+			s_tmp_results <= s_results;
+		end if;
+
+	end process RESULT_REG_PROC;
+
+	DENSE_LAYER_INST : entity work.dense_layer
+		generic map (
+			vector_length    => vector_length,
+			max_weight_width => max_weight_width,
+			weight_widths    => weight_widths,
+			weight_heights   => weight_heights,
+			weight_paths     => weight_paths,
+			shift_path       => shift_path,
+			shift_ids        => shift_ids
+		)
+		port map (
+			clk                  => clk,
+			reset                => s_iteration_reset,
+			en                   => s_en,
+			actual_weight_height => std_logic_vector(to_unsigned(weight_heights(to_integer(s_iteration_count)), integer(ceil(log2(real(max_weight_height)))) + 1)),
+			actual_weight_width  => std_logic_vector(to_unsigned(weight_widths(to_integer(s_iteration_count)), integer(ceil(log2(real(max_weight_width)))) + 1)),
+			input                => s_input,
+			shift_id             => std_logic_vector(s_iteration_count),
+			base_addr            => std_logic_vector(c_base_addr(to_integer(s_iteration_count))),
+			results              => s_results,
+			comp_complete        => s_tmp_complete
+		);
+
+	-- Set output for the results
+	comp_complete <= s_comp_complete;
+	results       <= s_tmp_results(0 to weight_heights(weight_heights'high) - 1);
+
+end architecture rtl;

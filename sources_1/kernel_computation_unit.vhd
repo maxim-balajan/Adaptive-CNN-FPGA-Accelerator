@@ -141,7 +141,7 @@ begin
 		CONV_MUL_LINE_GEN : if pool_or_conv = 1 and enable_multiplication_line = 1 generate
 			-- resize necessary because target signal has to exactly match resulting size of multiplication
 			-- Multiplication never has to be clipped because the vectors are increased accordingly
-			s_pipeline_start(i) <= std_logic_vector(resize(signed(s_activation_matrix(i)), 2 * s_activation_matrix(i)'length) * signed(s_weight_matrix(i)));
+			s_pipeline_start(i) <= std_logic_vector(resize(signed(s_activation_matrix(i)) * signed(s_weight_matrix(i)), s_pipeline_start(i)'length));
 		else generate
 			s_pipeline_start(i) <= s_activation_matrix(i);
 		end generate CONV_MUL_LINE_GEN;
