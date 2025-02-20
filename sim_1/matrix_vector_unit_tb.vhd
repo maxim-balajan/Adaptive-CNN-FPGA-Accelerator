@@ -3,6 +3,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use ieee.math_real.all;
 use work.libmatrix.all;
+use work.libutil.all;
 use std.env.finish;
 
 entity matrix_vector_unit_tb is
@@ -38,8 +39,8 @@ begin
 		generic map (
 			max_weight_width  => weight_width,
 			max_weight_height => weight_height,
-			vector_length     => vector_length,
-			enable_shift      => 1
+			input_length      => vector_length,
+			output_length => 3 * vector_length
 		)
 		port map (
 			clk                  => clk,
@@ -49,7 +50,6 @@ begin
 			actual_weight_width  => c_actual_weight_width,
 			actual_weight_height => c_actual_weight_height,
 			input                => input,
-			shamt                => x"01",
 			bram_enable_line     => bram_enable_line,
 			results              => results,
 			comp_complete        => comp_complete
