@@ -1,9 +1,9 @@
-
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use ieee.math_real.all;
 use work.libmatrix.all;
+use std.env.finish;
 
 entity softmax_unit_tb is
 end entity softmax_unit_tb;
@@ -41,8 +41,13 @@ begin
 
     clk   <= not clk after clk_period / 2;
     reset <= '1' after 0 ns, '0' after 2 * clk_period;
-    input <= (others => (others => '0')) after 0 ns, 
-             (0 => "10101101", 1 => "00101010", 2 => "01101010", 3 => "00000000", 4 => "11011010", 5 => "00001010", 6 => "00010000", 7 => "10101010", 8 => "01000000", 9 => "00110101") after 2 * clk_period;
-    en <= '0' after ns, '1' after 3 * clk_period;
+    input <= (0 => "10101101", 1 => "10101010", 2 => "11101010", 3 => "10000000", 4 => "11011010", 5 => "10001010", 6 => "10010000", 7 => "10101010", 8 => "11000000", 9 => "10110101");
+    en <= '1';
+
+	TB : process
+	begin
+		wait for 10 * clk_period;
+		finish;
+	end process;
 
 end architecture bench;
