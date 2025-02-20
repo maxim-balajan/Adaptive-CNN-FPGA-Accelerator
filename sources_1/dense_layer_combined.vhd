@@ -10,14 +10,13 @@ entity dense_layer_combined is
 	generic (
 		vector_length : natural := 8;
 		-- weight_width == input_height
-		max_weight_width  : natural := 400;
-		max_weight_height : natural := 120;
-		shift_path        : string  := "../data/scale_values.data";
-		-- If you want no shifts give (0, 0, 0, ...) as an input (shift_ids same length as every other list)
-		shift_ids      : int_list    := (3, 4, 5);
-		weight_widths  : int_list    := (400, 120, 84);
-		weight_heights : int_list    := (120, 84, 10);
-		weight_paths   : string_list := ("../data/layer_weight_2.data",
+		max_weight_width  : natural     := 400;
+		max_weight_height : natural     := 120;
+		shift_path        : string      := "../data/scale_values.data";
+		shift_ids         : int_list    := (3, 4, 5);
+		weight_widths     : int_list    := (400, 120, 84);
+		weight_heights    : int_list    := (120, 84, 10);
+		weight_paths      : string_list := ("../data/layer_weight_2.data",
 										 "../data/layer_weight_3.data",
 										 "../data/layer_weight_4.data")
 	);
@@ -166,6 +165,7 @@ begin
 	-- This generate creates shift_ids'length many static shifts of the output
 	-- of the "slicing unit" in order to shift the inputs for later use
 	-- TODO : pipeline input
+
 	SHIFT_GEN : for i in s_shifted_input'range generate
 
 		s_shifted_input(i) <= std_logic_vector(shift_right(signed(s_tmp_results(to_integer(s_tmp_results_read_pointer))),
@@ -198,6 +198,7 @@ begin
 
 	-- This process shifts and clips the first weight_heights(weight'high) values so that it can be passed to the output port
 	-- TODO : pipeline output
+
 	SHIFT_SOL_GEN : for i in s_shifted_solutions'range generate
 		-- Shift the first weight_heights(weight'high) values with the last scale value
 		s_shifted_solutions(i) <= std_logic_vector(shift_right(signed(s_tmp_results(i)),
