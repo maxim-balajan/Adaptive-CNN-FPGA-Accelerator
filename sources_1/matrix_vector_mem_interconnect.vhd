@@ -84,7 +84,7 @@ begin
 				-- Set start of enable pipeline
 				if bram_enable_line(bram_enable_line'low) = '1' then
 					-- This is to prevent OOB errors
-					if unsigned(addr_line(addr_line'low)) >= max_weight_width then
+					if unsigned(addr_line(addr_line'low)) >= sum_int_list(weight_widths) - 1 then
 						addr_line(addr_line'low) <= (others => '0');
 					else
 						addr_line(addr_line'low) <= std_logic_vector(unsigned(addr_line(addr_line'low)) + 1);

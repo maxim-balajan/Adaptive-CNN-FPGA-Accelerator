@@ -30,21 +30,20 @@ architecture bench of dense_layer_tb is
 	  "../data/layer_weight_4.data"
 	);
 	-- Ports
-	signal   clk                    : std_logic                                    := '0';
-	signal   reset                  : std_logic;
-	signal   en                     : std_logic;
-	signal   actual_weight_width    : std_logic_vector(integer(ceil(log2(real(max_weight_width)))) downto 0);
-	signal   actual_weight_height   : std_logic_vector(integer(ceil(log2(real(max_weight_height)))) downto 0);
-	signal   input                  : std_logic_vector(vector_length - 1 downto 0);
-	constant shamt                  : std_logic_vector(vector_length - 1 downto 0) := read_scale_value(scale_file_name, vector_length, vector_length, scale_row);
-	signal   base_addr              : std_logic_vector(integer(ceil(log2(real(sum_int_list(weight_widths))))) - 1 downto 0);
-	signal   results                : matrix_1d(0 to max_weight_height - 1)(3 * vector_length - 1 downto 0);
-	signal   actual_results_shifted : matrix_1d(0 to max_weight_height - 1)(3 * vector_length - 1 downto 0);
-	signal   actual_results_clipped : matrix_1d(0 to max_weight_height - 1)(vector_length - 1 downto 0);
-	signal   comp_complete          : std_logic;
+	signal clk                    : std_logic := '0';
+	signal reset                  : std_logic;
+	signal en                     : std_logic;
+	signal actual_weight_width    : std_logic_vector(integer(ceil(log2(real(max_weight_width)))) downto 0);
+	signal actual_weight_height   : std_logic_vector(integer(ceil(log2(real(max_weight_height)))) downto 0);
+	signal input                  : std_logic_vector(vector_length - 1 downto 0);
+	signal base_addr              : std_logic_vector(integer(ceil(log2(real(sum_int_list(weight_widths))))) - 1 downto 0);
+	signal results                : matrix_1d(0 to max_weight_height - 1)(3 * vector_length - 1 downto 0);
+	signal actual_results_shifted : matrix_1d(0 to max_weight_height - 1)(3 * vector_length - 1 downto 0);
+	signal actual_results_clipped : matrix_1d(0 to max_weight_height - 1)(vector_length - 1 downto 0);
+	signal comp_complete          : std_logic;
 
-	constant c_input_data_file_name : string                                                           := "../data/example_layer_data/5_flatten.data";
-	signal   input_stream           : matrix_1d(0 to max_weight_width - 1)(vector_length - 1 downto 0) := init_from_file(c_input_data_file_name, vector_length, max_weight_width);
+	constant c_input_data_file_name : string                                                           := "../data/example_layer_data/6_dense_1.data";
+	signal   input_stream           : matrix_1d(0 to weight_widths(1) - 1)(vector_length - 1 downto 0) := init_from_file(c_input_data_file_name, vector_length, weight_widths(1));
 	signal   read_pointer           : integer;
 	signal   invalid_delay          : integer range 0 to 3;
 
@@ -74,9 +73,9 @@ begin
 
 	clk                  <= not clk after clk_period / 2;
 	reset                <= '1' after 0 ns, '0' after 2 * clk_period;
-	actual_weight_width  <= std_logic_vector(to_unsigned(max_weight_width, actual_weight_width'length));
-	actual_weight_height <= std_logic_vector(to_unsigned(max_weight_height, actual_weight_height'length));
-	base_addr            <= (others => '0');
+	actual_weight_width  <= std_logic_vector(to_unsigned(weight_widths(1), actual_weight_width'length));
+	actual_weight_height <= std_logic_vector(to_unsigned(weight_heights(1), actual_weight_height'length));
+	base_addr            <= std_logic_vector(to_unsigned(weight_widths(0), base_addr'length));
 
 	INPUT_PROC : process (clk) is
 	begin
@@ -91,7 +90,7 @@ begin
 				if invalid_delay = 0 then
 					input <= input_stream(read_pointer);
 					en    <= '1';
-					if read_pointer >= max_weight_width - 1 then
+					if read_pointer >= weight_widths(1) - 1 then
 						read_pointer <= 0;
 					else
 						read_pointer <= read_pointer + 1;
@@ -111,7 +110,7 @@ begin
 	end process INPUT_PROC;
 
 	OUTPUT_GEN : for i in actual_results_shifted'range generate
-		actual_results_shifted(i) <= std_logic_vector(shift_right(signed(results(i)), 7));
+		actual_results_shifted(i) <= std_logic_vector(shift_right(signed(results(i)), 9));
 
 		actual_results_clipped(i) <= std_logic_vector(to_signed(2 ** (vector_length - 1) - 1, actual_results_clipped(i)'length))
 	                             when signed(actual_results_shifted(i)) > 2 ** (vector_length - 1) - 1 else

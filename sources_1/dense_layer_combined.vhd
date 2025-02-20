@@ -106,7 +106,6 @@ begin
 			if reset = '1' then
 				s_iteration_count          <= (others => '0');
 				s_iteration_reset          <= '1';
-				s_tmp_complete             <= '0';
 				s_input                    <= (others => '0');
 				s_en                       <= '0';
 				s_tmp_results_read_pointer <= (others => '0');
@@ -114,35 +113,38 @@ begin
 			else
 				-- always set iteration reset to 0 for safety
 				s_iteration_reset <= '0';
-				-- if iteration is finished, then increase count and reset the dense layer unit
-				if s_tmp_complete = '1' then
-					-- If all layers have been computed, finish calculation
-					if s_iteration_count >= weight_paths'length - 1 then
-						s_comp_complete <= '1';
+				-- Only do something while the iteration is not resetting
+				if s_iteration_reset /= '1' then
+					-- if iteration is finished, then increase count and reset the dense layer unit
+					if s_tmp_complete = '1' then
+						-- If all layers have been computed, finish calculation
+						if s_iteration_count >= weight_paths'length - 1 then
+							s_comp_complete <= '1';
+						else
+							s_iteration_count          <= s_iteration_count + 1;
+							s_iteration_reset          <= '1';
+							s_en                       <= '0';
+							s_tmp_results_read_pointer <= (others => '0');
+						end if;
+					elsif s_iteration_count = 0 then
+						s_input <= input;
+						s_en    <= en;
 					else
-						s_iteration_count          <= s_iteration_count + 1;
-						s_iteration_reset          <= '1';
-						s_en                       <= '0';
-						s_tmp_results_read_pointer <= (others => '0');
-					end if;
-				elsif s_iteration_count = 0 then
-					s_input <= input;
-					s_en    <= en;
-				else
-					-- Clip values that are streamed into mv_unit
-					if signed(s_shifted_input(to_integer(s_iteration_count))) > 2 ** (vector_length - 1) - 1 then
-						s_input <= std_logic_vector(to_signed(2 ** (vector_length - 1) - 1, s_input'length));
-					elsif signed(s_shifted_input(to_integer(s_iteration_count))) < - 2 ** (vector_length - 1) then
-						s_input <= std_logic_vector(to_signed(- 2 ** (vector_length - 1), s_input'length));
-					else
-						s_input <= s_shifted_input(to_integer(s_iteration_count))(vector_length - 1 downto 0);
-					end if;
-					s_en <= '1';
-					-- Increament_read_pointer
-					if s_tmp_results_read_pointer >= s_tmp_results'length - 1 then
-						s_tmp_results_read_pointer <= (others => '0');
-					else
-						s_tmp_results_read_pointer <= s_tmp_results_read_pointer + 1;
+						-- Clip values that are streamed into mv_unit
+						if signed(s_shifted_input(to_integer(s_iteration_count) - 1)) > 2 ** (vector_length - 1) - 1 then
+							s_input <= std_logic_vector(to_signed(2 ** (vector_length - 1) - 1, s_input'length));
+						elsif signed(s_shifted_input(to_integer(s_iteration_count) - 1)) < - 2 ** (vector_length - 1) then
+							s_input <= std_logic_vector(to_signed(- 2 ** (vector_length - 1), s_input'length));
+						else
+							s_input <= s_shifted_input(to_integer(s_iteration_count) - 1)(vector_length - 1 downto 0);
+						end if;
+						s_en <= '1';
+						-- Increament_read_pointer
+						if s_tmp_results_read_pointer >= s_tmp_results'length - 1 then
+							s_tmp_results_read_pointer <= (others => '0');
+						else
+							s_tmp_results_read_pointer <= s_tmp_results_read_pointer + 1;
+						end if;
 					end if;
 				end if;
 			end if;
@@ -163,7 +165,7 @@ begin
 
 	-- This generate creates shift_ids'length many static shifts of the output
 	-- of the "slicing unit" in order to shift the inputs for later use
-
+	-- TODO : pipeline input
 	SHIFT_GEN : for i in s_shifted_input'range generate
 
 		s_shifted_input(i) <= std_logic_vector(shift_right(signed(s_tmp_results(to_integer(s_tmp_results_read_pointer))),
@@ -195,7 +197,7 @@ begin
 		);
 
 	-- This process shifts and clips the first weight_heights(weight'high) values so that it can be passed to the output port
-
+	-- TODO : pipeline output
 	SHIFT_SOL_GEN : for i in s_shifted_solutions'range generate
 		-- Shift the first weight_heights(weight'high) values with the last scale value
 		s_shifted_solutions(i) <= std_logic_vector(shift_right(signed(s_tmp_results(i)),
