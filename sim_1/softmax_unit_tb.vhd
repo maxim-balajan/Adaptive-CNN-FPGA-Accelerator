@@ -39,15 +39,17 @@ begin
 			comp_complete => comp_complete
 		);
 
-    clk   <= not clk after clk_period / 2;
-    reset <= '1' after 0 ns, '0' after 2 * clk_period;
-    input <= (0 => "10101101", 1 => "10101010", 2 => "11101010", 3 => "10000000", 4 => "11011010", 5 => "10001010", 6 => "10010000", 7 => "10101010", 8 => "11000000", 9 => "10110101");
-    en <= '1';
+	clk   <= not clk after clk_period / 2;
+	reset <= '1' after 0 ns, '0' after 2 * clk_period;
+	input <= ("10101101", "10101010", "11101010", "10000000", "11011010", "10001010", "10010000", "10101010", "11000000", "10110101");
+	en    <= '1';
 
-	TB : process
+	TB : process is
 	begin
+
 		wait for 10 * clk_period;
 		finish;
-	end process;
+
+	end process TB;
 
 end architecture bench;
