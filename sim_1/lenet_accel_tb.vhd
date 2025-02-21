@@ -49,13 +49,20 @@ architecture bench of lenet_accel_tb is
 	signal comp_complete : std_logic;
 
 	-- write all input data to matrix_1d
-	constant input_path     : string                                                                     := "../data/example_layer_data/0_input.data";
-	signal   s_input_stream : matrix_1d(0 to input_width * input_height - 1)(vector_length - 1 downto 0) := init_from_file(input_path, vector_length, input_width * input_height);
+	constant input_path_2     : string                                                                     := "../data/input_2.data";
+
+	signal   s_input_stream_2 : matrix_1d(0 to input_width * input_height - 1)(vector_length - 1 downto 0) := init_from_file(input_path_2, vector_length, input_width * input_height);
+	constant input_path_7 : string := "../data/input_7.data";
+	signal s_input_stream_7 : matrix_1d(0 to input_width * input_height - 1)(vector_length - 1 downto 0) := init_from_file(input_path_7, vector_length, input_width * input_height);
 	signal   s_read_pointer : integer range 0 to (input_width * input_height);
 
+	signal s_actual_input_stream : matrix_1d(0 to input_width * input_height - 1)(vector_length - 1 downto 0);
 	signal s_invalid_delay : integer range 0 to 3;
+	signal s_iteration : integer := 0;
 
 begin
+
+	s_actual_input_stream <= s_input_stream_2 when s_iteration = 0 else s_input_stream_7;
 
 	STREAM_PROC : process (clk) is
 	begin
@@ -66,10 +73,11 @@ begin
 				valid_pixel     <= '0';
 				s_invalid_delay <= 0;
 				s_read_pointer  <= 0;
+				
 			else
 				if s_read_pointer < (input_width * input_height) then
 					if s_invalid_delay = 0 then
-						pixel_stream   <= s_input_stream(s_read_pointer);
+						pixel_stream   <= s_actual_input_stream(s_read_pointer);
 						s_read_pointer <= s_read_pointer + 1;
 						valid_pixel    <= '1';
 					else
@@ -120,6 +128,13 @@ begin
 		);
 
 	clk   <= not clk after clk_period / 2;
-	reset <= '1' after 0 ns, '0' after 2 * clk_period;
+	reset <= '1' after 0 ns, '0' after 2 * clk_period, '1' after 10000 * clk_period, '0' after 10002 * clk_period;
+
+	TB : process (comp_complete)
+	begin
+		if rising_edge(comp_complete) then 
+			s_iteration <= s_iteration + 1;
+		end if;
+	end process;
 
 end architecture bench;
