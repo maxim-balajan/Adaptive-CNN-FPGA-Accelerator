@@ -85,16 +85,20 @@ architecture rtl of dense_layer_combined is
 	signal s_tmp_results_read_pointer : unsigned(integer(ceil(log2(real(s_tmp_results'length)))) downto 0);
 	-- This signal stores all possible shifts of s_input
 	signal s_shifted_input : matrix_1d(shift_ids'range)(3 * vector_length - 1 downto 0);
-	-- This signal always computes the last shift of the first 10 values
-	signal s_shifted_solutions : matrix_1d(0 to weight_heights(weight_heights'high) - 1)(3 * vector_length - 1 downto 0);
-	-- This signal contains the clipped version of s_shifted_solutions
-	signal s_clipped_solutions : matrix_1d(0 to weight_heights(weight_heights'high) - 1)(vector_length - 1 downto 0);
 	-- This signal is feed into the dense layer
 	signal s_input : std_logic_vector(vector_length - 1 downto 0);
 	signal s_en    : std_logic;
 
 	signal s_comp_complete : std_logic;
 	signal s_results       : matrix_1d(0 to max_weight_height - 1)(3 * vector_length - 1 downto 0);
+
+	-- Signals for pipelining output
+	signal s_shifted_en : std_logic;
+	signal s_clipped_en : std_logic;
+	-- This signal always computes the last shift of the first 10 values
+	signal s_shifted_solutions : matrix_1d(0 to weight_heights(weight_heights'high) - 1)(3 * vector_length - 1 downto 0);
+	-- This signal contains the clipped version of s_shifted_solutions
+	signal s_clipped_solutions : matrix_1d(0 to weight_heights(weight_heights'high) - 1)(vector_length - 1 downto 0);
 
 begin
 
@@ -197,22 +201,50 @@ begin
 		);
 
 	-- This process shifts and clips the first weight_heights(weight'high) values so that it can be passed to the output port
-	-- TODO : pipeline output
+	-- It also pipelines the output so decrease critical path
+	OUTPUT_PIPELINE_PROC : process (clk) is
+	begin
 
-	SHIFT_SOL_GEN : for i in s_shifted_solutions'range generate
-		-- Shift the first weight_heights(weight'high) values with the last scale value
-		s_shifted_solutions(i) <= std_logic_vector(shift_right(signed(s_tmp_results(i)),
+		if rising_edge(clk) then
+			if reset = '1' then
+
+				for i in s_shifted_solutions'range loop
+
+					s_shifted_solutions(i) <= (others => '0');
+					s_clipped_solutions(i) <= (others => '0');
+
+				end loop;
+
+				s_shifted_en <= '0';
+				s_clipped_en <= '0';
+			else
+
+				for i in s_shifted_solutions'range loop
+
+					-- Shift the first weight_heights(weight'high) values with the last scale value
+					s_shifted_solutions(i) <= std_logic_vector(shift_right(signed(s_tmp_results(i)),
 	                                                       to_integer(unsigned(c_scale_values(c_scale_values'high)))));
-		-- And then clip them accordingly for use in softmax unit
-		s_clipped_solutions(i) <= std_logic_vector(to_signed(2 ** (vector_length - 1) - 1, s_clipped_solutions(i)'length))
-	                          when signed(s_shifted_solutions(i)) > 2 ** (vector_length - 1) - 1 else
-	                          std_logic_vector(to_signed(- 2 ** (vector_length - 1), s_clipped_solutions(i)'length))
-	                          when signed(s_shifted_solutions(i)) < - 2 ** (vector_length - 1) else
-	                          s_shifted_solutions(i)(vector_length - 1 downto 0);
-	end generate SHIFT_SOL_GEN;
+					-- And then clip them accordingly for use in softmax unit
+
+					if signed(s_shifted_solutions(i)) > 2 ** (vector_length - 1) - 1 then
+						s_clipped_solutions(i) <= std_logic_vector(to_signed(2 ** (vector_length - 1) - 1, s_clipped_solutions(i)'length));
+					elsif signed(s_shifted_solutions(i)) < - 2 ** (vector_length - 1) then 
+						s_clipped_solutions(i) <= std_logic_vector(to_signed(- 2 ** (vector_length - 1), s_clipped_solutions(i)'length));
+					else
+						s_clipped_solutions(i) <= s_shifted_solutions(i)(vector_length - 1 downto 0);
+					end if;
+
+				end loop;
+
+				s_shifted_en <= s_comp_complete;
+				s_clipped_en <= s_shifted_en;
+			end if;
+		end if;
+
+	end process OUTPUT_PIPELINE_PROC;
 
 	-- Set output for the results
-	comp_complete <= s_comp_complete;
+	comp_complete <= s_clipped_en;
 	results       <= s_clipped_solutions;
 
 end architecture rtl;
