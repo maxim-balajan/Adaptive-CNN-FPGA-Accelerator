@@ -3,8 +3,8 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use ieee.math_real.all;
 
--- This unit is purely combinatorial!!! It is not pipelined because, although it would be easy to implement it for the convolutions,
--- it would be hard to implement this into the MACs of the MV-Unit.
+-- This unit is purely combinatorial!!! It is not pipelined because, although it would be easy to implement 
+-- it for the convolutions, it would be hard to implement this into the MACs of the MV-Unit.
 -- Also two multiplexers (in series) shouldn't increase the critical path by too much compared to a single adder
 
 entity clip_adder is
