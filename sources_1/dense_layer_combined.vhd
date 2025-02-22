@@ -83,15 +83,20 @@ architecture rtl of dense_layer_combined is
 	-- This signal stores the temporary results in order to stream it back to the  input of the dense layer
 	signal s_tmp_results              : matrix_1d(0 to max_weight_height - 1)(3 * vector_length - 1 downto 0);
 	signal s_tmp_results_read_pointer : unsigned(integer(ceil(log2(real(s_tmp_results'length)))) downto 0);
-	-- This signal stores all possible shifts of s_input
-	signal s_shifted_input : matrix_1d(shift_ids'range)(3 * vector_length - 1 downto 0);
-	-- This signal is feed into the dense layer
-	signal s_input : std_logic_vector(vector_length - 1 downto 0);
-	signal s_en    : std_logic;
+
+	signal s_en : std_logic;
 
 	signal s_comp_complete : std_logic;
 	signal s_results       : matrix_1d(0 to max_weight_height - 1)(3 * vector_length - 1 downto 0);
 
+	-- Signals for pipelining input
+	signal s_shifted_input_en : std_logic;
+	signal s_sliced_input_en  : std_logic;
+	signal s_sliced_input     : std_logic_vector(3 * vector_length - 1 downto 0);
+	-- This signal stores all possible shifts of s_input
+	signal s_shifted_input : matrix_1d(shift_ids'range)(3 * vector_length - 1 downto 0);
+	-- This signal is feed into the dense layer
+	signal s_input : std_logic_vector(vector_length - 1 downto 0);
 	-- Signals for pipelining output
 	signal s_shifted_en : std_logic;
 	signal s_clipped_en : std_logic;
@@ -141,7 +146,7 @@ begin
 						else
 							s_input <= s_shifted_input(to_integer(s_iteration_count) - 1)(vector_length - 1 downto 0);
 						end if;
-						s_en <= '1';
+						s_en <= s_shifted_input_en;
 						-- Increament_read_pointer
 						if s_tmp_results_read_pointer >= s_tmp_results'length - 1 then
 							s_tmp_results_read_pointer <= (others => '0');
@@ -166,16 +171,43 @@ begin
 
 	end process RESULT_REG_PROC;
 
-	-- This generate creates shift_ids'length many static shifts of the output
-	-- of the "slicing unit" in order to shift the inputs for later use
-	-- TODO : pipeline input
+	-- This process does the current indexing and shift_ids'length many static shifts of the output
+	-- and also pipelines these through
 
-	SHIFT_GEN : for i in s_shifted_input'range generate
+	INPUT_PIPELINE_PROC : process (clk) is
+	begin
 
-		s_shifted_input(i) <= std_logic_vector(shift_right(signed(s_tmp_results(to_integer(s_tmp_results_read_pointer))),
+		if rising_edge(clk) then
+			if reset = '1' then
+
+				for i in s_shifted_input'range loop
+
+					s_shifted_input(i) <= (others => '0');
+
+				end loop;
+
+				s_sliced_input     <= (others => '0');
+				s_shifted_input_en <= '0';
+			else
+				-- Slice input
+				s_sliced_input <= s_tmp_results(to_integer(s_tmp_results_read_pointer));
+				-- And then shift them
+				for i in s_shifted_input'range loop
+
+					-- Calculate all static shifts because they cost next to nothing
+					s_shifted_input(i) <= std_logic_vector(shift_right(signed(s_sliced_input),
 	                                                   to_integer(unsigned(c_scale_values(i)))));
 
-	end generate SHIFT_GEN;
+				end loop;
+
+				-- only set it to '1' if this is not a reset and not a comlete cycle
+				-- If you just set it to '1' this will break the dense layer
+				s_sliced_input_en  <= not s_iteration_reset and not s_tmp_complete;
+				s_shifted_input_en <= s_sliced_input_en;
+			end if;
+		end if;
+
+	end process INPUT_PIPELINE_PROC;
 
 	DENSE_LAYER_INST : entity work.dense_layer
 		generic map (
@@ -200,7 +232,8 @@ begin
 			comp_complete        => s_tmp_complete
 		);
 
-	-- This process shifts and clips the first weight_heights(weight'high) values so that it can be passed to the output port
+	-- This process shifts and clips the first weight_heights(weight'high) values 
+	-- so that it can be passed to the output port.
 	-- It also pipelines the output so decrease critical path
 	OUTPUT_PIPELINE_PROC : process (clk) is
 	begin
@@ -228,7 +261,7 @@ begin
 
 					if signed(s_shifted_solutions(i)) > 2 ** (vector_length - 1) - 1 then
 						s_clipped_solutions(i) <= std_logic_vector(to_signed(2 ** (vector_length - 1) - 1, s_clipped_solutions(i)'length));
-					elsif signed(s_shifted_solutions(i)) < - 2 ** (vector_length - 1) then 
+					elsif signed(s_shifted_solutions(i)) < - 2 ** (vector_length - 1) then
 						s_clipped_solutions(i) <= std_logic_vector(to_signed(- 2 ** (vector_length - 1), s_clipped_solutions(i)'length));
 					else
 						s_clipped_solutions(i) <= s_shifted_solutions(i)(vector_length - 1 downto 0);
