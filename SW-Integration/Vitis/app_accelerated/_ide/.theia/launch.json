@@ -28,7 +28,7 @@
           "isFsbl": true,
           "usingFSBL": {
             "initWithFSBL": true,
-            "fsblFile": "${workspaceFolder}/platform/export/platform/sw/boot/fsbl.elf",
+            "fsblFile": "${workspaceFolder}/platform_accumulator/export/platform_accumulator/sw/boot/fsbl.elf",
             "fsblExitSymbol": "XFsbl_Exit"
           },
           "usingPsuInit": {

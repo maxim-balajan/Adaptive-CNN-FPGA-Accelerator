@@ -6,6 +6,7 @@
 #include <iostream>
 #include <assert.h>
 #include <sys/types.h>
+#include "acc_interface.h"
 
 Matrix<int8_t> parse(char* buffer, size_t size, initializer_list<size_t> dimensions) {
     Matrix<int8_t> matrix(dimensions);
@@ -35,6 +36,18 @@ int main() {
         }
         cout << endl;
     }
+
+    u8 r = 0;
+    for (int i = 0; i < 32*32; i++) {
+        r += ((u8*) X_START)[i + 2*32*32];
+    }
+    cout << static_cast<int>(r) << endl;
+
+    auto res = AccInterface::instance.run(reinterpret_cast<u8*>(&X_START[2*32*32]), 32*32);
+
+    cout << res.error << endl;
+    cout << res.time_ns << endl;
+    cout << static_cast<int>(res.result) << endl;
 
     return 0;
 }

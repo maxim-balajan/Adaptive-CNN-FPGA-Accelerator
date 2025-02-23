@@ -2533,7 +2533,7 @@
                         xlnx,c-sg-length-width = <0xe>;
                         interrupt-names = "mm2s_introut", "s2mm_introut";
                         compatible = "xlnx,axi-dma-7.1", "xlnx,axi-dma-1.00.a";
-                        xlnx,c-m-axis-mm2s-tdata-width = <0x20>;
+                        xlnx,c-m-axis-mm2s-tdata-width = <0x8>;
                         xlnx,c-sg-use-stsapp-length = <0x0>;
                         xlnx,c-s2mm-burst-size = <0x10>;
                         xlnx,mm2s-burst-size = <0x10>;
@@ -2565,7 +2565,7 @@
                         xlnx,c-addr-width = <0x20>;
                         xlnx,c-single-interface = <0x0>;
                         xlnx,include-mm2s = <0x1>;
-                        xlnx,c-s-axis-s2mm-tdata-width = <0x20>;
+                        xlnx,c-s-axis-s2mm-tdata-width = <0x8>;
                         xlnx,s2mm-data-width = <0x20>;
                         xlnx,c-include-mm2s-sf = <0x1>;
                         xlnx,prmry-is-aclk-async = <0x0>;
@@ -2590,7 +2590,7 @@
 
                         dma_channel_a0000030: dma-channel@a0000030 {
                                 interrupts = <0x0 0x5a 0x4>;
-                                xlnx,datawidth = <0x20>;
+                                xlnx,datawidth = <0x8>;
                                 xlnx,device-id = <0x0>;
                                 compatible = "xlnx,axi-dma-s2mm-channel";
                                 dma-channels = <0x1>;
