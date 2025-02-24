@@ -188,7 +188,8 @@ AccInterface::AccInterface() {
 
 struct AccResult AccInterface::run(u8 *tx_buffer, int length) {
     int status;
-    int result;
+    int* result_ptr = reinterpret_cast<int*>(0x01000000 + 0x00300000);
+    *result_ptr = 0;
 
     tx_done = 0;
     rx_done = 0;
@@ -196,12 +197,12 @@ struct AccResult AccInterface::run(u8 *tx_buffer, int length) {
 
     // Flush the buffers before the DMA transfer, in case the Data Cache is enabled
     Xil_DCacheFlushRange(reinterpret_cast<UINTPTR>(tx_buffer), length);
-    Xil_DCacheFlushRange(reinterpret_cast<UINTPTR>(&result), 1);
+    Xil_DCacheFlushRange(reinterpret_cast<UINTPTR>(result_ptr), 1);
 
     XTime start_time;
     XTime_GetTime(&start_time);
 
-    status = XAxiDma_SimpleTransfer(&axi_dma, reinterpret_cast<UINTPTR>(&result), 1,
+    status = XAxiDma_SimpleTransfer(&axi_dma, reinterpret_cast<UINTPTR>(result_ptr), 1,
                                     XAXIDMA_DEVICE_TO_DMA);
 
     if (status != XST_SUCCESS) {
@@ -286,12 +287,12 @@ struct AccResult AccInterface::run(u8 *tx_buffer, int length) {
     }
 
     u64 time_ns = ((end_time - start_time) * 1000 * 1000 * 1000) / (COUNTS_PER_SECOND);
-    xil_printf("res: %d\r\n", result);
+    xil_printf("res: 0x%x\r\n", *result_ptr);
     
     struct AccResult res = {
         false,    // error
         time_ns,  // time_ns
-        static_cast<u8>(result)    // result
+        static_cast<u8>(*result_ptr)    // result
     };
 
     return res;
