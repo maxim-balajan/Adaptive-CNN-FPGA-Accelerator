@@ -27,10 +27,12 @@ void run(int index) {
     cout << "error: " << res.error << endl;
     cout << "time: " << res.time_ns << endl;
     cout << "result: " << static_cast<int>(res.result) << endl;
-    cout << "expected: " << static_cast<int>(get_y_num(index)) << endl;
+    cout << "expected: " << static_cast<int>(get_y_num(index)) << endl << endl;
 }
 
 int main() {
-    run(0);
+    for (int i = 0; i < 10; i++) {
+        run(i);
+    }
     return 0;
 }

@@ -23,12 +23,12 @@
         "enableRPUSplitMode": false,
         "resetAPU": false,
         "resetRPU": false,
-        "bitstreamFile": "${workspaceFolder}/app_accelerated/_ide/bitstream/main_design_wrapper.bit",
+        "bitstreamFile": "${workspaceFolder}/app_accelerated/_ide/bitstream/lenet_accel_main_wrapper.bit",
         "zuInitialization": {
           "isFsbl": true,
           "usingFSBL": {
             "initWithFSBL": true,
-            "fsblFile": "${workspaceFolder}/platform_accumulator/export/platform_accumulator/sw/boot/fsbl.elf",
+            "fsblFile": "${workspaceFolder}/platform_accelerated/export/platform_accelerated/sw/boot/fsbl.elf",
             "fsblExitSymbol": "XFsbl_Exit"
           },
           "usingPsuInit": {
