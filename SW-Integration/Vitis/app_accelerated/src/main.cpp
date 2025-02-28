@@ -9,45 +9,28 @@
 #include <xiltimer.h>
 #include "acc_interface.h"
 
-Matrix<int8_t> parse(char* buffer, size_t size, initializer_list<size_t> dimensions) {
-    Matrix<int8_t> matrix(dimensions);
-    for (size_t i = 0; i < size; i++) {
-        matrix[i] = *(buffer + i);
+u8 get_y_num(int index) {
+    for (int i = 0; i < 10; i++) {
+        if (Y_START[index*10 + i] != 0) {
+            return i;
+        }
     }
-
-    return matrix;
+    
+    return 255;
 }
 
-int main() {
-    cout << X_SIZE << ", " << Y_SIZE << endl;
-    assert(X_SIZE % (32 * 32) == 0);
-//    Matrix<int8_t> input = parse(X_START, X_SIZE, {X_SIZE/(32 * 32), 32, 32});
-    assert(Y_SIZE % (10) == 0);
-    Matrix<int8_t> output = parse(Y_START, 10, {1, 10});
+void run(int index) {
+    cout << "Running for index: " << index << endl;
 
-    // MatrixView<int8_t> input_data_view(input, 1);
-    // cout << "first image: " << input_data_view.get_current() << endl;
-
-    // MatrixView<int8_t> output_data_view(output, 1);
-    // cout << "first output: " << output_data_view.get_current() << endl;
-    for (int i = 0; i < 5; i++) {
-        cout << i << ": ";
-        for (int x = 0; x < 10; x++) {
-            cout << static_cast<int>(Y_START[i*10 + x]) << " ";
-        }
-        cout << endl;
-    }
-
-    u8 r = 0;
-    for (int i = 0; i < 32*32; i++) {
-        r += ((u8*) X_START)[i];
-    }
-    cout << "exprected: " << static_cast<int>(r) << endl;
-    auto res = AccInterface::instance.run(reinterpret_cast<u8*>(&X_START[0]), 32*32);
+    auto res = AccInterface::instance.run(reinterpret_cast<u8*>(&X_START[index * 32*32]), 32*32);
 
     cout << "error: " << res.error << endl;
     cout << "time: " << res.time_ns << endl;
     cout << "result: " << static_cast<int>(res.result) << endl;
+    cout << "expected: " << static_cast<int>(get_y_num(index)) << endl;
+}
 
+int main() {
+    run(0);
     return 0;
 }
