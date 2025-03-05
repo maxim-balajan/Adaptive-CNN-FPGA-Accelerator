@@ -107,7 +107,7 @@ int run_benchmark(RunBenchmarkOptions options) {
 
     MatrixView<TargetType> input_data_view(input_data, batching);
     MatrixView<TargetType> output_data_view(output_data, batching);
-
+    cout << input_data.shape()[0] <<","<< input_data.shape()[1] <<","<< input_data.shape()[2] << endl;
     cout << "Starting RADL MNIST Simulation with " << image_count << " images to process (batch_size=" << batching << ")..." << endl;
 
     InferenceStats total_stats {

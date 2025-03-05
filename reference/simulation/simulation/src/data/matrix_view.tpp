@@ -1,3 +1,4 @@
+#pragma once
 #include "matrix_view.h"
 
 template<typename T>

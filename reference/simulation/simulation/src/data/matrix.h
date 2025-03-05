@@ -1,9 +1,10 @@
 #pragma once
 
 #include <vector>
-#include <ranges>
+#include <ostream>
+#include <span>
 
-#include <iostream>
+#include "../assert_helper.h"
 
 #define FORMAT_MATRIX_WITH_LINE_BREAK 1
 
@@ -22,6 +23,7 @@ public:
     Matrix(initializer_list<size_t> dimensions);
     Matrix(vector<size_t> dimensions);
     Matrix(initializer_list<size_t> dimensions, vector<T> initial_vals);
+    Matrix(vector<size_t> dimensions, vector<T> initial_vals);
 
     inline const vector<size_t>& shape() const;
     inline constexpr size_t total_size() const;
@@ -35,6 +37,9 @@ public:
     inline void copy_to(Matrix& destination) const;
     void print_hashes(size_t size) const;
     size_t calc_hash(size_t start, size_t end) const;
+
+    unsigned serialize(ostream& stream) const;
+    static Matrix deserialize(span<char>& data);
 
     inline constexpr T& operator[](size_t abs_position) {
         assertm(abs_position < total_size(), "Dimensions do not match!");

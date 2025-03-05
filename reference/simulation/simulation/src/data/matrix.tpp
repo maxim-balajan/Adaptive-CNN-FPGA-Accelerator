@@ -1,8 +1,15 @@
+#pragma once
 #include "matrix.h"
 
+#include "../assert_helper.h"
+#include "../util.h"
+
+#include <cstddef>
+#include <exception>
 #include <iostream>
 #include <ranges>
 #include <initializer_list>
+#include <arpa/inet.h>
 
 template<typename T>
 Matrix<T>::Matrix(initializer_list<size_t> input_dimensions): dimensions(input_dimensions.size()) {
@@ -38,6 +45,11 @@ Matrix<T>::Matrix(vector<size_t> input_dimensions): dimensions(input_dimensions.
 
 template<typename T>
 Matrix<T>::Matrix(initializer_list<size_t> dimensions, vector<T> initial_vals): Matrix(dimensions) {
+    set_data(initial_vals);
+}
+
+template<typename T>
+Matrix<T>::Matrix(vector<size_t> dimensions, vector<T> initial_vals): Matrix(dimensions) {
     set_data(initial_vals);
 }
 
@@ -210,4 +222,22 @@ std::ostream& operator<<(std::ostream &out, Matrix<T> const& data) {
     }
 
     return out;
+}
+
+template<typename T>
+unsigned Matrix<T>::serialize(ostream& stream) const {
+    unsigned bytes = 0;
+
+    bytes += serialize_vector(dimensions, stream);
+    bytes += serialize_vector(matrix_data, stream);
+
+    return bytes;
+}
+
+template<typename T>
+Matrix<T> Matrix<T>::deserialize(span<char>& data) {
+    vector<size_t> dimensions = deserialize_vector<size_t>(data);
+    vector<T> matrix_data = deserialize_vector<T>(data);
+
+    return Matrix<T>(dimensions, matrix_data);
 }

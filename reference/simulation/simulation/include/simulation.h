@@ -1,6 +1,7 @@
 #pragma once
 #include "../src/assert_helper.h"
 #include "../src/util.h"
+#include "../src/serialize.h"
 
 #include "../src/data/fp_int.h"
 #include "../src/data/int24.h"

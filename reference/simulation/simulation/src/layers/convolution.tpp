@@ -1,12 +1,16 @@
+#pragma once
 #include "convolution.h"
-
-#include <iostream>
+#include "../data/data_converter.h"
 
 template<typename T, typename ACC>
 Convolution<T, ACC>::Convolution(Matrix<T> kernel, Matrix<T> bias, size_t batching, size_t x, size_t y, size_t output_channel)
+    : Convolution(kernel, bias, Matrix<T>({batching, output_channel, x, y})) {}
+
+template<typename T, typename ACC>
+Convolution<T, ACC>::Convolution(Matrix<T> kernel, Matrix<T> bias, Matrix<T> output_buffer)
     : kernel(kernel)
     , bias(bias)
-    , output_buffer({batching, output_channel, x, y}) {}
+    , output_buffer(output_buffer) {}
 
 namespace {
     template<typename T>
@@ -68,4 +72,31 @@ const Matrix<T>& Convolution<T, ACC>::calc(const Matrix<T>& input) {
 template<typename T, typename ACC>
 const char* Convolution<T, ACC>::name() const {
     return "Convolution";
+}
+
+template<typename T, typename ACC>
+LayerType Convolution<T, ACC>::type() const {
+    return LayerType::Convolution;
+}
+
+template<typename T, typename ACC>
+unsigned Convolution<T, ACC>::serialize(ostream& stream) const {
+    unsigned bytes = 0; 
+
+    bytes += kernel.serialize(stream);
+    bytes += bias.serialize(stream);
+    bytes += serialize_vector(output_buffer.shape(), stream);
+
+    return 0;
+}
+
+template<typename T, typename ACC>
+Convolution<T, ACC> Convolution<T, ACC>::deserialize(span<char>& data) {
+    Matrix<T> kernel = Matrix<T>::deserialize(data);
+    Matrix<T> bias = Matrix<T>::deserialize(data);
+
+    vector<size_t> out_shape = deserialize_vector<size_t>(data);
+    Matrix<T> output_buffer(out_shape);
+
+    return Convolution(kernel, bias, output_buffer);
 }

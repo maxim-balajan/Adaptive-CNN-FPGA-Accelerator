@@ -1,0 +1,189 @@
+#include <cstdint>
+#include <iostream>
+#include <ostream>
+#include <fstream>
+#include <vector>
+#include <span>
+#include <iostream>
+#include <chrono>
+
+#include <simulation.h>
+#include <onnx_parser.h>
+#include <npy_parser.h>
+
+
+using namespace std;
+
+void print_help() {
+    cout << "Usage: onnx_converter [onnx file] [output binary file]" << endl;
+}
+
+template<typename T, typename ACC>
+const Matrix<T>& inference(const vector<unique_ptr<Layer<T, ACC>>>& layers, const Matrix<T>& input) {
+    const Matrix<T> *curr_input = &input;
+    for (auto& layer : layers) {
+        //std::cout << layer.get()->name() << "\n";
+        curr_input = &layer.get()->calc(*curr_input);
+        // std::cout << *curr_input << endl; 
+    }
+
+    return *curr_input;
+}
+
+struct InferenceStats {
+    unsigned long latency_ms;
+    unsigned int correct;
+};
+
+template<typename T, typename ACC>
+InferenceStats test_inference(const vector<unique_ptr<Layer<T, ACC>>>& layers, const Matrix<T>& input, const Matrix<T>& excepted_output, bool verbose) {
+
+    chrono::steady_clock::time_point begin = chrono::steady_clock::now();
+
+    const Matrix<T>& output = inference(layers, input);
+
+    chrono::steady_clock::time_point end = chrono::steady_clock::now();
+
+    InferenceStats stats;
+    stats.latency_ms = chrono::duration_cast<chrono::milliseconds>(end - begin).count();
+    stats.correct = 0;
+
+    if (verbose) {
+        cout << "Expected output " << excepted_output << "\n";
+        cout << "Real output " << output << endl;
+    }
+
+    for (size_t i = 0; i < output.shape()[0]; i++) {
+        bool matched = true;
+        for (size_t j = 0; j < output.shape()[1]; j++) {
+            if (output[{i,j}] != excepted_output[{i,j}]) {
+                matched = false;
+                break;
+            }
+        }
+
+        if (matched) {
+            stats.correct++;
+        }
+    }
+
+    return stats;    
+}
+
+struct RunBenchmarkOptions {
+    bool verbose;
+    int image_count;
+    int batching;
+};
+
+int main(int argc, char* argv[]) {
+    if (argc != 3) {
+        print_help();
+        return -1;
+    }
+    using TargetType = FPInt8<0>;
+    using AccumulatorType = FPInt24<0>;
+
+    cout << "Loading data..." << endl;
+
+    QuantArguments quant_args {
+        -1, // scale
+        -1  // zero_point
+    };
+    vector<unique_ptr<Layer<TargetType, AccumulatorType>>> original_layers = parse_quantized<TargetType, AccumulatorType>(argv[1], 1, quant_args);
+    assert(quant_args.scale != -1);
+    assert(quant_args.zero_point != -1);
+
+    ofstream ofile(argv[2], std::ofstream::trunc | std::ofstream::binary);
+
+    unsigned num_bytes = serialize_layers<TargetType, AccumulatorType>(original_layers, ofile);
+
+    ofile.flush();
+    ofile.close();
+
+    ifstream file(argv[2], std::ifstream::binary);
+
+    // read whole file into a buffer
+    vector<char> buffer(num_bytes);
+    file.read(buffer.data(), num_bytes);
+
+    std::span<char> data(buffer.data(), buffer.size());
+    vector<unique_ptr<Layer<TargetType, AccumulatorType>>> layers = deserialize_layers<TargetType, AccumulatorType>(data);
+
+    file.close();
+
+    unsigned image_count = 1000;
+    unsigned batching = 1;
+
+
+    Matrix<TargetType> input_data = parse_quantized_matrix<float, TargetType>("../../training/export/mnist/x_test.npy", quant_args.scale, quant_args.zero_point);
+    Matrix<TargetType> output_data = parse_matrix<float, TargetType>("../../training/export/mnist/y_test.npy");
+
+    assert(input_data.shape()[0] == output_data.shape()[0]);
+    if (image_count == -1) {
+        image_count = input_data.shape()[0];
+    } else {
+        if (image_count > input_data.shape()[0]) {
+            cerr << "Image count too big!" << endl;
+            return 1;
+        }
+    }
+
+    if (batching > image_count) {
+        cerr << "Batching > image count!" << endl;
+        return 1;
+    }
+
+    if (image_count % batching != 0) {
+        cerr << "Image count % batching != 0!" << endl;
+        return 1;
+    }
+
+    MatrixView<TargetType> input_data_view(input_data, batching);
+    MatrixView<TargetType> output_data_view(output_data, batching);
+    cout << input_data.shape()[0] <<","<< input_data.shape()[1] <<","<< input_data.shape()[2] << endl;
+    cout << "Starting RADL MNIST Simulation with " << image_count << " images to process (batch_size=" << batching << ")..." << endl;
+
+    InferenceStats total_stats {
+        .latency_ms = 0,
+        .correct = 0
+    };
+    // Print doubles with two subdigits
+    std::cout << std::setprecision(2) << std::fixed;
+
+    int i = 0;
+    do {
+        InferenceStats stats = test_inference<TargetType, AccumulatorType>(layers, input_data_view.get_current(), output_data_view.get_current(), false);
+        total_stats.latency_ms += stats.latency_ms;
+        total_stats.correct += stats.correct;
+
+        i++;
+
+
+        cout << "[" << (((double) (i * batching * 100)) / image_count) << "%] Inference of " << batching << " image";
+        if (batching > 1) {
+            cout << "s";
+        }
+        cout << " completed in " << stats.latency_ms << "ms!";
+
+        cout << " (current accuracy: " << ((100 * ((double) total_stats.correct))/(i * batching)) << "%)";
+        cout << "\r" << flush;
+        
+    
+
+        if (i * batching >= image_count) {
+            break;
+        }
+    } while(input_data_view.next() && output_data_view.next());
+
+    cout << endl << "Inference finished!\n";
+    cout << "\n";
+    cout << "--- Result ---\n";
+    // cout << "Accumulator-Type: FPInt24<0>" << endl;
+    cout << "Total inference duration: " << ((1.0*total_stats.latency_ms)/1000) << "s\n";
+    cout << "Avg inference duration: " << ((1.0*total_stats.latency_ms)/image_count) << "ms\n";
+    cout << "Total misses: " << image_count - total_stats.correct << " of " << image_count << " images" << endl;
+    cout << "Avg accuracy: " << ((100 * ((double) total_stats.correct))/image_count) << "%" << endl;
+
+    return 0;
+}

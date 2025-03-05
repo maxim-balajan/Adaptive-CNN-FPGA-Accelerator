@@ -1,6 +1,6 @@
 #pragma once
 
-using namespace std;
+#include "matrix.h"
 
 template<typename T>
 class MatrixView {

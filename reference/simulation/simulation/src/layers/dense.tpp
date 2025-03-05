@@ -1,11 +1,17 @@
+#pragma once
 #include "dense.h"
+#include "../data/data_converter.h"
 
 template<typename T, typename ACC>
-Dense<T, ACC>::Dense(Matrix<T> weights, Matrix<T> bias, bool enable_softmax, size_t batching, size_t x)
+Dense<T, ACC>::Dense(Matrix<T> weights, Matrix<T> bias, Matrix<T> output_buffer, bool enable_softmax)
     : weights(weights)
     , bias(bias)
     , enable_softmax(enable_softmax)
-    , output_buffer({batching, x}) {}
+    , output_buffer(output_buffer) {}
+
+template<typename T, typename ACC>
+Dense<T, ACC>::Dense(Matrix<T> weights, Matrix<T> bias, bool enable_softmax, size_t batching, size_t x)
+    : Dense(weights, bias, Matrix<T>({batching, x}), enable_softmax) {}
 
 
 namespace {
@@ -65,4 +71,25 @@ const Matrix<T>& Dense<T, ACC>::calc(const Matrix<T>& input)
 template<typename T, typename ACC>
 const char* Dense<T, ACC>::name() const {
     return "Dense";
+}
+
+template<typename T, typename ACC>
+LayerType Dense<T, ACC>::type() const {
+    return LayerType::Dense;
+}
+
+template<typename T, typename ACC>
+unsigned Dense<T, ACC>::serialize(ostream& stream) const {
+    return 0;
+}
+
+template<typename T, typename ACC>
+Dense<T, ACC> Dense<T, ACC>::deserialize(span<char>& data) {
+    Matrix<T> weights({0});
+    Matrix<T> bias({0});
+    bool enable_softmax = false;
+    size_t batching = 0;
+    size_t x = 0;
+
+    return Dense(weights, bias, enable_softmax, batching, x);
 }

@@ -1,10 +1,17 @@
+#pragma once
 #include "max_pooling.h"
 
 #include <iostream>
 #include <algorithm>
 
 template<typename T, typename ACC>
-MaxPooling<T, ACC>::MaxPooling(size_t pooling_size, size_t batching, size_t x, size_t y, size_t output_channel) : pooling_size(pooling_size), output_buffer({batching, output_channel, x, y}) {}
+MaxPooling<T, ACC>::MaxPooling(size_t pooling_size, Matrix<T> output_buffer)
+    : pooling_size(pooling_size)
+    , output_buffer(output_buffer) {}
+
+template<typename T, typename ACC>
+MaxPooling<T, ACC>::MaxPooling(size_t pooling_size, size_t batching, size_t x, size_t y, size_t output_channel)
+    : MaxPooling(pooling_size, Matrix<T>({batching, output_channel, x, y})) {}
 
 template<typename T, typename ACC>
 const Matrix<T>& MaxPooling<T, ACC>::calc(const Matrix<T>& input)
@@ -46,4 +53,29 @@ const Matrix<T>& MaxPooling<T, ACC>::calc(const Matrix<T>& input)
 template<typename T, typename ACC>
 const char* MaxPooling<T, ACC>::name() const {
     return "MaxPooling";
+}
+
+template<typename T, typename ACC>
+LayerType MaxPooling<T, ACC>::type() const {
+    return LayerType::MaxPooling;
+}
+
+template<typename T, typename ACC>
+unsigned MaxPooling<T, ACC>::serialize(ostream& stream) const {
+    unsigned bytes = 0; 
+
+    bytes += serialize_number(pooling_size, stream);
+    bytes += serialize_vector(output_buffer.shape(), stream);
+
+    return bytes;
+}
+
+template<typename T, typename ACC>
+MaxPooling<T, ACC> MaxPooling<T, ACC>::deserialize(span<char>& data) {
+    size_t pooling_size = deserialize_number<size_t>(data);
+
+    vector<size_t> out_shape = deserialize_vector<size_t>(data);
+    Matrix<T> output_buffer(out_shape);
+
+    return MaxPooling(pooling_size, output_buffer);
 }
