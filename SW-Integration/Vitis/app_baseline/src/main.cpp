@@ -122,7 +122,7 @@ int main() {
     cout << "Total misses: " << inference_num - total_stats.correct << " of " << inference_num << " images" << endl;
     cout << "Avg accuracy: " << ((100 * ((double) total_stats.correct))/inference_num) << "%" << endl;
     
-    cout << "[BENCH-STATUS] FINISHED" << endl;
+    cout << "[BENCH-STATUS] Finished" << endl;
 
     return 0;
 }
