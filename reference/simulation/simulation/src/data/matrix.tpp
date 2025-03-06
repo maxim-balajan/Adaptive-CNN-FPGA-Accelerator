@@ -9,7 +9,6 @@
 #include <iostream>
 #include <ranges>
 #include <initializer_list>
-#include <arpa/inet.h>
 
 template<typename T>
 Matrix<T>::Matrix(initializer_list<size_t> input_dimensions): dimensions(input_dimensions.size()) {
@@ -121,7 +120,7 @@ size_t Matrix<T>::calc_hash(size_t start, size_t end) const {
 
     size_t seed = end - start;
     for(int i = start; i < end; i++) {
-        size_t x = (size_t) this->matrix_data[i];
+        size_t x = convert_data<T, size_t>(this->matrix_data[i]);
         x = ((x >> 16) ^ x) * 0x45d9f3b;
         x = ((x >> 16) ^ x) * 0x45d9f3b;
         x = (x >> 16) ^ x;

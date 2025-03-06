@@ -71,8 +71,6 @@ T deserialize_number(std::span<char>& data) {
 
 template<typename T>
 unsigned serialize_vector(const vector<T>& vec, ostream& stream) {
-    using size_type = typename vector<T>::size_type;
-
     unsigned bytes = 0;
     bytes += serialize_number(vec.size(), stream);
     for (const auto& item : vec) {
