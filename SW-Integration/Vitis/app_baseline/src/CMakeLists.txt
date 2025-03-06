@@ -12,23 +12,6 @@ enable_language(C ASM CXX)
 collect(PROJECT_LIB_DEPS xilstandalone;xiltimer)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
 
@@ -43,22 +26,6 @@ message(SIMULATION_BASE_DIR=${SIMULATION_BASE_DIR})
 include("${SIMULATION_BASE_DIR}/modules.cmake")
 
 collect(PROJECT_LIB_DEPS xilstandalone;xiltimer)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 collect(PROJECT_LIB_DEPS xil)
 collect(PROJECT_LIB_DEPS gcc)

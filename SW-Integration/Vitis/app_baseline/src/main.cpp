@@ -4,12 +4,15 @@
 #include <npy_parser.h>
 #include <iostream>
 #include <assert.h>
+#include <sys/_intsup.h>
 #include <sys/types.h>
-#include <xiltimer.h>
 #include "symbols.h"
-#include <chrono>
 #include <memory>
 #include <vector>
+
+extern "C" {
+#include "xiltimer.h"
+}
 
 using namespace std;
 
@@ -18,7 +21,7 @@ template<typename T, typename ACC>
 const Matrix<T>& inference(const vector<unique_ptr<Layer<T, ACC>>>& layers, const Matrix<T>& input) {
     const Matrix<T> *curr_input = &input;
     for (auto& layer : layers) {
-        //std::cout << layer.get()->name() << "\n";
+        // std::cout << layer.get()->name() << " with input data: " << curr_input->calc_hash(0, curr_input->total_size()) << std::endl;
         curr_input = &layer.get()->calc(*curr_input);
         // std::cout << *curr_input << endl; 
     }
@@ -33,15 +36,18 @@ struct InferenceStats {
 
 template<typename T, typename ACC>
 InferenceStats test_inference(const vector<unique_ptr<Layer<T, ACC>>>& layers, const Matrix<T>& input, const Matrix<T>& excepted_output, bool verbose) {
-
-    chrono::steady_clock::time_point begin = chrono::steady_clock::now();
+    XTime start;
+    XTime_GetTime(&start);
 
     const Matrix<T>& output = inference(layers, input);
 
-    chrono::steady_clock::time_point end = chrono::steady_clock::now();
+    XTime end;
+    XTime_GetTime(&end);
+
+    u64 time_us = ((end - start) * 1000 * 1000) / (COUNTS_PER_SECOND);
 
     InferenceStats stats;
-    stats.latency_us = chrono::duration_cast<chrono::microseconds>(end - begin).count();
+    stats.latency_us = time_us;
     stats.correct = 0;
 
     if (verbose) {
@@ -67,32 +73,56 @@ InferenceStats test_inference(const vector<unique_ptr<Layer<T, ACC>>>& layers, c
 }
 
 template<typename T, typename ACC>
-void run(int index, vector<unique_ptr<Layer<T, ACC>>>& layers, Matrix<T>& input, Matrix<T>& output) {
-    cout << "Running for index: " << index << endl;
-
+InferenceStats run(int index, vector<unique_ptr<Layer<T, ACC>>>& layers, Matrix<T>& input, Matrix<T>& output) {
     for (int offset = 0; offset < 32*32; offset++) {
-        input[offset] = convert_data<int64_t, T>(static_cast<int64_t>(X_START[index * 32*32 + offset]));
+        const signed char* ptr = reinterpret_cast<const signed char*>(&X_START[index * 32*32 + offset]);
+        input[offset] = convert_data<int64_t, T>(static_cast<int64_t>(*ptr));
     }
     for (int offset = 0; offset < 10; offset++) {
-        output[offset] = convert_data<int64_t, T>(static_cast<int64_t>(Y_START[index * 10 + offset]));
+        const signed char* ptr = reinterpret_cast<const signed char*>(&Y_START[index * 10 + offset]);
+        output[offset] = convert_data<int64_t, T>(static_cast<int64_t>((*ptr) == 64 ? 1 : 0));
     }
-    auto stats = test_inference<T, ACC>(layers, input, output, true);
+    auto stats = test_inference<T, ACC>(layers, input, output, false);
 
-    cout << "time: " << stats.latency_us << endl;
-    cout << "correct: " << stats.correct << endl;
+    return stats;
 }
 
 int main() {
+    int inference_num = 100000;
+
     using TargetType = FPInt8<0>;
     using AccumulatorType = FPInt24<0>;
     span data(LENET_LAYERS_START, LENET_LAYERS_SIZE);
     vector<unique_ptr<Layer<TargetType, AccumulatorType>>> layers = deserialize_layers<TargetType, AccumulatorType>(data);
 
+    InferenceStats total_stats;
+    total_stats.latency_us = 0;
+    total_stats.correct = 0;
 
-    Matrix<TargetType> input({1, 32, 32});
+    Matrix<TargetType> input({1, 1, 32, 32});
     Matrix<TargetType> output({1, 10});
-    for (int i = 0; i < 10; i++) {
-        run<TargetType, AccumulatorType>(i, layers, input, output);
+    for (int i = 0; i < inference_num; i++) {
+        InferenceStats stats = run<TargetType, AccumulatorType>(i, layers, input, output);
+        total_stats.latency_us += stats.latency_us;
+        total_stats.correct += stats.correct;
+        cout << "[" << (((double) (i * 1 * 100)) / inference_num) << "%] Inference of " << 1 << " image";
+        cout << " completed in " << stats.latency_us << "us!";
+        cout << " (current accuracy: " << ((100 * ((double) total_stats.correct))/i) << "%)\n";
+
+        cout << "[BENCH-INFO] " << stats.latency_us << "\n";
+        
     }
+
+    cout << "\n" << "Inference finished!\n";
+    cout << "\n";
+    cout << "--- Result ---\n";
+    // cout << "Accumulator-Type: FPInt24<0>" << endl;
+    cout << "Total inference duration: " << ((1.0*total_stats.latency_us)/(1000 * 1000)) << "s\n";
+    cout << "Avg inference duration: " << ((1.0*total_stats.latency_us)/inference_num) << "us\n";
+    cout << "Total misses: " << inference_num - total_stats.correct << " of " << inference_num << " images" << endl;
+    cout << "Avg accuracy: " << ((100 * ((double) total_stats.correct))/inference_num) << "%" << endl;
+    
+    cout << "[BENCH-STATUS] FINISHED" << endl;
+
     return 0;
 }
