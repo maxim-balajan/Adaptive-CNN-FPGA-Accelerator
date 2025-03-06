@@ -1,0 +1,25 @@
+#pragma once
+#include <cstddef>
+#include <istream>
+#include <streambuf>
+
+#define X_START @X_TEST_SYMBOL_PREFIX@_start
+#define X_END @X_TEST_SYMBOL_PREFIX@_end
+#define X_SIZE (static_cast<unsigned>(X_END - X_START))
+
+#define Y_START @Y_TEST_SYMBOL_PREFIX@_start
+#define Y_END @Y_TEST_SYMBOL_PREFIX@_end
+#define Y_SIZE (static_cast<unsigned>(Y_END - Y_START))
+
+#define LENET_LAYERS_START @LENET_LAYERS_SYMBOL_PREFIX@_start
+#define LENET_LAYERS_END @LENET_LAYERS_SYMBOL_PREFIX@_end
+#define LENET_LAYERS_SIZE (static_cast<unsigned>(LENET_LAYERS_END - LENET_LAYERS_START))
+
+extern char X_START[];
+extern char X_END[];
+
+extern char Y_START[];
+extern char Y_END[];
+
+extern char LENET_LAYERS_START[];
+extern char LENET_LAYERS_END[];

@@ -29,51 +29,36 @@ collect(PROJECT_LIB_DEPS xilstandalone;xiltimer)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
 
 # collect neccesary libs 
+
+set(DATA_DIR ${CMAKE_SOURCE_DIR}/../../data)
+message(DATA_DIR=${DATA_DIR})
 
 set(SIMULATION_BASE_DIR ${CMAKE_SOURCE_DIR}/../../../../reference/simulation)
 message(SIMULATION_BASE_DIR=${SIMULATION_BASE_DIR})
 
 include("${SIMULATION_BASE_DIR}/modules.cmake")
 
-#set(LIBPARSING_LIB_PATH ${CMAKE_SOURCE_DIR}/../lib/libparsing_protobuf.a)
-#set(LIBPARSING_INCLUDE ${CMAKE_SOURCE_DIR}/../lib)
-#message(LIBPARSING_INCLUDE ${LIBPARSING_INCLUDE})
-#set(LIBPARSING_SO_PATH /usr/lib/x86_64-linux-gnu/libprotobuf.so)
+collect(PROJECT_LIB_DEPS xilstandalone;xiltimer)
 
-# INSTALL PROTOBUF: sudo apt install protobuf-compiler libprotobuf-dev
-# AND SET THE FOLLOWING TO YOUR PATHS!
-# set(Protobuf_LIBRARIES /usr/lib/x86_64-linux-gnu/libprotobuf.so)
-# set(Protobuf_INCLUDE_DIRS /usr/include)
-# set(Protobuf_INCLUDE_DIR /usr/include)
-# set(Protobuf_PROTOC_EXECUTABLE /usr/bin/protoc)
 
-# set(LIBPARSING_LIB_PATH ${CMAKE_SOURCE_DIR}/../lib/libparsing_protobuf/libparsing_protobuf.a)
-# set(LIBPARSING_INCLUDE_PATH ${CMAKE_SOURCE_DIR}/../lib/libparsing_protobuf/include)
-# include("${SIMULATION_BASE_DIR}/parsing/CMakeLists.txt")
-# target_include_directories(parsing_protobuf INTERFACE /usr/include)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 collect(PROJECT_LIB_DEPS xil)
 collect(PROJECT_LIB_DEPS gcc)
@@ -107,12 +92,48 @@ string(APPEND CMAKE_C_LINK_FLAGS ${USER_LINK_OPTIONS})
 string(APPEND CMAKE_CXX_LINK_FLAGS ${USER_LINK_OPTIONS})
 if(NOT "${_sources}" STREQUAL "")
 add_dependency_on_bsp(_sources)
-add_executable(${APP_NAME}.elf ${_sources})
+
+
+add_custom_command(
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/data/x_test.bin ${CMAKE_CURRENT_BINARY_DIR}/data/y_test.bin ${CMAKE_CURRENT_BINARY_DIR}/data/lenet_layers.bin
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${DATA_DIR} ${CMAKE_CURRENT_BINARY_DIR}/data
+)
+message(CMAKE_CXX_LINK_EXECUTABLE ${CMAKE_LINKER})
+add_custom_command(
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/data/x_test.o
+    COMMAND ${CMAKE_LINKER} -r -b binary -o x_test.o x_test.bin
+    DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/data/x_test.bin
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data
+)
+add_custom_command(
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/data/y_test.o
+    COMMAND ${CMAKE_LINKER} -r -b binary -o y_test.o y_test.bin
+    DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/data/y_test.bin
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data
+)
+add_custom_command(
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/data/lenet_layers.o
+    COMMAND ${CMAKE_LINKER} -r -b binary -o lenet_layers.o lenet_layers.bin
+    DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/data/lenet_layers.bin
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data
+)
+
+set(X_TEST_SYMBOL_PREFIX _binary_x_test_bin)
+set(Y_TEST_SYMBOL_PREFIX _binary_y_test_bin)
+set(LENET_LAYERS_SYMBOL_PREFIX _binary_lenet_layers_bin)
+
+configure_file(symbols.h.in symbols.h)
+
+
+add_executable(${APP_NAME}.elf ${_sources} ${CMAKE_CURRENT_BINARY_DIR}/data/x_test.o ${CMAKE_CURRENT_BINARY_DIR}/data/y_test.o ${CMAKE_CURRENT_BINARY_DIR}/data/lenet_layers.o)
+
+target_include_directories(${APP_NAME}.elf PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 
 set_target_properties(${APP_NAME}.elf PROPERTIES LINK_DEPENDS ${USER_LINKER_SCRIPT})
 
 # link our modules
 target_link_libraries(${APP_NAME}.elf simulation)
+target_link_libraries(${APP_NAME}.elf npy_parser)
 
 target_link_libraries(${APP_NAME}.elf -Wl,-T -Wl,\"${USER_LINKER_SCRIPT}\" -L\"${CMAKE_SOURCE_DIR}/\" -L\"${CMAKE_LIBRARY_PATH}/\" -L\"${USER_LINK_DIRECTORIES}/\" -Wl,--start-group,-l${_deps} -Wl,--end-group)
 

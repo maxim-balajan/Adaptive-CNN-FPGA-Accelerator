@@ -1,7 +1,7 @@
 {
   "name": "app_baseline",
   "type": "HOST",
-  "platform": "/home/markus/Documents/RADL/SW-Integration/Vitis/platform/export/platform/platform.xpfm",
+  "platform": "/home/markus/Documents/RADL/SW-Integration/Vitis/platform_accelerated/export/platform_accelerated/platform_accelerated.xpfm",
   "domain": "standalone_psu_cortexa53_0",
   "cpuInstance": "psu_cortexa53_0",
   "cpuType": "cortex-a53",
