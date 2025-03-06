@@ -22,7 +22,7 @@ const Matrix<T>& inference(const vector<unique_ptr<Layer<T, ACC>>>& layers, cons
 }
 
 struct InferenceStats {
-    unsigned long latency_ms;
+    unsigned long latency_us;
     unsigned int correct;
 };
 
@@ -36,7 +36,7 @@ InferenceStats test_inference(const vector<unique_ptr<Layer<T, ACC>>>& layers, c
     chrono::steady_clock::time_point end = chrono::steady_clock::now();
 
     InferenceStats stats;
-    stats.latency_ms = chrono::duration_cast<chrono::milliseconds>(end - begin).count();
+    stats.latency_us = chrono::duration_cast<chrono::microseconds>(end - begin).count();
     stats.correct = 0;
 
     if (verbose) {
@@ -111,7 +111,7 @@ int run_benchmark(RunBenchmarkOptions options) {
     cout << "Starting RADL MNIST Simulation with " << image_count << " images to process (batch_size=" << batching << ")..." << endl;
 
     InferenceStats total_stats {
-        .latency_ms = 0,
+        .latency_us = 0,
         .correct = 0
     };
     // Print doubles with two subdigits
@@ -120,7 +120,7 @@ int run_benchmark(RunBenchmarkOptions options) {
     int i = 0;
     do {
         InferenceStats stats = test_inference<TargetType, AccumulatorType>(layers, input_data_view.get_current(), output_data_view.get_current(), verbose);
-        total_stats.latency_ms += stats.latency_ms;
+        total_stats.latency_us += stats.latency_us;
         total_stats.correct += stats.correct;
 
         i++;
@@ -132,7 +132,7 @@ int run_benchmark(RunBenchmarkOptions options) {
         if (batching > 1) {
             cout << "s";
         }
-        cout << " completed in " << stats.latency_ms << "ms!";
+        cout << " completed in " << stats.latency_us << "us!";
 
         cout << " (current accuracy: " << ((100 * ((double) total_stats.correct))/(i * batching)) << "%)";
 
@@ -152,8 +152,8 @@ int run_benchmark(RunBenchmarkOptions options) {
     cout << "\n";
     cout << "--- Result ---\n";
     // cout << "Accumulator-Type: FPInt24<0>" << endl;
-    cout << "Total inference duration: " << ((1.0*total_stats.latency_ms)/1000) << "s\n";
-    cout << "Avg inference duration: " << ((1.0*total_stats.latency_ms)/image_count) << "ms\n";
+    cout << "Total inference duration: " << ((1.0*total_stats.latency_us)/(1000 * 1000)) << "s\n";
+    cout << "Avg inference duration: " << ((1.0*total_stats.latency_us)/image_count) << "us\n";
     cout << "Total misses: " << image_count - total_stats.correct << " of " << image_count << " images" << endl;
     cout << "Avg accuracy: " << ((100 * ((double) total_stats.correct))/image_count) << "%" << endl;
 
