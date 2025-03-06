@@ -287,8 +287,7 @@ struct AccResult AccInterface::run(u8 *tx_buffer, int length) {
     }
 
     u64 time_ns = ((end_time - start_time) * 1000 * 1000 * 1000) / (COUNTS_PER_SECOND);
-    xil_printf("res: 0x%x\r\n", *result_ptr);
-    
+
     struct AccResult res = {
         false,    // error
         time_ns,  // time_ns
