@@ -1,10 +1,11 @@
 # baseline
-Total inference duration: 1554.78s
-Avg inference duration: 15547.8us
-Total misses: 90008 of 100000 images
-Avg accuracy: 9.992%
-[BENCH-STATUS] FINISHED
-
+Total inference duration: 155.497s
+Avg inference duration: 15549.7us
+Total misses: 109 of 10000 images
+Avg accuracy: 98.91%
 
 # accelerated
-
+Total inference duration: 0.218828s
+Avg inference duration: 21882.8ns
+Total misses: 108 of 10000 images
+Avg accuracy: 98.92%
