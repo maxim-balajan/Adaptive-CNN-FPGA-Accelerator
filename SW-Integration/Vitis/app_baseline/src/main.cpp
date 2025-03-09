@@ -88,7 +88,7 @@ InferenceStats run(int index, vector<unique_ptr<Layer<T, ACC>>>& layers, Matrix<
 }
 
 int main() {
-    int inference_num = 100000;
+    int inference_num = 10000;
 
     using TargetType = FPInt8<0>;
     using AccumulatorType = FPInt24<0>;

@@ -93,7 +93,7 @@ DEFAULT SET TO 0x01000000
 
 // time_out loop counter for reset
 #define RESET_TIMEOUT_COUNTER 10000
-#define POLL_TIMEOUT_COUNTER 1000000U
+#define POLL_TIMEOUT_COUNTER 100U
 #define NUMBER_OF_EVENTS 1
 
 static void tx_intr_handler(void *callback);
@@ -108,7 +108,7 @@ static void disable_intr_system(INTC *IntcInstancePtr, u16 TxIntrId,
 #endif
 
 // uncomment to enable debug
-#define ACC_INTERFACE_DBG
+// #define ACC_INTERFACE_DBG
 
 AccInterface AccInterface::instance;
 
@@ -187,6 +187,10 @@ AccInterface::AccInterface() {
 }
 
 struct AccResult AccInterface::run(u8 *tx_buffer, int length) {
+#ifdef ACC_INTERFACE_DBG
+    xil_printf("AccInterface run\r\n");
+#endif
+
     int status;
     int* result_ptr = reinterpret_cast<int*>(0x01000000 + 0x00300000);
     *result_ptr = 0;
@@ -199,6 +203,10 @@ struct AccResult AccInterface::run(u8 *tx_buffer, int length) {
     Xil_DCacheFlushRange(reinterpret_cast<UINTPTR>(tx_buffer), length);
     Xil_DCacheFlushRange(reinterpret_cast<UINTPTR>(result_ptr), 1);
 
+#ifdef ACC_INTERFACE_DBG
+    xil_printf("AccInterface GetTime start\r\n");
+#endif
+
     XTime start_time;
     XTime_GetTime(&start_time);
 
@@ -207,7 +215,7 @@ struct AccResult AccInterface::run(u8 *tx_buffer, int length) {
 
     if (status != XST_SUCCESS) {
 #ifdef ACC_INTERFACE_DBG
-        xil_printf("rx_buffer transfer was not successful %d", status);
+        xil_printf("rx_buffer transfer was not successful %d\r\n", status);
 #endif
         struct AccResult res = {
             true,  // error
@@ -223,7 +231,7 @@ struct AccResult AccInterface::run(u8 *tx_buffer, int length) {
 
     if (status != XST_SUCCESS) {
 #ifdef ACC_INTERFACE_DBG
-        xil_printf("tx_buffer transfer was not successful %d", status);
+        xil_printf("tx_buffer transfer was not successful %d\r\n", status);
 #endif
         struct AccResult res = {
             true,  // error
@@ -285,6 +293,11 @@ struct AccResult AccInterface::run(u8 *tx_buffer, int length) {
 
         return res;
     }
+
+#ifdef ACC_INTERFACE_DBG
+    xil_printf("AccInterface Done\r\n");
+#endif
+
 
     u64 time_ns = ((end_time - start_time) * 1000 * 1000 * 1000) / (COUNTS_PER_SECOND);
 
@@ -424,6 +437,10 @@ static void rx_intr_handler(void *callback) {
 
     // If completion interrupt is asserted, then set RxDone flag
     if ((irq_status & XAXIDMA_IRQ_IOC_MASK)) {
+#ifdef ACC_INTERFACE_DBG
+        xil_printf("AccInterface GetTime end\r\n");
+#endif
+
         // Get time in two steps because of volatile qualifier of end_time
         XTime tmp;
         XTime_GetTime(&tmp);
