@@ -1,0 +1,6 @@
+Key,Max
+LUT_synth,70560
+FF_synth,141120
+LUT_impl,70560
+FF_impl,141120
+BRAM,216
