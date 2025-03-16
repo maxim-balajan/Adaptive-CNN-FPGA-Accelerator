@@ -20,29 +20,31 @@ using namespace ParsingUtil;
 template<typename T>
 struct TypeInfo;
 
-#define REGISTER_PARSE_TYPE(X, HANDLE_DIV_ZERO, CLIPPING_ENABLED) template<> struct TypeInfo<X> { \
+#define REGISTER_PARSE_TYPE(X, HANDLE_DIV_ZERO, CLIPPING_ENABLED, BITS) template<> struct TypeInfo<X> { \
         static const char* name; \
         static bool handle_div_zero; \
         static bool clipping_enabled; \
+        static unsigned bits; \
     }; \
     const char* TypeInfo<X>::name = #X; \
     bool TypeInfo<X>::handle_div_zero = HANDLE_DIV_ZERO; \
-    bool TypeInfo<X>::clipping_enabled = CLIPPING_ENABLED
+    bool TypeInfo<X>::clipping_enabled = CLIPPING_ENABLED; \
+    unsigned TypeInfo<X>::bits = BITS \
 
-REGISTER_PARSE_TYPE(SafeDivInt<int8_t COMMA false>, false, false);
-REGISTER_PARSE_TYPE(SafeDivInt<int16_t COMMA false>, false, false);
-REGISTER_PARSE_TYPE(Int24<false>, false, false);
-REGISTER_PARSE_TYPE(SafeDivInt<int32_t COMMA false>, false, false);
+REGISTER_PARSE_TYPE(SafeDivInt<int8_t COMMA false>, true, false, 8);
+REGISTER_PARSE_TYPE(SafeDivInt<int16_t COMMA false>, true, false, 16);
+REGISTER_PARSE_TYPE(Int24<false>, true, false, 24);
+REGISTER_PARSE_TYPE(SafeDivInt<int32_t COMMA false>, true, false, 32);
 
-REGISTER_PARSE_TYPE(SafeDivInt<int8_t COMMA true>, true, false);
-REGISTER_PARSE_TYPE(SafeDivInt<int16_t COMMA true>, true, false);
-REGISTER_PARSE_TYPE(Int24<true>, true, false);
-REGISTER_PARSE_TYPE(SafeDivInt<int32_t COMMA true>, true, false);
+REGISTER_PARSE_TYPE(SafeDivInt<int8_t COMMA true>, false, false, 8);
+REGISTER_PARSE_TYPE(SafeDivInt<int16_t COMMA true>, false, false, 16);
+REGISTER_PARSE_TYPE(Int24<true>, false, false, 24);
+REGISTER_PARSE_TYPE(SafeDivInt<int32_t COMMA true>, false, false, 32);
 
-REGISTER_PARSE_TYPE(FPInt8<0>, true, true);
-REGISTER_PARSE_TYPE(FPInt16<0>, true, true);
-REGISTER_PARSE_TYPE(FPInt24<0>, true, true);
-REGISTER_PARSE_TYPE(FPInt32<0>, true, true);
+REGISTER_PARSE_TYPE(FPInt8<0>, true, true, 8);
+REGISTER_PARSE_TYPE(FPInt16<0>, true, true, 16);
+REGISTER_PARSE_TYPE(FPInt24<0>, true, true, 24);
+REGISTER_PARSE_TYPE(FPInt32<0>, true, true, 32);
 
 template<typename T, typename ACC>
 const Matrix<T>& inference(const vector<unique_ptr<Layer<T, ACC>>>& layers, const Matrix<T>& input) {
@@ -105,6 +107,8 @@ struct RunBenchmarkOptions {
 struct DataTypeTestResult {
     const char* data_type;
     const char* accumulator_type;
+    unsigned data_type_bits;
+    unsigned accumulator_type_bits;
     bool data_type_handle_div_zero;
     bool data_type_clipping_enabled;
     bool accumulator_type_handle_div_zero;
@@ -208,6 +212,8 @@ DataTypeTestResult run_benchmark(RunBenchmarkOptions options) {
         res.division_by_zero = false;
         res.data_type = TypeInfo<TargetType>::name;
         res.accumulator_type = TypeInfo<AccumulatorType>::name;
+        res.data_type_bits = TypeInfo<TargetType>::bits;
+        res.accumulator_type_bits = TypeInfo<AccumulatorType>::bits;
         res.data_type_handle_div_zero = TypeInfo<TargetType>::handle_div_zero;
         res.data_type_clipping_enabled = TypeInfo<TargetType>::clipping_enabled;
         res.accumulator_type_handle_div_zero = TypeInfo<AccumulatorType>::handle_div_zero;
@@ -220,6 +226,8 @@ DataTypeTestResult run_benchmark(RunBenchmarkOptions options) {
         res.division_by_zero = true;
         res.data_type = TypeInfo<TargetType>::name;
         res.accumulator_type = TypeInfo<AccumulatorType>::name;
+        res.data_type_bits = TypeInfo<TargetType>::bits;
+        res.accumulator_type_bits = TypeInfo<AccumulatorType>::bits;
         res.data_type_handle_div_zero = TypeInfo<TargetType>::handle_div_zero;
         res.data_type_clipping_enabled = TypeInfo<TargetType>::clipping_enabled;
         res.accumulator_type_handle_div_zero = TypeInfo<AccumulatorType>::handle_div_zero;
@@ -278,21 +286,6 @@ int main(int argc, char* argv[]) {
     vector<DataTypeTestResult> results;
 
     // ---- PART 1: DO NOT HANDLE DIVISIONS BY ZERO ----
-    results.push_back(run_benchmark<SafeDivInt<int8_t, false>, SafeDivInt<int8_t, false>>(options));
-    results.push_back(run_benchmark<SafeDivInt<int8_t, false>, SafeDivInt<int16_t, false>>(options));
-    results.push_back(run_benchmark<SafeDivInt<int8_t, false>, Int24<false>>(options));
-    results.push_back(run_benchmark<SafeDivInt<int8_t, false>, SafeDivInt<int32_t, false>>(options));
-
-    results.push_back(run_benchmark<SafeDivInt<int16_t, false>, SafeDivInt<int16_t, false>>(options));
-    results.push_back(run_benchmark<SafeDivInt<int16_t, false>, Int24<false>>(options));
-    results.push_back(run_benchmark<SafeDivInt<int16_t, false>, SafeDivInt<int32_t, false>>(options));
-
-    results.push_back(run_benchmark<Int24<false>, Int24<false>>(options));
-    results.push_back(run_benchmark<Int24<false>, SafeDivInt<int32_t, false>>(options));
-
-    results.push_back(run_benchmark<SafeDivInt<int32_t, false>, SafeDivInt<int32_t, false>>(options));
-
-    // ---- PART 2: DO HANDLE DIVISIONS BY ZERO ----
     results.push_back(run_benchmark<SafeDivInt<int8_t, true>, SafeDivInt<int8_t, true>>(options));
     results.push_back(run_benchmark<SafeDivInt<int8_t, true>, SafeDivInt<int16_t, true>>(options));
     results.push_back(run_benchmark<SafeDivInt<int8_t, true>, Int24<true>>(options));
@@ -307,26 +300,44 @@ int main(int argc, char* argv[]) {
 
     results.push_back(run_benchmark<SafeDivInt<int32_t, true>, SafeDivInt<int32_t, true>>(options));
 
+    // ---- PART 2: DO HANDLE DIVISIONS BY ZERO ----
+    results.push_back(run_benchmark<SafeDivInt<int8_t, false>, SafeDivInt<int8_t, false>>(options));
+    results.push_back(run_benchmark<SafeDivInt<int8_t, false>, SafeDivInt<int16_t, false>>(options));
+    results.push_back(run_benchmark<SafeDivInt<int8_t, false>, Int24<false>>(options));
+    results.push_back(run_benchmark<SafeDivInt<int8_t, false>, SafeDivInt<int32_t, false>>(options));
+
+    results.push_back(run_benchmark<SafeDivInt<int16_t, false>, SafeDivInt<int16_t, false>>(options));
+    results.push_back(run_benchmark<SafeDivInt<int16_t, false>, Int24<false>>(options));
+    results.push_back(run_benchmark<SafeDivInt<int16_t, false>, SafeDivInt<int32_t, false>>(options));
+
+    results.push_back(run_benchmark<Int24<false>, Int24<false>>(options));
+    results.push_back(run_benchmark<Int24<false>, SafeDivInt<int32_t, false>>(options));
+
+    results.push_back(run_benchmark<SafeDivInt<int32_t, false>, SafeDivInt<int32_t, false>>(options));
+
+
     // ---- PART 3: CLIPPING ----
     results.push_back(run_benchmark<FPInt8<0>, FPInt8<0>>(options));
     results.push_back(run_benchmark<FPInt8<0>, FPInt16<0>>(options));
-    results.push_back(run_benchmark<FPInt8<0>, FPInt32<0>>(options));
+    results.push_back(run_benchmark<FPInt8<0>, FPInt24<0>>(options));
     results.push_back(run_benchmark<FPInt8<0>, FPInt32<0>>(options));
 
     results.push_back(run_benchmark<FPInt16<0>, FPInt16<0>>(options));
-    results.push_back(run_benchmark<FPInt16<0>, FPInt32<0>>(options));
+    results.push_back(run_benchmark<FPInt16<0>, FPInt24<0>>(options));
     results.push_back(run_benchmark<FPInt16<0>, FPInt32<0>>(options));
 
-    results.push_back(run_benchmark<FPInt32<0>, FPInt32<0>>(options));
-    results.push_back(run_benchmark<FPInt32<0>, FPInt32<0>>(options));
+    results.push_back(run_benchmark<FPInt24<0>, FPInt24<0>>(options));
+    results.push_back(run_benchmark<FPInt24<0>, FPInt32<0>>(options));
 
     results.push_back(run_benchmark<FPInt32<0>, FPInt32<0>>(options));
 
     cout << "\nFinished Benchmark!\n\n--- Result ---\n";
-    cout << "data_type;accumulator_type;data_type_handle_div_zero;data_type_clipping_enabled;accumulator_type_handle_div_zero;accumulator_type_clipping_enabled;value;division_by_zero\n";
+    cout << "data_type;accumulator_type;data_type_bits;accumulator_type_bits;data_type_handle_div_zero;data_type_clipping_enabled;accumulator_type_handle_div_zero;accumulator_type_clipping_enabled;value;division_by_zero\n";
     for (auto& result : results) {
         cout << result.data_type << ";";
         cout << result.accumulator_type << ";";
+        cout << result.data_type_bits << ";";
+        cout << result.accumulator_type_bits << ";";
         cout << result.data_type_handle_div_zero << ";";
         cout << result.data_type_clipping_enabled << ";";
         cout << result.accumulator_type_handle_div_zero << ";";
