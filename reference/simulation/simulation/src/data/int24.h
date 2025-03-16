@@ -4,11 +4,9 @@
 #include <cstdint>
 #include <iostream>
 
-// should handle division by zero (aka return 0 instead of raising an error?)
-#define HANDLE_DIV_ZERO
-
 const int INT24_MAX = 8388607;
 
+template<bool throw_div_error>
 class Int24 {
 protected:
   unsigned char m_Internal[3];
@@ -68,11 +66,12 @@ public:
   }
 
   Int24 operator/(const Int24 &val) const {
-#ifdef HANDLE_DIV_ZERO
     if (val == 0) {
+      if (throw_div_error) {
+        throw std::overflow_error("division by zero");
+      }
       return Int24(0);
     }
-#endif
     return Int24((int)*this / (int)val);
   }
 
@@ -85,11 +84,13 @@ public:
   Int24 operator*(const int val) const { return Int24((int)*this * val); }
 
   Int24 operator/(const int val) const {
-#ifdef HANDLE_DIV_ZERO
     if (val == 0) {
+      if (throw_div_error) {
+        throw std::overflow_error("division by zero");
+      }
       return Int24(0);
     }
-#endif
+
     return Int24((int)*this / val);
   }
 
@@ -112,12 +113,13 @@ public:
   }
 
   Int24 &operator/=(const Int24 &val) {
-#ifdef HANDLE_DIV_ZERO
     if (val == 0) {
+      if (throw_div_error) {
+        throw std::overflow_error("division by zero");
+      }
       *this = 0;
       return *this;
     }
-#endif
 
     *this = *this / val;
     return *this;
@@ -141,12 +143,13 @@ public:
   }
 
   Int24 &operator/=(const int val) {
-#ifdef HANDLE_DIV_ZERO
     if (val == 0) {
+      if (throw_div_error) {
+        throw std::overflow_error("division by zero");
+      }
       *this = 0;
       return *this;
     }
-#endif
     *this = *this / val;
     return *this;
   }
@@ -222,7 +225,8 @@ public:
   /***********************************************/
 };
 
-std::ostream &operator<<(std::ostream &out, Int24 const &data) {
+template<bool throw_div_error>
+std::ostream &operator<<(std::ostream &out, Int24<throw_div_error> const &data) {
   int val = data.get_val();
   out << val;
   return out;

@@ -15,4 +15,5 @@ include(src/CMakeLists.txt)
 include(npy_converter/CMakeLists.txt)
 include(onnx_converter/CMakeLists.txt)
 include(tests/CMakeLists.txt)
+include(benchmark_datatypes/CMakeLists.txt)
 

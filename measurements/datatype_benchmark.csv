@@ -1,0 +1,31 @@
+data_type;accumulator_type;data_type_handle_div_zero;data_type_clipping_enabled;accumulator_type_handle_div_zero;accumulator_type_clipping_enabled;value;division_by_zero
+SafeDivInt<int8_t, false>;SafeDivInt<int8_t, false>;0;0;0;0;9.80;0
+SafeDivInt<int8_t, false>;SafeDivInt<int16_t, false>;0;0;0;0;17.21;0
+SafeDivInt<int8_t, false>;Int24<false>;0;0;0;0;10.38;0
+SafeDivInt<int8_t, false>;SafeDivInt<int32_t, false>;0;0;0;0;15.16;0
+SafeDivInt<int16_t, false>;SafeDivInt<int16_t, false>;0;0;0;0;10.13;0
+SafeDivInt<int16_t, false>;Int24<false>;0;0;0;0;10.11;0
+SafeDivInt<int16_t, false>;SafeDivInt<int32_t, false>;0;0;0;0;98.38;0
+Int24<false>;Int24<false>;0;0;0;0;9.88;0
+Int24<false>;SafeDivInt<int32_t, false>;0;0;0;0;98.38;0
+SafeDivInt<int32_t, false>;SafeDivInt<int32_t, false>;0;0;0;0;98.38;0
+SafeDivInt<int8_t, true>;SafeDivInt<int8_t, true>;1;0;1;0;0.00;1
+SafeDivInt<int8_t, true>;SafeDivInt<int16_t, true>;1;0;1;0;0.00;1
+SafeDivInt<int8_t, true>;Int24<true>;1;0;1;0;0.00;1
+SafeDivInt<int8_t, true>;SafeDivInt<int32_t, true>;1;0;1;0;15.16;0
+SafeDivInt<int16_t, true>;SafeDivInt<int16_t, true>;1;0;1;0;0.00;1
+SafeDivInt<int16_t, true>;Int24<true>;1;0;1;0;0.00;1
+SafeDivInt<int16_t, true>;SafeDivInt<int32_t, true>;1;0;1;0;98.38;0
+Int24<true>;Int24<true>;1;0;1;0;0.00;1
+Int24<true>;SafeDivInt<int32_t, true>;1;0;1;0;98.38;0
+SafeDivInt<int32_t, true>;SafeDivInt<int32_t, true>;1;0;1;0;98.38;0
+FPInt8<0>;FPInt8<0>;1;1;1;1;11.04;0
+FPInt8<0>;FPInt16<0>;1;1;1;1;99.03;0
+FPInt8<0>;FPInt32<0>;1;1;1;1;98.91;0
+FPInt8<0>;FPInt32<0>;1;1;1;1;98.91;0
+FPInt16<0>;FPInt16<0>;1;1;1;1;98.77;0
+FPInt16<0>;FPInt32<0>;1;1;1;1;98.38;0
+FPInt16<0>;FPInt32<0>;1;1;1;1;98.38;0
+FPInt32<0>;FPInt32<0>;1;1;1;1;98.38;0
+FPInt32<0>;FPInt32<0>;1;1;1;1;98.38;0
+FPInt32<0>;FPInt32<0>;1;1;1;1;98.38;0

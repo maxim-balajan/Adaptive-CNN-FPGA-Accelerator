@@ -1,0 +1,7 @@
+add_executable(benchmark_datatypes ${CMAKE_CURRENT_LIST_DIR}/main.cpp)
+
+target_link_libraries(benchmark_datatypes PRIVATE simulation)
+target_link_libraries(benchmark_datatypes PRIVATE npy_parser)
+target_link_libraries(benchmark_datatypes PRIVATE onnx_parser)
+target_link_libraries(benchmark_datatypes PRIVATE argparse)
+
