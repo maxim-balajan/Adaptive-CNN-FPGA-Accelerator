@@ -4263,7 +4263,7 @@
                 clocking0: clocking0 {
                         compatible = "xlnx,fclk";
                         assigned-clocks = <0x71 0x47>;
-                        assigned-clock-rates = <0x5f5e100>;
+                        assigned-clock-rates = <0xee6b280>;
                         #clock-cells = <0x0>;
                         clock-output-names = "fabric_clk";
                         clocks = <&zynqmp_clk 0x47>;
