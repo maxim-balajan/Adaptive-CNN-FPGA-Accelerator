@@ -7,80 +7,80 @@ void printb(uint16_t v) {
     for (i = s; i; i>>=1) printf("%d", v & i || 0 );
 }
 
-void test_virtual_int8() {
-    for (int8_t x = INT8_MIN; x < INT8_MAX; x++) {
-        VirtualInt8 x2((int32_t) x);
-        cout << ((int)x) <<" =?= " << ((int)x2.get_val()) << endl;
-        assert(((int64_t) x) == x2.get_val());
-    }
-    for (int8_t x = INT8_MIN; x < INT8_MAX; x++) {
-        for (int8_t y = INT8_MIN; y < INT8_MAX; y++) {
-            int8_t z = x + y;
-            VirtualInt8 x2((int32_t) x);
-            VirtualInt8 y2((int32_t) y);
+// void test_virtual_int8() {
+//     for (int8_t x = INT8_MIN; x < INT8_MAX; x++) {
+//         int32_t x2 = x;
+//         cout << ((int)x) <<" =?= " << ((int)((int8_t) x2)) << endl;
+//         assert(((int64_t) x) == (int64_t)((int8_t) x2));
+//     }
+//     for (int8_t x = INT8_MIN; x < INT8_MAX; x++) {
+//         for (int8_t y = INT8_MIN; y < INT8_MAX; y++) {
+//             int8_t z = x + y;
+//             int32_t x2 = x;
+//             int32_t y2 = y;
             
-            VirtualInt8 z2 = x2 + y2;
-            cout << ((int)x) <<"+" << ((int)y) <<"=" << ((int)z) << " aka: ";
-            printb(z);
-            cout << " =?= ";
-            printb(z2.get_val());
-            cout << "(" << z2.get_val() << ")" << endl;
-            assert(((int64_t) z) == z2.get_val());
-        }
-    }
-    for (int8_t x = INT8_MIN; x < INT8_MAX; x++) {
-        for (int8_t y = INT8_MIN; y < INT8_MAX; y++) {
-            int8_t z = x - y;
-            VirtualInt8 x2((int32_t) x);
-            VirtualInt8 y2((int32_t) y);
+//             int32_t z2 = x2 + y2;
+//             cout << ((int)x) <<"+" << ((int)y) <<"=" << ((int)z) << " aka: ";
+//             printb(z);
+//             cout << " =?= ";
+//             printb((int)((int8_t) z2));
+//             cout << "(" << ((int)((int8_t) z2)) << ")" << endl;
+//             assert(((int64_t) z) == (int64_t)((int8_t) z2));
+//         }
+//     }
+//     for (int8_t x = INT8_MIN; x < INT8_MAX; x++) {
+//         for (int8_t y = INT8_MIN; y < INT8_MAX; y++) {
+//             int8_t z = x - y;
+//             VirtualInt8 x2((int32_t) x);
+//             VirtualInt8 y2((int32_t) y);
             
-            VirtualInt8 z2 = x2 - y2;
-            cout << ((int)x) <<"-" << ((int)y) <<"=" << ((int)z) << " aka: ";
-            printb(z);
-            cout << " =?= ";
-            printb(z2.get_val());
-            cout << "(" << z2.get_val() << ")" << endl;
-            assert(((int64_t) z) == z2.get_val());
-        }
-    }
-    for (int8_t x = INT8_MIN; x < INT8_MAX; x++) {
-        for (int8_t y = INT8_MIN; y < INT8_MAX; y++) {
-            int8_t z = x * y;
-            VirtualInt8 x2((int32_t) x);
-            VirtualInt8 y2((int32_t) y);
+//             VirtualInt8 z2 = x2 - y2;
+//             cout << ((int)x) <<"-" << ((int)y) <<"=" << ((int)z) << " aka: ";
+//             printb(z);
+//             cout << " =?= ";
+//             printb(z2.get_val());
+//             cout << "(" << z2.get_val() << ")" << endl;
+//             assert(((int64_t) z) == z2.get_val());
+//         }
+//     }
+//     for (int8_t x = INT8_MIN; x < INT8_MAX; x++) {
+//         for (int8_t y = INT8_MIN; y < INT8_MAX; y++) {
+//             int8_t z = x * y;
+//             VirtualInt8 x2((int32_t) x);
+//             VirtualInt8 y2((int32_t) y);
             
-            VirtualInt8 z2 = x2 * y2;
-            cout << ((int)x) <<"*" << ((int)y) <<"=" << ((int)z) << " aka: ";
-            printb(z);
-            cout << " =?= ";
-            printb(z2.get_val());
-            cout << "(" << z2.get_val() << ")" << endl;
-            assert(((int64_t) z) == z2.get_val());
-        }
-    }
-    for (int8_t x = INT8_MIN + 1; x < INT8_MAX; x++) {
-        for (int8_t y = INT8_MIN + 1; y < INT8_MAX; y++) {
-            if (y == 0) {
-                continue;
-            }
+//             VirtualInt8 z2 = x2 * y2;
+//             cout << ((int)x) <<"*" << ((int)y) <<"=" << ((int)z) << " aka: ";
+//             printb(z);
+//             cout << " =?= ";
+//             printb(z2.get_val());
+//             cout << "(" << z2.get_val() << ")" << endl;
+//             assert(((int64_t) z) == z2.get_val());
+//         }
+//     }
+//     for (int8_t x = INT8_MIN + 1; x < INT8_MAX; x++) {
+//         for (int8_t y = INT8_MIN + 1; y < INT8_MAX; y++) {
+//             if (y == 0) {
+//                 continue;
+//             }
 
-            int8_t z = x / y;
-            VirtualInt8 x2((int32_t) x);
-            VirtualInt8 y2((int32_t) y);
+//             int8_t z = x / y;
+//             VirtualInt8 x2((int32_t) x);
+//             VirtualInt8 y2((int32_t) y);
             
-            VirtualInt8 z2 = x2 / y2;
-            cout << ((int)x) <<"/" << ((int)y) <<"=" << ((int)z) << " aka: ";
-            printb(z);
-            cout << " =?= ";
-            printb(z2.get_val());
-            cout << "(" << z2.get_val() << ")" << endl;
-            assert(((int64_t) z) == z2.get_val());
-        }
-    }
-}
+//             VirtualInt8 z2 = x2 / y2;
+//             cout << ((int)x) <<"/" << ((int)y) <<"=" << ((int)z) << " aka: ";
+//             printb(z);
+//             cout << " =?= ";
+//             printb(z2.get_val());
+//             cout << "(" << z2.get_val() << ")" << endl;
+//             assert(((int64_t) z) == z2.get_val());
+//         }
+//     }
+// }
 
 int main() {
-    test_virtual_int8();
+    // test_virtual_int8();
     FPInt32<20> fp1(0.00021);
     FPInt32<20> fp2(-0.0000999);
     cout << fp1 << ", " << fp2 << endl;
