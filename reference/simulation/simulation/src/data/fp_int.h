@@ -109,6 +109,10 @@ public:
         assert(POINT_POS == 0);
         return FPInt(handle_overflow(value / scale));    
     }
+    FPInt operator>>(const uint8_t digits) const {
+        assert(POINT_POS == 0);
+        return FPInt(handle_overflow(value >> digits));    
+    }
 
     FPInt& operator+=(const FPInt& other) {
         ACC_T new_val = static_cast<ACC_T>(value) + static_cast<ACC_T>(other.value);

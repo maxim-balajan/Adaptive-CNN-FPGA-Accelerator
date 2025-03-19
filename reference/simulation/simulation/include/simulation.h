@@ -5,7 +5,6 @@
 
 #include "../src/data/fp_int.h"
 #include "../src/data/int24.h"
-#include "../src/data/safe_div_int.h"
 #include "../src/data/data_converter.h"
 #include "../src/data/matrix.h"
 #include "../src/data/matrix_view.h"

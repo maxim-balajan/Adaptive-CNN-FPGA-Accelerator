@@ -12,11 +12,14 @@ private:
     Matrix<T> output_buffer;
     const Matrix<T> weights;
     const Matrix<T> bias;
-    bool enable_softmax;
-    float s_b;
-    float s_x;
-    float s_w;
-    float s_y;
+    const bool enable_softmax;
+    const float s_b;
+    const float s_x;
+    const float s_w;
+    const float s_y;
+
+    const uint8_t s_b_shift;
+    const uint8_t s_x_shift;
 
     QuantDense(Matrix<T> weights, Matrix<T> bias, bool enable_softmax, Matrix<T> output_buffer, float s_b, float s_x, float s_w, float s_y);
 

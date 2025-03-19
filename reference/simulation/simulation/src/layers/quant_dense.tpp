@@ -2,6 +2,9 @@
 #include "quant_dense.h"
 #include "../data/data_converter.h"
 
+#include <cmath>
+#include <limits>
+
 template<typename T, typename ACC>
 QuantDense<T, ACC>::QuantDense(Matrix<T> weights, Matrix<T> bias, bool enable_softmax, Matrix<T> output_buffer, float s_b, float s_x, float s_w, float s_y)
     : weights(weights)
@@ -11,7 +14,14 @@ QuantDense<T, ACC>::QuantDense(Matrix<T> weights, Matrix<T> bias, bool enable_so
     , s_b(s_b)
     , s_x(s_x)
     , s_w(s_w)
-    , s_y(s_y) {}
+    , s_y(s_y)
+    , s_x_shift(log2((s_y / (s_x * s_w))) == std::numeric_limits<float>::infinity() ? std::numeric_limits<uint8_t>::max() : static_cast<uint8_t>(log2(s_y / (s_x * s_w))))
+    , s_b_shift(log2(s_y / s_b) == std::numeric_limits<float>::infinity() ? std::numeric_limits<uint8_t>::max() : static_cast<uint8_t>(log2(s_y / s_b))) {
+        // make sure the values are really a power of 2
+        assert(log2((s_y / (s_x * s_w))) == std::numeric_limits<float>::infinity() || log2(s_y / (s_x * s_w)) == static_cast<float>(s_x_shift));
+        assert(log2(s_y / s_b) == std::numeric_limits<float>::infinity() || log2(s_y / s_b) == static_cast<float>(s_b_shift));
+    }
+
 
 
 template<typename T, typename ACC>
@@ -33,7 +43,7 @@ const Matrix<T>& QuantDense<T, ACC>::calc(const Matrix<T>& input)
                 tmp += convert_data<T, ACC>(weights[{x_id, wy_id}]) * convert_data<T, ACC>(input[{batch_id, x_id}]);
             }
 
-            ACC res = tmp / convert_data<float, ACC>(s_y / (s_x * s_w)) + convert_data<T, ACC>(bias[{wy_id}]) / convert_data<float, ACC>(s_y / s_b);
+            ACC res = (tmp >> s_x_shift) + (convert_data<T, ACC>(bias[{wy_id}]) >> s_b_shift);
             output_buffer[{batch_id, wy_id}] = convert_data<ACC, T>(res);
         }
     }

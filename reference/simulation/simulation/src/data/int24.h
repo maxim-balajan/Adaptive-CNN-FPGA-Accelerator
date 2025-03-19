@@ -6,7 +6,6 @@
 
 const int INT24_MAX = 8388607;
 
-template<bool throw_div_error>
 class Int24 {
 protected:
   unsigned char m_Internal[3];
@@ -66,12 +65,6 @@ public:
   }
 
   Int24 operator/(const Int24 &val) const {
-    if (val == 0) {
-      if (throw_div_error) {
-        throw std::overflow_error("division by zero");
-      }
-      return Int24(0);
-    }
     return Int24((int)*this / (int)val);
   }
 
@@ -84,13 +77,6 @@ public:
   Int24 operator*(const int val) const { return Int24((int)*this * val); }
 
   Int24 operator/(const int val) const {
-    if (val == 0) {
-      if (throw_div_error) {
-        throw std::overflow_error("division by zero");
-      }
-      return Int24(0);
-    }
-
     return Int24((int)*this / val);
   }
 
@@ -113,14 +99,6 @@ public:
   }
 
   Int24 &operator/=(const Int24 &val) {
-    if (val == 0) {
-      if (throw_div_error) {
-        throw std::overflow_error("division by zero");
-      }
-      *this = 0;
-      return *this;
-    }
-
     *this = *this / val;
     return *this;
   }
@@ -143,13 +121,6 @@ public:
   }
 
   Int24 &operator/=(const int val) {
-    if (val == 0) {
-      if (throw_div_error) {
-        throw std::overflow_error("division by zero");
-      }
-      *this = 0;
-      return *this;
-    }
     *this = *this / val;
     return *this;
   }
@@ -225,8 +196,7 @@ public:
   /***********************************************/
 };
 
-template<bool throw_div_error>
-std::ostream &operator<<(std::ostream &out, Int24<throw_div_error> const &data) {
+std::ostream &operator<<(std::ostream &out, Int24 const &data) {
   int val = data.get_val();
   out << val;
   return out;

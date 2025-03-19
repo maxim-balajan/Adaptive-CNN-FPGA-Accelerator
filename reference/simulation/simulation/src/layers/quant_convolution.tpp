@@ -2,6 +2,8 @@
 #include "quant_convolution.h"
 #include "../data/data_converter.h"
 
+#include <cmath>
+#include <cstdint>
 #include <iostream>
 
 template<typename T, typename ACC>
@@ -12,7 +14,13 @@ QuantConvolution<T, ACC>::QuantConvolution(Matrix<T> kernel, Matrix<T> bias, Mat
     , s_b(s_b)
     , s_x(s_x)
     , s_w(s_w)
-    , s_y(s_y) {}
+    , s_y(s_y)
+    , s_x_shift(log2((s_y / (s_x * s_w))) == std::numeric_limits<float>::infinity() ? std::numeric_limits<uint8_t>::max() : static_cast<uint8_t>(log2(s_y / (s_x * s_w))))
+    , s_b_shift(log2(s_y / s_b) == std::numeric_limits<float>::infinity() ? std::numeric_limits<uint8_t>::max() : static_cast<uint8_t>(log2(s_y / s_b))) {
+        // make sure the values are really a power of 2
+        assert(log2((s_y / (s_x * s_w))) == std::numeric_limits<float>::infinity() || log2(s_y / (s_x * s_w)) == static_cast<float>(s_x_shift));
+        assert(log2(s_y / s_b) == std::numeric_limits<float>::infinity() || log2(s_y / s_b) == static_cast<float>(s_b_shift));
+    }
 
 template<typename T, typename ACC>
 QuantConvolution<T, ACC>::QuantConvolution(Matrix<T> kernel, Matrix<T> bias, size_t batching, size_t x, size_t y, size_t output_channel, float s_b, float s_x, float s_w, float s_y)
@@ -63,7 +71,7 @@ const Matrix<T>& QuantConvolution<T, ACC>::calc(const Matrix<T>& input) {
             {
                 for (size_t outch_id = 0; outch_id < output_buffer.shape()[1]; outch_id++)
                 {
-                    ACC res = relu_ACC(t[{batch_id, outch_id, x_id, y_id}]/convert_data<float, ACC>(s_y / (s_x * s_w)) + convert_data<T, ACC>(bias[outch_id]) / convert_data<float, ACC>(s_y / s_b));
+                    ACC res = (relu_ACC(t[{batch_id, outch_id, x_id, y_id}] >> s_x_shift) + (convert_data<T, ACC>(bias[outch_id]) >> s_b_shift));
 
                     // Addition of Bias and Activation (ReLU)
                     output_buffer[{batch_id, outch_id, x_id, y_id}] = convert_data<ACC, T>(res);

@@ -17,6 +17,9 @@ private:
     const float s_w;
     const float s_y;
 
+    const uint8_t s_b_shift;
+    const uint8_t s_x_shift;
+
     QuantConvolution(Matrix<T> kernel, Matrix<T> bias, Matrix<T> output_buffer, float s_b, float s_x, float s_w, float s_y);
 
 public:
