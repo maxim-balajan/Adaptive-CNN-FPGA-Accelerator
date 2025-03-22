@@ -1,0 +1,2 @@
+-- Argmax is implemented under the name (wrong) "softmax" in "softmax_unit.vhd".
+-- TODO: Rename "softmax_unit.vhd" to "argmax_unit.vhd".
