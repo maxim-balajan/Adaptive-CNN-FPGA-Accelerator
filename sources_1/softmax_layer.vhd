@@ -60,10 +60,10 @@ begin
 
 	MAP_GEN : for i in s_max_values'range generate
 
-		s_max_values(i) <= s_input_values(2 * i) when signed(s_input_values(2 * i)) > signed(s_input_values(2 * i + 1)) else
+		s_max_values(i) <= s_input_values(2 * i) when signed(s_input_values(2 * i)) >= signed(s_input_values(2 * i + 1)) else
 	                   s_input_values(2 * i + 1);
 
-		s_max_indices(i) <= s_input_indices(2 * i) when signed(s_input_values(2 * i)) > signed(s_input_values(2 * i + 1)) else
+		s_max_indices(i) <= s_input_indices(2 * i) when signed(s_input_values(2 * i)) >= signed(s_input_values(2 * i + 1)) else
 	                    s_input_indices(2 * i + 1);
 
 	end generate MAP_GEN;
