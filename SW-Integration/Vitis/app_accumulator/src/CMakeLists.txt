@@ -9,7 +9,24 @@ project(${APP_NAME})
 
 find_package(common)
 enable_language(C ASM CXX)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
+
 collect(PROJECT_LIB_DEPS xilstandalone;xiltimer)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
