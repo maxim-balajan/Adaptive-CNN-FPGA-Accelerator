@@ -27,7 +27,7 @@ int main() {
     unsigned total_latency = 0;
 
     for (int i = 0; i < test_num; i++) {
-        unsigned latency = run(ptr, 1, false);
+        unsigned latency = run(ptr, 32*32, false);
 
         total_latency += latency;
         cout << "[" << ((i * 100) / test_num) << "%] Inference of " << 1 << " image";
