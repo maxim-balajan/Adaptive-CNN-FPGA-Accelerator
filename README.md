@@ -42,14 +42,24 @@ This repository is structured as follows:
 - Protobuf (tested with version *3.21.12-9ubuntu1*, probably usable with older versions as well)
   - For Ubuntu: `sudo apt install protobuf-compiler` (this should also automatically install `libprotobuf`/`libprotobuf-dev`)
 
-### Building & Running
+### Building
+
+To build the project using GNU Make run:
 
 ```bash
 mkdir build
 cd build
 cmake ..
-make
-./simulation
+make -j16 # speed up compilation :)
+```
+
+If you want to use Ninja instead of GNU Make, run:
+
+```bash
+mkdir build
+cd build
+cmake .. -G Ninja
+ninja # speed up compilation automatically :O
 ```
 
 ### Targets
@@ -62,3 +72,5 @@ The executable binary targets are:
 - `simulation`: The software reference simulation for desktop.
 - `tests`: Custom tests. Only used for... testing :)
 - `test_serialize`: Test that serializing the layers works as excepted.
+
+For running the programs you might need to input the trained model (located in `reference/training/Lenet_qonnx.onnx`) and test images and/or labels (located in `reference/training/export/mnist/`).
