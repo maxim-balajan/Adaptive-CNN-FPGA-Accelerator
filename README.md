@@ -19,7 +19,7 @@ This repository is structured as follows:
     │   ├── app_accumulator         # Vitis project to test and run the benchmark of the integrated accumulator (unit for testing AXI-related stuff)
     │   ├── app_baseline            # Vitis project to benchmark the ported reference implementation (CPU only)
     │   ├── app_test
-    │   ├── data                    # Image and layer data used in app_accelerated, app_baseline
+    │   ├── data                    # Image and layer data used in app_accelerated, app_baseline (note: this data was already pre-processed and is now stored in form of int8_t's)
     │   ├── platform_accelerated    # Platform that includes the LeNet-5 accelerator
     │   └── platform_accumulator    # Platform that includes the hardware accumulator (unit for testing AXI-related stuff)
     └── Vivado                      # Vivado project used to develop the hardware accumulator
