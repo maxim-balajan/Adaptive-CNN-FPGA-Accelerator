@@ -6,16 +6,11 @@ This repository is structured as follows:
 
 ```bash
 ├── data                            # Contains data for test benches (e.g. intermediate results of LeNet-5)
-│   └── ...
 ├── LeNet-Accelerator               # The main Vivado Project used to test and integrate the hardware accelerator (includes the files from sim_1 and sources_1)
-│   └── ...
 ├── measurements                    # Evaluation data and helper scripts
-│   └── ...
 ├── reference
 │   ├── simulation                  # The reference implementation of the LeNet-5 architecture
-│   │   └── ...
 │   └── training                    # Scripts and data used to train the quantized LeNet-5 model
-│       └── ...
 ├── sim_1                           # VHDL test benches
 ├── sources_1                       # VHDL main sources for the hardware accelerator
 └── SW-Integration
