@@ -38,8 +38,9 @@ This repository is structured as follows:
 ### Requirements
 
 - C++ 23
-- Protobuf (tested with version *3.21.12-9ubuntu1*)
-  - For Ubuntu: `sudo apt install protobuf-compiler`
+- CMake 3.20.0
+- Protobuf (tested with version *3.21.12-9ubuntu1*, probably usable with older versions as well)
+  - For Ubuntu: `sudo apt install protobuf-compiler` (this should also automatically install `libprotobuf`/`libprotobuf-dev`)
 
 ### Building & Running
 
