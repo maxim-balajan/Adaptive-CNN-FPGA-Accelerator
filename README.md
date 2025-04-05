@@ -42,14 +42,14 @@ This repository is structured as follows:
 
 1. Open the Vitis Project located in [SW-Integration/Vitis](SW-Integration/Vitis/)
 2. To run performance benchmarks for the [baseline](SW-Integration/Vitis/app_baseline/) (ported reference implementation), the [accumulator](SW-Integration/Vitis/app_accumulator/) and the [LeNet-5 hardware accelerator](SW-Integration/Vitis/app_accelerated/) open the corresponding Platform and first build it \
-**Note**: The baseline platform is the same as the platform for the LeNet-5 hardware accelerator, so [*platform_accelerated*](SW-Integration/Vitis/platform_accelerated/). For the accumulator its [*platform_accumulator*](SW-Integration/Vitis/platform_accumulator/) \
+**Note**: The baseline platform is the same as the platform for the LeNet-5 hardware accelerator, so [*platform_accelerated*](SW-Integration/Vitis/platform_accelerated/). For the accumulator the corresponding platform is called [*platform_accumulator*](SW-Integration/Vitis/platform_accumulator/). \
 ![Picture for how to build a Platform](./doc/platform_build.png)
 3. *Optional*: If you do want to create your own platform for the Ultra96-v2 board create a corresponding Vitis platform from the generated XSA files. Then select the new platform for the app you want to run \
 **Note**: Make sure that stdout is mapped to the right output interface (e.g. for Ultra96-v2 you need to select UART1 instead of UART0).
     * [XSA File for the Accumulator](SW-Integration/Vivado/main_design_wrapper.xsa)
     * [XSA File for the LeNet-5 accelerator](LeNet-Accelerator/lenet_accel_main_wrapper.xsa)
 4. Power on the FPGA and connect it via UART/JTAG.
-5. When selecting the specified Application, make sure that the correct Platform is used. For that edit the `app_*/Settings/vitis-comp.json` file inside Vitis and make sure the correct platform is being used. \
+5. When selecting the specified Application, make sure that the correct Platform is used. For that edit the `app_*/Settings/vitis-comp.json` file inside Vitis and make sure the correct platform is being used. If not, change it via the `Switch Platform` button. \
 ![Picture for how to switch a Platform](./doc/switch_platform.png)
 6. *Optional*: If you want to capture the latencies of the benchmark, just run `cd measurements && python record_output.py`. This will connect to the serial output of `/dev/ttyUSB1` at baud rate `115200` and put all measured latency in a json file. With this script you can still see the output as if you were connected with e.g. `minicom`, `picocom`, `putty`, etc.
 7. Build the application and flash the device. \
