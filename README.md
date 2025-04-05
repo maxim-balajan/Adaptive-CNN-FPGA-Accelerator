@@ -40,7 +40,7 @@ This repository is structured as follows:
 
 ### Building
 
-1. Open the Vitis Project located in [SW-Integration/Vitis](SW-Integration/Vitis/)
+1. Open the Project located in [SW-Integration/Vitis](SW-Integration/Vitis/) with Vitis.
 2. To run performance benchmarks for the [baseline](SW-Integration/Vitis/app_baseline/) (ported reference implementation), the [accumulator](SW-Integration/Vitis/app_accumulator/) and the [LeNet-5 hardware accelerator](SW-Integration/Vitis/app_accelerated/) open the corresponding Platform and first build it \
 **Note**: The baseline platform is the same as the platform for the LeNet-5 hardware accelerator, so [*platform_accelerated*](SW-Integration/Vitis/platform_accelerated/). For the accumulator the corresponding platform is called [*platform_accumulator*](SW-Integration/Vitis/platform_accumulator/). \
 ![Picture for how to build a Platform](./doc/platform_build.png)
