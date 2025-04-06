@@ -1,6 +1,12 @@
 # LeNet-5 Hardware Accelerator
 
-This repository contains all code and evaluation results for a hardware accelerated LeNet-5 architecture that was developed over the course of the project "RADL" at FAU (Friedrich-Alexander University Erlangen-Nuremberg).
+This repository contains all code and evaluation results for a hardware accelerated LeNet-5 architecture that was developed over the course of the project *RADL* (aka. computer architectures for deep-learning applications) at FAU (Friedrich-Alexander University Erlangen-Nuremberg).
+
+The LeNet-5 hardware accelerator is integrated in such a way that it can be controlled via the processing system (CPU) of the target FPGA.
+For high performance this uses DMA to transfer data and interrupts to notify the processing system once inference is complete.
+The overall design of the integrated accelerator looks like the following:
+
+![Accelerator Overview](doc/accelerator_overview.png)
 
 This repository is structured as follows:
 
@@ -57,44 +63,43 @@ This repository is structured as follows:
 *Example output:* \
 ![Picture of final output](./doc/final_output_example.png)
 
+### Architecture Overview
+
+The LeNet-5 hardware accelerator is implemented as follows:
+
+![Accelerator Architecture](doc/accelerator_architecture.png)
+
 ## Reference Implementation (on Desktop)
 
 ### Requirements
 
-- C++ 23
-- CMake 3.20.0
-- Protobuf (tested with version *3.21.12-9ubuntu1*, probably usable with older versions as well)
-  - For Ubuntu: `sudo apt install protobuf-compiler` (this should also automatically install `libprotobuf`/`libprotobuf-dev`)
+* C++ 23
+* CMake 3.20.0
+* Protobuf (tested with version *3.21.12-9ubuntu1*, probably usable with older versions as well)
+
+To install the required packages on Ubuntu, run: `sudo apt install cmake build-essential protobuf-compiler`
 
 ### Building
 
 To build the project using GNU Make run:
 
 ```bash
+cd reference/simulation
 mkdir build
 cd build
 cmake ..
-make -j16 # speed up compilation :)
-```
-
-If you want to use Ninja instead of GNU Make, run:
-
-```bash
-mkdir build
-cd build
-cmake .. -G Ninja
-ninja # speed up compilation automatically :O
+make -j16
 ```
 
 ### Targets
 
 The executable binary targets are:
 
-- `benchmark_datatypes`: Run the accuracy benchmark for all combinations of different datatypes
-- `npy_converter`: Pre-process and convert images from numpy format into binary format. This will already pre-process the images by applying the right datatype (e.g. quantization)
-- `onnx_converter`: Pre-process, convert and serialize the layer data stored inside an onnx file into the format used by the software implementation. This will automatically convert weights into the right data format (e.g. by applying quantization) and will pre-determine all layers.
-- `simulation`: The software reference simulation for desktop.
-- `tests`: Custom tests. Only used for... testing :)
-- `test_serialize`: Test that serializing the layers works as excepted.
+* `benchmark_datatypes`: Run the accuracy benchmark for all combinations of different datatypes
+* `npy_converter`: Pre-process and convert images from numpy format into binary format. This will already pre-process the images by applying the right datatype (e.g. quantization)
+* `onnx_converter`: Pre-process, convert and serialize the layer data stored inside an onnx file into the format used by the software implementation. This will automatically convert weights into the right data format (e.g. by applying quantization) and will pre-determine all layers.
+* `simulation`: The software reference simulation for desktop.
+* `tests`: Custom tests. Only used for... testing :)
+* `test_serialize`: Test that serializing the layers works as excepted.
 
 For running the programs you might need to input the trained model (located in `reference/training/Lenet_qonnx.onnx`) and test images and/or labels (located in `reference/training/export/mnist/`).
