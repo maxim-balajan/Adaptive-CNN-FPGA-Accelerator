@@ -60,14 +60,32 @@ This repository is structured as follows:
 6. *Optional*: If you want to capture the latencies of the benchmark, just run `cd measurements && python record_output.py`. This will connect to the serial output of `/dev/ttyUSB1` at baud rate `115200` and put all measured latency in a json file. With this script you can still see the output as if you were connected with e.g. `minicom`, `picocom`, `putty`, etc.
 7. Build the application and flash the device. \
 **Note**: This can take some time as the binary includes all 10,000 images and 10,000 image labels (which is pretty big). *So, have some patience and grab yourself a cup of coffee in the mean time :)* <br/><br/>
-*Example output:* \
-![Picture of final output](./doc/final_output_example.png)
+  *Example output:*
+
+    ```
+    ...
+    [99%] Inference of 1 image completed in 21800ns! (current accuracy: 98%)
+    [BENCH-INFO] 21800
+    [99%] Inference of 1 image completed in 21800ns! (current accuracy: 98%)
+    [BENCH-INFO] 21800
+
+    Inference finished!
+
+    --- Result ---
+    Total inference duration: 0.218578s
+    Avg inference duration: 21857.8ns
+    Total misses: 108 of 10000 images
+    Avg accuracy: 98.92%
+    [BENCH-STATUS] Finished
+    ```
 
 ### Architecture Overview
 
 The LeNet-5 hardware accelerator is implemented as follows:
 
 ![Accelerator Architecture](doc/accelerator_architecture.png)
+
+For more information, please have a look at the [sources_1/](sources_1/) directory.
 
 ## Reference Implementation (on Desktop)
 
