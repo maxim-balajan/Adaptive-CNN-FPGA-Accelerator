@@ -7,8 +7,8 @@ ENV_NAME="venv"
 PYTHON_BIN="$HOME/.pyenv/versions/3.10.16/bin/python"
 
 if [ ! -f "$PYTHON_BIN" ]; then
-  echo "$PYTHON_BIN does not exist!"
-  echo "Install it via 'pyenv install <Version-Number>' first..."
+    echo "$PYTHON_BIN does not exist!"
+    echo "Install it via 'pyenv install <Version-Number>' first..."
 else
 
     # Create the virtual environment
@@ -30,6 +30,7 @@ else
     $PYTHON_BIN -m pip install matplotlib
     $PYTHON_BIN -m pip install numpy
     $PYTHON_BIN -m pip install ipykernel
+    $PYTHON_BIN -m pip install onnx onnxruntime onnxoptimizer netron
     echo "####################################################################"
     echo ""; echo ""
 
@@ -44,6 +45,7 @@ else
     $PYTHON_BIN -c "import matplotlib as mpl; print('# Matplotlib version:', mpl.__version__)"
     $PYTHON_BIN -c "import numpy as np; print('# Numpy version:', np.__version__)"
     $PYTHON_BIN -c "import ipykernel; print('# Ipykernel version:', ipykernel.__version__)"
+    $PYTHON_BIN -c "import onnx; print('# Onnx version:', onnx.__version__)"
     echo "####################################################################"
     echo ""; echo ""
 
