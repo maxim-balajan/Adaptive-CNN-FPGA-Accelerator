@@ -13,7 +13,7 @@ from brevitas.quant import Int8WeightPerTensorFixedPoint, Int8ActPerTensorFixedP
 
 import numpy as np
 
-EPOCHS = 1
+EPOCHS = 80
 batch_size = 25
 
 
