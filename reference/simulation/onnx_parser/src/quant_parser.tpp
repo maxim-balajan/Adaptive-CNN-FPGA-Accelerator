@@ -107,7 +107,7 @@ namespace {
                     throw ParsingException("Quant needs to be placed after Relu!");
                 }
                 // retrieve s_y of quant layer
-                float s_y = find_scalar<float>(graph.initializer(), quant_after_relu.value().input()[1]);              
+                float s_y = find_scalar<float>(graph.initializer(), quant_after_relu.value().input()[1]);
 
                 auto prev_nodes = get_previous_nodes(curr_node, graph);
                 if (prev_nodes.size() != 2) {
@@ -140,12 +140,18 @@ namespace {
                 float s_b = 0.0f;
                 // float s_b = find_scalar<float>(graph.initializer(), prev_nodes[2].input()[1]);
 
+                size_t padding = curr_node.attribute()[3].ints()[0];
+                size_t stride = curr_node.attribute()[4].ints()[0];
+
                 // update dimensions
                 curr_dimensions[1] = channel_count;
-                curr_dimensions[2] -= filter_size - 1;
-                curr_dimensions[3] -= filter_size - 1;
+                curr_dimensions[2] = (curr_dimensions[2] + 2 * padding - filter_size)/stride + 1;
+                curr_dimensions[3] = (curr_dimensions[3] + 2 * padding - filter_size)/stride + 1;
 
-                QuantConvolution<T, ACC> convolution(kernel, bias, batching, curr_dimensions[2], curr_dimensions[3], curr_dimensions[1], s_b, s_x, s_w, s_y);
+                //cout << "Padding: " << padding << endl;
+                //cout << "Stride: " << stride << endl;
+
+                QuantConvolution<T, ACC> convolution(kernel, bias, batching, curr_dimensions[2], curr_dimensions[3], curr_dimensions[1], padding, stride, s_b, s_x, s_w, s_y);
                 layers.push_back(make_unique<QuantConvolution<T, ACC>>(convolution));
 
                 cout << "QuantConv(..., ..., " << curr_dimensions[0] << ", " << curr_dimensions[1] << ", ";
@@ -163,8 +169,12 @@ namespace {
                 int64_t pool_size = kernel_shape_parsed[0];
 
                 // update dimensions
-                curr_dimensions[2] /= pool_size;
-                curr_dimensions[3] /= pool_size;
+
+                // These are hard wired constants for the pooling; new dimensons analog to convolution
+                const size_t padding = 0;
+                const size_t stride = 2;
+                curr_dimensions[2] = (curr_dimensions[2] + 2 * padding - pool_size) / stride + 1;
+                curr_dimensions[3] = (curr_dimensions[3] + 2 * padding - pool_size) / stride + 1;
 
                 MaxPooling<T, ACC> pooling(pool_size, batching, curr_dimensions[2], curr_dimensions[3], curr_dimensions[1]);
                 layers.push_back(make_unique<MaxPooling<T, ACC>>(pooling));
@@ -173,6 +183,10 @@ namespace {
                 cout << curr_dimensions[0] << ", " << curr_dimensions[1] << ")";
 
             } else if (curr_node.op_type() == "MatMul") {
+                // check if relu operation has to be performed
+                auto relu = get_next_node(curr_node, graph);
+                bool add_relu = relu.has_value() && relu.value().op_type() == "Relu";
+
                 if (curr_dimensions.size() != 2) {
                     throw ParsingException("Dense requires a 2D input");
                 }
@@ -214,7 +228,8 @@ namespace {
                 // float s_b = find_scalar<float>(graph.initializer(), prev_nodes[2].input()[1]);
                 float s_b = 0.0f;
                 // retrieve s_y from following quant layer
-                auto quant_layer = get_next_node(curr_node, graph);
+                
+                auto quant_layer = add_relu ? get_next_node(relu.value(), graph) : get_next_node(curr_node, graph);
                 if (!quant_layer.has_value() || quant_layer.value().op_type() != "Quant") {
                     throw ParsingException("Quant needs to be placed after Gemm!");
                 }
@@ -222,11 +237,11 @@ namespace {
                 float s_y = find_scalar<float>(graph.initializer(), quant_layer.value().input()[1]);
 
                 bool softmax = !get_next_node(quant_layer.value(), graph).has_value();
-                QuantDense<T, ACC> dense(weights, bias, softmax, batching, curr_dimensions[1], s_b, s_x, s_w, s_y);
+                QuantDense<T, ACC> dense(weights, bias, add_relu, softmax, batching, curr_dimensions[1], s_b, s_x, s_w, s_y);
                 layers.push_back(make_unique<QuantDense<T, ACC>>(dense));
 
                 cout << "QuantDense(..., " << softmax << ", " << batching << ", " << curr_dimensions[1] << ")";
-                // skip quant layer
+                // skip quant layer and relu if it exists
                 curr_node = quant_layer.value();
             
             } else if (curr_node.op_type() == "Transpose") {
@@ -252,9 +267,22 @@ namespace {
                     Flatten<T, ACC> flatten(batching, size);
                     layers.push_back(make_unique<Flatten<T, ACC>>(flatten));
 
-                    cout << "Flatten(" << batching << ", " << curr_dimensions[0] << ")";
+                    cout << "Reshape(" << batching << ", " << curr_dimensions[0] << ")";
                 }
+            } else if (curr_node.op_type() == "Flatten") {
+                size_t size = 1;
+                for (int i = 1; i < curr_dimensions.size(); i++) {
+                    size *= curr_dimensions[i];
+                }
+                curr_dimensions.clear();
 
+                curr_dimensions.push_back(batching);
+                curr_dimensions.push_back(size);
+
+                Flatten<T, ACC> flatten(batching, size);
+                layers.push_back(make_unique<Flatten<T, ACC>>(flatten));
+
+                cout << "Flatten(" << batching << ", " << curr_dimensions[0] << ")";
             } else if (curr_node.op_type() == "Quant") {
                 float raw_scale = find_scalar<float>(graph.initializer(), curr_node.input()[1]);
                 float raw_offset = find_scalar<float>(graph.initializer(), curr_node.input()[2]);

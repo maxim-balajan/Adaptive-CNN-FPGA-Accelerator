@@ -23,22 +23,37 @@ const Matrix<T>& MaxPooling<T, ACC>::calc(const Matrix<T>& input)
             size_t out_x_id = 0;
             size_t out_y_id = 0;
 
-            for (size_t x_id = 0; x_id < input.shape()[2]; x_id += pooling_size)
+            for (size_t x_id = 0; x_id < input.shape()[2]; x_id += 2)
             {
-                for (size_t y_id = 0; y_id < input.shape()[3]; y_id += pooling_size)
+                // This is to prevent out of bounds for uneven pooling sizes
+                if (output_buffer.shape()[2] <= out_x_id) {
+                    break;
+                }
+                for (size_t y_id = 0; y_id < input.shape()[3]; y_id += 2)
                 {
+                    if (output_buffer.shape()[3] <= out_y_id) {
+                        break;
+                    }
                     vector<T> tmp;
                     // Store all values of window in list
                     for (size_t kx_id = 0; kx_id < pooling_size; kx_id++)
                     {
                         for (size_t ky_id = 0; ky_id < pooling_size; ky_id++)
                         {
-                            tmp.push_back(input[{batch_id, ch_id, x_id + kx_id, y_id + ky_id}]);
+                            size_t new_x = x_id + kx_id;
+                            size_t new_y = y_id + ky_id;
+
+                            if (new_x >= input.shape()[2] || new_y >= input.shape()[3]) {
+                                tmp.push_back(convert_data<float, T>(0.0f));
+                            }
+                            else {
+                                tmp.push_back(input[{batch_id, ch_id, new_x, new_y}]);
+                            }
                         }
                     }
                     // return maximum of list to output buffer
-                    output_buffer[{batch_id, ch_id, out_x_id, out_y_id}] = *std::max_element(tmp.begin(), tmp.end());
 
+                    output_buffer[{batch_id, ch_id, out_x_id, out_y_id}] = *std::max_element(tmp.begin(), tmp.end());
                     out_y_id++;
                 }
                 out_y_id = 0;

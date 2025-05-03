@@ -13,9 +13,9 @@ template<typename T, typename ACC>
 const Matrix<T>& inference(const vector<unique_ptr<Layer<T, ACC>>>& layers, const Matrix<T>& input) {
     const Matrix<T> *curr_input = &input;
     for (auto& layer : layers) {
-        //std::cout << layer.get()->name() << "\n";
+        std::cout << layer.get()->name() << "\n";
         curr_input = &layer.get()->calc(*curr_input);
-        // std::cout << *curr_input << endl; 
+        std::cout << *curr_input << endl; 
     }
 
     return *curr_input;
@@ -78,12 +78,12 @@ int run_benchmark(RunBenchmarkOptions options) {
         -1, // scale
         -1  // zero_point
     };
-    auto layers = parse_quantized<TargetType, AccumulatorType>("../../training/Lenet_qonnx.onnx", batching, quant_args);
+    auto layers = parse_quantized<TargetType, AccumulatorType>("../../training/Alexnet_qonnx.onnx", batching, quant_args);
     assert(quant_args.scale != -1);
     assert(quant_args.zero_point != -1);
 
-    Matrix<TargetType> input_data = parse_quantized_matrix<float, TargetType>("../../training/export/mnist/x_test.npy", quant_args.scale, quant_args.zero_point);
-    Matrix<TargetType> output_data = parse_matrix<float, TargetType>("../../training/export/mnist/y_test.npy");
+    Matrix<TargetType> input_data = parse_quantized_matrix<float, TargetType>("../../training/export/cifar-10/x_test.npy", quant_args.scale, quant_args.zero_point);
+    Matrix<TargetType> output_data = parse_matrix<float, TargetType>("../../training/export/cifar-10/y_test.npy");
 
     assert(input_data.shape()[0] == output_data.shape()[0]);
     if (image_count == -1) {
@@ -108,7 +108,7 @@ int run_benchmark(RunBenchmarkOptions options) {
     MatrixView<TargetType> input_data_view(input_data, batching);
     MatrixView<TargetType> output_data_view(output_data, batching);
     cout << input_data.shape()[0] <<","<< input_data.shape()[1] <<","<< input_data.shape()[2] << endl;
-    cout << "Starting RADL MNIST Simulation with " << image_count << " images to process (batch_size=" << batching << ")..." << endl;
+    cout << "Starting Bachler Thesis CIFAR-10 Simulation with " << image_count << " images to process (batch_size=" << batching << ")..." << endl;
 
     InferenceStats total_stats {
         .latency_us = 0,

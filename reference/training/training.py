@@ -13,7 +13,7 @@ from brevitas.quant import Int8WeightPerTensorFixedPoint, Int8ActPerTensorFixedP
 
 import numpy as np
 
-EPOCHS = 80
+EPOCHS = 1
 batch_size = 25
 
 
@@ -40,10 +40,10 @@ class QuantAlexNet(nn.Module):
 
         self.classifier = nn.Sequential(
             nn.Dropout(),
-            qnn.QuantLinear(256 * 6 * 6, 4096, output_quant=Int8ActPerTensorFixedPoint, bias=False, weight_quant=Int8WeightPerTensorFixedPoint, weight_bit_width=8),
+            qnn.QuantLinear(256 * 6 * 6, 4096, bias=False, weight_quant=Int8WeightPerTensorFixedPoint, weight_bit_width=8),
             qnn.QuantReLU(act_quant=Int8ActPerTensorFixedPoint, bit_width=8, return_quant_tensor=True),
             nn.Dropout(),
-            qnn.QuantLinear(4096, 4096, output_quant=Int8ActPerTensorFixedPoint, bias=False, weight_quant=Int8WeightPerTensorFixedPoint, weight_bit_width=8),
+            qnn.QuantLinear(4096, 4096, bias=False, weight_quant=Int8WeightPerTensorFixedPoint, weight_bit_width=8),
             qnn.QuantReLU(act_quant=Int8ActPerTensorFixedPoint, bit_width=8, return_quant_tensor=True),
             qnn.QuantLinear(4096, 1000, output_quant=Int8ActPerTensorFixedPoint, bias=False, weight_quant=Int8WeightPerTensorFixedPoint, weight_bit_width=8),
         )

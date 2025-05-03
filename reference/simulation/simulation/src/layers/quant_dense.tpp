@@ -6,9 +6,11 @@
 #include <limits>
 
 template<typename T, typename ACC>
-QuantDense<T, ACC>::QuantDense(Matrix<T> weights, Matrix<T> bias, bool enable_softmax, Matrix<T> output_buffer, float s_b, float s_x, float s_w, float s_y)
+QuantDense<T, ACC>::QuantDense(Matrix<T> weights, Matrix<T> bias, bool add_relu, bool enable_softmax, Matrix<T> output_buffer
+    , float s_b, float s_x, float s_w, float s_y)
     : weights(weights)
     , bias(bias)
+    , add_relu(add_relu)
     , enable_softmax(enable_softmax)
     , output_buffer(output_buffer)
     , s_b(s_b)
@@ -25,8 +27,9 @@ QuantDense<T, ACC>::QuantDense(Matrix<T> weights, Matrix<T> bias, bool enable_so
 
 
 template<typename T, typename ACC>
-QuantDense<T, ACC>::QuantDense(Matrix<T> weights, Matrix<T> bias, bool enable_softmax, size_t batching, size_t x, float s_b, float s_x, float s_w, float s_y)
-    : QuantDense(weights, bias, enable_softmax, Matrix<T>({batching, x}), s_b, s_x, s_w, s_y) {}
+QuantDense<T, ACC>::QuantDense(Matrix<T> weights, Matrix<T> bias, bool add_relu, bool enable_softmax, size_t batching, size_t x
+    , float s_b, float s_x, float s_w, float s_y)
+    : QuantDense(weights, bias, add_relu, enable_softmax, Matrix<T>({batching, x}), s_b, s_x, s_w, s_y) {}
 
 
 template<typename T, typename ACC>
@@ -44,6 +47,9 @@ const Matrix<T>& QuantDense<T, ACC>::calc(const Matrix<T>& input)
             }
 
             ACC res = (tmp >> s_x_shift) + (convert_data<T, ACC>(bias[{wy_id}]) >> s_b_shift);
+
+            // perform relu operation if necessary
+            res = add_relu && (res < convert_data<float, ACC>(0.0f)) ? convert_data<float, ACC>(0.0f) : res;
             output_buffer[{batch_id, wy_id}] = convert_data<ACC, T>(res);
         }
     }
@@ -76,6 +82,7 @@ unsigned QuantDense<T, ACC>::serialize(ostream& stream) const {
     bytes += serialize_number(s_x, stream);
     bytes += serialize_number(s_w, stream);
     bytes += serialize_number(s_y, stream);
+    bytes += serialize_number((static_cast<int>(add_relu)), stream);
     bytes += serialize_number(static_cast<int>(enable_softmax), stream);
     bytes += serialize_vector(output_buffer.shape(), stream);
 
@@ -94,9 +101,10 @@ QuantDense<T, ACC> QuantDense<T, ACC>::deserialize(span<char>& data) {
     float s_y = deserialize_number<float>(data);
 
     bool enable_softmax = deserialize_number<int>(data) != 0;
+    bool add_relu = deserialize_number<int>(data) != 0;
 
     vector<size_t> out_shape = deserialize_vector<size_t>(data);
     Matrix<T> output_buffer(out_shape);
 
-    return QuantDense(weights, bias, enable_softmax, output_buffer, s_b, s_x, s_w, s_y);
+    return QuantDense(weights, bias, add_relu, enable_softmax, output_buffer, s_b, s_x, s_w, s_y);
 }

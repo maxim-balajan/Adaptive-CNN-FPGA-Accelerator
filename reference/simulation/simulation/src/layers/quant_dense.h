@@ -12,6 +12,7 @@ private:
     Matrix<T> output_buffer;
     const Matrix<T> weights;
     const Matrix<T> bias;
+    const bool add_relu;
     const bool enable_softmax;
     const float s_b;
     const float s_x;
@@ -21,10 +22,12 @@ private:
     const uint8_t s_b_shift;
     const uint8_t s_x_shift;
 
-    QuantDense(Matrix<T> weights, Matrix<T> bias, bool enable_softmax, Matrix<T> output_buffer, float s_b, float s_x, float s_w, float s_y);
+    QuantDense(Matrix<T> weights, Matrix<T> bias, bool add_relu, bool enable_softmax, Matrix<T> output_buffer
+        , float s_b, float s_x, float s_w, float s_y);
 
 public:
-    QuantDense(Matrix<T> weights, Matrix<T> bias, bool enable_softmax, size_t batching, size_t x, float s_b, float s_x, float s_w, float s_y);
+    QuantDense(Matrix<T> weights, Matrix<T> bias, bool add_relu, bool enable_softmax, size_t batching, size_t x
+        , float s_b, float s_x, float s_w, float s_y);
 
     virtual const Matrix<T>& calc(const Matrix<T>& input) override;
     virtual const char* name() const override;
