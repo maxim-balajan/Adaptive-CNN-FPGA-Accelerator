@@ -18,6 +18,25 @@ else
     # Activate the virtual environment
     source $ENV_NAME/bin/activate
 
+    echo "####################################################################"
+    echo "# Define Enviormental variables...:"
+    echo "####################################################################"
+    export PRJ_ROOT_PATH=($PWD)
+    export PRJ_TRAIN_PATH="$PRJ_ROOT_PATH/reference/training/"
+    export PRJ_SIM_PATH="$PRJ_ROOT_PATH/reference/simulation/"
+    export PRJ_HW_SOURCES_PATH="$PRJ_ROOT_PATH/sources_1/"
+    export PRJ_HW_SIMS_PATH="$PRJ_ROOT_PATH/sim_1/"
+
+    alias cd_root="cd $PRJ_ROOT_PATH" 
+    alias cd_train="cd $PRJ_TRAIN_PATH"
+    alias cd_sim="cd $PRJ_SIM_PATH"
+    alias cd_hw_sources="cd $PRJ_HW_SOURCES_PATH"
+    alias cd_hw_sims="cd $PRJ_HW_SIMS_PATH"
+
+    TODO="Add more aliases"
+    echo "####################################################################"
+    echo ""; echo ""
+
     # Upgrade pip
     echo "####################################################################"
     echo "# Upgrading pip...:"
