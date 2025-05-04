@@ -85,8 +85,8 @@ def get_data(args):
     ])
 
     # Load the CIFAR-10 dataset
-    training_set = CIFAR10(root='./data', train=True, transform=transform, download=True)
-    validation_set = CIFAR10(root='./data', train=False, transform=transform, download=True)
+    training_set = CIFAR10(root=f"{os.environ['PRJ_TRAIN_PATH']}/data", train=True, transform=transform, download=True)
+    validation_set = CIFAR10(root=f"{os.environ['PRJ_TRAIN_PATH']}/data", train=False, transform=transform, download=True)
 
     # Create data loaders
     training_loader = DataLoader(training_set, batch_size=int(args.batch), shuffle=True)
@@ -147,6 +147,8 @@ def train(model, args, training_loader, validation_loader):
     epoch_number = 0
     best_vloss = 1_000_000.
 
+    print("Start training of", args.epochs, "EPOCHS (batch_size=", args.batch, ")")
+
     for epoch in range(int(args.epochs)):
         print('EPOCH {}:'.format(epoch_number + 1))
 
@@ -180,7 +182,7 @@ def train(model, args, training_loader, validation_loader):
 
         epoch_number += 1
 
-def inference(model, validation_loader):
+def inference(model, args, validation_loader, batch_amount):
     use_gpu = torch.cuda.is_available()
     latency = 0.0
 
@@ -190,9 +192,12 @@ def inference(model, validation_loader):
     torch.cuda.empty_cache()
     import gc
     gc.collect()
-    print(torch.cuda.memory_allocated(device='cuda:0'))
-    print(torch.cuda.memory_reserved(device='cuda:0'))
-    for images, labels in validation_loader:
+
+    n = batch_amount % len(validation_loader)
+    print("Start Inference of", n+1, "batches (batch_size=", args.batch, ")")
+    for (i, (images, labels)) in enumerate(validation_loader):
+        if i > n:
+            break
         # Move the data to the device (CPU or GPU)
         start = time.perf_counter_ns()
         # Forward pass
@@ -279,8 +284,10 @@ def main():
     del training_loader
 
     if args.infer or (not args.train and not args.infer):
+        # model export does not work, because this operation is not implemented for quantized models...
         #model = model if args.train or (not args.train and not args.infer) else ConvertModel(onnx.load(args.output)).cuda()
-        inference(model, validation_loader)
+        inference(model, args, validation_loader, -1)
+        inference(model, args, validation_loader, 39)
 
 if __name__ == "__main__":
     main() 

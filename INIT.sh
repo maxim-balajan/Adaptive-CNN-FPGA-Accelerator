@@ -20,7 +20,7 @@ alias cd_sim="cd $PRJ_SIM_PATH"
 alias cd_hw_sources="cd $PRJ_HW_SOURCES_PATH"
 alias cd_hw_sims="cd $PRJ_HW_SIMS_PATH"
 # Script for executing the Training of the Model
-alias prj_train="python $PRJ_TRAIN_PATH/training.py"
+alias prj_train="python -u $PRJ_TRAIN_PATH/training.py"
 # Build and run aliases for execturing the C++ Simulation
 alias prj_build_simulation="rm -rf $PRJ_SIM_PATH/build; mkdir $PRJ_SIM_PATH/build; cd $PRJ_SIM_PATH/build; cmake ..; make"
 alias prj_run_simulation="$PRJ_SIM_PATH/build/simulation"
