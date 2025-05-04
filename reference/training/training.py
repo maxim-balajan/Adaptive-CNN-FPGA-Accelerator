@@ -1,3 +1,5 @@
+import os
+
 from torch import nn
 import torch
 import torchvision
@@ -5,7 +7,11 @@ import torchvision.transforms as transforms
 from torchvision.datasets import CIFAR10
 from torch.utils.data import DataLoader
 
+import onnx
+from onnx2pytorch import ConvertModel
+
 import brevitas.nn as qnn
+import brevitas.onnx as bo
 from brevitas.core.quant import QuantType
 import torch.nn.functional as F
 
@@ -13,9 +19,8 @@ from brevitas.quant import Int8WeightPerTensorFixedPoint, Int8ActPerTensorFixedP
 
 import numpy as np
 
-EPOCHS = 1
-batch_size = 25
-
+import argparse
+import time
 
 class QuantAlexNet(nn.Module):
     
@@ -53,238 +58,230 @@ class QuantAlexNet(nn.Module):
         out = torch.flatten(out, 1)
         out = self.classifier(out)
         return out
+    
 
-model = QuantAlexNet()
-
-##############
-
-use_gpu = torch.cuda.is_available()
-#use_gpu = False # Dataset so small that CPU is faster
-if use_gpu:
-    model = model.cuda()
-    print("USE GPU")
-else:
-    print("USE CPU")
-
-###############
-
-transform = transforms.Compose([
-    transforms.Resize((227, 227)),  # Resize images to 227x227
-    transforms.ToTensor(),  # Convert images to PyTorch tensors
-    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),  # Normalize
-])
-
-# Load the CIFAR-10 dataset
-training_set = CIFAR10(root='./data', train=True, transform=transform, download=True)
-validation_set = CIFAR10(root='./data', train=False, transform=transform, download=True)
-
-# Create data loaders
-training_loader = DataLoader(training_set, batch_size=batch_size, shuffle=True)
-validation_loader = DataLoader(validation_set, batch_size=batch_size, shuffle=False)
-
-# Report split sizes
-print('Training set has {} instances'.format(len(training_set)))
-print('Validation set has {} instances'.format(len(validation_set)))
-
-#################
-
-x_val = []
-y_val = []
-
-x_train = []
-y_train = []
-
-for (i, (x, y)) in enumerate(validation_set):
-    if i >= 1000:
-        break
-    x_val.append(x.detach().numpy())
-    tmp = np.full(shape=(1000, ), fill_value=0)
-    tmp[y] = 1
-    y_val.append(tmp)
+def parse_arguments():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--train", "-t", help="If explicitly given, the training phase will be executed",
+                    action="store_true")
+    parser.add_argument("--infer", "-i", help="If explicitly given, the inference phase will be executed",
+                    action="store_true")
+    parser.add_argument("--batch", "-b", help="The BATCH_SIZE used for the training phase",
+                    default=25)
+    parser.add_argument("--epochs", "-e", help="The amount of EPOCHS used for the training phase",
+                    default=80)
+    parser.add_argument("--output", "-o", help="The location in which the model is stored in",
+                    default=f"{os.environ['PRJ_TRAIN_PATH']}/Alexnet_qonnx.onnx")
+    args = parser.parse_args()
+    
+    return args
 
 
-np.save("./export/cifar-10/x_test.npy", np.array(x_val, dtype=np.float32))
-np.save("./export/cifar-10/y_test.npy", np.array(y_val, dtype=np.float32))
+def get_data(args):
+    transform = transforms.Compose([
+        transforms.Resize((227, 227)),  # Resize images to 227x227
+        transforms.ToTensor(),  # Convert images to PyTorch tensors
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),  # Normalize
+    ])
 
-del x_val
-del y_val
+    # Load the CIFAR-10 dataset
+    training_set = CIFAR10(root='./data', train=True, transform=transform, download=True)
+    validation_set = CIFAR10(root='./data', train=False, transform=transform, download=True)
 
-for (i, (x, y)) in enumerate(training_set):
-    if i >= 1000:
-        break
-    x_train.append(x.detach().numpy())
-    tmp = np.full(shape=(1000, ), fill_value=0)
-    tmp[y] = 1
-    y_train.append(tmp)
+    # Create data loaders
+    training_loader = DataLoader(training_set, batch_size=int(args.batch), shuffle=True)
+    validation_loader = DataLoader(validation_set, batch_size=int(args.batch), shuffle=False)
 
-np.save("./export/cifar-10/x_train.npy", np.array(x_train, dtype=np.float32))
-np.save("./export/cifar-10/y_train.npy", np.array(y_train, dtype=np.float32))
+    # Report split sizes
+    print('Training set has {} instances'.format(len(training_set)))
+    print('Validation set has {} instances'.format(len(validation_set))) 
 
-##############
+    return (training_set, validation_set, training_loader, validation_loader)
 
-import matplotlib.pyplot as plt
-import numpy as np
 
-# Helper function for inline image display
-def matplotlib_imshow(img, one_channel=False):
-    if one_channel:
-        img = img.mean(dim=0)
-    img = img / 5 + 0.5     # unnormalize
-    npimg = img.numpy()
-    if one_channel:
-        plt.imshow(npimg,)
-    else:
-        plt.imshow(np.transpose(npimg, (1, 2, 0)))
 
-dataiter = iter(training_loader)
-images, labels = next(dataiter)
+def train(model, args, training_loader, validation_loader):
+    loss_fn = nn.CrossEntropyLoss()
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.001)
 
-# Create a grid from the images and show them
-img_grid = torchvision.utils.make_grid(images[0:10:])
-matplotlib_imshow(img_grid, one_channel=False)
+    use_gpu = torch.cuda.is_available()
 
-##########
+    def train_one_epoch(epoch_index, training_loader, use_gpu):
+        running_loss = 0.
+        last_loss = 0.
 
-from torch.autograd import Variable
-import datetime as d
-from torch.utils.tensorboard import SummaryWriter
+        # Here, we use enumerate(training_loader) instead of
+        # iter(training_loader) so that we can track the batch
+        # index and do some intra-epoch reporting
+        for i, data in enumerate(training_loader):
+            # Every data instance is an input + label pair
+            inputs, labels = data
+            inputs = inputs.to("cuda:0" if use_gpu else "cpu")
+            labels = labels.to("cuda:0" if use_gpu else "cpu")
 
-torch.cuda.empty_cache()
+            # Zero your gradients for every batch!
+            optimizer.zero_grad()
 
-loss_fn = nn.CrossEntropyLoss()
-optimizer = torch.optim.SGD(model.parameters(), lr=0.001)
+            # Make predictions for this batch
+            outputs = model(inputs)
 
-def train_one_epoch(epoch_index, tb_writer):
-    running_loss = 0.
-    last_loss = 0.
+            # Compute the loss and its gradients
+            loss = loss_fn(outputs, labels)
+            loss.backward()
 
-    # Here, we use enumerate(training_loader) instead of
-    # iter(training_loader) so that we can track the batch
-    # index and do some intra-epoch reporting
-    for i, data in enumerate(training_loader):
-        # Every data instance is an input + label pair
-        inputs, labels = data
-        inputs = inputs.to("cuda:0" if use_gpu else "cpu")
-        labels = labels.to("cuda:0" if use_gpu else "cpu")
+            # Adjust learning weights
+            optimizer.step()
 
-        # Zero your gradients for every batch!
-        optimizer.zero_grad()
+            # Gather data and report
+            running_loss += loss.item()
+            if i % 100 == 99:
+                last_loss = running_loss / 100 # loss per batch
+                print('  batch {} loss: {}'.format(i + 1, last_loss))
+                running_loss = 0.
+            
+            del inputs
+            del labels
 
-        # Make predictions for this batch
-        outputs = model(inputs)
+        return last_loss
 
-        # Compute the loss and its gradients
-        loss = loss_fn(outputs, labels)
-        loss.backward()
+    epoch_number = 0
+    best_vloss = 1_000_000.
 
-        # Adjust learning weights
-        optimizer.step()
+    for epoch in range(int(args.epochs)):
+        print('EPOCH {}:'.format(epoch_number + 1))
 
-        # Gather data and report
-        running_loss += loss.item()
-        if i % 100 == 99:
-            last_loss = running_loss / 100 # loss per batch
-            print('  batch {} loss: {}'.format(i + 1, last_loss))
-            tb_x = epoch_index * len(training_loader) + i + 1
-            tb_writer.add_scalar('Loss/train', last_loss, tb_x)
-            running_loss = 0.
+        # Make sure gradient tracking is on, and do a pass over the data
+        model.train(True)
+        avg_loss = train_one_epoch(epoch_number, training_loader, use_gpu)
+
+
+        running_vloss = 0.0
+        # Set the model to evaluation mode, disabling dropout and using population
+        # statistics for batch normalization.
+        model.eval()
+
+        # Disable gradient computation and reduce memory consumption.
+        with torch.no_grad():
+            for i, vdata in enumerate(validation_loader):
+                vinputs, vlabels = vdata
+                voutputs = model(vinputs.to("cuda:0" if use_gpu else "cpu"))
+                vloss = loss_fn(voutputs, vlabels.to("cuda:0" if use_gpu else "cpu"))
+                running_vloss += vloss
+
+                del voutputs
+                del vlabels
+
+        avg_vloss = running_vloss / (i + 1)
+        print('LOSS train {} valid {}'.format(avg_loss, avg_vloss))
+
+        # Track best performance, and save the model's state
+        if avg_vloss < best_vloss:
+            best_vloss = avg_vloss
+
+        epoch_number += 1
+
+def inference(model, validation_loader):
+    use_gpu = torch.cuda.is_available()
+    latency = 0.0
+
+    total_correct = 0
+    total_samples = 0
+
+    torch.cuda.empty_cache()
+    import gc
+    gc.collect()
+    print(torch.cuda.memory_allocated(device='cuda:0'))
+    print(torch.cuda.memory_reserved(device='cuda:0'))
+    for images, labels in validation_loader:
+        # Move the data to the device (CPU or GPU)
+        start = time.perf_counter_ns()
+        # Forward pass
+        outputs = model(images.to("cuda:0" if use_gpu else "cpu"))
+        end = time.perf_counter_ns()
         
-        del inputs
+        latency = float(end - start) / 1000
+        _, predicted = torch.max(outputs, 1)
+
+        # Update the running total of correct predictions and samples
+        total_correct += (predicted == labels.to("cuda:0" if use_gpu else "cpu")).sum().item()
+        total_samples += labels.size(0)
+
+        del outputs
+        del predicted
         del labels
 
-    return last_loss
+    print("total latency", latency)
 
-# Initializing in a separate cell so we can easily add more epochs to the same run
-timestamp = d.datetime.now().strftime('%Y%m%d_%H%M%S')
-writer = SummaryWriter('runs/mnist_trainer_{}'.format(timestamp))
-epoch_number = 0
+    # Calculate the accuracy for this epoch
+    accuracy = 100 * total_correct / total_samples
+    print(f'Accuracy = {accuracy:.2f}%')
+    print("Total misses: " + str(total_samples - total_correct) + " of " + str(total_samples))
+ 
+def export_model(model, args):
 
-best_vloss = 1_000_000.
-
-for epoch in range(EPOCHS):
-    print('EPOCH {}:'.format(epoch_number + 1))
-
-    # Make sure gradient tracking is on, and do a pass over the data
-    model.train(True)
-    avg_loss = train_one_epoch(epoch_number, writer)
+    return bo.export_qonnx(model, args=torch.randn(1, 3, 227, 227).to('cuda:0' if torch.cuda.is_available() else 'cpu'), export_path=args.output, opset_version=13)
 
 
-    running_vloss = 0.0
-    # Set the model to evaluation mode, disabling dropout and using population
-    # statistics for batch normalization.
-    model.eval()
+def export_datasets(training_set, validation_set):
+    x_val = []
+    y_val = []
 
-    # Disable gradient computation and reduce memory consumption.
-    with torch.no_grad():
-        for i, vdata in enumerate(validation_loader):
-            vinputs, vlabels = vdata
-            voutputs = model(vinputs.to("cuda:0" if use_gpu else "cpu"))
-            vloss = loss_fn(voutputs, vlabels.to("cuda:0" if use_gpu else "cpu"))
-            running_vloss += vloss
+    x_train = []
+    y_train = []
 
-            del voutputs
-            del vlabels
+    for (i, (x, y)) in enumerate(validation_set):
+        if i >= 1000:
+            break
+        x_val.append(x.detach().numpy())
+        tmp = np.full(shape=(1000, ), fill_value=0)
+        tmp[y] = 1
+        y_val.append(tmp)
 
-    avg_vloss = running_vloss / (i + 1)
-    print('LOSS train {} valid {}'.format(avg_loss, avg_vloss))
 
-    # Log the running loss averaged per batch
-    # for both training and validation
-    writer.add_scalars('Training vs. Validation Loss',
-                    { 'Training' : avg_loss, 'Validation' : avg_vloss },
-                    epoch_number + 1)
-    writer.flush()
+    np.save(f"{os.environ['PRJ_TRAIN_PATH']}/export/cifar-10/x_test.npy", np.array(x_val, dtype=np.float32))
+    np.save(f"{os.environ['PRJ_TRAIN_PATH']}/export/cifar-10/y_test.npy", np.array(y_val, dtype=np.float32))
 
-    # Track best performance, and save the model's state
-    if avg_vloss < best_vloss:
-        best_vloss = avg_vloss
+    del x_val
+    del y_val
 
-    epoch_number += 1
+    for (i, (x, y)) in enumerate(training_set):
+        if i >= 1000:
+            break
+        x_train.append(x.detach().numpy())
+        tmp = np.full(shape=(1000, ), fill_value=0)
+        tmp[y] = 1
+        y_train.append(tmp)
 
-######
+    np.save(f"{os.environ['PRJ_TRAIN_PATH']}/export/cifar-10/x_train.npy", np.array(x_train, dtype=np.float32))
+    np.save(f"{os.environ['PRJ_TRAIN_PATH']}/export/cifar-10/y_train.npy", np.array(y_train, dtype=np.float32))
 
-import time
 
-latency = 0.0
+def main():
+    args = parse_arguments()
 
-total_correct = 0
-total_samples = 0
+    model = QuantAlexNet()
 
-del training_loader
-torch.cuda.empty_cache()
-import gc
-gc.collect()
-print(torch.cuda.memory_allocated(device='cuda:0'))
-print(torch.cuda.memory_reserved(device='cuda:0'))
-for images, labels in validation_loader:
-    # Move the data to the device (CPU or GPU)
-    start = time.perf_counter_ns()
-    # Forward pass
-    outputs = model(images.to("cuda:0" if use_gpu else "cpu"))
-    end = time.perf_counter_ns()
+    use_gpu = torch.cuda.is_available()
+    if use_gpu:
+        model = model.cuda()
+        print("USE GPU")
+    else:
+        print("USE CPU")
+
+    (training_set, validation_set, training_loader, validation_loader) = get_data(args)
     
-    latency = float(end - start) / 1000
-    _, predicted = torch.max(outputs, 1)
+    export_datasets(training_set, validation_set)
 
-    # Update the running total of correct predictions and samples
-    total_correct += (predicted == labels.to("cuda:0" if use_gpu else "cpu")).sum().item()
-    total_samples += labels.size(0)
+    if args.train or (not args.train and not args.infer):
+        train(model, args, training_loader, validation_loader)
+        export_model(model, args)
 
-    del outputs
-    del predicted
-    del labels
+    del training_loader
 
-print("total latency", latency)
+    if args.infer or (not args.train and not args.infer):
+        #model = model if args.train or (not args.train and not args.infer) else ConvertModel(onnx.load(args.output)).cuda()
+        inference(model, validation_loader)
 
-# Calculate the accuracy for this epoch
-accuracy = 100 * total_correct / total_samples
-print(f'Accuracy = {accuracy:.2f}%')
-print("Total misses: " + str(total_samples - total_correct) + " of " + str(total_samples))
-
-###########
-
-import brevitas.onnx as bo
-
-
-exported_model = bo.export_qonnx(model, args=torch.randn(1, 3, 227, 227).to('cuda:0' if use_gpu else 'cpu'), export_path="Alexnet_qonnx.onnx", opset_version=13)
+if __name__ == "__main__":
+    main() 
 

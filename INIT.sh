@@ -52,6 +52,7 @@ else
     echo "# Package installs...:"
     echo "####################################################################"
     python -m pip install torch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 --index-url https://download.pytorch.org/whl/cu121
+    python -m pip install onnx2pytorch
     python -m pip install tensorboard
     python -m pip install brevitas
     python -m pip install matplotlib
@@ -66,13 +67,14 @@ else
     echo "####################################################################"
     echo "# Version checks...:"
     echo "####################################################################"
-    python -c "import torch;             print('# PyTorch version....:', torch.__version__)"
-    python -c "import tensorboard;       print('# Tensorboard version:', tensorboard.__version__)"
-    python -c "import brevitas;          print('# Brevitas version...:', brevitas.__version__)"
-    python -c "import matplotlib as mpl; print('# Matplotlib version.:', mpl.__version__)"
-    python -c "import numpy as np;       print('# Numpy version......:', np.__version__)"
-    python -c "import ipykernel;         print('# Ipykernel version..:', ipykernel.__version__)"
-    python -c "import onnx;              print('# Onnx version.......:', onnx.__version__)"
+    python -c "import torch;             print('# PyTorch version.....:', torch.__version__)"
+    python -c "import tensorboard;       print('# Tensorboard version.:', tensorboard.__version__)"
+    python -c "import onnx2pytorch;      print('# Onnx2PyTorch version:', onnx2pytorch.__version__)"
+    python -c "import brevitas;          print('# Brevitas version....:', brevitas.__version__)"
+    python -c "import matplotlib as mpl; print('# Matplotlib version..:', mpl.__version__)"
+    python -c "import numpy as np;       print('# Numpy version.......:', np.__version__)"
+    python -c "import ipykernel;         print('# Ipykernel version...:', ipykernel.__version__)"
+    python -c "import onnx;              print('# Onnx version........:', onnx.__version__)"
     echo "####################################################################"
     echo ""; echo ""
 

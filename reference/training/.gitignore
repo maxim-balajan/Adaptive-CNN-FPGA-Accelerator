@@ -3,3 +3,4 @@ export/mnist
 export/tmp
 runs/*
 data
+*.onnx
