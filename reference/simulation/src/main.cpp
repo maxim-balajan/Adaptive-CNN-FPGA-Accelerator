@@ -13,9 +13,10 @@ template<typename T, typename ACC>
 const Matrix<T>& inference(const vector<unique_ptr<Layer<T, ACC>>>& layers, const Matrix<T>& input) {
     const Matrix<T> *curr_input = &input;
     for (auto& layer : layers) {
-        std::cout << layer.get()->name() << "\n";
+        //std::cout << "Input image:" << endl;
+        //std::cout << *curr_input << endl;
+        //std::cout << layer.get()->name() << "\n";
         curr_input = &layer.get()->calc(*curr_input);
-        std::cout << *curr_input << endl; 
     }
 
     return *curr_input;
@@ -78,12 +79,12 @@ int run_benchmark(RunBenchmarkOptions options) {
         -1, // scale
         -1  // zero_point
     };
-    auto layers = parse_quantized<TargetType, AccumulatorType>("../../training/Alexnet_qonnx.onnx", batching, quant_args);
+    auto layers = parse_quantized<TargetType, AccumulatorType>("/home/maxim/Documents/Uni/BA/bachelor-thesis/reference/training/Alexnet_qonnx.onnx", batching, quant_args);
     assert(quant_args.scale != -1);
     assert(quant_args.zero_point != -1);
 
-    Matrix<TargetType> input_data = parse_quantized_matrix<float, TargetType>("../../training/export/cifar-10/x_test.npy", quant_args.scale, quant_args.zero_point);
-    Matrix<TargetType> output_data = parse_matrix<float, TargetType>("../../training/export/cifar-10/y_test.npy");
+    Matrix<TargetType> input_data = parse_quantized_matrix<float, TargetType>("/home/maxim/Documents/Uni/BA/bachelor-thesis/reference/training/export/cifar-10/x_test.npy", quant_args.scale, quant_args.zero_point);
+    Matrix<TargetType> output_data = parse_matrix<float, TargetType>("/home/maxim/Documents/Uni/BA/bachelor-thesis/reference/training/export/cifar-10/y_test.npy");
 
     assert(input_data.shape()[0] == output_data.shape()[0]);
     if (image_count == -1) {

@@ -42,12 +42,6 @@ const Matrix<T>& QuantConvolution<T, ACC>::calc(const Matrix<T>& input) {
 
     Matrix<ACC> t(output_buffer.shape());
 
-    if (kernel.shape()[2] == 5) {
-        cout << "Kernel-Matrix:" << endl;
-        cout << "Padding: " << padding << endl << "Stride: " << stride << endl;
-        cout << kernel << endl;
-    }
-
     for (size_t batch_id = 0; batch_id < input.shape()[0]; batch_id++)
     {
         // Compute Convolution of quantized input, quantized bias and quantized weight matrix
@@ -58,9 +52,9 @@ const Matrix<T>& QuantConvolution<T, ACC>::calc(const Matrix<T>& input) {
                 size_t out_x_id = 0;
                 size_t out_y_id = 0;
 
-                for (size_t x_id = -padding; x_id <= input.shape()[2] - kernel.shape()[2] + padding; x_id+=stride)
+                for (int x_id = -padding; x_id <= (int) (input.shape()[2] - kernel.shape()[2] + padding); x_id+=stride)
                 {
-                    for (size_t y_id = -padding; y_id <= input.shape()[3] - kernel.shape()[3] + padding; y_id+=stride)
+                    for (int y_id = -padding; y_id <= (int) (input.shape()[3] - kernel.shape()[3] + padding); y_id+=stride)
                     {
                         ACC tmp = convert_data<float, ACC>(0.0f);
                         // Do computation of kernel matrices over input matrices

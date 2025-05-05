@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 from torch import nn
 import torch
@@ -66,6 +67,8 @@ def parse_arguments():
                     action="store_true")
     parser.add_argument("--infer", "-i", help="If explicitly given, the inference phase will be executed",
                     action="store_true")
+    parser.add_argument("--export", help="If explicitly given, the dataset will be exported",
+                    action="store_true")    
     parser.add_argument("--batch", "-b", help="The BATCH_SIZE used for the training phase",
                     default=25)
     parser.add_argument("--epochs", "-e", help="The amount of EPOCHS used for the training phase",
@@ -222,8 +225,8 @@ def inference(model, args, validation_loader, batch_amount):
     print(f'Accuracy = {accuracy:.2f}%')
     print("Total misses: " + str(total_samples - total_correct) + " of " + str(total_samples))
  
+ 
 def export_model(model, args):
-
     return bo.export_qonnx(model, args=torch.randn(1, 3, 227, 227).to('cuda:0' if torch.cuda.is_available() else 'cpu'), export_path=args.output, opset_version=13)
 
 
@@ -242,6 +245,9 @@ def export_datasets(training_set, validation_set):
         tmp[y] = 1
         y_val.append(tmp)
 
+
+    # create path for dataset if it does not exist already
+    Path(f"{os.environ['PRJ_TRAIN_PATH']}/export/cifar-10").mkdir(parents=True, exist_ok=True)
 
     np.save(f"{os.environ['PRJ_TRAIN_PATH']}/export/cifar-10/x_test.npy", np.array(x_val, dtype=np.float32))
     np.save(f"{os.environ['PRJ_TRAIN_PATH']}/export/cifar-10/y_test.npy", np.array(y_val, dtype=np.float32))
@@ -275,15 +281,16 @@ def main():
 
     (training_set, validation_set, training_loader, validation_loader) = get_data(args)
     
-    export_datasets(training_set, validation_set)
+    if args.export:
+        export_datasets(training_set, validation_set)
 
-    if args.train or (not args.train and not args.infer):
+    if args.train:
         train(model, args, training_loader, validation_loader)
         export_model(model, args)
 
     del training_loader
 
-    if args.infer or (not args.train and not args.infer):
+    if args.infer:
         # model export does not work, because this operation is not implemented for quantized models...
         #model = model if args.train or (not args.train and not args.infer) else ConvertModel(onnx.load(args.output)).cuda()
         inference(model, args, validation_loader, -1)

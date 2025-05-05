@@ -1,6 +1,5 @@
 .venv/
-export/mnist
-export/tmp
+export/*
 runs/*
 data
 *.onnx
