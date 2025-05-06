@@ -81,6 +81,7 @@ RESULT="SUCCESS"
 if [ ! -f "$PYTHON_BIN" ]; then
     echo "$PYTHON_BIN does not exist!"
     echo "Install it via 'pyenv install $PYTHON_VER' first..."
+    echo ""; echo ""
     RESULT="FAILURE"
 else
 
