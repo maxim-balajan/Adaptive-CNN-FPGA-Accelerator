@@ -19,11 +19,62 @@ alias cd_train="cd $PRJ_TRAIN_PATH"
 alias cd_sim="cd $PRJ_SIM_PATH"
 alias cd_hw_sources="cd $PRJ_HW_SOURCES_PATH"
 alias cd_hw_sims="cd $PRJ_HW_SIMS_PATH"
+
 # Script for executing the Training of the Model
-alias prj_train="python -u $PRJ_TRAIN_PATH/training.py"
-# Build and run aliases for execturing the C++ Simulation
-alias prj_build_simulation="rm -rf $PRJ_SIM_PATH/build; mkdir $PRJ_SIM_PATH/build; cd $PRJ_SIM_PATH/build; cmake ..; make"
-alias prj_run_simulation="$PRJ_SIM_PATH/build/simulation"
+prj_train() {
+    python -u "$PRJ_TRAIN_PATH/training.py" "$@" | tee "$PRJ_TRAIN_PATH/training_debug.log"
+}
+
+# Build and run functions for executing the C++ Simulation
+prj_build_simulation() {
+    local CWD="$PWD"
+
+    rm -rf "$PRJ_SIM_PATH/build" || {
+        echo "# Error while removing old directory located at $PRJ_SIM_PATH/build ! Abort..." | tee "$PRJ_SIM_PATH/simulation_build_debug.log"
+        cd "$CWD"
+        return 1
+    }
+    if [ ! -d "$PRJ_SIM_PATH/build" ]; then
+        echo "# Removed old building directory located at $PRJ_SIM_PATH/build" | tee "$PRJ_SIM_PATH/simulation_build_debug.log"
+    else
+        echo "# Could not remove old building directory located at $PRJ_SIM_PATH/build (Directory probably did not exist...)"  | tee "$PRJ_SIM_PATH/simulation_build_debug.log"
+        cd "$CWD"
+        return 1
+    fi
+     
+    mkdir "$PRJ_SIM_PATH/build"
+    if [ $? -ne 0 ] ; then
+        echo "# Could not create new building directory located at $PRJ_SIM_PATH/build" | tee -a "$PRJ_SIM_PATH/simulation_build_debug.log"
+        cd "$CWD"
+        return 1
+    else
+        echo "# Created new building directory located at $PRJ_SIM_PATH/build" | tee -a "$PRJ_SIM_PATH/simulation_build_debug.log"
+    fi
+    cd "$PRJ_SIM_PATH/build"
+    cmake .. | tee -a "$PRJ_SIM_PATH/simulation_build_debug.log" || {
+        echo "# CMake failed while compiling the Simulation! Abort..." | tee -a "$PRJ_SIM_PATH/simulation_build_debug.log"
+        cd "$CWD"
+        return 1
+    }
+    make | tee -a "$PRJ_SIM_PATH/simulation_build_debug.log" || {
+        echo "# CMake failed while compiling the Simulation! Abort..." | tee -a "$PRJ_SIM_PATH/simulation_build_debug.log"
+        cd "$CWD"
+        return 1
+    }
+    cd "$CWD"
+    echo "# Finished building process for simulation successfully!" | tee -a "$PRJ_SIM_PATH/simulation_build_debug.log"
+}
+
+prj_run_simulation() {
+    local CWD="$PWD"
+
+    cd $PRJ_SIM_PATH/build || {
+        echo "$PRJ_SIM_PATH/build does not exist! Run prj_build_simulation first and try again..." | tee $PRJ_SIM_PATH/simulation_run_debug.log
+        return 1
+    }
+    $PRJ_SIM_PATH/build/simulation "$@" | tee $PRJ_SIM_PATH/simulation_run_debug.log
+    cd $CWD
+}
 
 RESULT="SUCCESS"
 
@@ -88,11 +139,11 @@ fi
 echo "####################################################################"
 echo "# Enviormental variables...:"
 echo "####################################################################"
-echo "# PRJ_ROOT_PATH Directory......: $PRJ_ROOT_PATH"
-echo "# PRJ_TRAIN_PATH Directory.....: $PRJ_TRAIN_PATH"
-echo "# PRJ_SIM_PATH Directory.......: $PRJ_SIM_PATH"
-echo "# PRJ_HW_SOURCES_PATH Directory: $PRJ_HW_SOURCES_PATH"
-echo "# PRJ_HW_SIMS_PATH Directory...: $PRJ_HW_SIMS_PATH"
+echo "# PRJ_ROOT_PATH......: $PRJ_ROOT_PATH"
+echo "# PRJ_TRAIN_PATH.....: $PRJ_TRAIN_PATH"
+echo "# PRJ_SIM_PATH.......: $PRJ_SIM_PATH"
+echo "# PRJ_HW_SOURCES_PATH: $PRJ_HW_SOURCES_PATH"
+echo "# PRJ_HW_SIMS_PATH...: $PRJ_HW_SIMS_PATH"
 echo "####################################################################"
 echo ""; echo ""
 
@@ -104,15 +155,15 @@ echo "# prj_build_simulation: Run the building process for the"
 echo "#                       C++ reference implementation"
 echo "# prj_run_simulation..: Run the C++ reference implementaion"
 echo "####################################################################"
-echo "# cd_root.............: Change PWD to project root:"
+echo "# cd_root.............: Change CWD to project root:"
 echo "#                       [$PRJ_ROOT_PATH]"
-echo "# cd_train............: Change PWD to path of training folder:"
+echo "# cd_train............: Change CWD to path of training folder:"
 echo "#                       [$PRJ_TRAIN_PATH]" 
-echo "# cd_sim..............: Change PWD to path of simulation folder:"
+echo "# cd_sim..............: Change CWD to path of simulation folder:"
 echo "#                       [$PRJ_SIM_PATH]" 
-echo "# cd_hw_sources.......: Change PWD to path containing VHDL sources:"
+echo "# cd_hw_sources.......: Change CWD to path containing VHDL sources:"
 echo "#                       [$PRJ_HW_SOURCES_PATH]" 
-echo "# cd_hw_sims..........: Change PWD to path containing test benches:"
+echo "# cd_hw_sims..........: Change CWD to path containing test benches:"
 echo "#                       [$PRJ_HW_SIMS_PATH]" 
 echo "####################################################################"
 echo ""; echo ""
