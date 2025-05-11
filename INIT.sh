@@ -85,9 +85,24 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     exit 1
 fi
 
+# Check if generated folder exist and creates it if necessary
+if [ ! -d "$PRJ_ROOT_PATH/_generated" ]; then
+    mkdir "$PRJ_ROOT_PATH/_generated"
+    if [ $? -ne 0 ] ; then
+        echo "# Could not create new logging directory located at $PRJ_ROOT_PATH/_generated" | tee "$PRJ_GENERATED_PATH/init_debug.log"
+        exit 1
+    else
+        echo "# Created new logging directory located at $PRJ_ROOT_PATH/_generated" | tee "$PRJ_GENERATED_PATH/init_debug.log"
+        echo "" | tee -a "$PRJ_GENERATED_PATH/init_debug.log"
+    fi
+else
+    echo "# Logging Directory at $PRJ_ROOT_PATH/_generated already exists!" | tee "$PRJ_GENERATED_PATH/init_debug.log"  
+    echo "" | tee -a "$PRJ_GENERATED_PATH/init_debug.log"  
+fi
+
 # Start logging manually
 exec 3>&1 4>&2
-exec > >(tee "$PRJ_GENERATED_PATH/init_debug.log") 2>&1
+exec > >(tee -a "$PRJ_GENERATED_PATH/init_debug.log") 2>&1
 
 
 RESULT="SUCCESS"
