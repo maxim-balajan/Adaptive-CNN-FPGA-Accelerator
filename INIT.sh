@@ -7,7 +7,9 @@ ENV_NAME=".venv"
 PYTHON_VER="3.10.16"
 PYTHON_BIN="$HOME/.pyenv/versions/$PYTHON_VER/bin/python"
 
+
 export PRJ_ROOT_PATH=($PWD)
+export PRJ_GENERATED_PATH="$PRJ_ROOT_PATH/_generated"
 export PRJ_TRAIN_PATH="$PRJ_ROOT_PATH/reference/training"
 export PRJ_SIM_PATH="$PRJ_ROOT_PATH/reference/simulation"
 export PRJ_HW_SOURCES_PATH="$PRJ_ROOT_PATH/sources_1"
@@ -20,63 +22,80 @@ alias cd_sim="cd $PRJ_SIM_PATH"
 alias cd_hw_sources="cd $PRJ_HW_SOURCES_PATH"
 alias cd_hw_sims="cd $PRJ_HW_SIMS_PATH"
 
+
 # Script for executing the Training of the Model
 prj_train() {
-    python -u "$PRJ_TRAIN_PATH/training.py" "$@" | tee "$PRJ_TRAIN_PATH/training_debug.log"
+    python -u "$PRJ_TRAIN_PATH/training.py" "$@" | tee "$PRJ_GENERATED_PATH/training_debug.log"
 }
+
 
 # Build and run functions for executing the C++ Simulation
 prj_build_simulation() {
     local CWD="$PWD"
 
-    rm -rf "$PRJ_SIM_PATH/build" || {
-        echo "# Error while removing old directory located at $PRJ_SIM_PATH/build ! Abort..." | tee "$PRJ_SIM_PATH/simulation_build_debug.log"
-        cd "$CWD"
-        return 1
-    }
+    rm -rf "$PRJ_SIM_PATH/build"
     if [ ! -d "$PRJ_SIM_PATH/build" ]; then
-        echo "# Removed old building directory located at $PRJ_SIM_PATH/build" | tee "$PRJ_SIM_PATH/simulation_build_debug.log"
+        echo "# Removed old building directory located at $PRJ_SIM_PATH/build" | tee "$PRJ_GENERATED_PATH/simulation_build_debug.log"
     else
-        echo "# Could not remove old building directory located at $PRJ_SIM_PATH/build (Directory probably did not exist...)"  | tee "$PRJ_SIM_PATH/simulation_build_debug.log"
+        echo "# Error while removing old directory located at $PRJ_SIM_PATH/build ! Abort..." | tee "$PRJ_GENERATED_PATH/simulation_build_debug.log"
         cd "$CWD"
         return 1
     fi
      
     mkdir "$PRJ_SIM_PATH/build"
     if [ $? -ne 0 ] ; then
-        echo "# Could not create new building directory located at $PRJ_SIM_PATH/build" | tee -a "$PRJ_SIM_PATH/simulation_build_debug.log"
+        echo "# Could not create new building directory located at $PRJ_SIM_PATH/build" | tee -a "$PRJ_GENERATED_PATH/simulation_build_debug.log"
         cd "$CWD"
         return 1
     else
-        echo "# Created new building directory located at $PRJ_SIM_PATH/build" | tee -a "$PRJ_SIM_PATH/simulation_build_debug.log"
+        echo "# Created new building directory located at $PRJ_SIM_PATH/build" | tee -a "$PRJ_GENERATED_PATH/simulation_build_debug.log"
     fi
     cd "$PRJ_SIM_PATH/build"
-    cmake .. | tee -a "$PRJ_SIM_PATH/simulation_build_debug.log" || {
-        echo "# CMake failed while compiling the Simulation! Abort..." | tee -a "$PRJ_SIM_PATH/simulation_build_debug.log"
+    cmake .. | tee -a "$PRJ_GENERATED_PATH/simulation_build_debug.log" || {
+        echo "# CMake failed while compiling the Simulation! Abort..." | tee -a "$PRJ_GENERATED_PATH/simulation_build_debug.log"
         cd "$CWD"
         return 1
     }
-    make | tee -a "$PRJ_SIM_PATH/simulation_build_debug.log" || {
-        echo "# CMake failed while compiling the Simulation! Abort..." | tee -a "$PRJ_SIM_PATH/simulation_build_debug.log"
+    make | tee -a "$PRJ_GENERATED_PATH/simulation_build_debug.log" || {
+        echo "# Make failed while compiling the Simulation! Abort..." | tee -a "$PRJ_GENERATED_PATH/simulation_build_debug.log"
         cd "$CWD"
         return 1
     }
     cd "$CWD"
-    echo "# Finished building process for simulation successfully!" | tee -a "$PRJ_SIM_PATH/simulation_build_debug.log"
+    echo "# Finished building process for simulation successfully!" | tee -a "$PRJ_GENERATED_PATH/simulation_build_debug.log"
 }
+
 
 prj_run_simulation() {
     local CWD="$PWD"
 
     cd $PRJ_SIM_PATH/build || {
-        echo "$PRJ_SIM_PATH/build does not exist! Run prj_build_simulation first and try again..." | tee $PRJ_SIM_PATH/simulation_run_debug.log
+        echo "$PRJ_SIM_PATH/build does not exist! Run prj_build_simulation first and try again..." | tee $PRJ_GENERATED_PATH/simulation_run_debug.log
         return 1
     }
-    $PRJ_SIM_PATH/build/simulation "$@" | tee $PRJ_SIM_PATH/simulation_run_debug.log
+    $PRJ_SIM_PATH/build/simulation "$@" | tee $PRJ_GENERATED_PATH/simulation_run_debug.log
     cd $CWD
 }
 
+
+# Prevent direct execution
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    echo "This script must be sourced, not executed directly!" | tee "$PRJ_GENERATED_PATH/init_debug.log"
+    echo "Use: source ./INIT.sh" | tee -a "$PRJ_GENERATED_PATH/init_debug.log"
+    exit 1
+fi
+
+# Start logging manually
+exec 3>&1 4>&2
+exec > >(tee "$PRJ_GENERATED_PATH/init_debug.log") 2>&1
+
+
 RESULT="SUCCESS"
+
+echo "####################################################################"
+echo "# Start INIT Script...:"
+echo "####################################################################"
+echo ""; echo ""
 
 if [ ! -f "$PYTHON_BIN" ]; then
     echo "$PYTHON_BIN does not exist!"
@@ -138,7 +157,7 @@ else
 fi
 
 echo "####################################################################"
-echo "# Enviormental variables...:"
+echo "# Environmental variables...:"
 echo "####################################################################"
 echo "# PRJ_ROOT_PATH......: $PRJ_ROOT_PATH"
 echo "# PRJ_TRAIN_PATH.....: $PRJ_TRAIN_PATH"
@@ -149,12 +168,12 @@ echo "####################################################################"
 echo ""; echo ""
 
 echo "####################################################################"
-echo "# Enviormental aliases...:"
+echo "# Environmental aliases...:"
 echo "####################################################################"
 echo "# prj_train...........: Run the Training Script of the AlexNet Model"
 echo "# prj_build_simulation: Run the building process for the" 
 echo "#                       C++ reference implementation"
-echo "# prj_run_simulation..: Run the C++ reference implementaion"
+echo "# prj_run_simulation..: Run the C++ reference implementation"
 echo "####################################################################"
 echo "# cd_root.............: Change CWD to project root:"
 echo "#                       [$PRJ_ROOT_PATH]"
@@ -173,3 +192,6 @@ echo "####################################################################"
 echo "# Initialization result...: $RESULT"
 echo "####################################################################"
 echo ""
+
+# Restore output
+exec 1>&3 2>&4
