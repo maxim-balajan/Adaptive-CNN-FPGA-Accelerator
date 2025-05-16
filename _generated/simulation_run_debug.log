@@ -20,11 +20,11 @@ Parsing layers...
 1x4096 --> QuantDense(..., 1, 1, 1000) --> 1x1000
 1000,3,227
 Starting Bachler Thesis CIFAR-10 Simulation with 1 images to process (batch_size=1)...
-[100.00%] Inference of 1 image completed in 5221594us! (current accuracy: 100.00%)
+[100.00%] Inference of 1 image completed in 5193170us! (current accuracy: 100.00%)
 Inference finished!
 
 --- Result ---
-Total inference duration: 5.22s
-Avg inference duration: 5221594.00us
+Total inference duration: 5.19s
+Avg inference duration: 5193170.00us
 Total misses: 0 of 1 images
 Avg accuracy: 100.00%

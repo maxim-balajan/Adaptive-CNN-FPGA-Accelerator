@@ -27,7 +27,8 @@ begin
 	bram_fifo_inst : entity work.bram_fifo
 	generic map (
 		vector_length => vector_length,
-		depth => depth
+		depth => depth,
+		set_full => TRUE
 	)
 	port map (
 		clk => clk,

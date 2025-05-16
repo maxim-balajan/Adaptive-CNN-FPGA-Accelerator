@@ -7,7 +7,8 @@ use work.libmatrix.all;
 entity line_buffer is
 	generic (
 		vector_length : natural := 8;
-		depth         : natural := 32
+		depth         : natural := 32;
+		set_full      : boolean := FALSE
 	);
 	port (
 		clk                 : in std_logic;
@@ -46,7 +47,8 @@ begin
 	FIFO_INST : entity work.bram_fifo
 		generic map (
 			vector_length => vector_length,
-			depth         => depth
+			depth         => depth,
+			set_full      => set_full
 		)
 		port map (
 			clk   => clk,

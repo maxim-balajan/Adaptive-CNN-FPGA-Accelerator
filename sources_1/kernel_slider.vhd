@@ -8,7 +8,8 @@ entity kernel_slider is
 	generic (
 		vector_length : natural := 8;
 		input_width   : natural := 32;
-		kernel_size   : natural := 5
+		kernel_size   : natural := 5;
+		padding_size  : natural := 0
 	);
 	port (
 		clk                      : in std_logic;
@@ -70,7 +71,8 @@ begin
 				vector_length => vector_length,
 				-- unga-bunga -1 to solve the timing problem
 				-- (I don't think you can solve this differently with BRAM blocks and without considerable amount of HW)
-				depth => input_width - 1
+				depth => input_width - 1,
+				set_full => padding_size - j > 0
 			)
 			port map (
 				clk                 => clk,

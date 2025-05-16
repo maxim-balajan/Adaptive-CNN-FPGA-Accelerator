@@ -1,7 +1,7 @@
 # Removed old building directory located at /home/maxim/Documents/Uni/BA/bachelor-thesis/reference/simulation/build
 # Created new building directory located at /home/maxim/Documents/Uni/BA/bachelor-thesis/reference/simulation/build
--- The C compiler identification is GNU 14.2.1
--- The CXX compiler identification is GNU 14.2.1
+-- The C compiler identification is GNU 13.3.0
+-- The CXX compiler identification is GNU 13.3.0
 -- Detecting C compiler ABI info
 -- Detecting C compiler ABI info - done
 -- Check for working C compiler: /usr/bin/cc - skipped
@@ -12,8 +12,8 @@
 -- Check for working CXX compiler: /usr/bin/c++ - skipped
 -- Detecting CXX compile features
 -- Detecting CXX compile features - done
--- Found Protobuf: /usr/lib/libprotobuf.so (found version "3.20.1")
--- Configuring done (0.8s)
+-- Found Protobuf: /usr/lib/x86_64-linux-gnu/libprotobuf.so (found version "3.21.12") 
+-- Configuring done (1.2s)
 -- Generating done (0.0s)
 -- Build files have been written to: /home/maxim/Documents/Uni/BA/bachelor-thesis/reference/simulation/build
 [  6%] Running cpp protocol buffer compiler on /home/maxim/Documents/Uni/BA/bachelor-thesis/reference/simulation/onnx_parser/src/onnx.proto

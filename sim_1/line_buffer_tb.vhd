@@ -26,7 +26,8 @@ begin
 	line_buffer_inst : entity work.line_buffer
 		generic map (
 			vector_length => vector_length,
-			depth         => depth
+			depth         => depth,
+			set_full => TRUE
 		)
 		port map (
 			clk   => clk,

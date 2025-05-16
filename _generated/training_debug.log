@@ -1,5 +1,16 @@
-USE GPU
-Files already downloaded and verified
-Files already downloaded and verified
-Training set has 50000 instances
-Validation set has 10000 instances
+usage: training.py [-h] [--train] [--infer] [--export] [--batch BATCH]
+                   [--epochs EPOCHS] [--output OUTPUT]
+
+options:
+  -h, --help            show this help message and exit
+  --train, -t           If explicitly given, the training phase will be
+                        executed
+  --infer, -i           If explicitly given, the inference phase will be
+                        executed
+  --export              If explicitly given, the dataset will be exported
+  --batch BATCH, -b BATCH
+                        The BATCH_SIZE used for the training phase
+  --epochs EPOCHS, -e EPOCHS
+                        The amount of EPOCHS used for the training phase
+  --output OUTPUT, -o OUTPUT
+                        The location in which the model is stored in

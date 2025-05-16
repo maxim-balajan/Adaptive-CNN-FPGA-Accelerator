@@ -7,7 +7,8 @@ use work.libmatrix.all;
 entity bram_fifo is
 	generic (
 		vector_length : natural := 8;
-		depth         : natural := 28
+		depth         : natural := 28;
+		set_full      : boolean := FALSE
 	);
 	port (
 		clk   : in std_logic;
@@ -23,7 +24,8 @@ end entity bram_fifo;
 
 architecture rtl of bram_fifo is
 
-	signal RAM : matrix_1d(0 to depth - 1)(vector_length - 1 downto 0);
+    -- Initialize RAM with 0s so thatit works if set_full generic 
+	signal RAM : matrix_1d(0 to depth - 1)(vector_length - 1 downto 0) := (others => (others => '0'));
 	attribute ram_style : string;
 	attribute ram_style of RAM : signal is "block";
 
@@ -54,7 +56,7 @@ begin
 			if reset = '1' then
 				s_read_pointer  <= (others => '0');
 				s_write_pointer <= (others => '0');
-				s_last_write    <= '0';
+				s_last_write    <= '1' when set_full else '0';
 				s_dout          <= (others => '0');
 			else
 				-- Reset of last write value and put on it 0 for now
