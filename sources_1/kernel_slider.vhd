@@ -6,18 +6,24 @@ use work.libmatrix.all;
 
 entity kernel_slider is
 	generic (
-		vector_length : natural := 8;
-		input_width   : natural := 32;
-		kernel_size   : natural := 5;
-		padding_size  : natural := 0
+		vector_length    : natural := 8;
+		G_IMG_META_BITS  : natural := 10;
+		G_IMG_MAX_LENGTH : natural := 227;
+		kernel_size      : natural := 5
 	);
 	port (
-		clk                      : in std_logic;
-		reset                    : in std_logic;
-		en                       : in std_logic;
-		pixel_stream             : in std_logic_vector(vector_length - 1 downto 0);
+		clk   : in std_logic;
+		reset : in std_logic;
+		--
+		en           : in std_logic;
+		pixel_stream : in std_logic_vector(vector_length - 1 downto 0);
+		--
+		image_length : in std_logic_vector(G_IMG_META_BITS - 1 downto 0);
+		-- normally padding size would not be necessary, but it enables skipping a lot of initialization
+		padding_size : in std_logic_vector(G_IMG_META_BITS - 1 downto 0);
+		--
 		init_complete            : out std_logic;
-		kernel_activation_matrix : out matrix_1d(0 to kernel_size**2 - 1)(vector_length - 1 downto 0)
+		kernel_activation_matrix : out matrix_1d(0 to kernel_size ** 2 - 1)(vector_length - 1 downto 0)
 	);
 end entity kernel_slider;
 
@@ -29,6 +35,9 @@ architecture rtl of kernel_slider is
 	signal s_kernel_activation_matrix : matrix_2d(0 to kernel_size - 1)(0 to kernel_size - 1)(vector_length - 1 downto 0);
 	-- Line Buffer wr_en line
 	signal s_line_buffer_wr_en : std_logic_vector(0 to kernel_size - 1);
+
+	-- Helper signal to determine which FIFO to initialize as full
+	signal s_set_full_line : std_logic_vector(0 to kernel_size - 2);
 
 	-- Helper signal to determine when initialization of pipeline is finished
 	signal s_full_delay : std_logic_vector(0 to kernel_size);
@@ -43,7 +52,7 @@ begin
 		if rising_edge(clk) then
 			if reset = '1' then
 				-- Is set to one because initial buffer should always write
-				s_line_buffer_wr_en(s_line_buffer_wr_en'low) <= '1';
+				s_line_buffer_wr_en(s_line_buffer_wr_en'low)            <= '1';
 				s_full_delay(s_full_delay'low + 1 to s_full_delay'high) <= (others => '0');
 			elsif en = '1' then
 				-- Shift values through kernel window
@@ -66,17 +75,20 @@ begin
 
 	LINE_BUFFER_GEN : for j in 0 to kernel_size - 2 generate
 
+		s_set_full_line(j) <= '1' when (signed(padding_size) - j > 0) else '0';
+
 		LINE_BUFF : entity work.line_buffer
 			generic map (
 				vector_length => vector_length,
-				-- unga-bunga -1 to solve the timing problem
-				-- (I don't think you can solve this differently with BRAM blocks and without considerable amount of HW)
-				depth => input_width - 1,
-				set_full => padding_size - j > 0
+				G_MAX_DEPTH   => G_IMG_MAX_LENGTH
 			)
 			port map (
-				clk                 => clk,
-				reset               => reset,
+				clk      => clk,
+				reset    => reset,
+				set_full => s_set_full_line(j),
+				-- unga-bunga -1 to solve the timing problem
+				-- (I don't think you can solve this differently with BRAM blocks and without considerable amount of HW)
+				depth               => std_logic_vector(unsigned(image_length) - 1),
 				en                  => en,
 				wr_en               => s_line_buffer_wr_en(j),
 				full                => open,

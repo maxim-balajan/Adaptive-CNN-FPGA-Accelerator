@@ -7,31 +7,40 @@ use work.libmatrix.all;
 entity bram_fifo is
 	generic (
 		vector_length : natural := 8;
-		depth         : natural := 28;
-		set_full      : boolean := FALSE
+		G_MAX_DEPTH   : natural := 227
 	);
 	port (
-		clk   : in std_logic;
-		reset : in std_logic;
-		wr_en : in std_logic;
-		rd_en : in std_logic;
-		full  : out std_logic;
-		empty : out std_logic;
-		din   : in std_logic_vector(vector_length - 1 downto 0);
-		dout  : out std_logic_vector(vector_length - 1 downto 0)
+		clk      : in std_logic;
+		reset    : in std_logic;
+		set_full : in std_logic;
+		depth 	 : in std_logic_vector(integer(ceil(log2(real(G_MAX_DEPTH)))) - 1 downto 0);
+		--
+		din      : in std_logic_vector(vector_length - 1 downto 0);
+		wr_en    : in std_logic;
+		rd_en    : in std_logic;
+		--
+		dout     : out std_logic_vector(vector_length - 1 downto 0);
+		full     : out std_logic;
+		empty    : out std_logic
 	);
 end entity bram_fifo;
 
 architecture rtl of bram_fifo is
 
-    -- Initialize RAM with 0s so thatit works if set_full generic 
-	signal RAM : matrix_1d(0 to depth - 1)(vector_length - 1 downto 0) := (others => (others => '0'));
+	-- Initialize RAM with 0s so that it works if set_full is set to '1' during reset
+	signal RAM : matrix_1d(0 to G_MAX_DEPTH - 1)(vector_length - 1 downto 0) := (others => (others => '0'));
 	attribute ram_style : string;
 	attribute ram_style of RAM : signal is "block";
 
+	-- Register for storing the actual depth of FIFO
+	signal s_actual_depth : unsigned(integer(ceil(log2(real(G_MAX_DEPTH)))) - 1 downto 0);
+	-- This signal is used to write 0s for s_actual_depth many cycles if set_full = '1'
+	-- This is to accomodate that BRAM can't be reset
+	signal s_is_invalid : std_logic;
+
 	-- Read and write pointers to the memory
-	signal s_read_pointer  : unsigned(integer(ceil(log2(real(depth)))) - 1 downto 0);
-	signal s_write_pointer : unsigned(integer(ceil(log2(real(depth)))) - 1 downto 0);
+	signal s_read_pointer  : unsigned(integer(ceil(log2(real(G_MAX_DEPTH)))) - 1 downto 0);
+	signal s_write_pointer : unsigned(integer(ceil(log2(real(G_MAX_DEPTH)))) - 1 downto 0);
 
 	signal s_empty : std_logic;
 	signal s_full  : std_logic;
@@ -47,7 +56,8 @@ begin
 	empty <= s_empty;
 	full  <= s_full;
 
-	dout <= s_dout;
+	-- Only get the actual memory if reset_cycle has been completed
+	dout <= s_dout when s_is_invalid = '0' else (others => '0') ;
 
 	process (clk, reset) is
 	begin
@@ -56,7 +66,11 @@ begin
 			if reset = '1' then
 				s_read_pointer  <= (others => '0');
 				s_write_pointer <= (others => '0');
-				s_last_write    <= '1' when set_full else '0';
+				-- When last_write is set to one, the fifo is flagged as "full" and only contains zeros
+				s_last_write    <= set_full;
+				-- If s_is_invalid is set to '1', the first actual_depth read cycles are performed, but 0s are always returned
+				s_is_invalid <= set_full;
+				s_actual_depth <= unsigned(depth);
 				s_dout          <= (others => '0');
 			else
 				-- Reset of last write value and put on it 0 for now
@@ -65,9 +79,11 @@ begin
 					-- Read from memory
 					s_dout <= RAM(to_integer(s_read_pointer));
 
-					if s_read_pointer /= depth - 1 then
+					if s_read_pointer /= s_actual_depth - 1 then
 						s_read_pointer <= s_read_pointer + 1;
 					else
+						-- all illegal values that came via set_full = '1' were now safely read
+						s_is_invalid <= '0';
 						s_read_pointer <= (others => '0');
 					end if;
 				end if;
@@ -76,7 +92,7 @@ begin
 					-- Write to memory
 					RAM(to_integer(s_write_pointer)) <= din;
 
-					if s_write_pointer /= depth - 1 then
+					if s_write_pointer /= s_actual_depth - 1 then
 						s_write_pointer <= s_write_pointer + 1;
 					else
 						s_write_pointer <= (others => '0');
