@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="bram_fifo_tb_sim.wdb" id="1">
+         <top_modules>
+            <top_module name="bram_fifo_tb" />
+            <top_module name="libmatrix" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="126.400 ns"></ZoomStartTime>
+      <ZoomEndTime time="214.801 ns"></ZoomEndTime>
+      <Cursor1Time time="200.000 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="276"></NameColumnWidth>
+      <ValueColumnWidth column_width="116"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="55" />
+   <wvobject type="logic" fp_name="/bram_fifo_tb/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/bram_fifo_tb/reset">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/bram_fifo_tb/set_full">
+      <obj_property name="ElementShortName">set_full</obj_property>
+      <obj_property name="ObjectShortName">set_full</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/bram_fifo_tb/actual_depth">
+      <obj_property name="ElementShortName">actual_depth[3:0]</obj_property>
+      <obj_property name="ObjectShortName">actual_depth[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/bram_fifo_tb/wr_en">
+      <obj_property name="ElementShortName">wr_en</obj_property>
+      <obj_property name="ObjectShortName">wr_en</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/bram_fifo_tb/rd_en">
+      <obj_property name="ElementShortName">rd_en</obj_property>
+      <obj_property name="ObjectShortName">rd_en</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/bram_fifo_tb/full">
+      <obj_property name="ElementShortName">full</obj_property>
+      <obj_property name="ObjectShortName">full</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/bram_fifo_tb/empty">
+      <obj_property name="ElementShortName">empty</obj_property>
+      <obj_property name="ObjectShortName">empty</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/bram_fifo_tb/din">
+      <obj_property name="ElementShortName">din[7:0]</obj_property>
+      <obj_property name="ObjectShortName">din[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/bram_fifo_tb/dout">
+      <obj_property name="ElementShortName">dout[7:0]</obj_property>
+      <obj_property name="ObjectShortName">dout[7:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FF0000</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/bram_fifo_tb/clk_period">
+      <obj_property name="ElementShortName">clk_period</obj_property>
+      <obj_property name="ObjectShortName">clk_period</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/bram_fifo_tb/vector_length">
+      <obj_property name="ElementShortName">vector_length</obj_property>
+      <obj_property name="ObjectShortName">vector_length</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/bram_fifo_tb/depth">
+      <obj_property name="ElementShortName">depth</obj_property>
+      <obj_property name="ObjectShortName">depth</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/bram_fifo_tb/bram_fifo_inst/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/bram_fifo_tb/bram_fifo_inst/reset">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/bram_fifo_tb/bram_fifo_inst/set_full">
+      <obj_property name="ElementShortName">set_full</obj_property>
+      <obj_property name="ObjectShortName">set_full</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/bram_fifo_tb/bram_fifo_inst/depth">
+      <obj_property name="ElementShortName">depth[3:0]</obj_property>
+      <obj_property name="ObjectShortName">depth[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/bram_fifo_tb/bram_fifo_inst/din">
+      <obj_property name="ElementShortName">din[7:0]</obj_property>
+      <obj_property name="ObjectShortName">din[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/bram_fifo_tb/bram_fifo_inst/wr_en">
+      <obj_property name="ElementShortName">wr_en</obj_property>
+      <obj_property name="ObjectShortName">wr_en</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/bram_fifo_tb/bram_fifo_inst/rd_en">
+      <obj_property name="ElementShortName">rd_en</obj_property>
+      <obj_property name="ObjectShortName">rd_en</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/bram_fifo_tb/bram_fifo_inst/dout">
+      <obj_property name="ElementShortName">dout[7:0]</obj_property>
+      <obj_property name="ObjectShortName">dout[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/bram_fifo_tb/bram_fifo_inst/full">
+      <obj_property name="ElementShortName">full</obj_property>
+      <obj_property name="ObjectShortName">full</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/bram_fifo_tb/bram_fifo_inst/empty">
+      <obj_property name="ElementShortName">empty</obj_property>
+      <obj_property name="ObjectShortName">empty</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/bram_fifo_tb/bram_fifo_inst/RAM">
+      <obj_property name="ElementShortName">RAM[0:9][7:0]</obj_property>
+      <obj_property name="ObjectShortName">RAM[0:9][7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/bram_fifo_tb/bram_fifo_inst/s_actual_depth">
+      <obj_property name="ElementShortName">s_actual_depth[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_actual_depth[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/bram_fifo_tb/bram_fifo_inst/s_is_invalid">
+      <obj_property name="ElementShortName">s_is_invalid</obj_property>
+      <obj_property name="ObjectShortName">s_is_invalid</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/bram_fifo_tb/bram_fifo_inst/s_read_pointer">
+      <obj_property name="ElementShortName">s_read_pointer[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_read_pointer[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/bram_fifo_tb/bram_fifo_inst/s_write_pointer">
+      <obj_property name="ElementShortName">s_write_pointer[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_write_pointer[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/bram_fifo_tb/bram_fifo_inst/s_empty">
+      <obj_property name="ElementShortName">s_empty</obj_property>
+      <obj_property name="ObjectShortName">s_empty</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/bram_fifo_tb/bram_fifo_inst/s_full">
+      <obj_property name="ElementShortName">s_full</obj_property>
+      <obj_property name="ObjectShortName">s_full</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/bram_fifo_tb/bram_fifo_inst/s_last_write">
+      <obj_property name="ElementShortName">s_last_write</obj_property>
+      <obj_property name="ObjectShortName">s_last_write</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/bram_fifo_tb/bram_fifo_inst/s_dout">
+      <obj_property name="ElementShortName">s_dout[7:0]</obj_property>
+      <obj_property name="ObjectShortName">s_dout[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/bram_fifo_tb/bram_fifo_inst/vector_length">
+      <obj_property name="ElementShortName">vector_length</obj_property>
+      <obj_property name="ObjectShortName">vector_length</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/bram_fifo_tb/bram_fifo_inst/G_MAX_DEPTH">
+      <obj_property name="ElementShortName">G_MAX_DEPTH</obj_property>
+      <obj_property name="ObjectShortName">G_MAX_DEPTH</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/bram_fifo_tb/bram_fifo_inst/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/bram_fifo_tb/bram_fifo_inst/reset">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/bram_fifo_tb/bram_fifo_inst/set_full">
+      <obj_property name="ElementShortName">set_full</obj_property>
+      <obj_property name="ObjectShortName">set_full</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/bram_fifo_tb/bram_fifo_inst/depth">
+      <obj_property name="ElementShortName">depth[3:0]</obj_property>
+      <obj_property name="ObjectShortName">depth[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/bram_fifo_tb/bram_fifo_inst/din">
+      <obj_property name="ElementShortName">din[7:0]</obj_property>
+      <obj_property name="ObjectShortName">din[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/bram_fifo_tb/bram_fifo_inst/wr_en">
+      <obj_property name="ElementShortName">wr_en</obj_property>
+      <obj_property name="ObjectShortName">wr_en</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/bram_fifo_tb/bram_fifo_inst/rd_en">
+      <obj_property name="ElementShortName">rd_en</obj_property>
+      <obj_property name="ObjectShortName">rd_en</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/bram_fifo_tb/bram_fifo_inst/dout">
+      <obj_property name="ElementShortName">dout[7:0]</obj_property>
+      <obj_property name="ObjectShortName">dout[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/bram_fifo_tb/bram_fifo_inst/full">
+      <obj_property name="ElementShortName">full</obj_property>
+      <obj_property name="ObjectShortName">full</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/bram_fifo_tb/bram_fifo_inst/empty">
+      <obj_property name="ElementShortName">empty</obj_property>
+      <obj_property name="ObjectShortName">empty</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/bram_fifo_tb/bram_fifo_inst/RAM">
+      <obj_property name="ElementShortName">RAM[0:9][7:0]</obj_property>
+      <obj_property name="ObjectShortName">RAM[0:9][7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/bram_fifo_tb/bram_fifo_inst/s_actual_depth">
+      <obj_property name="ElementShortName">s_actual_depth[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_actual_depth[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/bram_fifo_tb/bram_fifo_inst/s_is_invalid">
+      <obj_property name="ElementShortName">s_is_invalid</obj_property>
+      <obj_property name="ObjectShortName">s_is_invalid</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/bram_fifo_tb/bram_fifo_inst/s_read_pointer">
+      <obj_property name="ElementShortName">s_read_pointer[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_read_pointer[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/bram_fifo_tb/bram_fifo_inst/s_write_pointer">
+      <obj_property name="ElementShortName">s_write_pointer[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_write_pointer[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/bram_fifo_tb/bram_fifo_inst/s_empty">
+      <obj_property name="ElementShortName">s_empty</obj_property>
+      <obj_property name="ObjectShortName">s_empty</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/bram_fifo_tb/bram_fifo_inst/s_full">
+      <obj_property name="ElementShortName">s_full</obj_property>
+      <obj_property name="ObjectShortName">s_full</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/bram_fifo_tb/bram_fifo_inst/s_last_write">
+      <obj_property name="ElementShortName">s_last_write</obj_property>
+      <obj_property name="ObjectShortName">s_last_write</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/bram_fifo_tb/bram_fifo_inst/s_dout">
+      <obj_property name="ElementShortName">s_dout[7:0]</obj_property>
+      <obj_property name="ObjectShortName">s_dout[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/bram_fifo_tb/bram_fifo_inst/vector_length">
+      <obj_property name="ElementShortName">vector_length</obj_property>
+      <obj_property name="ObjectShortName">vector_length</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/bram_fifo_tb/bram_fifo_inst/G_MAX_DEPTH">
+      <obj_property name="ElementShortName">G_MAX_DEPTH</obj_property>
+      <obj_property name="ObjectShortName">G_MAX_DEPTH</obj_property>
+   </wvobject>
+</wave_config>

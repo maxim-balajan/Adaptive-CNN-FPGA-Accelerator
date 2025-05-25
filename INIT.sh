@@ -12,6 +12,8 @@ export PRJ_ROOT_PATH=($PWD)
 export PRJ_GENERATED_PATH="$PRJ_ROOT_PATH/_generated"
 export PRJ_TRAIN_PATH="$PRJ_ROOT_PATH/reference/training"
 export PRJ_SIM_PATH="$PRJ_ROOT_PATH/reference/simulation"
+export PRJ_WAVE_CFG="$PRJ_ROOT_PATH/wave_config"
+export PRJ_SCRIPTS="$PRJ_ROOT_PATH/scripts"
 export PRJ_HW_SOURCES_PATH="$PRJ_ROOT_PATH/sources_1"
 export PRJ_HW_SIMS_PATH="$PRJ_ROOT_PATH/sim_1"
 
@@ -21,6 +23,16 @@ alias cd_train="cd $PRJ_TRAIN_PATH"
 alias cd_sim="cd $PRJ_SIM_PATH"
 alias cd_hw_sources="cd $PRJ_HW_SOURCES_PATH"
 alias cd_hw_sims="cd $PRJ_HW_SIMS_PATH"
+
+# Simulate Aliases
+alias prj_simulate_bram_fifo="$PRJ_SCRIPTS/simulation/bram_fifo.sh"
+
+prj_simulate_help() {
+    echo "####################################################################"
+    echo "# prj_simulate_help.....: Print all possible simulation runs"
+    echo "# prj_simulate_bram_fifo: Run Testbench for BRAM FIFO"
+    echo "####################################################################"
+}
 
 
 # Script for executing the Training of the Model
@@ -177,6 +189,7 @@ echo "####################################################################"
 echo "# PRJ_ROOT_PATH......: $PRJ_ROOT_PATH"
 echo "# PRJ_TRAIN_PATH.....: $PRJ_TRAIN_PATH"
 echo "# PRJ_SIM_PATH.......: $PRJ_SIM_PATH"
+echo "# PRJ_WAVE_CFG.......: $PRJ_WAVE_CFG"
 echo "# PRJ_HW_SOURCES_PATH: $PRJ_HW_SOURCES_PATH"
 echo "# PRJ_HW_SIMS_PATH...: $PRJ_HW_SIMS_PATH"
 echo "####################################################################"
@@ -189,7 +202,7 @@ echo "# prj_train...........: Run the Training Script of the AlexNet Model"
 echo "# prj_build_simulation: Run the building process for the" 
 echo "#                       C++ reference implementation"
 echo "# prj_run_simulation..: Run the C++ reference implementation"
-echo "####################################################################"
+prj_simulate_help
 echo "# cd_root.............: Change CWD to project root:"
 echo "#                       [$PRJ_ROOT_PATH]"
 echo "# cd_train............: Change CWD to path of training folder:"
