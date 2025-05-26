@@ -1,0 +1,1746 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="kernel_slider_tb_sim.wdb" id="1">
+         <top_modules>
+            <top_module name="kernel_slider_tb" />
+            <top_module name="libmatrix" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0.000 ns"></ZoomStartTime>
+      <ZoomEndTime time="320.000 ns"></ZoomEndTime>
+      <Cursor1Time time="54.094 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="276"></NameColumnWidth>
+      <ValueColumnWidth column_width="96"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="417" />
+   <wvobject type="logic" fp_name="/kernel_slider_tb/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/reset">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/en">
+      <obj_property name="ElementShortName">en</obj_property>
+      <obj_property name="ObjectShortName">en</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/pixel_stream">
+      <obj_property name="ElementShortName">pixel_stream[7:0]</obj_property>
+      <obj_property name="ObjectShortName">pixel_stream[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/s_set_full_line">
+      <obj_property name="ElementShortName">s_set_full_line[0:1]</obj_property>
+      <obj_property name="ObjectShortName">s_set_full_line[0:1]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/s_line_buffer_wr_en">
+      <obj_property name="ElementShortName">s_line_buffer_wr_en[0:2]</obj_property>
+      <obj_property name="ObjectShortName">s_line_buffer_wr_en[0:2]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_last_write">
+      <obj_property name="ElementShortName">s_last_write</obj_property>
+      <obj_property name="ObjectShortName">s_last_write</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_last_write">
+      <obj_property name="ElementShortName">s_last_write</obj_property>
+      <obj_property name="ObjectShortName">s_last_write</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/full">
+      <obj_property name="ElementShortName">full</obj_property>
+      <obj_property name="ObjectShortName">full</obj_property>
+   </wvobject>
+   <wvobject type="group" fp_name="group447">
+      <obj_property name="label">LineBuffer#2</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/clk">
+         <obj_property name="ElementShortName">clk</obj_property>
+         <obj_property name="ObjectShortName">clk</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/reset">
+         <obj_property name="ElementShortName">reset</obj_property>
+         <obj_property name="ObjectShortName">reset</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/set_full">
+         <obj_property name="ElementShortName">set_full</obj_property>
+         <obj_property name="ObjectShortName">set_full</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/depth">
+         <obj_property name="ElementShortName">depth[3:0]</obj_property>
+         <obj_property name="ObjectShortName">depth[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/din">
+         <obj_property name="ElementShortName">din[7:0]</obj_property>
+         <obj_property name="ObjectShortName">din[7:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/en">
+         <obj_property name="ElementShortName">en</obj_property>
+         <obj_property name="ObjectShortName">en</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/wr_en">
+         <obj_property name="ElementShortName">wr_en</obj_property>
+         <obj_property name="ObjectShortName">wr_en</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/dout">
+         <obj_property name="ElementShortName">dout[7:0]</obj_property>
+         <obj_property name="ObjectShortName">dout[7:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/full">
+         <obj_property name="ElementShortName">full</obj_property>
+         <obj_property name="ObjectShortName">full</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/full_read_and_write">
+         <obj_property name="ElementShortName">full_read_and_write</obj_property>
+         <obj_property name="ObjectShortName">full_read_and_write</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/s_rd_en">
+         <obj_property name="ElementShortName">s_rd_en</obj_property>
+         <obj_property name="ObjectShortName">s_rd_en</obj_property>
+      </wvobject>
+      <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/vector_length">
+         <obj_property name="ElementShortName">vector_length</obj_property>
+         <obj_property name="ObjectShortName">vector_length</obj_property>
+      </wvobject>
+      <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/G_MAX_DEPTH">
+         <obj_property name="ElementShortName">G_MAX_DEPTH</obj_property>
+         <obj_property name="ObjectShortName">G_MAX_DEPTH</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/image_length">
+      <obj_property name="ElementShortName">image_length[3:0]</obj_property>
+      <obj_property name="ObjectShortName">image_length[3:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/padding_size">
+      <obj_property name="ElementShortName">padding_size[3:0]</obj_property>
+      <obj_property name="ObjectShortName">padding_size[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/init_complete">
+      <obj_property name="ElementShortName">init_complete</obj_property>
+      <obj_property name="ObjectShortName">init_complete</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_activation_matrix">
+      <obj_property name="ElementShortName">kernel_activation_matrix[0:24][7:0]</obj_property>
+      <obj_property name="ObjectShortName">kernel_activation_matrix[0:24][7:0]</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/clk_period">
+      <obj_property name="ElementShortName">clk_period</obj_property>
+      <obj_property name="ObjectShortName">clk_period</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/vector_length">
+      <obj_property name="ElementShortName">vector_length</obj_property>
+      <obj_property name="ObjectShortName">vector_length</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/G_IMG_MAX_LENGTH">
+      <obj_property name="ElementShortName">G_IMG_MAX_LENGTH</obj_property>
+      <obj_property name="ObjectShortName">G_IMG_MAX_LENGTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/G_KERNEL_MAX_SIZE">
+      <obj_property name="ElementShortName">G_KERNEL_MAX_SIZE</obj_property>
+      <obj_property name="ObjectShortName">G_KERNEL_MAX_SIZE</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_size">
+      <obj_property name="ElementShortName">kernel_size</obj_property>
+      <obj_property name="ObjectShortName">kernel_size</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/reset">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/en">
+      <obj_property name="ElementShortName">en</obj_property>
+      <obj_property name="ObjectShortName">en</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/pixel_stream">
+      <obj_property name="ElementShortName">pixel_stream[7:0]</obj_property>
+      <obj_property name="ObjectShortName">pixel_stream[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/image_length">
+      <obj_property name="ElementShortName">image_length[3:0]</obj_property>
+      <obj_property name="ObjectShortName">image_length[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/padding_size">
+      <obj_property name="ElementShortName">padding_size[3:0]</obj_property>
+      <obj_property name="ObjectShortName">padding_size[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/init_complete">
+      <obj_property name="ElementShortName">init_complete</obj_property>
+      <obj_property name="ObjectShortName">init_complete</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/kernel_activation_matrix">
+      <obj_property name="ElementShortName">kernel_activation_matrix[0:24][7:0]</obj_property>
+      <obj_property name="ObjectShortName">kernel_activation_matrix[0:24][7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/s_kernel_activation_matrix">
+      <obj_property name="ElementShortName">s_kernel_activation_matrix[0:2][0:2][7:0]</obj_property>
+      <obj_property name="ObjectShortName">s_kernel_activation_matrix[0:2][0:2][7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/s_line_buffer_wr_en">
+      <obj_property name="ElementShortName">s_line_buffer_wr_en[0:2]</obj_property>
+      <obj_property name="ObjectShortName">s_line_buffer_wr_en[0:2]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/s_set_full_line">
+      <obj_property name="ElementShortName">s_set_full_line[0:1]</obj_property>
+      <obj_property name="ObjectShortName">s_set_full_line[0:1]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/s_full_delay">
+      <obj_property name="ElementShortName">s_full_delay[0:3]</obj_property>
+      <obj_property name="ObjectShortName">s_full_delay[0:3]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/vector_length">
+      <obj_property name="ElementShortName">vector_length</obj_property>
+      <obj_property name="ObjectShortName">vector_length</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/G_IMG_MAX_LENGTH">
+      <obj_property name="ElementShortName">G_IMG_MAX_LENGTH</obj_property>
+      <obj_property name="ObjectShortName">G_IMG_MAX_LENGTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/G_KERNEL_MAX_SIZE">
+      <obj_property name="ElementShortName">G_KERNEL_MAX_SIZE</obj_property>
+      <obj_property name="ObjectShortName">G_KERNEL_MAX_SIZE</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/kernel_size">
+      <obj_property name="ElementShortName">kernel_size</obj_property>
+      <obj_property name="ObjectShortName">kernel_size</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/j">
+      <obj_property name="ElementShortName">j</obj_property>
+      <obj_property name="ObjectShortName">j</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/reset">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/set_full">
+      <obj_property name="ElementShortName">set_full</obj_property>
+      <obj_property name="ObjectShortName">set_full</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/depth">
+      <obj_property name="ElementShortName">depth[3:0]</obj_property>
+      <obj_property name="ObjectShortName">depth[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/din">
+      <obj_property name="ElementShortName">din[7:0]</obj_property>
+      <obj_property name="ObjectShortName">din[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/en">
+      <obj_property name="ElementShortName">en</obj_property>
+      <obj_property name="ObjectShortName">en</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/wr_en">
+      <obj_property name="ElementShortName">wr_en</obj_property>
+      <obj_property name="ObjectShortName">wr_en</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/dout">
+      <obj_property name="ElementShortName">dout[7:0]</obj_property>
+      <obj_property name="ObjectShortName">dout[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/full">
+      <obj_property name="ElementShortName">full</obj_property>
+      <obj_property name="ObjectShortName">full</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/full_read_and_write">
+      <obj_property name="ElementShortName">full_read_and_write</obj_property>
+      <obj_property name="ObjectShortName">full_read_and_write</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/s_rd_en">
+      <obj_property name="ElementShortName">s_rd_en</obj_property>
+      <obj_property name="ObjectShortName">s_rd_en</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/vector_length">
+      <obj_property name="ElementShortName">vector_length</obj_property>
+      <obj_property name="ObjectShortName">vector_length</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/G_MAX_DEPTH">
+      <obj_property name="ElementShortName">G_MAX_DEPTH</obj_property>
+      <obj_property name="ObjectShortName">G_MAX_DEPTH</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/reset">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/set_full">
+      <obj_property name="ElementShortName">set_full</obj_property>
+      <obj_property name="ObjectShortName">set_full</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/depth">
+      <obj_property name="ElementShortName">depth[3:0]</obj_property>
+      <obj_property name="ObjectShortName">depth[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/din">
+      <obj_property name="ElementShortName">din[7:0]</obj_property>
+      <obj_property name="ObjectShortName">din[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/wr_en">
+      <obj_property name="ElementShortName">wr_en</obj_property>
+      <obj_property name="ObjectShortName">wr_en</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/rd_en">
+      <obj_property name="ElementShortName">rd_en</obj_property>
+      <obj_property name="ObjectShortName">rd_en</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/dout">
+      <obj_property name="ElementShortName">dout[7:0]</obj_property>
+      <obj_property name="ObjectShortName">dout[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/full">
+      <obj_property name="ElementShortName">full</obj_property>
+      <obj_property name="ObjectShortName">full</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/empty">
+      <obj_property name="ElementShortName">empty</obj_property>
+      <obj_property name="ObjectShortName">empty</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/RAM">
+      <obj_property name="ElementShortName">RAM[0:15][7:0]</obj_property>
+      <obj_property name="ObjectShortName">RAM[0:15][7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_actual_depth">
+      <obj_property name="ElementShortName">s_actual_depth[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_actual_depth[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_is_invalid">
+      <obj_property name="ElementShortName">s_is_invalid</obj_property>
+      <obj_property name="ObjectShortName">s_is_invalid</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_read_pointer">
+      <obj_property name="ElementShortName">s_read_pointer[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_read_pointer[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_write_pointer">
+      <obj_property name="ElementShortName">s_write_pointer[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_write_pointer[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_empty">
+      <obj_property name="ElementShortName">s_empty</obj_property>
+      <obj_property name="ObjectShortName">s_empty</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_full">
+      <obj_property name="ElementShortName">s_full</obj_property>
+      <obj_property name="ObjectShortName">s_full</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_last_write">
+      <obj_property name="ElementShortName">s_last_write</obj_property>
+      <obj_property name="ObjectShortName">s_last_write</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_dout">
+      <obj_property name="ElementShortName">s_dout[7:0]</obj_property>
+      <obj_property name="ObjectShortName">s_dout[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/vector_length">
+      <obj_property name="ElementShortName">vector_length</obj_property>
+      <obj_property name="ObjectShortName">vector_length</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/G_MAX_DEPTH">
+      <obj_property name="ElementShortName">G_MAX_DEPTH</obj_property>
+      <obj_property name="ObjectShortName">G_MAX_DEPTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/j">
+      <obj_property name="ElementShortName">j</obj_property>
+      <obj_property name="ObjectShortName">j</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/reset">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/set_full">
+      <obj_property name="ElementShortName">set_full</obj_property>
+      <obj_property name="ObjectShortName">set_full</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/depth">
+      <obj_property name="ElementShortName">depth[3:0]</obj_property>
+      <obj_property name="ObjectShortName">depth[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/din">
+      <obj_property name="ElementShortName">din[7:0]</obj_property>
+      <obj_property name="ObjectShortName">din[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/en">
+      <obj_property name="ElementShortName">en</obj_property>
+      <obj_property name="ObjectShortName">en</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/wr_en">
+      <obj_property name="ElementShortName">wr_en</obj_property>
+      <obj_property name="ObjectShortName">wr_en</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/dout">
+      <obj_property name="ElementShortName">dout[7:0]</obj_property>
+      <obj_property name="ObjectShortName">dout[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/full">
+      <obj_property name="ElementShortName">full</obj_property>
+      <obj_property name="ObjectShortName">full</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/full_read_and_write">
+      <obj_property name="ElementShortName">full_read_and_write</obj_property>
+      <obj_property name="ObjectShortName">full_read_and_write</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/s_rd_en">
+      <obj_property name="ElementShortName">s_rd_en</obj_property>
+      <obj_property name="ObjectShortName">s_rd_en</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/vector_length">
+      <obj_property name="ElementShortName">vector_length</obj_property>
+      <obj_property name="ObjectShortName">vector_length</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/G_MAX_DEPTH">
+      <obj_property name="ElementShortName">G_MAX_DEPTH</obj_property>
+      <obj_property name="ObjectShortName">G_MAX_DEPTH</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/reset">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/set_full">
+      <obj_property name="ElementShortName">set_full</obj_property>
+      <obj_property name="ObjectShortName">set_full</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/depth">
+      <obj_property name="ElementShortName">depth[3:0]</obj_property>
+      <obj_property name="ObjectShortName">depth[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/din">
+      <obj_property name="ElementShortName">din[7:0]</obj_property>
+      <obj_property name="ObjectShortName">din[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/wr_en">
+      <obj_property name="ElementShortName">wr_en</obj_property>
+      <obj_property name="ObjectShortName">wr_en</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/rd_en">
+      <obj_property name="ElementShortName">rd_en</obj_property>
+      <obj_property name="ObjectShortName">rd_en</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/dout">
+      <obj_property name="ElementShortName">dout[7:0]</obj_property>
+      <obj_property name="ObjectShortName">dout[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/full">
+      <obj_property name="ElementShortName">full</obj_property>
+      <obj_property name="ObjectShortName">full</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/empty">
+      <obj_property name="ElementShortName">empty</obj_property>
+      <obj_property name="ObjectShortName">empty</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/RAM">
+      <obj_property name="ElementShortName">RAM[0:15][7:0]</obj_property>
+      <obj_property name="ObjectShortName">RAM[0:15][7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_actual_depth">
+      <obj_property name="ElementShortName">s_actual_depth[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_actual_depth[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_is_invalid">
+      <obj_property name="ElementShortName">s_is_invalid</obj_property>
+      <obj_property name="ObjectShortName">s_is_invalid</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_read_pointer">
+      <obj_property name="ElementShortName">s_read_pointer[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_read_pointer[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_write_pointer">
+      <obj_property name="ElementShortName">s_write_pointer[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_write_pointer[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_empty">
+      <obj_property name="ElementShortName">s_empty</obj_property>
+      <obj_property name="ObjectShortName">s_empty</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_full">
+      <obj_property name="ElementShortName">s_full</obj_property>
+      <obj_property name="ObjectShortName">s_full</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_last_write">
+      <obj_property name="ElementShortName">s_last_write</obj_property>
+      <obj_property name="ObjectShortName">s_last_write</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_dout">
+      <obj_property name="ElementShortName">s_dout[7:0]</obj_property>
+      <obj_property name="ObjectShortName">s_dout[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/vector_length">
+      <obj_property name="ElementShortName">vector_length</obj_property>
+      <obj_property name="ObjectShortName">vector_length</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/G_MAX_DEPTH">
+      <obj_property name="ElementShortName">G_MAX_DEPTH</obj_property>
+      <obj_property name="ObjectShortName">G_MAX_DEPTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(0)\/y">
+      <obj_property name="ElementShortName">y</obj_property>
+      <obj_property name="ObjectShortName">y</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(0)\/\X_GEN(0)\/x">
+      <obj_property name="ElementShortName">x</obj_property>
+      <obj_property name="ObjectShortName">x</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(0)\/\X_GEN(1)\/x">
+      <obj_property name="ElementShortName">x</obj_property>
+      <obj_property name="ObjectShortName">x</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(0)\/\X_GEN(2)\/x">
+      <obj_property name="ElementShortName">x</obj_property>
+      <obj_property name="ObjectShortName">x</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(1)\/y">
+      <obj_property name="ElementShortName">y</obj_property>
+      <obj_property name="ObjectShortName">y</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(1)\/\X_GEN(0)\/x">
+      <obj_property name="ElementShortName">x</obj_property>
+      <obj_property name="ObjectShortName">x</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(1)\/\X_GEN(1)\/x">
+      <obj_property name="ElementShortName">x</obj_property>
+      <obj_property name="ObjectShortName">x</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(1)\/\X_GEN(2)\/x">
+      <obj_property name="ElementShortName">x</obj_property>
+      <obj_property name="ObjectShortName">x</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(2)\/y">
+      <obj_property name="ElementShortName">y</obj_property>
+      <obj_property name="ObjectShortName">y</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(2)\/\X_GEN(0)\/x">
+      <obj_property name="ElementShortName">x</obj_property>
+      <obj_property name="ObjectShortName">x</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(2)\/\X_GEN(1)\/x">
+      <obj_property name="ElementShortName">x</obj_property>
+      <obj_property name="ObjectShortName">x</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(2)\/\X_GEN(2)\/x">
+      <obj_property name="ElementShortName">x</obj_property>
+      <obj_property name="ObjectShortName">x</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/reset">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/en">
+      <obj_property name="ElementShortName">en</obj_property>
+      <obj_property name="ObjectShortName">en</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/pixel_stream">
+      <obj_property name="ElementShortName">pixel_stream[7:0]</obj_property>
+      <obj_property name="ObjectShortName">pixel_stream[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/image_length">
+      <obj_property name="ElementShortName">image_length[3:0]</obj_property>
+      <obj_property name="ObjectShortName">image_length[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/padding_size">
+      <obj_property name="ElementShortName">padding_size[3:0]</obj_property>
+      <obj_property name="ObjectShortName">padding_size[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/init_complete">
+      <obj_property name="ElementShortName">init_complete</obj_property>
+      <obj_property name="ObjectShortName">init_complete</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/kernel_activation_matrix">
+      <obj_property name="ElementShortName">kernel_activation_matrix[0:24][7:0]</obj_property>
+      <obj_property name="ObjectShortName">kernel_activation_matrix[0:24][7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/s_kernel_matrix">
+      <obj_property name="ElementShortName">s_kernel_matrix[0:3][0:2][7:0]</obj_property>
+      <obj_property name="ObjectShortName">s_kernel_matrix[0:3][0:2][7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/s_kernel_activation_matrix">
+      <obj_property name="ElementShortName">s_kernel_activation_matrix[0:2][0:2][7:0]</obj_property>
+      <obj_property name="ObjectShortName">s_kernel_activation_matrix[0:2][0:2][7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/s_line_buffer_wr_en">
+      <obj_property name="ElementShortName">s_line_buffer_wr_en[0:2]</obj_property>
+      <obj_property name="ObjectShortName">s_line_buffer_wr_en[0:2]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/s_set_full_line">
+      <obj_property name="ElementShortName">s_set_full_line[0:1]</obj_property>
+      <obj_property name="ObjectShortName">s_set_full_line[0:1]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/s_full_delay">
+      <obj_property name="ElementShortName">s_full_delay[0:3]</obj_property>
+      <obj_property name="ObjectShortName">s_full_delay[0:3]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/vector_length">
+      <obj_property name="ElementShortName">vector_length</obj_property>
+      <obj_property name="ObjectShortName">vector_length</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/G_IMG_MAX_LENGTH">
+      <obj_property name="ElementShortName">G_IMG_MAX_LENGTH</obj_property>
+      <obj_property name="ObjectShortName">G_IMG_MAX_LENGTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/G_KERNEL_MAX_SIZE">
+      <obj_property name="ElementShortName">G_KERNEL_MAX_SIZE</obj_property>
+      <obj_property name="ObjectShortName">G_KERNEL_MAX_SIZE</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/kernel_size">
+      <obj_property name="ElementShortName">kernel_size</obj_property>
+      <obj_property name="ObjectShortName">kernel_size</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/j">
+      <obj_property name="ElementShortName">j</obj_property>
+      <obj_property name="ObjectShortName">j</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/reset">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/set_full">
+      <obj_property name="ElementShortName">set_full</obj_property>
+      <obj_property name="ObjectShortName">set_full</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/depth">
+      <obj_property name="ElementShortName">depth[3:0]</obj_property>
+      <obj_property name="ObjectShortName">depth[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/din">
+      <obj_property name="ElementShortName">din[7:0]</obj_property>
+      <obj_property name="ObjectShortName">din[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/en">
+      <obj_property name="ElementShortName">en</obj_property>
+      <obj_property name="ObjectShortName">en</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/wr_en">
+      <obj_property name="ElementShortName">wr_en</obj_property>
+      <obj_property name="ObjectShortName">wr_en</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/dout">
+      <obj_property name="ElementShortName">dout[7:0]</obj_property>
+      <obj_property name="ObjectShortName">dout[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/full">
+      <obj_property name="ElementShortName">full</obj_property>
+      <obj_property name="ObjectShortName">full</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/full_read_and_write">
+      <obj_property name="ElementShortName">full_read_and_write</obj_property>
+      <obj_property name="ObjectShortName">full_read_and_write</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/s_rd_en">
+      <obj_property name="ElementShortName">s_rd_en</obj_property>
+      <obj_property name="ObjectShortName">s_rd_en</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/vector_length">
+      <obj_property name="ElementShortName">vector_length</obj_property>
+      <obj_property name="ObjectShortName">vector_length</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/G_MAX_DEPTH">
+      <obj_property name="ElementShortName">G_MAX_DEPTH</obj_property>
+      <obj_property name="ObjectShortName">G_MAX_DEPTH</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/reset">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/set_full">
+      <obj_property name="ElementShortName">set_full</obj_property>
+      <obj_property name="ObjectShortName">set_full</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/depth">
+      <obj_property name="ElementShortName">depth[3:0]</obj_property>
+      <obj_property name="ObjectShortName">depth[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/din">
+      <obj_property name="ElementShortName">din[7:0]</obj_property>
+      <obj_property name="ObjectShortName">din[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/wr_en">
+      <obj_property name="ElementShortName">wr_en</obj_property>
+      <obj_property name="ObjectShortName">wr_en</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/rd_en">
+      <obj_property name="ElementShortName">rd_en</obj_property>
+      <obj_property name="ObjectShortName">rd_en</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/dout">
+      <obj_property name="ElementShortName">dout[7:0]</obj_property>
+      <obj_property name="ObjectShortName">dout[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/full">
+      <obj_property name="ElementShortName">full</obj_property>
+      <obj_property name="ObjectShortName">full</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/empty">
+      <obj_property name="ElementShortName">empty</obj_property>
+      <obj_property name="ObjectShortName">empty</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/RAM">
+      <obj_property name="ElementShortName">RAM[0:15][7:0]</obj_property>
+      <obj_property name="ObjectShortName">RAM[0:15][7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_actual_depth">
+      <obj_property name="ElementShortName">s_actual_depth[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_actual_depth[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_is_invalid">
+      <obj_property name="ElementShortName">s_is_invalid</obj_property>
+      <obj_property name="ObjectShortName">s_is_invalid</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_read_pointer">
+      <obj_property name="ElementShortName">s_read_pointer[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_read_pointer[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_write_pointer">
+      <obj_property name="ElementShortName">s_write_pointer[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_write_pointer[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_empty">
+      <obj_property name="ElementShortName">s_empty</obj_property>
+      <obj_property name="ObjectShortName">s_empty</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_full">
+      <obj_property name="ElementShortName">s_full</obj_property>
+      <obj_property name="ObjectShortName">s_full</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_last_write">
+      <obj_property name="ElementShortName">s_last_write</obj_property>
+      <obj_property name="ObjectShortName">s_last_write</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_dout">
+      <obj_property name="ElementShortName">s_dout[7:0]</obj_property>
+      <obj_property name="ObjectShortName">s_dout[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/vector_length">
+      <obj_property name="ElementShortName">vector_length</obj_property>
+      <obj_property name="ObjectShortName">vector_length</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/G_MAX_DEPTH">
+      <obj_property name="ElementShortName">G_MAX_DEPTH</obj_property>
+      <obj_property name="ObjectShortName">G_MAX_DEPTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/j">
+      <obj_property name="ElementShortName">j</obj_property>
+      <obj_property name="ObjectShortName">j</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/reset">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/set_full">
+      <obj_property name="ElementShortName">set_full</obj_property>
+      <obj_property name="ObjectShortName">set_full</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/depth">
+      <obj_property name="ElementShortName">depth[3:0]</obj_property>
+      <obj_property name="ObjectShortName">depth[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/din">
+      <obj_property name="ElementShortName">din[7:0]</obj_property>
+      <obj_property name="ObjectShortName">din[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/en">
+      <obj_property name="ElementShortName">en</obj_property>
+      <obj_property name="ObjectShortName">en</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/wr_en">
+      <obj_property name="ElementShortName">wr_en</obj_property>
+      <obj_property name="ObjectShortName">wr_en</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/dout">
+      <obj_property name="ElementShortName">dout[7:0]</obj_property>
+      <obj_property name="ObjectShortName">dout[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/full">
+      <obj_property name="ElementShortName">full</obj_property>
+      <obj_property name="ObjectShortName">full</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/full_read_and_write">
+      <obj_property name="ElementShortName">full_read_and_write</obj_property>
+      <obj_property name="ObjectShortName">full_read_and_write</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/s_rd_en">
+      <obj_property name="ElementShortName">s_rd_en</obj_property>
+      <obj_property name="ObjectShortName">s_rd_en</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/vector_length">
+      <obj_property name="ElementShortName">vector_length</obj_property>
+      <obj_property name="ObjectShortName">vector_length</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/G_MAX_DEPTH">
+      <obj_property name="ElementShortName">G_MAX_DEPTH</obj_property>
+      <obj_property name="ObjectShortName">G_MAX_DEPTH</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/reset">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/set_full">
+      <obj_property name="ElementShortName">set_full</obj_property>
+      <obj_property name="ObjectShortName">set_full</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/depth">
+      <obj_property name="ElementShortName">depth[3:0]</obj_property>
+      <obj_property name="ObjectShortName">depth[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/din">
+      <obj_property name="ElementShortName">din[7:0]</obj_property>
+      <obj_property name="ObjectShortName">din[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/wr_en">
+      <obj_property name="ElementShortName">wr_en</obj_property>
+      <obj_property name="ObjectShortName">wr_en</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/rd_en">
+      <obj_property name="ElementShortName">rd_en</obj_property>
+      <obj_property name="ObjectShortName">rd_en</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/dout">
+      <obj_property name="ElementShortName">dout[7:0]</obj_property>
+      <obj_property name="ObjectShortName">dout[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/full">
+      <obj_property name="ElementShortName">full</obj_property>
+      <obj_property name="ObjectShortName">full</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/empty">
+      <obj_property name="ElementShortName">empty</obj_property>
+      <obj_property name="ObjectShortName">empty</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/RAM">
+      <obj_property name="ElementShortName">RAM[0:15][7:0]</obj_property>
+      <obj_property name="ObjectShortName">RAM[0:15][7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_actual_depth">
+      <obj_property name="ElementShortName">s_actual_depth[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_actual_depth[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_is_invalid">
+      <obj_property name="ElementShortName">s_is_invalid</obj_property>
+      <obj_property name="ObjectShortName">s_is_invalid</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_read_pointer">
+      <obj_property name="ElementShortName">s_read_pointer[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_read_pointer[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_write_pointer">
+      <obj_property name="ElementShortName">s_write_pointer[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_write_pointer[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_empty">
+      <obj_property name="ElementShortName">s_empty</obj_property>
+      <obj_property name="ObjectShortName">s_empty</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_full">
+      <obj_property name="ElementShortName">s_full</obj_property>
+      <obj_property name="ObjectShortName">s_full</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_last_write">
+      <obj_property name="ElementShortName">s_last_write</obj_property>
+      <obj_property name="ObjectShortName">s_last_write</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_dout">
+      <obj_property name="ElementShortName">s_dout[7:0]</obj_property>
+      <obj_property name="ObjectShortName">s_dout[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/vector_length">
+      <obj_property name="ElementShortName">vector_length</obj_property>
+      <obj_property name="ObjectShortName">vector_length</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/G_MAX_DEPTH">
+      <obj_property name="ElementShortName">G_MAX_DEPTH</obj_property>
+      <obj_property name="ObjectShortName">G_MAX_DEPTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(0)\/y">
+      <obj_property name="ElementShortName">y</obj_property>
+      <obj_property name="ObjectShortName">y</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(0)\/\X_GEN(0)\/x">
+      <obj_property name="ElementShortName">x</obj_property>
+      <obj_property name="ObjectShortName">x</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(0)\/\X_GEN(1)\/x">
+      <obj_property name="ElementShortName">x</obj_property>
+      <obj_property name="ObjectShortName">x</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(0)\/\X_GEN(2)\/x">
+      <obj_property name="ElementShortName">x</obj_property>
+      <obj_property name="ObjectShortName">x</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(1)\/y">
+      <obj_property name="ElementShortName">y</obj_property>
+      <obj_property name="ObjectShortName">y</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(1)\/\X_GEN(0)\/x">
+      <obj_property name="ElementShortName">x</obj_property>
+      <obj_property name="ObjectShortName">x</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(1)\/\X_GEN(1)\/x">
+      <obj_property name="ElementShortName">x</obj_property>
+      <obj_property name="ObjectShortName">x</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(1)\/\X_GEN(2)\/x">
+      <obj_property name="ElementShortName">x</obj_property>
+      <obj_property name="ObjectShortName">x</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(2)\/y">
+      <obj_property name="ElementShortName">y</obj_property>
+      <obj_property name="ObjectShortName">y</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(2)\/\X_GEN(0)\/x">
+      <obj_property name="ElementShortName">x</obj_property>
+      <obj_property name="ObjectShortName">x</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(2)\/\X_GEN(1)\/x">
+      <obj_property name="ElementShortName">x</obj_property>
+      <obj_property name="ObjectShortName">x</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(2)\/\X_GEN(2)\/x">
+      <obj_property name="ElementShortName">x</obj_property>
+      <obj_property name="ObjectShortName">x</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/j">
+      <obj_property name="ElementShortName">j</obj_property>
+      <obj_property name="ObjectShortName">j</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/reset">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/set_full">
+      <obj_property name="ElementShortName">set_full</obj_property>
+      <obj_property name="ObjectShortName">set_full</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/depth">
+      <obj_property name="ElementShortName">depth[3:0]</obj_property>
+      <obj_property name="ObjectShortName">depth[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/din">
+      <obj_property name="ElementShortName">din[7:0]</obj_property>
+      <obj_property name="ObjectShortName">din[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/en">
+      <obj_property name="ElementShortName">en</obj_property>
+      <obj_property name="ObjectShortName">en</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/wr_en">
+      <obj_property name="ElementShortName">wr_en</obj_property>
+      <obj_property name="ObjectShortName">wr_en</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/dout">
+      <obj_property name="ElementShortName">dout[7:0]</obj_property>
+      <obj_property name="ObjectShortName">dout[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/full">
+      <obj_property name="ElementShortName">full</obj_property>
+      <obj_property name="ObjectShortName">full</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/full_read_and_write">
+      <obj_property name="ElementShortName">full_read_and_write</obj_property>
+      <obj_property name="ObjectShortName">full_read_and_write</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/s_rd_en">
+      <obj_property name="ElementShortName">s_rd_en</obj_property>
+      <obj_property name="ObjectShortName">s_rd_en</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/vector_length">
+      <obj_property name="ElementShortName">vector_length</obj_property>
+      <obj_property name="ObjectShortName">vector_length</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/G_MAX_DEPTH">
+      <obj_property name="ElementShortName">G_MAX_DEPTH</obj_property>
+      <obj_property name="ObjectShortName">G_MAX_DEPTH</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/reset">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/set_full">
+      <obj_property name="ElementShortName">set_full</obj_property>
+      <obj_property name="ObjectShortName">set_full</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/depth">
+      <obj_property name="ElementShortName">depth[3:0]</obj_property>
+      <obj_property name="ObjectShortName">depth[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/din">
+      <obj_property name="ElementShortName">din[7:0]</obj_property>
+      <obj_property name="ObjectShortName">din[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/wr_en">
+      <obj_property name="ElementShortName">wr_en</obj_property>
+      <obj_property name="ObjectShortName">wr_en</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/rd_en">
+      <obj_property name="ElementShortName">rd_en</obj_property>
+      <obj_property name="ObjectShortName">rd_en</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/dout">
+      <obj_property name="ElementShortName">dout[7:0]</obj_property>
+      <obj_property name="ObjectShortName">dout[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/full">
+      <obj_property name="ElementShortName">full</obj_property>
+      <obj_property name="ObjectShortName">full</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/empty">
+      <obj_property name="ElementShortName">empty</obj_property>
+      <obj_property name="ObjectShortName">empty</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/RAM">
+      <obj_property name="ElementShortName">RAM[0:15][7:0]</obj_property>
+      <obj_property name="ObjectShortName">RAM[0:15][7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_actual_depth">
+      <obj_property name="ElementShortName">s_actual_depth[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_actual_depth[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_is_invalid">
+      <obj_property name="ElementShortName">s_is_invalid</obj_property>
+      <obj_property name="ObjectShortName">s_is_invalid</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_read_pointer">
+      <obj_property name="ElementShortName">s_read_pointer[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_read_pointer[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_write_pointer">
+      <obj_property name="ElementShortName">s_write_pointer[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_write_pointer[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_empty">
+      <obj_property name="ElementShortName">s_empty</obj_property>
+      <obj_property name="ObjectShortName">s_empty</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_full">
+      <obj_property name="ElementShortName">s_full</obj_property>
+      <obj_property name="ObjectShortName">s_full</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_last_write">
+      <obj_property name="ElementShortName">s_last_write</obj_property>
+      <obj_property name="ObjectShortName">s_last_write</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_dout">
+      <obj_property name="ElementShortName">s_dout[7:0]</obj_property>
+      <obj_property name="ObjectShortName">s_dout[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/vector_length">
+      <obj_property name="ElementShortName">vector_length</obj_property>
+      <obj_property name="ObjectShortName">vector_length</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/G_MAX_DEPTH">
+      <obj_property name="ElementShortName">G_MAX_DEPTH</obj_property>
+      <obj_property name="ObjectShortName">G_MAX_DEPTH</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/reset">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/set_full">
+      <obj_property name="ElementShortName">set_full</obj_property>
+      <obj_property name="ObjectShortName">set_full</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/depth">
+      <obj_property name="ElementShortName">depth[3:0]</obj_property>
+      <obj_property name="ObjectShortName">depth[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/din">
+      <obj_property name="ElementShortName">din[7:0]</obj_property>
+      <obj_property name="ObjectShortName">din[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/en">
+      <obj_property name="ElementShortName">en</obj_property>
+      <obj_property name="ObjectShortName">en</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/wr_en">
+      <obj_property name="ElementShortName">wr_en</obj_property>
+      <obj_property name="ObjectShortName">wr_en</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/dout">
+      <obj_property name="ElementShortName">dout[7:0]</obj_property>
+      <obj_property name="ObjectShortName">dout[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/full">
+      <obj_property name="ElementShortName">full</obj_property>
+      <obj_property name="ObjectShortName">full</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/full_read_and_write">
+      <obj_property name="ElementShortName">full_read_and_write</obj_property>
+      <obj_property name="ObjectShortName">full_read_and_write</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/s_rd_en">
+      <obj_property name="ElementShortName">s_rd_en</obj_property>
+      <obj_property name="ObjectShortName">s_rd_en</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/vector_length">
+      <obj_property name="ElementShortName">vector_length</obj_property>
+      <obj_property name="ObjectShortName">vector_length</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/G_MAX_DEPTH">
+      <obj_property name="ElementShortName">G_MAX_DEPTH</obj_property>
+      <obj_property name="ObjectShortName">G_MAX_DEPTH</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/reset">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/set_full">
+      <obj_property name="ElementShortName">set_full</obj_property>
+      <obj_property name="ObjectShortName">set_full</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/depth">
+      <obj_property name="ElementShortName">depth[3:0]</obj_property>
+      <obj_property name="ObjectShortName">depth[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/din">
+      <obj_property name="ElementShortName">din[7:0]</obj_property>
+      <obj_property name="ObjectShortName">din[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/wr_en">
+      <obj_property name="ElementShortName">wr_en</obj_property>
+      <obj_property name="ObjectShortName">wr_en</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/rd_en">
+      <obj_property name="ElementShortName">rd_en</obj_property>
+      <obj_property name="ObjectShortName">rd_en</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/dout">
+      <obj_property name="ElementShortName">dout[7:0]</obj_property>
+      <obj_property name="ObjectShortName">dout[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/full">
+      <obj_property name="ElementShortName">full</obj_property>
+      <obj_property name="ObjectShortName">full</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/empty">
+      <obj_property name="ElementShortName">empty</obj_property>
+      <obj_property name="ObjectShortName">empty</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/RAM">
+      <obj_property name="ElementShortName">RAM[0:15][7:0]</obj_property>
+      <obj_property name="ObjectShortName">RAM[0:15][7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_actual_depth">
+      <obj_property name="ElementShortName">s_actual_depth[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_actual_depth[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_is_invalid">
+      <obj_property name="ElementShortName">s_is_invalid</obj_property>
+      <obj_property name="ObjectShortName">s_is_invalid</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_read_pointer">
+      <obj_property name="ElementShortName">s_read_pointer[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_read_pointer[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_write_pointer">
+      <obj_property name="ElementShortName">s_write_pointer[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_write_pointer[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_empty">
+      <obj_property name="ElementShortName">s_empty</obj_property>
+      <obj_property name="ObjectShortName">s_empty</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_full">
+      <obj_property name="ElementShortName">s_full</obj_property>
+      <obj_property name="ObjectShortName">s_full</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_last_write">
+      <obj_property name="ElementShortName">s_last_write</obj_property>
+      <obj_property name="ObjectShortName">s_last_write</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_dout">
+      <obj_property name="ElementShortName">s_dout[7:0]</obj_property>
+      <obj_property name="ObjectShortName">s_dout[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/vector_length">
+      <obj_property name="ElementShortName">vector_length</obj_property>
+      <obj_property name="ObjectShortName">vector_length</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/G_MAX_DEPTH">
+      <obj_property name="ElementShortName">G_MAX_DEPTH</obj_property>
+      <obj_property name="ObjectShortName">G_MAX_DEPTH</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/reset">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/set_full">
+      <obj_property name="ElementShortName">set_full</obj_property>
+      <obj_property name="ObjectShortName">set_full</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/depth">
+      <obj_property name="ElementShortName">depth[3:0]</obj_property>
+      <obj_property name="ObjectShortName">depth[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/din">
+      <obj_property name="ElementShortName">din[7:0]</obj_property>
+      <obj_property name="ObjectShortName">din[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/wr_en">
+      <obj_property name="ElementShortName">wr_en</obj_property>
+      <obj_property name="ObjectShortName">wr_en</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/rd_en">
+      <obj_property name="ElementShortName">rd_en</obj_property>
+      <obj_property name="ObjectShortName">rd_en</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/dout">
+      <obj_property name="ElementShortName">dout[7:0]</obj_property>
+      <obj_property name="ObjectShortName">dout[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/full">
+      <obj_property name="ElementShortName">full</obj_property>
+      <obj_property name="ObjectShortName">full</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/empty">
+      <obj_property name="ElementShortName">empty</obj_property>
+      <obj_property name="ObjectShortName">empty</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/RAM">
+      <obj_property name="ElementShortName">RAM[0:15][7:0]</obj_property>
+      <obj_property name="ObjectShortName">RAM[0:15][7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_actual_depth">
+      <obj_property name="ElementShortName">s_actual_depth[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_actual_depth[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_is_invalid">
+      <obj_property name="ElementShortName">s_is_invalid</obj_property>
+      <obj_property name="ObjectShortName">s_is_invalid</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_read_pointer">
+      <obj_property name="ElementShortName">s_read_pointer[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_read_pointer[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_write_pointer">
+      <obj_property name="ElementShortName">s_write_pointer[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_write_pointer[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_empty">
+      <obj_property name="ElementShortName">s_empty</obj_property>
+      <obj_property name="ObjectShortName">s_empty</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_full">
+      <obj_property name="ElementShortName">s_full</obj_property>
+      <obj_property name="ObjectShortName">s_full</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_last_write">
+      <obj_property name="ElementShortName">s_last_write</obj_property>
+      <obj_property name="ObjectShortName">s_last_write</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_dout">
+      <obj_property name="ElementShortName">s_dout[7:0]</obj_property>
+      <obj_property name="ObjectShortName">s_dout[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/vector_length">
+      <obj_property name="ElementShortName">vector_length</obj_property>
+      <obj_property name="ObjectShortName">vector_length</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/G_MAX_DEPTH">
+      <obj_property name="ElementShortName">G_MAX_DEPTH</obj_property>
+      <obj_property name="ObjectShortName">G_MAX_DEPTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/j">
+      <obj_property name="ElementShortName">j</obj_property>
+      <obj_property name="ObjectShortName">j</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/reset">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/set_full">
+      <obj_property name="ElementShortName">set_full</obj_property>
+      <obj_property name="ObjectShortName">set_full</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/depth">
+      <obj_property name="ElementShortName">depth[3:0]</obj_property>
+      <obj_property name="ObjectShortName">depth[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/din">
+      <obj_property name="ElementShortName">din[7:0]</obj_property>
+      <obj_property name="ObjectShortName">din[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/en">
+      <obj_property name="ElementShortName">en</obj_property>
+      <obj_property name="ObjectShortName">en</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/wr_en">
+      <obj_property name="ElementShortName">wr_en</obj_property>
+      <obj_property name="ObjectShortName">wr_en</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/dout">
+      <obj_property name="ElementShortName">dout[7:0]</obj_property>
+      <obj_property name="ObjectShortName">dout[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/full">
+      <obj_property name="ElementShortName">full</obj_property>
+      <obj_property name="ObjectShortName">full</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/full_read_and_write">
+      <obj_property name="ElementShortName">full_read_and_write</obj_property>
+      <obj_property name="ObjectShortName">full_read_and_write</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/s_rd_en">
+      <obj_property name="ElementShortName">s_rd_en</obj_property>
+      <obj_property name="ObjectShortName">s_rd_en</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/vector_length">
+      <obj_property name="ElementShortName">vector_length</obj_property>
+      <obj_property name="ObjectShortName">vector_length</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/G_MAX_DEPTH">
+      <obj_property name="ElementShortName">G_MAX_DEPTH</obj_property>
+      <obj_property name="ObjectShortName">G_MAX_DEPTH</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/reset">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/set_full">
+      <obj_property name="ElementShortName">set_full</obj_property>
+      <obj_property name="ObjectShortName">set_full</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/depth">
+      <obj_property name="ElementShortName">depth[3:0]</obj_property>
+      <obj_property name="ObjectShortName">depth[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/din">
+      <obj_property name="ElementShortName">din[7:0]</obj_property>
+      <obj_property name="ObjectShortName">din[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/wr_en">
+      <obj_property name="ElementShortName">wr_en</obj_property>
+      <obj_property name="ObjectShortName">wr_en</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/rd_en">
+      <obj_property name="ElementShortName">rd_en</obj_property>
+      <obj_property name="ObjectShortName">rd_en</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/dout">
+      <obj_property name="ElementShortName">dout[7:0]</obj_property>
+      <obj_property name="ObjectShortName">dout[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/full">
+      <obj_property name="ElementShortName">full</obj_property>
+      <obj_property name="ObjectShortName">full</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/empty">
+      <obj_property name="ElementShortName">empty</obj_property>
+      <obj_property name="ObjectShortName">empty</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/RAM">
+      <obj_property name="ElementShortName">RAM[0:15][7:0]</obj_property>
+      <obj_property name="ObjectShortName">RAM[0:15][7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_actual_depth">
+      <obj_property name="ElementShortName">s_actual_depth[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_actual_depth[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_is_invalid">
+      <obj_property name="ElementShortName">s_is_invalid</obj_property>
+      <obj_property name="ObjectShortName">s_is_invalid</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_read_pointer">
+      <obj_property name="ElementShortName">s_read_pointer[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_read_pointer[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_write_pointer">
+      <obj_property name="ElementShortName">s_write_pointer[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_write_pointer[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_empty">
+      <obj_property name="ElementShortName">s_empty</obj_property>
+      <obj_property name="ObjectShortName">s_empty</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_full">
+      <obj_property name="ElementShortName">s_full</obj_property>
+      <obj_property name="ObjectShortName">s_full</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_last_write">
+      <obj_property name="ElementShortName">s_last_write</obj_property>
+      <obj_property name="ObjectShortName">s_last_write</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_dout">
+      <obj_property name="ElementShortName">s_dout[7:0]</obj_property>
+      <obj_property name="ObjectShortName">s_dout[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/vector_length">
+      <obj_property name="ElementShortName">vector_length</obj_property>
+      <obj_property name="ObjectShortName">vector_length</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/G_MAX_DEPTH">
+      <obj_property name="ElementShortName">G_MAX_DEPTH</obj_property>
+      <obj_property name="ObjectShortName">G_MAX_DEPTH</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/reset">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/set_full">
+      <obj_property name="ElementShortName">set_full</obj_property>
+      <obj_property name="ObjectShortName">set_full</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/depth">
+      <obj_property name="ElementShortName">depth[3:0]</obj_property>
+      <obj_property name="ObjectShortName">depth[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/din">
+      <obj_property name="ElementShortName">din[7:0]</obj_property>
+      <obj_property name="ObjectShortName">din[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/en">
+      <obj_property name="ElementShortName">en</obj_property>
+      <obj_property name="ObjectShortName">en</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/wr_en">
+      <obj_property name="ElementShortName">wr_en</obj_property>
+      <obj_property name="ObjectShortName">wr_en</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/dout">
+      <obj_property name="ElementShortName">dout[7:0]</obj_property>
+      <obj_property name="ObjectShortName">dout[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/full">
+      <obj_property name="ElementShortName">full</obj_property>
+      <obj_property name="ObjectShortName">full</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/full_read_and_write">
+      <obj_property name="ElementShortName">full_read_and_write</obj_property>
+      <obj_property name="ObjectShortName">full_read_and_write</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/s_rd_en">
+      <obj_property name="ElementShortName">s_rd_en</obj_property>
+      <obj_property name="ObjectShortName">s_rd_en</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/vector_length">
+      <obj_property name="ElementShortName">vector_length</obj_property>
+      <obj_property name="ObjectShortName">vector_length</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/G_MAX_DEPTH">
+      <obj_property name="ElementShortName">G_MAX_DEPTH</obj_property>
+      <obj_property name="ObjectShortName">G_MAX_DEPTH</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/reset">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/set_full">
+      <obj_property name="ElementShortName">set_full</obj_property>
+      <obj_property name="ObjectShortName">set_full</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/depth">
+      <obj_property name="ElementShortName">depth[3:0]</obj_property>
+      <obj_property name="ObjectShortName">depth[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/din">
+      <obj_property name="ElementShortName">din[7:0]</obj_property>
+      <obj_property name="ObjectShortName">din[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/wr_en">
+      <obj_property name="ElementShortName">wr_en</obj_property>
+      <obj_property name="ObjectShortName">wr_en</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/rd_en">
+      <obj_property name="ElementShortName">rd_en</obj_property>
+      <obj_property name="ObjectShortName">rd_en</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/dout">
+      <obj_property name="ElementShortName">dout[7:0]</obj_property>
+      <obj_property name="ObjectShortName">dout[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/full">
+      <obj_property name="ElementShortName">full</obj_property>
+      <obj_property name="ObjectShortName">full</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/empty">
+      <obj_property name="ElementShortName">empty</obj_property>
+      <obj_property name="ObjectShortName">empty</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/RAM">
+      <obj_property name="ElementShortName">RAM[0:15][7:0]</obj_property>
+      <obj_property name="ObjectShortName">RAM[0:15][7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_actual_depth">
+      <obj_property name="ElementShortName">s_actual_depth[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_actual_depth[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_is_invalid">
+      <obj_property name="ElementShortName">s_is_invalid</obj_property>
+      <obj_property name="ObjectShortName">s_is_invalid</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_read_pointer">
+      <obj_property name="ElementShortName">s_read_pointer[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_read_pointer[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_write_pointer">
+      <obj_property name="ElementShortName">s_write_pointer[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_write_pointer[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_empty">
+      <obj_property name="ElementShortName">s_empty</obj_property>
+      <obj_property name="ObjectShortName">s_empty</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_full">
+      <obj_property name="ElementShortName">s_full</obj_property>
+      <obj_property name="ObjectShortName">s_full</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_last_write">
+      <obj_property name="ElementShortName">s_last_write</obj_property>
+      <obj_property name="ObjectShortName">s_last_write</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_dout">
+      <obj_property name="ElementShortName">s_dout[7:0]</obj_property>
+      <obj_property name="ObjectShortName">s_dout[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/vector_length">
+      <obj_property name="ElementShortName">vector_length</obj_property>
+      <obj_property name="ObjectShortName">vector_length</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/G_MAX_DEPTH">
+      <obj_property name="ElementShortName">G_MAX_DEPTH</obj_property>
+      <obj_property name="ObjectShortName">G_MAX_DEPTH</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/reset">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/set_full">
+      <obj_property name="ElementShortName">set_full</obj_property>
+      <obj_property name="ObjectShortName">set_full</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/depth">
+      <obj_property name="ElementShortName">depth[3:0]</obj_property>
+      <obj_property name="ObjectShortName">depth[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/din">
+      <obj_property name="ElementShortName">din[7:0]</obj_property>
+      <obj_property name="ObjectShortName">din[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/wr_en">
+      <obj_property name="ElementShortName">wr_en</obj_property>
+      <obj_property name="ObjectShortName">wr_en</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/rd_en">
+      <obj_property name="ElementShortName">rd_en</obj_property>
+      <obj_property name="ObjectShortName">rd_en</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/dout">
+      <obj_property name="ElementShortName">dout[7:0]</obj_property>
+      <obj_property name="ObjectShortName">dout[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/full">
+      <obj_property name="ElementShortName">full</obj_property>
+      <obj_property name="ObjectShortName">full</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/empty">
+      <obj_property name="ElementShortName">empty</obj_property>
+      <obj_property name="ObjectShortName">empty</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/RAM">
+      <obj_property name="ElementShortName">RAM[0:15][7:0]</obj_property>
+      <obj_property name="ObjectShortName">RAM[0:15][7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_actual_depth">
+      <obj_property name="ElementShortName">s_actual_depth[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_actual_depth[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_is_invalid">
+      <obj_property name="ElementShortName">s_is_invalid</obj_property>
+      <obj_property name="ObjectShortName">s_is_invalid</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_read_pointer">
+      <obj_property name="ElementShortName">s_read_pointer[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_read_pointer[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_write_pointer">
+      <obj_property name="ElementShortName">s_write_pointer[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_write_pointer[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_empty">
+      <obj_property name="ElementShortName">s_empty</obj_property>
+      <obj_property name="ObjectShortName">s_empty</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_full">
+      <obj_property name="ElementShortName">s_full</obj_property>
+      <obj_property name="ObjectShortName">s_full</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_last_write">
+      <obj_property name="ElementShortName">s_last_write</obj_property>
+      <obj_property name="ObjectShortName">s_last_write</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/s_dout">
+      <obj_property name="ElementShortName">s_dout[7:0]</obj_property>
+      <obj_property name="ObjectShortName">s_dout[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/vector_length">
+      <obj_property name="ElementShortName">vector_length</obj_property>
+      <obj_property name="ObjectShortName">vector_length</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/G_MAX_DEPTH">
+      <obj_property name="ElementShortName">G_MAX_DEPTH</obj_property>
+      <obj_property name="ObjectShortName">G_MAX_DEPTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(0)\/y">
+      <obj_property name="ElementShortName">y</obj_property>
+      <obj_property name="ObjectShortName">y</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(0)\/\X_GEN(0)\/x">
+      <obj_property name="ElementShortName">x</obj_property>
+      <obj_property name="ObjectShortName">x</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(0)\/\X_GEN(1)\/x">
+      <obj_property name="ElementShortName">x</obj_property>
+      <obj_property name="ObjectShortName">x</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(0)\/\X_GEN(2)\/x">
+      <obj_property name="ElementShortName">x</obj_property>
+      <obj_property name="ObjectShortName">x</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(0)\/\X_GEN(0)\/x">
+      <obj_property name="ElementShortName">x</obj_property>
+      <obj_property name="ObjectShortName">x</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(0)\/\X_GEN(1)\/x">
+      <obj_property name="ElementShortName">x</obj_property>
+      <obj_property name="ObjectShortName">x</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(0)\/\X_GEN(2)\/x">
+      <obj_property name="ElementShortName">x</obj_property>
+      <obj_property name="ObjectShortName">x</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(1)\/y">
+      <obj_property name="ElementShortName">y</obj_property>
+      <obj_property name="ObjectShortName">y</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(1)\/\X_GEN(0)\/x">
+      <obj_property name="ElementShortName">x</obj_property>
+      <obj_property name="ObjectShortName">x</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(1)\/\X_GEN(1)\/x">
+      <obj_property name="ElementShortName">x</obj_property>
+      <obj_property name="ObjectShortName">x</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(1)\/\X_GEN(2)\/x">
+      <obj_property name="ElementShortName">x</obj_property>
+      <obj_property name="ObjectShortName">x</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(1)\/\X_GEN(0)\/x">
+      <obj_property name="ElementShortName">x</obj_property>
+      <obj_property name="ObjectShortName">x</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(1)\/\X_GEN(1)\/x">
+      <obj_property name="ElementShortName">x</obj_property>
+      <obj_property name="ObjectShortName">x</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(1)\/\X_GEN(2)\/x">
+      <obj_property name="ElementShortName">x</obj_property>
+      <obj_property name="ObjectShortName">x</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(2)\/y">
+      <obj_property name="ElementShortName">y</obj_property>
+      <obj_property name="ObjectShortName">y</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(2)\/\X_GEN(0)\/x">
+      <obj_property name="ElementShortName">x</obj_property>
+      <obj_property name="ObjectShortName">x</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(2)\/\X_GEN(1)\/x">
+      <obj_property name="ElementShortName">x</obj_property>
+      <obj_property name="ObjectShortName">x</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(2)\/\X_GEN(2)\/x">
+      <obj_property name="ElementShortName">x</obj_property>
+      <obj_property name="ObjectShortName">x</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(2)\/\X_GEN(0)\/x">
+      <obj_property name="ElementShortName">x</obj_property>
+      <obj_property name="ObjectShortName">x</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(2)\/\X_GEN(1)\/x">
+      <obj_property name="ElementShortName">x</obj_property>
+      <obj_property name="ObjectShortName">x</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/kernel_slider_tb/kernel_slider_inst/\Y_GEN(2)\/\X_GEN(2)\/x">
+      <obj_property name="ElementShortName">x</obj_property>
+      <obj_property name="ObjectShortName">x</obj_property>
+   </wvobject>
+</wave_config>

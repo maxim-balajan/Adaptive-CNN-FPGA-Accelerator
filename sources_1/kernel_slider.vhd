@@ -6,10 +6,10 @@ use work.libmatrix.all;
 
 entity kernel_slider is
 	generic (
-		vector_length    : natural := 8;
-		G_IMG_META_BITS  : natural := 10;
-		G_IMG_MAX_LENGTH : natural := 227;
-		kernel_size      : natural := 5
+		vector_length     : natural := 8;
+		G_IMG_MAX_LENGTH  : natural := 227;
+		G_KERNEL_MAX_SIZE : natural := 11;
+		kernel_size       : natural := 5
 	);
 	port (
 		clk   : in std_logic;
@@ -18,12 +18,13 @@ entity kernel_slider is
 		en           : in std_logic;
 		pixel_stream : in std_logic_vector(vector_length - 1 downto 0);
 		--
-		image_length : in std_logic_vector(G_IMG_META_BITS - 1 downto 0);
+		image_length : in std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
 		-- normally padding size would not be necessary, but it enables skipping a lot of initialization
-		padding_size : in std_logic_vector(G_IMG_META_BITS - 1 downto 0);
+		padding_size : in std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
 		--
-		init_complete            : out std_logic;
-		kernel_activation_matrix : out matrix_1d(0 to kernel_size ** 2 - 1)(vector_length - 1 downto 0)
+		init_complete : out std_logic;
+		-- Kernel activation matrix can be large then actual needed output to later deal with reconfigurations
+		kernel_activation_matrix : out matrix_1d(0 to G_KERNEL_MAX_SIZE ** 2 - 1)(vector_length - 1 downto 0)
 	);
 end entity kernel_slider;
 
@@ -69,9 +70,12 @@ begin
 	s_kernel_matrix(s_kernel_matrix'low)(s_kernel_matrix'low) <= pixel_stream;
 
 	-- Map full signal of last FIFO to full delay line
-	s_full_delay(s_full_delay'low) <= s_line_buffer_wr_en(s_line_buffer_wr_en'high);
+	s_full_delay(s_full_delay'low) <= s_line_buffer_wr_en(s_line_buffer_wr_en'high) or s_set_full_line(s_set_full_line'high);
 
 	-- only kernel_size - 1 many line_buffer need to be created
+
+	--s_set_full_line(0) <= '0' when (signed(padding_size) > 0) else '0';
+	--s_set_full_line(1 to kernel_size - 2) <= (others => '0'); 
 
 	LINE_BUFFER_GEN : for j in 0 to kernel_size - 2 generate
 
@@ -88,9 +92,9 @@ begin
 				set_full => s_set_full_line(j),
 				-- unga-bunga -1 to solve the timing problem
 				-- (I don't think you can solve this differently with BRAM blocks and without considerable amount of HW)
-				depth               => std_logic_vector(unsigned(image_length) - 1),
+				depth               => std_logic_vector(unsigned(image_length) + shift_left(unsigned(padding_size), 1) - 1),
 				en                  => en,
-				wr_en               => s_line_buffer_wr_en(j),
+				wr_en               => s_line_buffer_wr_en(j) or s_set_full_line(j),
 				full                => open,
 				full_read_and_write => s_line_buffer_wr_en(j + 1),
 				din                 => s_kernel_matrix(s_kernel_matrix'low)(j),
@@ -108,7 +112,7 @@ begin
 	Y_GEN : for y in 0 to kernel_size - 1 generate
 
 		X_GEN : for x in 0 to kernel_size - 1 generate
-			kernel_activation_matrix((kernel_size - 1 - y) * kernel_size + kernel_size - 1 - x) <= s_kernel_activation_matrix(x)(y);
+			kernel_activation_matrix((kernel_size - 1 - y) * G_KERNEL_MAX_SIZE + kernel_size - 1 - x) <= s_kernel_activation_matrix(x)(y);
 		end generate X_GEN;
 
 	end generate Y_GEN;

@@ -1,7 +1,11 @@
 #!/bin/bash
 
+# Remove all prior bram_fifo simulation if they exist
+rm -rf /tmp/vivado_sim.bram_fifo*
+
 # Use a temporary directory for sim artifacts
-SIM_TEMP_DIR=$(mktemp -d /tmp/vivado_sim.bram_fifo.XXXXXX)
+SIM_PATH=/tmp/vivado_sim.bram_fifo
+SIM_TEMP_DIR=$(mkdir /tmp/vivado_sim.bram_fifo)
 CONFIG=$PRJ_WAVE_CFG/bram_fifo_tb.wcfg
 
 # Clean up on exit
@@ -26,7 +30,6 @@ xvhdl -2008 $PRJ_HW_SIMS_PATH/bram_fifo_tb.vhd
 # Elaborate the testbench
 xelab bram_fifo_tb -s bram_fifo_tb_sim --debug typical
 
-# Write a one-off TCL file to auto add signals and run
 cat <<EOF > wave_auto.tcl
 $(if [[ -f "$CONFIG" ]]; then
   echo "open_wave_config \"$CONFIG\""
@@ -38,3 +41,4 @@ EOF
 
 # Launch simulation in GUI and automatically run xsim.tcl
 xsim bram_fifo_tb_sim -gui -tclbatch wave_auto.tcl
+
