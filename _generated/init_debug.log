@@ -178,8 +178,10 @@ Requirement already satisfied: mpmath<1.4,>=1.1.0 in ./.venv/lib/python3.10/site
 #                       C++ reference implementation
 # prj_run_simulation..: Run the C++ reference implementation
 ####################################################################
-# prj_simulate_help.....: Print all possible simulation runs
-# prj_simulate_bram_fifo: Run Testbench for BRAM FIFO
+# prj_simulate_help.........: Print all possible simulation runs
+# prj_simulate_bram_fifo....: Run Testbench for BRAM FIFO
+# prj_simulate_line_buffer..: Run Testbench for a Line Buffer
+# prj_simulate_kernel_slider: Run Testbench for a Kernel Slider
 ####################################################################
 # cd_root.............: Change CWD to project root:
 #                       [/home/maxim/Documents/Uni/BA/bachelor-thesis]

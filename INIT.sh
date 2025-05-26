@@ -25,9 +25,9 @@ alias cd_hw_sources="cd $PRJ_HW_SOURCES_PATH"
 alias cd_hw_sims="cd $PRJ_HW_SIMS_PATH"
 
 # Simulate Aliases
-alias prj_simulate_bram_fifo="$PRJ_SCRIPTS/simulation/bram_fifo.sh"         | tee "$PRJ_GENERATED_PATH/bram_fifo_sim.log"
-alias prj_simulate_line_buffer="$PRJ_SCRIPTS/simulation/line_buffer.sh"     | tee "$PRJ_GENERATED_PATH/line_buffer_sim.log"
-alias prj_simulate_kernel_slider="$PRJ_SCRIPTS/simulation/kernel_slider.sh" | tee "$PRJ_GENERATED_PATH/kernel_slider.log"
+alias prj_simulate_bram_fifo="'$PRJ_SCRIPTS/simulation/bram_fifo.sh'      | tee '$PRJ_GENERATED_PATH/bram_fifo_sim.log'"
+alias prj_simulate_line_buffer="'$PRJ_SCRIPTS/simulation/line_buffer.sh'     | tee '$PRJ_GENERATED_PATH/line_buffer_sim.log'"
+alias prj_simulate_kernel_slider="'$PRJ_SCRIPTS/simulation/kernel_slider.sh' | tee '$PRJ_GENERATED_PATH/kernel_slider.log'"
 
 prj_simulate_help() {
     echo "####################################################################"

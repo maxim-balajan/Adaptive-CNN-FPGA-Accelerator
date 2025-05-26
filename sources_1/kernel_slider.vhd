@@ -70,12 +70,9 @@ begin
 	s_kernel_matrix(s_kernel_matrix'low)(s_kernel_matrix'low) <= pixel_stream;
 
 	-- Map full signal of last FIFO to full delay line
-	s_full_delay(s_full_delay'low) <= s_line_buffer_wr_en(s_line_buffer_wr_en'high) or s_set_full_line(s_set_full_line'high);
+	s_full_delay(s_full_delay'low) <= s_line_buffer_wr_en(s_line_buffer_wr_en'high); -- or s_set_full_line(s_set_full_line'high);
 
 	-- only kernel_size - 1 many line_buffer need to be created
-
-	--s_set_full_line(0) <= '0' when (signed(padding_size) > 0) else '0';
-	--s_set_full_line(1 to kernel_size - 2) <= (others => '0'); 
 
 	LINE_BUFFER_GEN : for j in 0 to kernel_size - 2 generate
 
@@ -118,6 +115,8 @@ begin
 	end generate Y_GEN;
 
 	-- This is important so that Pooling and Convolution know when they have valid kernel
-	init_complete <= s_full_delay(s_full_delay'high);
+	-- Unga-Bunga Multiplexer to solve the timing problem created by having any form of padding
+	init_complete <= s_full_delay(s_full_delay'high) when or padding_size = '0' else
+	                 s_full_delay(s_full_delay'high - 1);
 
 end architecture rtl;

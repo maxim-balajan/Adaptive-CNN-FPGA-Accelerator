@@ -8,15 +8,16 @@ CURRENT_PWD=$(pwd)
 SIM_TEMP_DIR=$(mktemp -d /tmp/vivado_sim.kernel_slider.XXXXXX)
 CONFIG=$PRJ_WAVE_CFG/kernel_slider_tb.wcfg
 
-echo "#####################################################"
-echo "# Using temporary path....: $SIM_TEMP_DIR"
-echo "# Using config (if exists): $CONFIG"
-echo "#####################################################"
+echo "####################################################################"
+echo "# Removed older tmp projects at: /tmp/vivado_sim.kernel_slider.*"
+echo "# Using temporary path.........: $SIM_TEMP_DIR"
+echo "# Using config (if exists).....: $CONFIG"
+echo "####################################################################"
 echo ""
 
 # Change to temporary dir
 cd "$SIM_TEMP_DIR" || {
-    echo "# Could not create directory $SIM_PATH. Abort..."
+    echo "# Could not create directory $SIM_TEMP_DIR. Abort..."
     cd $CURRENT_PWD
     exit 1
 }
@@ -32,11 +33,13 @@ xvhdl -2008 $PRJ_HW_SOURCES_PATH/line_buffer.vhd
 xvhdl -2008 $PRJ_HW_SOURCES_PATH/kernel_slider.vhd
 xvhdl -2008 $PRJ_HW_SIMS_PATH/kernel_slider_tb.vhd
 
+
 echo ""
 echo "#####################################################"
 echo "# Starting Elaboration...:                          #"
 echo "#####################################################"
 echo ""
+
 xelab kernel_slider_tb -s kernel_slider_tb_sim --debug typical || {
     echo "# Elaboration failed due to previous errors! Abort..."
     cd $CURRENT_PWD
@@ -52,10 +55,12 @@ fi)
 run all
 EOF
 
+echo ""
 echo "#####################################################"
 echo "# Starting Simulation...:                           #"
 echo "#####################################################"
 echo ""
+
 xsim kernel_slider_tb_sim -gui -tclbatch wave_auto.tcl || {
     echo "# Simulation failed due to previous errors! Abort..."
     cd $CURRENT_PWD

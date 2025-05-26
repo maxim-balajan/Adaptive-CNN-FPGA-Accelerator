@@ -4,31 +4,47 @@
 rm -rf /tmp/vivado_sim.bram_fifo*
 
 # Use a temporary directory for sim artifacts
-SIM_PATH=/tmp/vivado_sim.bram_fifo
-SIM_TEMP_DIR=$(mkdir /tmp/vivado_sim.bram_fifo)
+CURRENT_PWD=$(pwd)
+SIM_TEMP_DIR=$(mktemp -d /tmp/vivado_sim.bram_fifo.XXXXXX)
 CONFIG=$PRJ_WAVE_CFG/bram_fifo_tb.wcfg
 
-# Clean up on exit
-cleanup() {
-  rm -rf "$SIM_TEMP_DIR"
-}
-trap cleanup EXIT
 
-echo ""
-echo " # Using temporary path....: $SIM_TEMP_DIR"
-echo " # Using config (if exists): $CONFIG"
+echo "####################################################################"
+echo "# Removed older tmp projects at: /tmp/vivado_sim.bram_fifo.*"
+echo "# Using temporary path.........: $SIM_TEMP_DIR"
+echo "# Using config (if exists).....: $CONFIG"
+echo "####################################################################"
 echo ""
 
 # Change to temporary dir
-cd "$SIM_TEMP_DIR" || exit 1
+cd "$SIM_TEMP_DIR" || {
+    echo "# Could not create directory $SIM_TEMP_DIR. Abort..."
+    cd $CURRENT_PWD
+    exit 1
+}
 
-# Compile VHDL sources
+
+echo ""
+echo "#####################################################"
+echo "# Starting Compilation...:                          #"
+echo "#####################################################"
+echo ""
 xvhdl -2008 $PRJ_HW_SOURCES_PATH/libmatrix.vhd
 xvhdl -2008 $PRJ_HW_SOURCES_PATH/bram_fifo.vhd
 xvhdl -2008 $PRJ_HW_SIMS_PATH/bram_fifo_tb.vhd
 
-# Elaborate the testbench
-xelab bram_fifo_tb -s bram_fifo_tb_sim --debug typical
+
+echo ""
+echo "#####################################################"
+echo "# Starting Elaboration...:                          #"
+echo "#####################################################"
+echo ""
+
+xelab bram_fifo_tb -s bram_fifo_tb_sim --debug typical || {
+    echo "# Elaboration failed due to previous errors! Abort..."
+    cd $CURRENT_PWD
+    exit 1
+}
 
 cat <<EOF > wave_auto.tcl
 $(if [[ -f "$CONFIG" ]]; then
@@ -39,6 +55,14 @@ fi)
 run all
 EOF
 
-# Launch simulation in GUI and automatically run xsim.tcl
-xsim bram_fifo_tb_sim -gui -tclbatch wave_auto.tcl
+echo ""
+echo "#####################################################"
+echo "# Starting Simulation...:                           #"
+echo "#####################################################"
+echo ""
 
+xsim bram_fifo_tb_sim -gui -tclbatch wave_auto.tcl || {
+    echo "# Simulation failed due to previous errors! Abort..."
+    cd $CURRENT_PWD
+    exit 1
+}
