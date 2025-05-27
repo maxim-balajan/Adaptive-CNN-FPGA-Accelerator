@@ -1,15 +1,46 @@
 #!/bin/bash
 
-# Remove all prior bram_fifo simulation if they exist
-rm -rf /tmp/vivado_sim.kernel_slider.*
+# Initialize our own variables
+OPTIND=1         # Reset in case getopts has been used previously in the shell.
+GUI=""
+
+# Parsing of arguments
+while getopts "h?g" opt; do
+    case "$opt" in
+    h|\?)
+        echo "Usage: $0 -g"
+        exit 0
+        ;;
+    g)  GUI="-gui"
+        ;;
+    esac
+done
+
+shift $((OPTIND-1))
+
+[ "${1:-}" = "--" ] && shift
+
+# Remove all prior simulation folders if they exist
+TB=$1
+shift $((OPTIND-1))
+rm -rf /tmp/vivado_sim.$TB*
 
 # Use a temporary directory for sim artifacts
 CURRENT_PWD=$(pwd)
-SIM_TEMP_DIR=$(mktemp -d /tmp/vivado_sim.kernel_slider.XXXXXX)
-CONFIG=$PRJ_WAVE_CFG/kernel_slider_tb.wcfg
+SIM_TEMP_DIR=$(mktemp -d "/tmp/vivado_sim.$TB.XXXXXX")
+CONFIG="$PRJ_WAVE_CFG/${TB}_tb.wcfg"
+
+echo ""
+echo "####################################################################"
+echo "# Elaboration and Simulation of ${TB}_tb"
+echo "# Using temporary path.........: $SIM_TEMP_DIR"
+echo "# Using config (if exists).....: $CONFIG"
+echo "####################################################################"
+echo ""
+
 
 echo "####################################################################"
-echo "# Removed older tmp projects at: /tmp/vivado_sim.kernel_slider.*"
+echo "# Removed older tmp projects at: /tmp/vivado_sim.$TB.*"
 echo "# Using temporary path.........: $SIM_TEMP_DIR"
 echo "# Using config (if exists).....: $CONFIG"
 echo "####################################################################"
@@ -22,16 +53,16 @@ cd "$SIM_TEMP_DIR" || {
     exit 1
 }
 
+
 echo ""
 echo "#####################################################"
 echo "# Starting Compilation...:                          #"
 echo "#####################################################"
 echo ""
-xvhdl -2008 $PRJ_HW_SOURCES_PATH/libmatrix.vhd
-xvhdl -2008 $PRJ_HW_SOURCES_PATH/bram_fifo.vhd
-xvhdl -2008 $PRJ_HW_SOURCES_PATH/line_buffer.vhd
-xvhdl -2008 $PRJ_HW_SOURCES_PATH/kernel_slider.vhd
-xvhdl -2008 $PRJ_HW_SIMS_PATH/kernel_slider_tb.vhd
+for src_file in "$@"
+do
+  xvhdl -2008 $src_file
+done
 
 
 echo ""
@@ -40,7 +71,7 @@ echo "# Starting Elaboration...:                          #"
 echo "#####################################################"
 echo ""
 
-xelab kernel_slider_tb -s kernel_slider_tb_sim --debug typical || {
+xelab "${TB}_tb" -s "${TB}_tb_sim" --debug typical || {
     echo "# Elaboration failed due to previous errors! Abort..."
     cd $CURRENT_PWD
     exit 1
@@ -61,7 +92,7 @@ echo "# Starting Simulation...:                           #"
 echo "#####################################################"
 echo ""
 
-xsim kernel_slider_tb_sim -gui -tclbatch wave_auto.tcl || {
+xsim "${TB}_tb_sim" $GUI -tclbatch wave_auto.tcl || {
     echo "# Simulation failed due to previous errors! Abort..."
     cd $CURRENT_PWD
     exit 1

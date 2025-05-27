@@ -165,6 +165,7 @@ Requirement already satisfied: mpmath<1.4,>=1.1.0 in ./.venv/lib/python3.10/site
 # PRJ_TRAIN_PATH.....: /home/maxim/Documents/Uni/BA/bachelor-thesis/reference/training
 # PRJ_SIM_PATH.......: /home/maxim/Documents/Uni/BA/bachelor-thesis/reference/simulation
 # PRJ_WAVE_CFG.......: /home/maxim/Documents/Uni/BA/bachelor-thesis/wave_config
+# PRJ_SCRIPTS........: /home/maxim/Documents/Uni/BA/bachelor-thesis/scripts
 # PRJ_HW_SOURCES_PATH: /home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1
 # PRJ_HW_SIMS_PATH...: /home/maxim/Documents/Uni/BA/bachelor-thesis/sim_1
 ####################################################################
@@ -189,6 +190,8 @@ Requirement already satisfied: mpmath<1.4,>=1.1.0 in ./.venv/lib/python3.10/site
 #                       [/home/maxim/Documents/Uni/BA/bachelor-thesis/reference/training]
 # cd_sim..............: Change CWD to path of simulation folder:
 #                       [/home/maxim/Documents/Uni/BA/bachelor-thesis/reference/simulation]
+# cd_scripts..........: Change CWD to path of scripts folder:
+#                       [/home/maxim/Documents/Uni/BA/bachelor-thesis/scripts]
 # cd_hw_sources.......: Change CWD to path containing VHDL sources:
 #                       [/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1]
 # cd_hw_sims..........: Change CWD to path containing test benches:
