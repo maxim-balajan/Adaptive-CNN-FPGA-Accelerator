@@ -32,9 +32,9 @@ CONFIG="$PRJ_WAVE_CFG/${TB}_tb.wcfg"
 
 echo ""
 echo "####################################################################"
+echo "#"
 echo "# Elaboration and Simulation of ${TB}_tb"
-echo "# Using temporary path.........: $SIM_TEMP_DIR"
-echo "# Using config (if exists).....: $CONFIG"
+echo "#"
 echo "####################################################################"
 echo ""
 

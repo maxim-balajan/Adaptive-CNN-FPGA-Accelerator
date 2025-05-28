@@ -59,8 +59,7 @@ begin
 		padding_size <= std_logic_vector(to_unsigned(2, image_length'length));
 		wait for clk_period;
 		reset        <= '0';
-		en           <= '1';
-		wait for 128 * clk_period;
+		wait for 256 * clk_period;
 
 	end process;
 
@@ -68,10 +67,12 @@ begin
 	begin
 
 		pixel_stream <= (others => '0');
+		en           <= '0';
 		wait for clk_period;
 
 		for j in 0 to 12 + 1 loop
 
+			en           <= '1';
 			pixel_stream <= (others => '0');
 			wait for 2 * clk_period;
 
@@ -79,10 +80,15 @@ begin
 
 				s_pixel_stream <= std_logic_vector(signed(s_pixel_stream) + 1);
 				pixel_stream   <= std_logic_vector(signed(s_pixel_stream) + 1);
+				en             <= '1';
 				wait for clk_period;
+				pixel_stream   <= (others => '1');
+				en             <= '0';
+				wait for 2 * clk_period;
 
 			end loop;
 
+			en           <= '1';
 			pixel_stream <= (others => '0');
 			wait for 2 * clk_period;
 
@@ -90,12 +96,32 @@ begin
 
 	end process;
 
-	TB : process is
+	CHECK_PROC : process (clk, init_complete) is
 	begin
 
-		wait for 256 * clk_period;
-		finish;
+		if rising_edge(clk) and init_complete = '1' then
+			assert kernel_activation_matrix(0 to 4) = (x"00", x"00", x"00", x"00", x"00")
+				report "First row should be (0, 0, 0, 0, 0), got something else instead!"
+				severity FAILURE;
+			assert kernel_activation_matrix(7 to 11) = (x"00", x"00", x"00", x"00", x"00")
+				report "Second row should be (0, 0, 0, 0, 0), got something else instead!"
+				severity FAILURE;
+			assert kernel_activation_matrix(14 to 18) = (x"00", x"00", x"01", x"02", x"03")
+				report "Third row should be (0, 0, 0, 0, 0), got something else instead!"
+				severity FAILURE;
+			assert kernel_activation_matrix(21 to 25) = (x"00", x"00", x"0d", x"0e", x"0f")
+				report "Forth row should be (0, 0, 0, 0, 0), got something else instead!"
+				severity FAILURE;
+			assert kernel_activation_matrix(28 to 32) = (x"00", x"00", x"19", x"1a", x"1b")
+				report "Fifth row should be (0, 0, 0, 0, 0), got something else instead!"
+				severity FAILURE;
+			
+			report "Correct initial window was received!";
 
-	end process TB;
+			finish;
+		end if;
+
+	end process CHECK_PROC;
+
 
 end architecture bench;
