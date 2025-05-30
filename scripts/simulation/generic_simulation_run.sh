@@ -44,7 +44,6 @@ echo "# Removed older tmp projects at: /tmp/vivado_sim.$TB.*"
 echo "# Using temporary path.........: $SIM_TEMP_DIR"
 echo "# Using config (if exists).....: $CONFIG"
 echo "####################################################################"
-echo ""
 
 # Change to temporary dir
 cd "$SIM_TEMP_DIR" || {
@@ -90,7 +89,6 @@ echo ""
 echo "#####################################################"
 echo "# Starting Simulation...:                           #"
 echo "#####################################################"
-echo ""
 
 xsim "${TB}_tb_sim" $GUI -tclbatch wave_auto.tcl || {
     echo "# Simulation failed due to previous errors! Abort..."

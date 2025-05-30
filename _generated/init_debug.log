@@ -171,19 +171,20 @@ Requirement already satisfied: mpmath<1.4,>=1.1.0 in ./.venv/lib/python3.10/site
 ####################################################################
 
 
-####################################################################
+###########################################################################
 # Environmental aliases...:
-####################################################################
+###########################################################################
 # prj_train...........: Run the Training Script of the AlexNet Model
 # prj_build_simulation: Run the building process for the
 #                       C++ reference implementation
 # prj_run_simulation..: Run the C++ reference implementation
-####################################################################
-# prj_simulate_help.........: Print all possible simulation runs
-# prj_simulate_bram_fifo....: Run Testbench for BRAM FIFO
-# prj_simulate_line_buffer..: Run Testbench for a Line Buffer
-# prj_simulate_kernel_slider: Run Testbench for a Kernel Slider
-####################################################################
+###########################################################################
+# prj_simulate_help..........: Print all possible simulation runs
+# prj_simulate_bram_fifo.....: Run Testbench for BRAM FIFO
+# prj_simulate_line_buffer...: Run Testbench for a Line Buffer
+# prj_simulate_kernel_slider.: Run Testbench for a Kernel Slider
+# prj_simulate_generic_slider: Run Testbench for a Kernel Slider with CL
+############################################################################
 # cd_root.............: Change CWD to project root:
 #                       [/home/maxim/Documents/Uni/BA/bachelor-thesis]
 # cd_train............: Change CWD to path of training folder:
@@ -196,7 +197,7 @@ Requirement already satisfied: mpmath<1.4,>=1.1.0 in ./.venv/lib/python3.10/site
 #                       [/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1]
 # cd_hw_sims..........: Change CWD to path containing test benches:
 #                       [/home/maxim/Documents/Uni/BA/bachelor-thesis/sim_1]
-####################################################################
+###########################################################################
 
 
 ####################################################################

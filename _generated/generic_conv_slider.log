@@ -1,0 +1,73 @@
+
+####################################################################
+#
+# Elaboration and Simulation of generic_conv_slider_tb
+#
+####################################################################
+
+####################################################################
+# Removed older tmp projects at: /tmp/vivado_sim.generic_conv_slider.*
+# Using temporary path.........: /tmp/vivado_sim.generic_conv_slider.zOCN7X
+# Using config (if exists).....: /home/maxim/Documents/Uni/BA/bachelor-thesis/wave_config/generic_conv_slider_tb.wcfg
+####################################################################
+
+
+#####################################################
+# Starting Compilation...:                          #
+#####################################################
+
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/libmatrix.vhd" into library work
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/bram_fifo.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'bram_fifo'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/line_buffer.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'line_buffer'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/kernel_slider.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'kernel_slider'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/generic_conv_slider.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'generic_conv_slider'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sim_1/generic_conv_slider_tb.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'generic_conv_slider_tb'
+
+#####################################################
+# Starting Elaboration...:                          #
+#####################################################
+
+Vivado Simulator v2024.1
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+Running: /home/maxim/Xillinx/Vivado/2024.1/bin/unwrapped/lnx64.o/xelab generic_conv_slider_tb -s generic_conv_slider_tb_sim --debug typical 
+Multi-threading is on. Using 10 slave threads.
+Starting static elaboration
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling package std.standard
+Compiling package std.textio
+Compiling package ieee.std_logic_1164
+Compiling package ieee.numeric_std
+Compiling package ieee.math_real
+Compiling package work.libmatrix
+Compiling package std.env
+Compiling architecture rtl of entity work.bram_fifo [\bram_fifo(vector_length=16,g_ma...]
+Compiling architecture rtl of entity work.line_buffer [\line_buffer(vector_length=16,g_...]
+Compiling architecture rtl of entity work.kernel_slider [\kernel_slider(vector_length=16,...]
+Compiling architecture rtl of entity work.generic_conv_slider [\generic_conv_slider(vector_leng...]
+Compiling architecture bench of entity work.generic_conv_slider_tb
+Built simulation snapshot generic_conv_slider_tb_sim
+
+#####################################################
+# Starting Simulation...:                           #
+#####################################################
+
+
+****** xsim v2024.1 (64-bit)
+  **** SW Build 5076996 on Wed May 22 18:36:09 MDT 2024
+  **** IP Build 5075265 on Wed May 22 21:45:21 MDT 2024
+  **** SharedData Build 5076995 on Wed May 22 18:29:18 MDT 2024
+  **** Start of session at: Fri May 30 15:26:11 2025
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+
+start_gui
+INFO: [Common 17-206] Exiting xsim at Fri May 30 15:27:12 2025...

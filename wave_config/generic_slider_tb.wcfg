@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="generic_slider_tb_sim.wdb" id="1">
+         <top_modules>
+            <top_module name="generic_slider_tb" />
+            <top_module name="libmatrix" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="460.000 ns"></ZoomStartTime>
+      <ZoomEndTime time="1,388.001 ns"></ZoomEndTime>
+      <Cursor1Time time="890.000 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="276"></NameColumnWidth>
+      <ValueColumnWidth column_width="72"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="33" />
+   <wvobject type="logic" fp_name="/generic_slider_tb/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/generic_slider_tb/reset">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/generic_slider_tb/pixel_stream">
+      <obj_property name="ElementShortName">pixel_stream[15:0]</obj_property>
+      <obj_property name="ObjectShortName">pixel_stream[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/generic_slider_tb/s_pixel_stream">
+      <obj_property name="ElementShortName">s_pixel_stream[15:0]</obj_property>
+      <obj_property name="ObjectShortName">s_pixel_stream[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/generic_slider_tb/kernel_comp">
+      <obj_property name="ElementShortName">kernel_comp</obj_property>
+      <obj_property name="ObjectShortName">kernel_comp</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/generic_slider_tb/kernel_en">
+      <obj_property name="ElementShortName">kernel_en</obj_property>
+      <obj_property name="ObjectShortName">kernel_en</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/generic_slider_tb/gen_slider_inst/s_init_complete">
+      <obj_property name="ElementShortName">s_init_complete</obj_property>
+      <obj_property name="ObjectShortName">s_init_complete</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/generic_slider_tb/gen_slider_inst/s_valid_kernel">
+      <obj_property name="ElementShortName">s_valid_kernel</obj_property>
+      <obj_property name="ObjectShortName">s_valid_kernel</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/generic_slider_tb/gen_slider_inst/s_stride_reached">
+      <obj_property name="ElementShortName">s_stride_reached</obj_property>
+      <obj_property name="ObjectShortName">s_stride_reached</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/generic_slider_tb/kernel_activation_matrix">
+      <obj_property name="ElementShortName">kernel_activation_matrix[0:24][15:0]</obj_property>
+      <obj_property name="ObjectShortName">kernel_activation_matrix[0:24][15:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/generic_slider_tb/valid_pixel">
+      <obj_property name="ElementShortName">valid_pixel</obj_property>
+      <obj_property name="ObjectShortName">valid_pixel</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/generic_slider_tb/gen_slider_inst/s_current_valid">
+      <obj_property name="ElementShortName">s_current_valid</obj_property>
+      <obj_property name="ObjectShortName">s_current_valid</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/generic_slider_tb/input_image_length">
+      <obj_property name="ElementShortName">input_image_length[3:0]</obj_property>
+      <obj_property name="ObjectShortName">input_image_length[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/generic_slider_tb/output_image_length">
+      <obj_property name="ElementShortName">output_image_length[3:0]</obj_property>
+      <obj_property name="ObjectShortName">output_image_length[3:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/generic_slider_tb/padding_size">
+      <obj_property name="ElementShortName">padding_size[3:0]</obj_property>
+      <obj_property name="ObjectShortName">padding_size[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/generic_slider_tb/stride_bit_mask">
+      <obj_property name="ElementShortName">stride_bit_mask[3:0]</obj_property>
+      <obj_property name="ObjectShortName">stride_bit_mask[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/generic_slider_tb/gen_slider_inst/s_pixel_input_x">
+      <obj_property name="ElementShortName">s_pixel_input_x[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_pixel_input_x[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/generic_slider_tb/gen_slider_inst/s_pixel_input_y">
+      <obj_property name="ElementShortName">s_pixel_input_y[4:0]</obj_property>
+      <obj_property name="ObjectShortName">s_pixel_input_y[4:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/generic_slider_tb/gen_slider_inst/s_pixel_output_x">
+      <obj_property name="ElementShortName">s_pixel_output_x[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_pixel_output_x[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/generic_slider_tb/gen_slider_inst/s_pixel_output_y">
+      <obj_property name="ElementShortName">s_pixel_output_y[4:0]</obj_property>
+      <obj_property name="ObjectShortName">s_pixel_output_y[4:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/generic_slider_tb/gen_slider_inst/s_current_pixel">
+      <obj_property name="ElementShortName">s_current_pixel[15:0]</obj_property>
+      <obj_property name="ObjectShortName">s_current_pixel[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/generic_slider_tb/gen_slider_inst/s_input_image_length">
+      <obj_property name="ElementShortName">s_input_image_length[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_input_image_length[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/generic_slider_tb/gen_slider_inst/s_output_image_length">
+      <obj_property name="ElementShortName">s_output_image_length[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_output_image_length[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/generic_slider_tb/gen_slider_inst/s_padding_size">
+      <obj_property name="ElementShortName">s_padding_size[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_padding_size[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/generic_slider_tb/gen_slider_inst/s_stride_bit_mask">
+      <obj_property name="ElementShortName">s_stride_bit_mask[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_stride_bit_mask[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/generic_slider_tb/gen_slider_inst/s_kernel_en">
+      <obj_property name="ElementShortName">s_kernel_en</obj_property>
+      <obj_property name="ObjectShortName">s_kernel_en</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/generic_slider_tb/gen_slider_inst/s_kernel_complete">
+      <obj_property name="ElementShortName">s_kernel_complete</obj_property>
+      <obj_property name="ObjectShortName">s_kernel_complete</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/generic_slider_tb/gen_slider_inst/vector_length">
+      <obj_property name="ElementShortName">vector_length</obj_property>
+      <obj_property name="ObjectShortName">vector_length</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/generic_slider_tb/gen_slider_inst/KERNEL_SLIDER_INST/\LINE_BUFFER_GEN(0)\/LINE_BUFF/FIFO_INST/s_actual_depth">
+      <obj_property name="ElementShortName">s_actual_depth[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_actual_depth[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/generic_slider_tb/gen_slider_inst/KERNEL_SLIDER_INST/\LINE_BUFFER_GEN(1)\/LINE_BUFF/FIFO_INST/RAM">
+      <obj_property name="ElementShortName">RAM[0:15][15:0]</obj_property>
+      <obj_property name="ObjectShortName">RAM[0:15][15:0]</obj_property>
+   </wvobject>
+</wave_config>
