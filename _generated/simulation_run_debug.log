@@ -19,8 +19,9 @@ Parsing layers...
 1x4096 --> QuantDense(..., 0, 1, 4096) --> 1x4096
 1x4096 --> QuantDense(..., 1, 1, 1000) --> 1x1000
 1000,3,227
-Starting Bachler Thesis CIFAR-10 Simulation with 1 images to process (batch_size=1)...
-[100.00%] Inference of 1 image completed in 5193170us! (current accuracy: 100.00%)
+Starting Bachelor Thesis CIFAR-10 Simulation with 1 images to process (batch_size=1)...
+
+[100.00%] Inference of 1 image completed in 5193170us! (current accuracy: 100.00%)
 Inference finished!
 
 --- Result ---
