@@ -68,3 +68,4 @@ Built simulation snapshot generic_slider_tb_sim
     ** Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
 
 start_gui
+INFO: [Common 17-206] Exiting xsim at Fri May 30 15:53:30 2025...
