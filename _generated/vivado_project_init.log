@@ -1,0 +1,72 @@
+
+****** Vivado v2024.1 (64-bit)
+  **** SW Build 5076996 on Wed May 22 18:36:09 MDT 2024
+  **** IP Build 5075265 on Wed May 22 21:45:21 MDT 2024
+  **** SharedData Build 5076995 on Wed May 22 18:29:18 MDT 2024
+  **** Start of session at: Fri Jun  6 01:43:30 2025
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source /home/maxim/Documents/Uni/BA/bachelor-thesis/scripts/create_project.tcl
+# if {![info exists ::env(PRJ_ROOT_PATH)]} {
+#     puts "ERROR: Environment variable PRJ_ROOT_PATH is not set."
+#     exit 1
+# }
+# set PRJ_ROOT_PATH $::env(PRJ_ROOT_PATH)
+# set HOME $::env(HOME)
+# set PROJECT_NAME "AlexNet-Accelerator"
+# set PROJECT_DIR "${PRJ_ROOT_PATH}/${PROJECT_NAME}"
+# set board_repo_path "${PRJ_ROOT_PATH}/bdf"
+# create_project $PROJECT_NAME $PROJECT_DIR -part xczu3eg-sbva484-1-e -force
+create_project: Time (s): cpu = 00:00:06 ; elapsed = 00:00:06 . Memory (MB): peak = 1427.203 ; gain = 0.027 ; free physical = 657 ; free virtual = 9997
+# set obj [current_project]
+# set_property -name "default_lib" -value "work" -objects $obj
+# set_property -name "enable_resource_estimation" -value "0" -objects $obj
+# set_property -name "enable_vhdl_2008" -value "1" -objects $obj
+# set_property -name "feature_set" -value "FeatureSet_Classic" -objects $obj
+WARNING: [Common 17-599] Property 'feature_set' is deprecated for object type 'project'. Use nextgen_versal.
+# set_property -name "ip_cache_permissions" -value "read write" -objects $obj
+# set_property -name "ip_output_repo" -value "$PROJECT_DIR/${PROJECT_NAME}.cache/ip" -objects $obj
+# set_property -name "mem.enable_memory_map_generation" -value "1" -objects $obj
+# set_property -name "platform.board_id" -value "ultra96v2" -objects $obj
+# set_property -name "revised_directory_structure" -value "1" -objects $obj
+# set_property -name "sim.central_dir" -value "$PROJECT_DIR/${PROJECT_NAME}.ip_user_files" -objects $obj
+# set_property -name "sim.ip.auto_export_scripts" -value "1" -objects $obj
+# set_property -name "simulator_language" -value "VHDL" -objects $obj
+# set_property -name "sim_compile_state" -value "1" -objects $obj
+# set_property -name "target_language" -value "VHDL" -objects $obj
+# set_property -name "webtalk.xsim_launch_sim" -value "3" -objects $obj
+# set SOURCE_DIR "$PRJ_ROOT_PATH/sources_1"
+# if {[file exists $SOURCE_DIR]} {
+#     set sources [glob -nocomplain -directory $SOURCE_DIR -types f *.{vhd}]
+#     if {[llength $sources] > 0} {
+#         add_files -norecurse $sources
+#         foreach file $sources {
+#             set_property file_type "VHDL 2008" [get_files $file]
+#         }
+#     } else {
+#         puts "WARNING: No source files found in $SOURCE_DIR"
+#     }
+# } else {
+#     puts "WARNING: Source directory $SOURCE_DIR does not exist."
+# }
+# set SIM_DIR "$PRJ_ROOT_PATH/sim_1"
+# if {[file exists $SIM_DIR]} {
+#     set sim_files [glob -nocomplain -directory $SIM_DIR -types f *.{vhd}]
+#     if {[llength $sim_files] > 0} {
+#         add_files -fileset sim_1 -norecurse $sim_files
+#         foreach file $sim_files {
+#             set_property file_type "VHDL 2008" [get_files -of_objects [get_filesets sim_1] $file]
+#         }
+#     } else {
+#         puts "WARNING: No simulation files found in $SIM_DIR"
+#     }
+# } else {
+#     puts "WARNING: Simulation directory $SIM_DIR does not exist."
+# }
+# set_property top generic_slider [current_fileset]
+# update_compile_order -fileset sources_1
+update_compile_order: Time (s): cpu = 00:01:30 ; elapsed = 00:01:31 . Memory (MB): peak = 1427.258 ; gain = 0.055 ; free physical = 460 ; free virtual = 9813
+# puts "Project $PROJECT_NAME created successfully at $PROJECT_DIR"
+Project AlexNet-Accelerator created successfully at /home/maxim/Documents/Uni/BA/bachelor-thesis/AlexNet-Accelerator
+INFO: [Common 17-206] Exiting Vivado at Fri Jun  6 01:45:14 2025...

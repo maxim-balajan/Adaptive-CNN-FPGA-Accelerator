@@ -35,11 +35,17 @@ alias prj_simulate_generic_slider="'$PRJ_SCRIPTS/simulation/simulation_executor.
 prj_vivado_init() {
     local mode="$1"
     [[ -z $mode ]] && mode=batch
-    vivado -nolog -nojournal -mode "$1" -source "$PRJ_SCRIPTS/create_project.tcl" || {
-        echo "# The command 'vivado' is not set in the PATH! Change this and try again..."
+    vivado -nolog -nojournal -mode "$1" -source "$PRJ_SCRIPTS/create_project.tcl" | tee $PRJ_GENERATED_PATH/vivado_project_init.log || {
+        echo "# The command 'vivado' is not set in the PATH! Change this and try again..." | tee $PRJ_GENERATED_PATH/vivado_project_init.log
         return 1
     }
-} | tee $PRJ_GENERATED_PATH/vivado_project_init.log
+}
+
+prj_vivado_help() {
+    echo "###########################################################################"
+    echo "# prj_vivado_init...: Creates Vivado Project"
+    echo "###########################################################################"    
+}
 
 prj_simulate_help() {
     echo "###########################################################################"
@@ -48,7 +54,7 @@ prj_simulate_help() {
     echo "# prj_simulate_line_buffer...: Run Testbench for a Line Buffer"
     echo "# prj_simulate_kernel_slider.: Run Testbench for a Kernel Slider"
     echo "# prj_simulate_generic_slider: Run Testbench for a Kernel Slider with CL"
-    echo "############################################################################"
+    echo "###########################################################################"
 }
 
 
@@ -227,7 +233,11 @@ echo "# prj_train...........: Run the Training Script of the AlexNet Model"
 echo "# prj_build_simulation: Run the building process for the" 
 echo "#                       C++ reference implementation"
 echo "# prj_run_simulation..: Run the C++ reference implementation"
+echo "###########################################################################"
+echo "# Simulation Tools...:                                                    #"
 prj_simulate_help
+echo "# Vivado Tools...:                                                        #"
+prj_vivado_help
 echo "# cd_root.............: Change CWD to project root:"
 echo "#                       [$PRJ_ROOT_PATH]"
 echo "# cd_train............: Change CWD to path of training folder:"
