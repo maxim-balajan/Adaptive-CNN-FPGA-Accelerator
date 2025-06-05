@@ -7,8 +7,8 @@ use work.libmatrix.all;
 entity generic_slider is
 	generic (
 		vector_length     : natural := 8;
-		G_IMG_MAX_LENGTH  : natural := 227;
-		G_KERNEL_MAX_SIZE : natural := 11;
+		G_IMG_MAX_LENGTH  : natural := 55;
+		G_KERNEL_MAX_SIZE : natural := 5;
 		kernel_size       : natural := 5
 	);
 	port (

@@ -4,3 +4,4 @@ venv
 .venv
 AlexNet-Accelerator
 *.str
+.Xil

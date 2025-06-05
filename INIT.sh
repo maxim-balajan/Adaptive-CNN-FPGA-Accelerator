@@ -31,6 +31,16 @@ alias prj_simulate_line_buffer="'$PRJ_SCRIPTS/simulation/simulation_executor.sh'
 alias prj_simulate_kernel_slider="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g kernel_slider   | tee '$PRJ_GENERATED_PATH/kernel_slider.log'"
 alias prj_simulate_generic_slider="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g generic_slider | tee '$PRJ_GENERATED_PATH/generic_slider.log'"
 
+# Vivado Project Aliases
+prj_vivado_init() {
+    local mode="$1"
+    [[ -z $mode ]] && mode=batch
+    vivado -nolog -nojournal -mode "$1" -source "$PRJ_SCRIPTS/create_project.tcl" || {
+        echo "# The command 'vivado' is not set in the PATH! Change this and try again..."
+        return 1
+    }
+} | tee $PRJ_GENERATED_PATH/vivado_project_init.log
+
 prj_simulate_help() {
     echo "###########################################################################"
     echo "# prj_simulate_help..........: Print all possible simulation runs"
@@ -138,50 +148,57 @@ if [ ! -f "$PYTHON_BIN" ]; then
     RESULT="FAILURE"
 else
 
-    # Create the virtual environment
-    $PYTHON_BIN -m venv $ENV_NAME
+    if [ ! -d "$ENV_NAME" ]; then
+        $PYTHON_BIN -m venv $ENV_NAME
+        source $ENV_NAME/bin/activate
 
-    # Activate the virtual environment
-    source $ENV_NAME/bin/activate
+        echo "####################################################################"
+        echo "# Upgrading pip...:"
+        echo "####################################################################"
+        python -m pip install --upgrade pip
+        echo ""; echo ""
 
-    # Upgrade pip
-    echo "####################################################################"
-    echo "# Upgrading pip...:"
-    echo "####################################################################"
-    python -m pip install --upgrade pip
-    echo "####################################################################"
-    echo ""; echo ""
-
-    # Install all necessary packages
-    echo "####################################################################"
-    echo "# Package installs...:"
-    echo "####################################################################"
-    python -m pip install torch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 --index-url https://download.pytorch.org/whl/cu121
-    python -m pip install onnx2pytorch
-    python -m pip install tensorboard
-    python -m pip install brevitas
-    python -m pip install matplotlib
-    python -m pip install numpy
-    python -m pip install ipykernel
-    python -m pip install onnx onnxruntime onnxoptimizer
-    echo "####################################################################"
-    echo ""; echo ""
+        echo "####################################################################"
+        echo "# Installing required packages...:"
+        echo "####################################################################"
+        python -m pip install torch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 --index-url https://download.pytorch.org/whl/cu121
+        python -m pip install onnx2pytorch
+        python -m pip install tensorboard
+        python -m pip install brevitas
+        python -m pip install matplotlib
+        python -m pip install numpy
+        python -m pip install ipykernel
+        python -m pip install onnx onnxruntime onnxoptimizer
+        echo ""; echo ""
+    else
+        echo "####################################################################"
+        echo "# All required packages installed!"
+        echo "####################################################################"
+        echo ""
+        source $ENV_NAME/bin/activate
+    fi
 
 
-    # Confirm installation for every package
-    echo "####################################################################"
-    echo "# Version checks...:"
-    echo "####################################################################"
-    python -c "import torch;             print('# PyTorch version.....:', torch.__version__)"
-    python -c "import tensorboard;       print('# Tensorboard version.:', tensorboard.__version__)"
-    python -c "import onnx2pytorch;      print('# Onnx2PyTorch version:', onnx2pytorch.__version__)"
-    python -c "import brevitas;          print('# Brevitas version....:', brevitas.__version__)"
-    python -c "import matplotlib as mpl; print('# Matplotlib version..:', mpl.__version__)"
-    python -c "import numpy as np;       print('# Numpy version.......:', np.__version__)"
-    python -c "import ipykernel;         print('# Ipykernel version...:', ipykernel.__version__)"
-    python -c "import onnx;              print('# Onnx version........:', onnx.__version__)"
-    echo "####################################################################"
-    echo ""; echo ""
+    if [ -n "$1" ]; then
+        echo "####################################################################"
+        echo "# Version checks...:"
+        echo "####################################################################"
+        python -c "import torch;             print('# PyTorch version.....:', torch.__version__)"
+        python -c "import tensorboard;       print('# Tensorboard version.:', tensorboard.__version__)"
+        python -c "import onnx2pytorch;      print('# Onnx2PyTorch version:', onnx2pytorch.__version__)"
+        python -c "import brevitas;          print('# Brevitas version....:', brevitas.__version__)"
+        python -c "import matplotlib as mpl; print('# Matplotlib version..:', mpl.__version__)"
+        python -c "import numpy as np;       print('# Numpy version.......:', np.__version__)"
+        python -c "import ipykernel;         print('# Ipykernel version...:', ipykernel.__version__)"
+        python -c "import onnx;              print('# Onnx version........:', onnx.__version__)"
+        echo "####################################################################"
+        echo ""; echo ""
+    else
+        echo "####################################################################"
+        echo "# Version checks skipped!"
+        echo "####################################################################"
+        echo ""
+    fi
 
     echo "####################################################################"
     echo "# Virtual environment '$ENV_NAME' is ready with Packages installed."
