@@ -30,6 +30,7 @@ alias prj_simulate_bram_fifo="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -
 alias prj_simulate_line_buffer="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g line_buffer       | tee '$PRJ_GENERATED_PATH/line_buffer_sim.log'"
 alias prj_simulate_kernel_slider="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g kernel_slider   | tee '$PRJ_GENERATED_PATH/kernel_slider.log'"
 alias prj_simulate_generic_slider="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g generic_slider | tee '$PRJ_GENERATED_PATH/generic_slider.log'"
+alias prj_simulate_line_unit="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g line_unit           | tee '$PRJ_GENERATED_PATH/line_unit.log'"
 
 # Vivado Project Aliases
 prj_vivado_init() {
@@ -54,6 +55,7 @@ prj_simulate_help() {
     echo "# prj_simulate_line_buffer...: Run Testbench for a Line Buffer"
     echo "# prj_simulate_kernel_slider.: Run Testbench for a Kernel Slider"
     echo "# prj_simulate_generic_slider: Run Testbench for a Kernel Slider with CL"
+    echo "# prj_simulate_line_unit.....: Run Testbench for a Line Unit"
     echo "###########################################################################"
 }
 
@@ -234,9 +236,9 @@ echo "# prj_build_simulation: Run the building process for the"
 echo "#                       C++ reference implementation"
 echo "# prj_run_simulation..: Run the C++ reference implementation"
 echo "###########################################################################"
-echo "# Simulation Tools...:                                                    #"
+echo "# Simulation Tools...:"
 prj_simulate_help
-echo "# Vivado Tools...:                                                        #"
+echo "# Vivado Tools...:"
 prj_vivado_help
 echo "# cd_root.............: Change CWD to project root:"
 echo "#                       [$PRJ_ROOT_PATH]"

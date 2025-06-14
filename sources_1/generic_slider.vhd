@@ -8,8 +8,7 @@ entity generic_slider is
 	generic (
 		vector_length     : natural := 8;
 		G_IMG_MAX_LENGTH  : natural := 55;
-		G_KERNEL_MAX_SIZE : natural := 5;
-		kernel_size       : natural := 5
+		G_KERNEL_MAX_SIZE : natural := 5
 	);
 	port (
 		clk   : in std_logic;
@@ -21,6 +20,7 @@ entity generic_slider is
 		input_image_length  : in std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
 		output_image_length : in std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
 		-- normally padding size would not be necessary, but it enables skipping a lot of initialization
+		kernel_size     : in std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
 		padding_size    : in std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
 		stride_bit_mask : in std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
 		--
@@ -48,6 +48,7 @@ architecture rtl of generic_slider is
 	-- Register for storing meta data
 	signal s_input_image_length  : std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
 	signal s_output_image_length : std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
+	signal s_kernel_size         : std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
 	signal s_padding_size        : std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
 	signal s_stride_bit_mask     : std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
 
@@ -75,6 +76,7 @@ begin
 				-- Setting of meta data registers
 				s_input_image_length  <= input_image_length;
 				s_output_image_length <= output_image_length;
+				s_kernel_size         <= kernel_size;
 				s_padding_size        <= padding_size;
 				s_stride_bit_mask     <= stride_bit_mask;
 			else
@@ -133,7 +135,7 @@ begin
 	s_actual_input_length <= unsigned(s_input_image_length) + shift_left(unsigned(padding_size), 1);
 
 	-- This is a helper signal that stores wether a kernel is definitely valid (is the kernel split over two rows?) or not (but is not the sole criteria)
-	s_valid_kernel <= '1' when s_pixel_input_x < s_actual_input_length - kernel_size + 1 else '0';
+	s_valid_kernel <= '1' when s_pixel_input_x < s_actual_input_length - unsigned(kernel_size) + 1 else '0';
 
 	-- This signal shows wether the correct striding window has been reached or not
 	s_stride_reached <= (not (or (std_logic_vector(s_pixel_input_x) and s_stride_bit_mask)))

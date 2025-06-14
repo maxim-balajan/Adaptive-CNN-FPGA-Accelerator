@@ -12,8 +12,8 @@ set board_repo_path "${PRJ_ROOT_PATH}/bdf"
 create_project $PROJECT_NAME $PROJECT_DIR -part xczu3eg-sbva484-1-e -force
 
 set obj [current_project]
-#set_property -name "board_part_repo_paths" -value "[file normalize "$board_repo_path"]" -objects $obj
-#set_property -name "board_part" -value "avnet.com:ultra96v2:part0:1.2" -objects $obj
+set_property -name "board_part_repo_paths" -value "[file normalize "$board_repo_path"]" -objects $obj
+set_property -name "board_part" -value "avnet-tria.com:ultra96v2:part0:1.3" -objects $obj
 set_property -name "default_lib" -value "work" -objects $obj
 set_property -name "enable_resource_estimation" -value "0" -objects $obj
 set_property -name "enable_vhdl_2008" -value "1" -objects $obj

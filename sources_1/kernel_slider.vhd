@@ -8,8 +8,7 @@ entity kernel_slider is
 	generic (
 		vector_length     : natural := 8;
 		G_IMG_MAX_LENGTH  : natural := 227;
-		G_KERNEL_MAX_SIZE : natural := 11;
-		kernel_size       : natural := 5
+		G_KERNEL_MAX_SIZE : natural := 11
 	);
 	port (
 		clk   : in std_logic;
@@ -20,6 +19,7 @@ entity kernel_slider is
 		--
 		image_length : in std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
 		-- normally padding size would not be necessary, but it enables skipping a lot of initialization
+		kernel_size : in std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
 		padding_size : in std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
 		--
 		init_complete : out std_logic;
@@ -43,6 +43,9 @@ architecture rtl of kernel_slider is
 	-- Helper signal to determine when initialization of pipeline is finished
 	signal s_full_delay : std_logic_vector(0 to kernel_size);
 
+	-- Signal for storing actual kernel_size as a metadata register
+	signal s_kernel_size : std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
+
 begin
 
 	-- This process sifts all control values and all kernel values through the pipeline
@@ -55,6 +58,8 @@ begin
 				-- Is set to one because initial buffer should always write
 				s_line_buffer_wr_en(s_line_buffer_wr_en'low)            <= '1';
 				s_full_delay(s_full_delay'low + 1 to s_full_delay'high) <= (others => '0');
+
+				s_kernel_size <= kernel_size;
 			elsif en = '1' then
 				-- Shift values through kernel window
 				s_kernel_matrix(s_kernel_matrix'low + 1 to s_kernel_matrix'high) <= s_kernel_matrix(s_kernel_matrix'low to s_kernel_matrix'high - 1);
