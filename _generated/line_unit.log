@@ -7,7 +7,7 @@
 
 ####################################################################
 # Removed older tmp projects at: /tmp/vivado_sim.line_unit.*
-# Using temporary path.........: /tmp/vivado_sim.line_unit.kicqCn
+# Using temporary path.........: /tmp/vivado_sim.line_unit.FTz9ma
 # Using config (if exists).....: /home/maxim/Documents/Uni/BA/bachelor-thesis/wave_config/line_unit_tb.wcfg
 ####################################################################
 
@@ -64,3 +64,4 @@ Built simulation snapshot line_unit_tb_sim
     ** Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
 
 start_gui
+INFO: [Common 17-206] Exiting xsim at Sat Jun 14 17:21:15 2025...

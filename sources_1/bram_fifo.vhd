@@ -13,15 +13,15 @@ entity bram_fifo is
 		clk      : in std_logic;
 		reset    : in std_logic;
 		set_full : in std_logic;
-		depth 	 : in std_logic_vector(integer(ceil(log2(real(G_MAX_DEPTH)))) - 1 downto 0);
+		depth    : in std_logic_vector(integer(ceil(log2(real(G_MAX_DEPTH)))) - 1 downto 0);
 		--
-		din      : in std_logic_vector(vector_length - 1 downto 0);
-		wr_en    : in std_logic;
-		rd_en    : in std_logic;
+		din   : in std_logic_vector(vector_length - 1 downto 0);
+		wr_en : in std_logic;
+		rd_en : in std_logic;
 		--
-		dout     : out std_logic_vector(vector_length - 1 downto 0);
-		full     : out std_logic;
-		empty    : out std_logic
+		dout  : out std_logic_vector(vector_length - 1 downto 0);
+		full  : out std_logic;
+		empty : out std_logic
 	);
 end entity bram_fifo;
 
@@ -55,9 +55,7 @@ begin
 
 	empty <= s_empty;
 	full  <= s_full;
-
-	-- Only get the actual memory if reset_cycle has been completed
-	dout <= s_dout when s_is_invalid = '0' else (others => '0') ;
+	dout  <= s_dout;
 
 	process (clk, reset) is
 	begin
@@ -67,23 +65,28 @@ begin
 				s_read_pointer  <= (others => '0');
 				s_write_pointer <= (others => '0');
 				-- When last_write is set to one, the fifo is flagged as "full" and only contains zeros
-				s_last_write    <= set_full;
+				s_last_write <= set_full;
 				-- If s_is_invalid is set to '1', the first actual_depth read cycles are performed, but 0s are always returned
-				s_is_invalid <= set_full;
+				s_is_invalid   <= set_full;
 				s_actual_depth <= unsigned(depth);
-				s_dout          <= (others => '0');
+				s_dout         <= (others => '0');
 			else
 				-- Reset of last write value and put on it 0 for now
 				s_last_write <= '0';
 				if rd_en = '1' and s_empty = '0' then
 					-- Read from memory
-					s_dout <= RAM(to_integer(s_read_pointer));
+					-- Only get the actual memory if reset_cycle has been completed
+					if s_is_invalid = '0' then
+						s_dout <= RAM(to_integer(s_read_pointer));
+					else
+						s_dout <= (others => '0');
+					end if;
 
 					if s_read_pointer /= s_actual_depth - 1 then
 						s_read_pointer <= s_read_pointer + 1;
 					else
 						-- all illegal values that came via set_full = '1' were now safely read
-						s_is_invalid <= '0';
+						s_is_invalid   <= '0';
 						s_read_pointer <= (others => '0');
 					end if;
 				end if;
