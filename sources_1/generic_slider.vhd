@@ -113,8 +113,7 @@ begin
 		generic map (
 			vector_length     => vector_length,
 			G_IMG_MAX_LENGTH  => G_IMG_MAX_LENGTH,
-			G_KERNEL_MAX_SIZE => G_KERNEL_MAX_SIZE,
-			kernel_size       => kernel_size
+			G_KERNEL_MAX_SIZE => G_KERNEL_MAX_SIZE
 		)
 		port map (
 			clk   => clk,
@@ -122,6 +121,7 @@ begin
 			--
 			en           => s_current_valid,
 			pixel_stream => s_current_pixel,
+			kernel_size       => kernel_size,
 			-- image_length not delayed, because it will be again delayed by bram_fifo
 			image_length => input_image_length,
 			-- padding is also not delayed because it is needed during the reset
@@ -135,7 +135,7 @@ begin
 	s_actual_input_length <= unsigned(s_input_image_length) + shift_left(unsigned(padding_size), 1);
 
 	-- This is a helper signal that stores wether a kernel is definitely valid (is the kernel split over two rows?) or not (but is not the sole criteria)
-	s_valid_kernel <= '1' when s_pixel_input_x < s_actual_input_length - unsigned(kernel_size) + 1 else '0';
+	s_valid_kernel <= '1' when s_pixel_input_x < s_actual_input_length - unsigned(s_kernel_size) + 1 else '0';
 
 	-- This signal shows wether the correct striding window has been reached or not
 	s_stride_reached <= (not (or (std_logic_vector(s_pixel_input_x) and s_stride_bit_mask)))

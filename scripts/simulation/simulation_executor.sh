@@ -56,6 +56,11 @@ elif [ "$TB" == "line_unit" ]; then
         $PRJ_HW_SOURCES_PATH/line_buffer.vhd            \
         $PRJ_HW_SOURCES_PATH/line_unit.vhd              \
         $PRJ_HW_SIMS_PATH/line_unit_tb.vhd  
+elif [ "$TB" == "line_control_unit" ]; then
+    $PRJ_SCRIPTS/simulation/generic_simulation_run.sh ${GUI} line_control_unit \
+        $PRJ_HW_SOURCES_PATH/libmatrix.vhd              \
+        $PRJ_HW_SOURCES_PATH/line_control_unit.vhd      \
+        $PRJ_HW_SIMS_PATH/line_control_unit_tb.vhd  
 else
     echo "Unknown Testbench: $TB"
     echo "Usage: $0 [Top-Unit] [Source-Files...]"

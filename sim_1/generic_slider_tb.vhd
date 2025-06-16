@@ -16,7 +16,6 @@ architecture bench of generic_slider_tb is
 	constant vector_length     : integer := 16;
 	constant G_IMG_MAX_LENGTH  : integer := 20;
 	constant G_KERNEL_MAX_SIZE : natural := 11;
-	constant kernel_size       : integer := 5;
 	constant c_padding         : natural := 2;
 	constant c_input_size      : natural := 13;
 	-- Ports
@@ -27,6 +26,7 @@ architecture bench of generic_slider_tb is
 	signal kernel_en                    : std_logic;
 	signal kernel_activation_matrix     : matrix_1d(0 to G_KERNEL_MAX_SIZE ** 2 - 1)(vector_length - 1 downto 0);
 	signal valid_pixel                  : std_logic;
+	signal kernel_size                  : std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
 	signal input_image_length           : std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
 	signal output_image_length          : std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
 	signal padding_size                 : std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
@@ -38,8 +38,7 @@ begin
 		generic map (
 			vector_length     => vector_length,
 			G_IMG_MAX_LENGTH  => G_IMG_MAX_LENGTH,
-			G_KERNEL_MAX_SIZE => G_KERNEL_MAX_SIZE,
-			kernel_size       => kernel_size
+			G_KERNEL_MAX_SIZE => G_KERNEL_MAX_SIZE
 		)
 		port map (
 			clk   => clk,
@@ -48,6 +47,7 @@ begin
 			pixel_stream => pixel_stream,
 			valid_pixel  => valid_pixel,
 			--
+			kernel_size         => kernel_size,
 			input_image_length  => input_image_length,
 			output_image_length => output_image_length,
 			padding_size        => padding_size,
@@ -65,7 +65,8 @@ begin
 
 		reset               <= '1';
 		input_image_length  <= std_logic_vector(to_unsigned(c_input_size, input_image_length'length));
-		output_image_length <= std_logic_vector(to_unsigned((c_input_size + 2 * c_padding - kernel_size) / 2 + 1, output_image_length'length));
+		kernel_size         <= std_logic_vector(to_unsigned(5, kernel_size'length));
+		output_image_length <= std_logic_vector(to_unsigned((c_input_size + 2 * c_padding - 5) / 2 + 1, output_image_length'length));
 		padding_size        <= std_logic_vector(to_unsigned(c_padding, padding_size'length));
 		stride_bit_mask     <= std_logic_vector(to_unsigned(1, stride_bit_mask'length));
 		wait for clk_period;

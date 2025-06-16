@@ -1,0 +1,62 @@
+
+####################################################################
+#
+# Elaboration and Simulation of line_control_unit_tb
+#
+####################################################################
+
+####################################################################
+# Removed older tmp projects at: /tmp/vivado_sim.line_control_unit.*
+# Using temporary path.........: /tmp/vivado_sim.line_control_unit.dq5kmg
+# Using config (if exists).....: /home/maxim/Documents/Uni/BA/bachelor-thesis/wave_config/line_control_unit_tb.wcfg
+####################################################################
+
+#####################################################
+# Starting Compilation...:                          #
+#####################################################
+
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/libmatrix.vhd" into library work
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/line_control_unit.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'line_control_unit'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sim_1/line_control_unit_tb.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'line_control_unit_tb'
+
+#####################################################
+# Starting Elaboration...:                          #
+#####################################################
+
+Vivado Simulator v2024.1
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+Running: /home/maxim/Xillinx/Vivado/2024.1/bin/unwrapped/lnx64.o/xelab line_control_unit_tb -s line_control_unit_tb_sim --debug typical 
+Multi-threading is on. Using 10 slave threads.
+Starting static elaboration
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling package std.standard
+Compiling package std.textio
+Compiling package ieee.std_logic_1164
+Compiling package ieee.numeric_std
+Compiling package ieee.math_real
+Compiling package work.libmatrix
+Compiling package std.env
+Compiling architecture rtl of entity work.line_control_unit [\line_control_unit(vector_length...]
+Compiling architecture bench of entity work.line_control_unit_tb
+Built simulation snapshot line_control_unit_tb_sim
+
+#####################################################
+# Starting Simulation...:                           #
+#####################################################
+
+****** xsim v2024.1 (64-bit)
+  **** SW Build 5076996 on Wed May 22 18:36:09 MDT 2024
+  **** IP Build 5075265 on Wed May 22 21:45:21 MDT 2024
+  **** SharedData Build 5076995 on Wed May 22 18:29:18 MDT 2024
+  **** Start of session at: Mon Jun 16 13:19:59 2025
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+
+start_gui
+INFO: [Common 17-206] Exiting xsim at Mon Jun 16 13:22:50 2025...

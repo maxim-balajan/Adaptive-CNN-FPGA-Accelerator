@@ -31,17 +31,17 @@ end entity kernel_slider;
 architecture rtl of kernel_slider is
 
 	-- "Kernel matrix" + 1 because we have to take inputs into consideration
-	signal s_kernel_matrix : matrix_2d(0 to kernel_size)(0 to kernel_size - 1)(vector_length - 1 downto 0);
+	signal s_kernel_matrix : matrix_2d(0 to G_KERNEL_MAX_SIZE)(0 to G_KERNEL_MAX_SIZE - 1)(vector_length - 1 downto 0);
 	-- This signal contains the values in flipped order
-	signal s_kernel_activation_matrix : matrix_2d(0 to kernel_size - 1)(0 to kernel_size - 1)(vector_length - 1 downto 0);
+	signal s_kernel_activation_matrix : matrix_2d(0 to G_KERNEL_MAX_SIZE - 1)(0 to G_KERNEL_MAX_SIZE - 1)(vector_length - 1 downto 0);
 	-- Line Buffer wr_en line
-	signal s_line_buffer_wr_en : std_logic_vector(0 to kernel_size - 1);
+	signal s_line_buffer_wr_en : std_logic_vector(0 to G_KERNEL_MAX_SIZE - 1);
 
 	-- Helper signal to determine which FIFO to initialize as full
-	signal s_set_full_line : std_logic_vector(0 to kernel_size - 2);
+	signal s_set_full_line : std_logic_vector(0 to G_KERNEL_MAX_SIZE - 2);
 
 	-- Helper signal to determine when initialization of pipeline is finished
-	signal s_full_delay : std_logic_vector(0 to kernel_size);
+	signal s_full_delay : std_logic_vector(0 to G_KERNEL_MAX_SIZE);
 
 	-- Signal for storing actual kernel_size as a metadata register
 	signal s_kernel_size : std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
@@ -77,9 +77,9 @@ begin
 	-- Map full signal of last FIFO to full delay line
 	s_full_delay(s_full_delay'low) <= s_line_buffer_wr_en(s_line_buffer_wr_en'high); -- or s_set_full_line(s_set_full_line'high);
 
-	-- only kernel_size - 1 many line_buffer need to be created
+	-- only G_KERNEL_MAX_SIZE - 1 many line_buffer need to be created
 
-	LINE_BUFFER_GEN : for j in 0 to kernel_size - 2 generate
+	LINE_BUFFER_GEN : for j in 0 to G_KERNEL_MAX_SIZE - 2 generate
 
 		s_set_full_line(j) <= '1' when (signed(padding_size) - j > 0) else '0';
 
@@ -111,10 +111,10 @@ begin
 	-- Mirror output elements in x and y direction and write them to output
 	-- Assumption is kernel is quadratic (which it always should be regardless)
 
-	Y_GEN : for y in 0 to kernel_size - 1 generate
+	Y_GEN : for y in 0 to G_KERNEL_MAX_SIZE - 1 generate
 
-		X_GEN : for x in 0 to kernel_size - 1 generate
-			kernel_activation_matrix((kernel_size - 1 - y) * G_KERNEL_MAX_SIZE + kernel_size - 1 - x) <= s_kernel_activation_matrix(x)(y);
+		X_GEN : for x in 0 to G_KERNEL_MAX_SIZE - 1 generate
+			kernel_activation_matrix((G_KERNEL_MAX_SIZE - 1 - y) * G_KERNEL_MAX_SIZE + G_KERNEL_MAX_SIZE - 1 - x) <= s_kernel_activation_matrix(x)(y);
 		end generate X_GEN;
 
 	end generate Y_GEN;
