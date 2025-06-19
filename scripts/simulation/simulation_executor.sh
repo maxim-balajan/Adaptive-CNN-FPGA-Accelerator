@@ -61,6 +61,16 @@ elif [ "$TB" == "line_control_unit" ]; then
         $PRJ_HW_SOURCES_PATH/libmatrix.vhd              \
         $PRJ_HW_SOURCES_PATH/line_control_unit.vhd      \
         $PRJ_HW_SIMS_PATH/line_control_unit_tb.vhd  
+elif [ "$TB" == "configurable_slider" ]; then
+    $PRJ_SCRIPTS/simulation/generic_simulation_run.sh ${GUI} configurable_slider \
+        $PRJ_HW_SOURCES_PATH/libmatrix.vhd              \
+        $PRJ_HW_SOURCES_PATH/line_control_unit.vhd      \
+        $PRJ_HW_SOURCES_PATH/bram_fifo.vhd              \
+        $PRJ_HW_SOURCES_PATH/line_buffer.vhd            \
+        $PRJ_HW_SOURCES_PATH/line_unit.vhd              \
+        $PRJ_HW_SOURCES_PATH/line_route_unit.vhd        \
+        $PRJ_HW_SOURCES_PATH/configurable_slider.vhd    \
+        $PRJ_HW_SIMS_PATH/configurable_slider_tb.vhd  
 else
     echo "Unknown Testbench: $TB"
     echo "Usage: $0 [Top-Unit] [Source-Files...]"

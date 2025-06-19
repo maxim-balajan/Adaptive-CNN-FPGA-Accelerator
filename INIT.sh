@@ -26,12 +26,13 @@ alias cd_hw_sources="cd $PRJ_HW_SOURCES_PATH"
 alias cd_hw_sims="cd $PRJ_HW_SIMS_PATH"
 
 # Simulate Aliases
-alias prj_simulate_bram_fifo="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g bram_fifo                 | tee '$PRJ_GENERATED_PATH/bram_fifo_sim.log'"
-alias prj_simulate_line_buffer="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g line_buffer             | tee '$PRJ_GENERATED_PATH/line_buffer_sim.log'"
-alias prj_simulate_kernel_slider="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g kernel_slider         | tee '$PRJ_GENERATED_PATH/kernel_slider.log'"
-alias prj_simulate_generic_slider="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g generic_slider       | tee '$PRJ_GENERATED_PATH/generic_slider.log'"
-alias prj_simulate_line_unit="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g line_unit                 | tee '$PRJ_GENERATED_PATH/line_unit.log'"
-alias prj_simulate_line_control_unit="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g line_control_unit | tee '$PRJ_GENERATED_PATH/line_control_unit.log'"
+alias prj_simulate_bram_fifo="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g bram_fifo                     | tee '$PRJ_GENERATED_PATH/bram_fifo_sim.log'"
+alias prj_simulate_line_buffer="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g line_buffer                 | tee '$PRJ_GENERATED_PATH/line_buffer_sim.log'"
+alias prj_simulate_kernel_slider="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g kernel_slider             | tee '$PRJ_GENERATED_PATH/kernel_slider.log'"
+alias prj_simulate_generic_slider="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g generic_slider           | tee '$PRJ_GENERATED_PATH/generic_slider.log'"
+alias prj_simulate_line_unit="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g line_unit                     | tee '$PRJ_GENERATED_PATH/line_unit.log'"
+alias prj_simulate_line_control_unit="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g line_control_unit     | tee '$PRJ_GENERATED_PATH/line_control_unit.log'"
+alias prj_simulate_configurable_slider="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g configurable_slider | tee '$PRJ_GENERATED_PATH/configurable_slider.log'"
 
 # Vivado Project Aliases
 prj_vivado_init() {
@@ -51,13 +52,14 @@ prj_vivado_help() {
 
 prj_simulate_help() {
     echo "###########################################################################"
-    echo "# prj_simulate_help.............: Print all possible simulation runs"
-    echo "# prj_simulate_bram_fifo........: Run TB for BRAM FIFO"
-    echo "# prj_simulate_line_buffer......: Run TB for a Line Buffer"
-    echo "# prj_simulate_kernel_slider....: Run TB for a Kernel Slider"
-    echo "# prj_simulate_generic_slider...: Run TB for a Kernel Slider with CL"
-    echo "# prj_simulate_line_unit........: Run TB for a Line Unit"
-    echo "# prj_simulate_line_control_unit: Run TB for the Line Unit CL"
+    echo "# prj_simulate_help...............: Print all possible simulation runs"
+    echo "# prj_simulate_bram_fifo..........: Run TB for BRAM FIFO"
+    echo "# prj_simulate_line_buffer........: Run TB for a Line Buffer"
+    echo "# prj_simulate_kernel_slider......: Run TB for a Kernel Slider"
+    echo "# prj_simulate_generic_slider.....: Run TB for a Kernel Slider with CL"
+    echo "# prj_simulate_line_unit..........: Run TB for a Line Unit"
+    echo "# prj_simulate_line_control_unit..: Run TB for the Line Unit CL"
+    echo "# prj_simulate_configurable_slider: Run TB for new configurable sliders"
     echo "###########################################################################"
 }
 

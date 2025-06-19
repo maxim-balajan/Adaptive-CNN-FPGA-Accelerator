@@ -34,6 +34,8 @@ architecture rtl of line_route_unit is
 	signal s_pixel_streams_out : matrix_2d(0 to G_PIPELINE_STEPS)(0 to G_LINE_BUFFER_AMOUNT - 1)(vector_length - 1 downto 0);
 	signal s_enable_stream_out : matrix_1d(0 to G_PIPELINE_STEPS)(0 to G_LINE_BUFFER_AMOUNT - 1);
 
+	signal s_tp_enable_matrix : matrix_1d(0 to G_MAX_KERNEL_SIZE - 1)(0 to G_LINE_BUFFER_AMOUNT - 1);
+
 begin
 
 	-- Process for introduction G_PIPELINE_STEPS many delay cycles
@@ -66,7 +68,7 @@ begin
 
 		ACTIVATION_MATRIX_ROUTE_GEN : for j in 0 to G_MAX_KERNEL_SIZE - 1 generate
 
-			ACTIVATION_MATRIX_ROUTE_VAL_GEN : if j < G_KERNEL_SIZE - 1 generate
+			ACTIVATION_MATRIX_ROUTE_VAL_GEN : if (j < G_KERNEL_SIZE - 1) and ((G_LINE_BUFFER_AMOUNT / G_KERNEL_SIZE) * G_KERNEL_SIZE >= i) generate
 				activation_matrix_out(i)(j) <= activation_matrix(i)(j);
 			else generate
 				activation_matrix_out(i)(j) <= (others => '0');
@@ -77,7 +79,8 @@ begin
 	end generate PIXEL_STREAMS_OUT_GEN;
 
 	-- Set outputs
-	init_complete     <= and transpose_matrix1d(enable_matrix)(G_KERNEL_SIZE - 1);
+	s_tp_enable_matrix <= transpose_matrix1d(enable_matrix);
+	init_complete     <= and s_tp_enable_matrix(G_KERNEL_SIZE - 1);
 	pixel_streams_out <= s_pixel_streams_out(s_pixel_streams_out'high);
 	enable_stream_out <= s_enable_stream_out(s_enable_stream_out'high);
 	-- TODO: implement this...

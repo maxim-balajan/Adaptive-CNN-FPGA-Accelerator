@@ -125,7 +125,7 @@ begin
 	end generate LINE_BUFFER_GEN;
 
 
-    -- Flatten output of nulled activation matrix from matrix_2d to matrix_1d
+    -- Flatten and mirroring output of nulled activation matrix from matrix_2d to matrix_1d
 	Y_GEN : for y in 0 to G_MAX_KERNEL_SIZE - 1 generate
 
 		X_GEN : for x in 0 to G_MAX_KERNEL_SIZE - 1 generate
