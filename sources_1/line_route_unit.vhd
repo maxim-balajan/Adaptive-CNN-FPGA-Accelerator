@@ -16,6 +16,7 @@ entity line_route_unit is
 		clk   : in std_logic;
 		reset : in std_logic;
 		--
+		valid_pixel_streams : in std_logic;
 		pixel_streams_in  : in matrix_1d(0 to G_LINE_BUFFER_AMOUNT - 1)(vector_length - 1 downto 0);
 		activation_matrix : in matrix_2d(0 to G_LINE_BUFFER_AMOUNT - 1)(0 to G_MAX_KERNEL_SIZE - 1)(vector_length - 1 downto 0);
 		enable_matrix     : in matrix_1d(0 to G_LINE_BUFFER_AMOUNT - 1)(0 to G_MAX_KERNEL_SIZE - 1);
@@ -23,6 +24,7 @@ entity line_route_unit is
 		init_complete         : out std_logic;
 		activation_matrix_out : out matrix_2d(0 to G_LINE_BUFFER_AMOUNT - 1)(0 to G_MAX_KERNEL_SIZE - 1)(vector_length - 1 downto 0);
 		pixel_streams_out     : out matrix_1d(0 to G_LINE_BUFFER_AMOUNT - 1)(vector_length - 1 downto 0);
+		set_full_stream_out   : out std_logic_vector(0 to G_LINE_BUFFER_AMOUNT - 1);
 		enable_stream_out     : out std_logic_vector(0 to G_LINE_BUFFER_AMOUNT - 1)
 	);
 end entity line_route_unit;
@@ -56,7 +58,7 @@ begin
 
 		CHECK_PS_IN_GEN : if i mod G_KERNEL_SIZE = 0 generate
 			s_pixel_streams_out(s_pixel_streams_out'low)(i) <= pixel_streams_in(i);
-			s_enable_stream_out(s_enable_stream_out'low)(i) <= '1';
+			s_enable_stream_out(s_enable_stream_out'low)(i) <= valid_pixel_streams;
 		else generate
 			s_pixel_streams_out(s_pixel_streams_out'low)(i) <= activation_matrix(i)(G_KERNEL_SIZE - 1);
 			s_enable_stream_out(s_enable_stream_out'low)(i) <= enable_matrix(i)(G_KERNEL_SIZE - 1);
@@ -78,5 +80,7 @@ begin
 	init_complete     <= and transpose_matrix1d(enable_matrix)(G_KERNEL_SIZE - 1);
 	pixel_streams_out <= s_pixel_streams_out(s_pixel_streams_out'high);
 	enable_stream_out <= s_enable_stream_out(s_enable_stream_out'high);
+	-- TODO: implement this...
+	set_full_stream_out <= (others => '0');
 
 end architecture rtl;

@@ -7,7 +7,7 @@
 
 ####################################################################
 # Removed older tmp projects at: /tmp/vivado_sim.line_control_unit.*
-# Using temporary path.........: /tmp/vivado_sim.line_control_unit.dq5kmg
+# Using temporary path.........: /tmp/vivado_sim.line_control_unit.FM7Mey
 # Using config (if exists).....: /home/maxim/Documents/Uni/BA/bachelor-thesis/wave_config/line_control_unit_tb.wcfg
 ####################################################################
 
@@ -25,10 +25,10 @@ INFO: [VRFC 10-3107] analyzing entity 'line_control_unit_tb'
 # Starting Elaboration...:                          #
 #####################################################
 
-Vivado Simulator v2024.1
+Vivado Simulator v2023.2
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
-Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
-Running: /home/maxim/Xillinx/Vivado/2024.1/bin/unwrapped/lnx64.o/xelab line_control_unit_tb -s line_control_unit_tb_sim --debug typical 
+Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+Running: /tools/Xilinx/Vivado/2023.2/bin/unwrapped/lnx64.o/xelab line_control_unit_tb -s line_control_unit_tb_sim --debug typical 
 Multi-threading is on. Using 10 slave threads.
 Starting static elaboration
 Completed static elaboration
@@ -50,13 +50,12 @@ Built simulation snapshot line_control_unit_tb_sim
 # Starting Simulation...:                           #
 #####################################################
 
-****** xsim v2024.1 (64-bit)
-  **** SW Build 5076996 on Wed May 22 18:36:09 MDT 2024
-  **** IP Build 5075265 on Wed May 22 21:45:21 MDT 2024
-  **** SharedData Build 5076995 on Wed May 22 18:29:18 MDT 2024
-  **** Start of session at: Mon Jun 16 13:19:59 2025
+****** xsim v2023.2 (64-bit)
+  **** SW Build 4029153 on Fri Oct 13 20:13:54 MDT 2023
+  **** IP Build 4028589 on Sat Oct 14 00:45:43 MDT 2023
+  **** SharedData Build 4025554 on Tue Oct 10 17:18:54 MDT 2023
     ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
-    ** Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+    ** Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
 
 start_gui
-INFO: [Common 17-206] Exiting xsim at Mon Jun 16 13:22:50 2025...
+INFO: [Common 17-206] Exiting xsim at Thu Jun 19 11:33:55 2025...
