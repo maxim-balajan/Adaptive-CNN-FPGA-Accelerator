@@ -35,22 +35,22 @@ end entity configurable_slider;
 
 architecture rtl of configurable_slider is
 
-    -- Control signals 
-	signal s_init_complete    : std_logic;
-	signal s_full_stream_line : std_logic_vector(0 to G_LINE_BUFFER_AMOUNT - 1);
+	-- Control signals
+	signal s_init_complete       : std_logic;
+	signal s_full_stream_line    : std_logic_vector(0 to G_LINE_BUFFER_AMOUNT - 1);
 
-    -- The main inputs every linebuffer or line_unit gets from the routing unit
+	-- The main inputs every linebuffer or line_unit gets from the routing unit
 	signal s_line_buffer_streams : matrix_1d(0 to G_LINE_BUFFER_AMOUNT - 1)(vector_length - 1 downto 0);
 	signal s_line_buffer_enables : std_logic_vector(0 to G_LINE_BUFFER_AMOUNT - 1);
 
-    -- Signals for transporting the activation and enable matrices provided by the linebuffers
+	-- Signals for transporting the activation and enable matrices provided by the linebuffers
 	signal s_activation_matrix        : matrix_2d(0 to G_LINE_BUFFER_AMOUNT - 1)(0 to G_MAX_KERNEL_SIZE - 1)(vector_length - 1 downto 0);
 	signal s_activation_matrix_nulled : matrix_2d(0 to G_LINE_BUFFER_AMOUNT - 1)(0 to G_MAX_KERNEL_SIZE - 1)(vector_length - 1 downto 0);
 	signal s_enable_matrix            : matrix_1d(0 to G_LINE_BUFFER_AMOUNT - 1)(0 to G_MAX_KERNEL_SIZE - 1);
 
 begin
 
-    -- Control unit for correctly setting when the kernels are valid and when the computation has finished
+	-- Control unit for correctly setting when the kernels are valid and when the computation has finished
 	line_control_unit_inst : entity work.line_control_unit
 		generic map (
 			vector_length     => vector_length,
@@ -111,12 +111,12 @@ begin
 				reset => reset,
 				--
 				set_line_buffer_full => s_full_stream_line(i),
-                -- The pipelined steps need to be subtracted in order to get correct timing
-                -- As always Ungabunga -1 to solve the additional timing problem
-				line_buffer_depth    => std_logic_vector(unsigned(input_image_length) - (G_PIPELINE_STEPS + 1)),
-				din                  => s_line_buffer_streams(i),
-				en                   => valid_pixel_streams,
-				wr_en                => s_line_buffer_enables(i),
+				-- The pipelined steps need to be subtracted in order to get correct timing
+				-- As always Ungabunga -1 to solve the additional timing problem
+				line_buffer_depth => std_logic_vector(unsigned(input_image_length) - (G_PIPELINE_STEPS + 1)),
+				din               => s_line_buffer_streams(i),
+				en                => valid_pixel_streams,
+				wr_en             => s_line_buffer_enables(i),
 				--
 				pixel_window_line  => s_activation_matrix(i),
 				enable_window_line => s_enable_matrix(i)
@@ -124,13 +124,13 @@ begin
 
 	end generate LINE_BUFFER_GEN;
 
+	-- Flatten and mirroring output of nulled activation matrix from matrix_2d to matrix_1d
 
-    -- Flatten and mirroring output of nulled activation matrix from matrix_2d to matrix_1d
 	Y_GEN : for y in 0 to G_MAX_KERNEL_SIZE - 1 generate
 
 		X_GEN : for x in 0 to G_MAX_KERNEL_SIZE - 1 generate
-			kernel_activation_matrix((G_MAX_KERNEL_SIZE - 1 - y) * G_MAX_KERNEL_SIZE + G_MAX_KERNEL_SIZE - 1 - x) 
-                <= s_activation_matrix_nulled(x)(y);
+			kernel_activation_matrix((G_MAX_KERNEL_SIZE - 1 - y) * G_MAX_KERNEL_SIZE + G_MAX_KERNEL_SIZE - 1 - x)
+ 				<= s_activation_matrix_nulled(x)(y);
 		end generate X_GEN;
 
 	end generate Y_GEN;

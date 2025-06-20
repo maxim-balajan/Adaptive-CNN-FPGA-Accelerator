@@ -17,7 +17,7 @@ architecture bench of configurable_slider_tb is
 	constant G_IMG_MAX_LENGTH     : natural := 20;
 	constant G_KERNEL_SIZE        : natural := 3;
 	constant G_MAX_KERNEL_SIZE    : natural := 12;
-	constant G_LINE_BUFFER_AMOUNT : natural := 12;
+	constant G_LINE_BUFFER_AMOUNT : natural := 15;
 	constant G_PIPELINE_STEPS     : natural := 2;
 	constant c_padding            : natural := 2;
 	constant c_input_size         : natural := 13;
@@ -70,7 +70,7 @@ begin
 		reset               <= '1';
 		input_image_length  <= std_logic_vector(to_unsigned(c_input_size, input_image_length'length));
 		kernel_size         <= std_logic_vector(to_unsigned(3, kernel_size'length));
-		output_image_length <= std_logic_vector(to_unsigned((c_input_size + 2 * c_padding - 5) / 2 + 1, output_image_length'length));
+		output_image_length <= std_logic_vector(to_unsigned((c_input_size + 2 * c_padding - 3) / 1 + 1, output_image_length'length));
 		padding_size        <= std_logic_vector(to_unsigned(c_padding, padding_size'length));
 		stride_bit_mask     <= std_logic_vector(to_unsigned(0, stride_bit_mask'length));
 		wait for clk_period;

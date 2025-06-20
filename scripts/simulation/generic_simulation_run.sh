@@ -80,7 +80,7 @@ cat <<EOF > wave_auto.tcl
 $(if [[ -f "$CONFIG" ]]; then
   echo "open_wave_config \"$CONFIG\""
 else
-  echo "add_wave -recursive /"
+  echo 'puts "No File Config is used..."'
 fi)
 run all
 EOF

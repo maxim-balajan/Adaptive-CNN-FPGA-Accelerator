@@ -40,13 +40,14 @@
 ###########################################################################
 # Simulation Tools...:
 ###########################################################################
-# prj_simulate_help.............: Print all possible simulation runs
-# prj_simulate_bram_fifo........: Run TB for BRAM FIFO
-# prj_simulate_line_buffer......: Run TB for a Line Buffer
-# prj_simulate_kernel_slider....: Run TB for a Kernel Slider
-# prj_simulate_generic_slider...: Run TB for a Kernel Slider with CL
-# prj_simulate_line_unit........: Run TB for a Line Unit
-# prj_simulate_line_control_unit: Run TB for the Line Unit CL
+# prj_simulate_help...............: Print all possible simulation runs
+# prj_simulate_bram_fifo..........: Run TB for BRAM FIFO
+# prj_simulate_line_buffer........: Run TB for a Line Buffer
+# prj_simulate_kernel_slider......: Run TB for a Kernel Slider
+# prj_simulate_generic_slider.....: Run TB for a Kernel Slider with CL
+# prj_simulate_line_unit..........: Run TB for a Line Unit
+# prj_simulate_line_control_unit..: Run TB for the Line Unit CL
+# prj_simulate_configurable_slider: Run TB for new configurable sliders
 ###########################################################################
 # Vivado Tools...:
 ###########################################################################

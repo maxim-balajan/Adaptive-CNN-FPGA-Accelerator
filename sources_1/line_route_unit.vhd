@@ -47,10 +47,12 @@ begin
 				s_pixel_streams_out(s_pixel_streams_out'low + 1 to s_pixel_streams_out'high) <= (others => (others => (others => '0')));
 				s_enable_stream_out(s_enable_stream_out'low + 1 to s_enable_stream_out'high) <= (others => (others => '0'));
 			else
-				s_pixel_streams_out(s_pixel_streams_out'low + 1 to s_pixel_streams_out'high) 
-                    <= s_pixel_streams_out(s_pixel_streams_out'low to s_pixel_streams_out'high - 1);
-				s_enable_stream_out(s_enable_stream_out'low + 1 to s_enable_stream_out'high) 
-                    <= s_enable_stream_out(s_enable_stream_out'low to s_enable_stream_out'high - 1);
+				if valid_pixel_streams = '1' then
+					s_pixel_streams_out(s_pixel_streams_out'low + 1 to s_pixel_streams_out'high) 
+						<= s_pixel_streams_out(s_pixel_streams_out'low to s_pixel_streams_out'high - 1);
+					s_enable_stream_out(s_enable_stream_out'low + 1 to s_enable_stream_out'high) 
+						<= s_enable_stream_out(s_enable_stream_out'low to s_enable_stream_out'high - 1);
+				end if;
 			end if;
 		end if;
 
@@ -62,8 +64,8 @@ begin
 			s_pixel_streams_out(s_pixel_streams_out'low)(i) <= pixel_streams_in(i);
 			s_enable_stream_out(s_enable_stream_out'low)(i) <= valid_pixel_streams;
 		else generate
-			s_pixel_streams_out(s_pixel_streams_out'low)(i) <= activation_matrix(i)(G_KERNEL_SIZE - 1);
-			s_enable_stream_out(s_enable_stream_out'low)(i) <= enable_matrix(i)(G_KERNEL_SIZE - 1);
+			s_pixel_streams_out(s_pixel_streams_out'low)(i) <= activation_matrix(i - 1)(activation_matrix'low);
+			s_enable_stream_out(s_enable_stream_out'low)(i) <= enable_matrix(i - 1)(activation_matrix'low);
 		end generate CHECK_PS_IN_GEN;
 
 		ACTIVATION_MATRIX_ROUTE_GEN : for j in 0 to G_MAX_KERNEL_SIZE - 1 generate
