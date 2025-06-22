@@ -69,8 +69,8 @@ begin
 
 		reset               <= '1';
 		input_image_length  <= std_logic_vector(to_unsigned(c_input_size, input_image_length'length));
-		kernel_size         <= std_logic_vector(to_unsigned(3, kernel_size'length));
-		output_image_length <= std_logic_vector(to_unsigned((c_input_size + 2 * c_padding - 3) / 1 + 1, output_image_length'length));
+		kernel_size         <= std_logic_vector(to_unsigned(G_KERNEL_SIZE, kernel_size'length));
+		output_image_length <= std_logic_vector(to_unsigned((c_input_size + 2 * c_padding - G_KERNEL_SIZE) / 1 + 1, output_image_length'length));
 		padding_size        <= std_logic_vector(to_unsigned(c_padding, padding_size'length));
 		stride_bit_mask     <= std_logic_vector(to_unsigned(0, stride_bit_mask'length));
 		wait for clk_period;

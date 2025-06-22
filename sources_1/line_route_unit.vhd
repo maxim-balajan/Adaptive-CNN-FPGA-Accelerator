@@ -65,15 +65,15 @@ begin
 			s_enable_stream_out(s_enable_stream_out'low)(i) <= valid_pixel_streams;
 		else generate
 			s_pixel_streams_out(s_pixel_streams_out'low)(i) <= activation_matrix(i - 1)(activation_matrix'low);
-			s_enable_stream_out(s_enable_stream_out'low)(i) <= enable_matrix(i - 1)(activation_matrix'low);
+			s_enable_stream_out(s_enable_stream_out'low)(i) <= enable_matrix(i - 1)(enable_matrix'low);
 		end generate CHECK_PS_IN_GEN;
 
 		ACTIVATION_MATRIX_ROUTE_GEN : for j in 0 to G_MAX_KERNEL_SIZE - 1 generate
 
-			ACTIVATION_MATRIX_ROUTE_VAL_GEN : if (j < G_KERNEL_SIZE - 1) and ((G_LINE_BUFFER_AMOUNT / G_KERNEL_SIZE) * G_KERNEL_SIZE >= i) generate
+			ACTIVATION_MATRIX_ROUTE_VAL_GEN : if (j < G_KERNEL_SIZE) and ((G_LINE_BUFFER_AMOUNT / G_KERNEL_SIZE) * G_KERNEL_SIZE >= i) generate
 				activation_matrix_out(i)(j) <= activation_matrix(i)(j);
 			else generate
-				activation_matrix_out(i)(j) <= (others => '0');
+				activation_matrix_out(i)(j) <= (others => '1');
 			end generate ACTIVATION_MATRIX_ROUTE_VAL_GEN;
 
 		end generate ACTIVATION_MATRIX_ROUTE_GEN;
