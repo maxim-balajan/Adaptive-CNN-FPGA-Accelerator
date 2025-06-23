@@ -113,7 +113,8 @@ begin
 				set_line_buffer_full => s_full_stream_line(i),
 				-- The pipelined steps need to be subtracted in order to get correct timing
 				-- As always Ungabunga -1 to solve the additional timing problem
-				line_buffer_depth => std_logic_vector(unsigned(input_image_length) - (G_PIPELINE_STEPS)),
+				-- And another -1 for the implicit buffering created by the routing unit
+				line_buffer_depth => std_logic_vector(unsigned(input_image_length) - G_PIPELINE_STEPS - 1),
 				din               => s_line_buffer_streams(i),
 				en                => valid_pixel_streams,
 				wr_en             => s_line_buffer_enables(i),
