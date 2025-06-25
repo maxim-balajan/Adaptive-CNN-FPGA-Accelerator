@@ -24,8 +24,9 @@ entity line_control_unit is
 		padding_size    : in std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
 		stride_bit_mask : in std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
 		--
-		kernel_en       : out std_logic;
-		kernel_complete : out std_logic
+		actual_image_length : out std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
+		kernel_en           : out std_logic;
+		kernel_complete     : out std_logic
 	);
 end entity line_control_unit;
 
@@ -77,6 +78,9 @@ begin
 				s_kernel_size         <= kernel_size;
 				s_padding_size        <= padding_size;
 				s_stride_bit_mask     <= stride_bit_mask;
+
+				-- store how large the actual image is
+				s_actual_input_length <= unsigned(input_image_length) + shift_left(unsigned(padding_size), 1);
 			else
 				if valid_pixel = '1' then
 					-- Get current pixel
@@ -103,9 +107,6 @@ begin
 		end if;
 
 	end process GET_PIXEL_ADDR_PROC;
-
-	-- store how large the actual image is
-	s_actual_input_length <= unsigned(s_input_image_length) + shift_left(unsigned(padding_size), 1);
 
 	-- This is a helper signal that stores wether a kernel is definitely valid (is the kernel split over two rows?) or not (but is not the sole criteria)
 	s_valid_kernel <= '1' when s_pixel_input_x < s_actual_input_length - unsigned(kernel_size) + 1 else '0';
@@ -141,7 +142,8 @@ begin
 
 	end process GET_OUTPUT_ADDR;
 
-	kernel_en       <= s_kernel_en;
-	kernel_complete <= s_kernel_complete;
+	actual_image_length <= std_logic_vector(s_actual_input_length);
+	kernel_en           <= s_kernel_en;
+	kernel_complete     <= s_kernel_complete;
 
 end architecture rtl;

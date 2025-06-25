@@ -13,14 +13,15 @@ architecture bench of configurable_slider_tb is
 	-- Clock period
 	constant clk_period : time := 10 ns;
 	-- Generics
-	constant vector_length        : natural := 16;
-	constant G_IMG_MAX_LENGTH     : natural := 20;
-	constant G_KERNEL_SIZE        : natural := 3;
-	constant G_MAX_KERNEL_SIZE    : natural := 12;
-	constant G_LINE_BUFFER_AMOUNT : natural := 15;
-	constant G_PIPELINE_STEPS     : natural := 2;
-	constant c_padding            : natural := 2;
-	constant c_input_size         : natural := 13;
+	constant vector_length        : natural   := 16;
+	constant G_IMG_MAX_LENGTH     : natural   := 20;
+	constant G_KERNEL_SIZE        : natural   := 3;
+	constant G_MAX_KERNEL_SIZE    : natural   := 12;
+	constant G_LINE_BUFFER_AMOUNT : natural   := 15;
+	constant G_PIPELINE_STEPS     : natural   := 2;
+	constant G_DEBUG_FLAG         : std_logic := '1';
+	constant c_padding            : natural   := 2;
+	constant c_input_size         : natural   := 13;
 	-- Ports
 	signal clk                      : std_logic                                    := '0';
 	signal reset                    : std_logic;
@@ -45,7 +46,8 @@ begin
 			G_KERNEL_SIZE        => G_KERNEL_SIZE,
 			G_MAX_KERNEL_SIZE    => G_MAX_KERNEL_SIZE,
 			G_LINE_BUFFER_AMOUNT => G_LINE_BUFFER_AMOUNT,
-			G_PIPELINE_STEPS     => G_PIPELINE_STEPS
+			G_PIPELINE_STEPS     => G_PIPELINE_STEPS,
+			G_DEBUG_FLAG         => G_DEBUG_FLAG
 		)
 		port map (
 			clk                      => clk,
@@ -112,12 +114,11 @@ begin
 
 	end process PIXEL_STREAM_PROC;
 
-	TB : process (kernel_complete) is
+	TB : process is
 	begin
 
-		if rising_edge(kernel_complete) then
-			finish;
-		end if;
+		wait until rising_edge(kernel_complete) for 200 * clk_period;
+		finish;
 
 	end process TB;
 

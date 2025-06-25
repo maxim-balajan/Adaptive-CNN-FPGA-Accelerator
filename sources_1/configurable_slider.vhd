@@ -11,7 +11,8 @@ entity configurable_slider is
 		G_KERNEL_SIZE        : natural := 5;
 		G_MAX_KERNEL_SIZE    : natural := 12;
 		G_LINE_BUFFER_AMOUNT : natural := 12 * 3 * 5;
-		G_PIPELINE_STEPS     : natural := 2
+		G_PIPELINE_STEPS     : natural := 2;
+		G_DEBUG_FLAG : std_logic := '0'
 	);
 	port (
 		clk   : in std_logic;
@@ -48,6 +49,8 @@ architecture rtl of configurable_slider is
 	signal s_activation_matrix_nulled : matrix_2d(0 to G_LINE_BUFFER_AMOUNT - 1)(0 to G_MAX_KERNEL_SIZE - 1)(vector_length - 1 downto 0);
 	signal s_enable_matrix            : matrix_1d(0 to G_LINE_BUFFER_AMOUNT - 1)(0 to G_MAX_KERNEL_SIZE - 1);
 
+	signal s_actual_image_length : std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
+
 begin
 
 	-- Control unit for correctly setting when the kernels are valid and when the computation has finished
@@ -70,6 +73,7 @@ begin
 			padding_size        => padding_size,
 			stride_bit_mask     => stride_bit_mask,
 			--
+			actual_image_length => s_actual_image_length,
 			kernel_en       => kernel_en,
 			kernel_complete => kernel_complete
 		);
@@ -80,7 +84,8 @@ begin
 			G_KERNEL_SIZE        => G_KERNEL_SIZE,
 			G_MAX_KERNEL_SIZE    => G_MAX_KERNEL_SIZE,
 			G_LINE_BUFFER_AMOUNT => G_LINE_BUFFER_AMOUNT,
-			G_PIPELINE_STEPS     => G_PIPELINE_STEPS
+			G_PIPELINE_STEPS     => G_PIPELINE_STEPS,
+			G_DEBUG_FLAG => G_DEBUG_FLAG
 		)
 		port map (
 			clk   => clk,
@@ -114,7 +119,7 @@ begin
 				-- The pipelined steps need to be subtracted in order to get correct timing
 				-- As always Ungabunga -1 to solve the additional timing problem
 				-- And another -1 for the implicit buffering created by the routing unit
-				line_buffer_depth => std_logic_vector(unsigned(input_image_length) - G_PIPELINE_STEPS - 1),
+				line_buffer_depth => std_logic_vector(unsigned(input_image_length) + shift_left(unsigned(padding_size), 1) - G_PIPELINE_STEPS - 2),
 				din               => s_line_buffer_streams(i),
 				en                => valid_pixel_streams,
 				wr_en             => s_line_buffer_enables(i),
