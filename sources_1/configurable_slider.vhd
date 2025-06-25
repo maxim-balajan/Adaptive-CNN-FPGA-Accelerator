@@ -6,13 +6,13 @@ use work.libmatrix.all;
 
 entity configurable_slider is
 	generic (
-		vector_length        : natural := 8;
-		G_IMG_MAX_LENGTH     : natural := 55;
-		G_KERNEL_SIZE        : natural := 5;
-		G_MAX_KERNEL_SIZE    : natural := 12;
-		G_LINE_BUFFER_AMOUNT : natural := 12 * 3 * 5;
-		G_PIPELINE_STEPS     : natural := 2;
-		G_DEBUG_FLAG : std_logic := '0'
+		vector_length        : natural   := 8;
+		G_IMG_MAX_LENGTH     : natural   := 55;
+		G_KERNEL_SIZE        : natural   := 5;
+		G_MAX_KERNEL_SIZE    : natural   := 12;
+		G_LINE_BUFFER_AMOUNT : natural   := 12 * 3 * 5;
+		G_PIPELINE_STEPS     : natural   := 2;
+		G_DEBUG_FLAG         : std_logic := '0'
 	);
 	port (
 		clk   : in std_logic;
@@ -30,15 +30,15 @@ entity configurable_slider is
 		--
 		kernel_complete          : out std_logic;
 		kernel_en                : out std_logic;
-		kernel_activation_matrix : out matrix_1d(0 to G_MAX_KERNEL_SIZE ** 2 - 1)(vector_length - 1 downto 0)
+		kernel_activation_matrix : out matrix_1d(0 to G_MAX_KERNEL_SIZE * G_LINE_BUFFER_AMOUNT - 1)(vector_length - 1 downto 0)
 	);
 end entity configurable_slider;
 
 architecture rtl of configurable_slider is
 
 	-- Control signals
-	signal s_init_complete       : std_logic;
-	signal s_full_stream_line    : std_logic_vector(0 to G_LINE_BUFFER_AMOUNT - 1);
+	signal s_init_complete    : std_logic;
+	signal s_full_stream_line : std_logic_vector(0 to G_LINE_BUFFER_AMOUNT - 1);
 
 	-- The main inputs every linebuffer or line_unit gets from the routing unit
 	signal s_line_buffer_streams : matrix_1d(0 to G_LINE_BUFFER_AMOUNT - 1)(vector_length - 1 downto 0);
@@ -46,7 +46,7 @@ architecture rtl of configurable_slider is
 
 	-- Signals for transporting the activation and enable matrices provided by the linebuffers
 	signal s_activation_matrix        : matrix_2d(0 to G_LINE_BUFFER_AMOUNT - 1)(0 to G_MAX_KERNEL_SIZE - 1)(vector_length - 1 downto 0);
-	signal s_activation_matrix_nulled : matrix_2d(0 to G_LINE_BUFFER_AMOUNT - 1)(0 to G_MAX_KERNEL_SIZE - 1)(vector_length - 1 downto 0);
+	signal s_activation_matrix_nulled : matrix_1d(0 to G_LINE_BUFFER_AMOUNT * G_MAX_KERNEL_SIZE - 1)(vector_length - 1 downto 0);
 	signal s_enable_matrix            : matrix_1d(0 to G_LINE_BUFFER_AMOUNT - 1)(0 to G_MAX_KERNEL_SIZE - 1);
 
 	signal s_actual_image_length : std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
@@ -74,8 +74,8 @@ begin
 			stride_bit_mask     => stride_bit_mask,
 			--
 			actual_image_length => s_actual_image_length,
-			kernel_en       => kernel_en,
-			kernel_complete => kernel_complete
+			kernel_en           => kernel_en,
+			kernel_complete     => kernel_complete
 		);
 
 	line_route_unit_inst : entity work.line_route_unit
@@ -85,7 +85,7 @@ begin
 			G_MAX_KERNEL_SIZE    => G_MAX_KERNEL_SIZE,
 			G_LINE_BUFFER_AMOUNT => G_LINE_BUFFER_AMOUNT,
 			G_PIPELINE_STEPS     => G_PIPELINE_STEPS,
-			G_DEBUG_FLAG => G_DEBUG_FLAG
+			G_DEBUG_FLAG         => G_DEBUG_FLAG
 		)
 		port map (
 			clk   => clk,
@@ -130,15 +130,7 @@ begin
 
 	end generate LINE_BUFFER_GEN;
 
-	-- Flatten and mirroring output of nulled activation matrix from matrix_2d to matrix_1d
-
-	Y_GEN : for y in 0 to G_MAX_KERNEL_SIZE - 1 generate
-
-		X_GEN : for x in 0 to G_MAX_KERNEL_SIZE - 1 generate
-			kernel_activation_matrix((G_MAX_KERNEL_SIZE - 1 - y) * G_MAX_KERNEL_SIZE + G_MAX_KERNEL_SIZE - 1 - x)
- 				<= s_activation_matrix_nulled(x)(y);
-		end generate X_GEN;
-
-	end generate Y_GEN;
+	-- Set output of activation matrix
+	kernel_activation_matrix <= s_activation_matrix_nulled;
 
 end architecture rtl;

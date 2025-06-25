@@ -35,7 +35,7 @@ architecture bench of configurable_slider_tb is
 	signal stride_bit_mask          : std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
 	signal kernel_complete          : std_logic;
 	signal kernel_en                : std_logic;
-	signal kernel_activation_matrix : matrix_1d(0 to G_MAX_KERNEL_SIZE ** 2 - 1)(vector_length - 1 downto 0);
+	signal kernel_activation_matrix : matrix_1d(0 to G_MAX_KERNEL_SIZE * G_LINE_BUFFER_AMOUNT - 1)(vector_length - 1 downto 0);
 
 begin
 
