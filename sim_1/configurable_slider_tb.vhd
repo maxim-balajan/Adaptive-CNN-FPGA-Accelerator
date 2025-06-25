@@ -117,9 +117,12 @@ begin
 	TB : process is
 	begin
 
-		wait until rising_edge(kernel_complete) for 200 * clk_period;
+		wait until rising_edge(kernel_complete) for 5000 * clk_period;
+		assert kernel_complete = '1'
+			report "Kernel Complete was not set in time after 50us! Aborting further simulation..."
+			severity FAILURE;
 		finish;
-
+		
 	end process TB;
 
 end architecture bench;
