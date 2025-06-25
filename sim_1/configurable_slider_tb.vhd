@@ -20,7 +20,7 @@ architecture bench of configurable_slider_tb is
 	constant G_LINE_BUFFER_AMOUNT : natural   := 15;
 	constant G_PIPELINE_STEPS     : natural   := 2;
 	constant G_DEBUG_FLAG         : std_logic := '1';
-	constant c_padding            : natural   := 2;
+	constant c_padding            : natural   := 1;
 	constant c_input_size         : natural   := 13;
 	-- Ports
 	signal clk                      : std_logic                                    := '0';
@@ -44,6 +44,7 @@ begin
 			vector_length        => vector_length,
 			G_IMG_MAX_LENGTH     => G_IMG_MAX_LENGTH,
 			G_KERNEL_SIZE        => G_KERNEL_SIZE,
+			G_PADDING_SIZE       => c_padding,
 			G_MAX_KERNEL_SIZE    => G_MAX_KERNEL_SIZE,
 			G_LINE_BUFFER_AMOUNT => G_LINE_BUFFER_AMOUNT,
 			G_PIPELINE_STEPS     => G_PIPELINE_STEPS,
@@ -122,7 +123,7 @@ begin
 			report "Kernel Complete was not set in time after 50us! Aborting further simulation..."
 			severity FAILURE;
 		finish;
-		
+
 	end process TB;
 
 end architecture bench;

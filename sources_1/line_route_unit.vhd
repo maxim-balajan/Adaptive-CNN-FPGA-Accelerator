@@ -7,10 +7,11 @@ use work.libmatrix.all;
 entity line_route_unit is
 	generic (
 		vector_length        : natural   := 8;
+		G_PADDING_SIZE		 : natural := 2;
 		G_KERNEL_SIZE        : natural   := 5;
 		G_MAX_KERNEL_SIZE    : natural   := 12;
 		G_LINE_BUFFER_AMOUNT : natural   := 12 * 3 * 5;
-		G_PIPELINE_STEPS     : natural   := 2;
+		G_PIPELINE_STEPS     : natural   := 5;
 		G_DEBUG_FLAG         : std_logic := '0'
 	);
 	port (
@@ -80,6 +81,13 @@ begin
 
 		end generate ACTIVATION_MATRIX_ROUTE_GEN;
 
+		-- Set Full LB depending on the padding size
+		CHECK_SET_FULL_GEN : if i mod G_KERNEL_SIZE < G_PADDING_SIZE generate
+			set_full_stream_out(i) <= '1';
+		else generate
+			set_full_stream_out(i) <= '0';
+		end generate;
+
 	end generate PIXEL_STREAMS_OUT_GEN;
 
 	-- TODO: mirror this design accordingly
@@ -90,10 +98,9 @@ begin
 
 	-- Set outputs
 	s_tp_enable_matrix <= transpose_matrix1d(enable_matrix);
+	-- TODO: The enable matrix is set wrongly when s_set_full_out is not always 0
 	init_complete      <= and s_tp_enable_matrix(G_KERNEL_SIZE - 1);
 	pixel_streams_out  <= s_pixel_streams_out(s_pixel_streams_out'high);
 	enable_stream_out  <= s_enable_stream_out(s_enable_stream_out'high);
-	-- TODO: implement this...
-	set_full_stream_out <= (others => '0');
 
 end architecture rtl;

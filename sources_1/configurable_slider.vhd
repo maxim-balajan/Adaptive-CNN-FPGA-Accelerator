@@ -9,6 +9,7 @@ entity configurable_slider is
 		vector_length        : natural   := 8;
 		G_IMG_MAX_LENGTH     : natural   := 55;
 		G_KERNEL_SIZE        : natural   := 5;
+		G_PADDING_SIZE       : natural   := 2;
 		G_MAX_KERNEL_SIZE    : natural   := 12;
 		G_LINE_BUFFER_AMOUNT : natural   := 12 * 3 * 5;
 		G_PIPELINE_STEPS     : natural   := 2;
@@ -82,6 +83,7 @@ begin
 		generic map (
 			vector_length        => vector_length,
 			G_KERNEL_SIZE        => G_KERNEL_SIZE,
+			G_PADDING_SIZE       => G_PADDING_SIZE,
 			G_MAX_KERNEL_SIZE    => G_MAX_KERNEL_SIZE,
 			G_LINE_BUFFER_AMOUNT => G_LINE_BUFFER_AMOUNT,
 			G_PIPELINE_STEPS     => G_PIPELINE_STEPS,
@@ -122,7 +124,7 @@ begin
 				line_buffer_depth => std_logic_vector(unsigned(input_image_length) + shift_left(unsigned(padding_size), 1) - G_PIPELINE_STEPS - 2),
 				din               => s_line_buffer_streams(i),
 				en                => valid_pixel_streams,
-				wr_en             => s_line_buffer_enables(i),
+				wr_en             => s_line_buffer_enables(i) or s_full_stream_line(i),
 				--
 				pixel_window_line  => s_activation_matrix(i),
 				enable_window_line => s_enable_matrix(i)
