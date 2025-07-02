@@ -41,7 +41,8 @@ begin
 		if rising_edge(clk) then
 			if reset = '1' then
 				s_pixel_window_line(s_pixel_window_line'low + 1 to s_pixel_window_line'high)    <= (others => (others => '0'));
-				s_enable_window_line(s_enable_window_line'low + 1 to s_enable_window_line'high) <= (others => '0');
+				-- If set full is set, all registers have to receive an valid en in order to correctly set the init signal necessary for the control logic
+				s_enable_window_line(s_enable_window_line'low + 1 to s_enable_window_line'high) <= (others => set_line_buffer_full);
 			else
 				-- Shift values through registers
                 if (en and wr_en) = '1' then
@@ -73,7 +74,8 @@ begin
 
 	-- Set outputs of linebuffer directly to start of shift registers
 	s_pixel_window_line(s_pixel_window_line'low)   <= s_line_buffer_dout;
-	s_enable_window_line(s_enable_window_line'low) <= s_line_buffer_full;
+	-- s_line_buffer_full should be overwritten by set_line_buffer_full because the BRAM would overwise delay the signal by one cycle
+	s_enable_window_line(s_enable_window_line'low) <= s_line_buffer_full or set_line_buffer_full;
 
 	-- Set outputs
 	pixel_window_line  <= s_pixel_window_line(s_pixel_window_line'low + 1 to s_pixel_window_line'high);
