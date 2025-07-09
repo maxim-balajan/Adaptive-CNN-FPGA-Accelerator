@@ -98,7 +98,6 @@ begin
 
 	-- Set outputs
 	s_tp_enable_matrix <= transpose_matrix1d(enable_matrix);
-	-- TODO: The enable matrix is set wrongly when s_set_full_out is not always 0
 	init_complete      <= and s_tp_enable_matrix(G_KERNEL_SIZE - 1);
 	pixel_streams_out  <= s_pixel_streams_out(s_pixel_streams_out'high);
 	enable_stream_out  <= s_enable_stream_out(s_enable_stream_out'high);

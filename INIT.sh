@@ -160,7 +160,7 @@ if [ ! -f "$PYTHON_BIN" ]; then
     RESULT="FAILURE"
 else
 
-    if [ ! -d "$ENV_NAME" ]; then
+    if [[ ! -d "$ENV_NAME"  ||  -n "$1" ]]; then
         $PYTHON_BIN -m venv $ENV_NAME
         source $ENV_NAME/bin/activate
 
@@ -180,6 +180,7 @@ else
         python -m pip install matplotlib
         python -m pip install numpy
         python -m pip install ipykernel
+        python -m pip install pyyaml
         python -m pip install onnx onnxruntime onnxoptimizer
         echo ""; echo ""
     else
@@ -202,6 +203,7 @@ else
         python -c "import matplotlib as mpl; print('# Matplotlib version..:', mpl.__version__)"
         python -c "import numpy as np;       print('# Numpy version.......:', np.__version__)"
         python -c "import ipykernel;         print('# Ipykernel version...:', ipykernel.__version__)"
+        python -c "import yaml;              print('# PyYaml version......:', yaml.__version__)"
         python -c "import onnx;              print('# Onnx version........:', onnx.__version__)"
         echo "####################################################################"
         echo ""; echo ""

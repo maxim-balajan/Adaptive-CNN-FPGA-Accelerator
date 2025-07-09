@@ -7,13 +7,13 @@ set PRJ_ROOT_PATH $::env(PRJ_ROOT_PATH)
 set HOME $::env(HOME)
 set PROJECT_NAME "AlexNet-Accelerator"
 set PROJECT_DIR "${PRJ_ROOT_PATH}/${PROJECT_NAME}"
-set board_repo_path "${PRJ_ROOT_PATH}/bdf"
+set board_repo_path "/$HOME/.Xilinx/Vivado/2023.2/xhub/board_store/xilinx_board_store/XilinxBoardStore/Vivado/*/boards"
 
-create_project $PROJECT_NAME $PROJECT_DIR -part xczu3eg-sbva484-1-e -force
+create_project $PROJECT_NAME $PROJECT_DIR -part xczu3eg-sbva484-1-i -force
 
 set obj [current_project]
 set_property -name "board_part_repo_paths" -value "[file normalize "$board_repo_path"]" -objects $obj
-set_property -name "board_part" -value "avnet-tria.com:ultra96v2:part0:1.3" -objects $obj
+set_property board_part avnet.com:ultra96v2:part0:1.2 [current_project]
 set_property -name "default_lib" -value "work" -objects $obj
 set_property -name "enable_resource_estimation" -value "0" -objects $obj
 set_property -name "enable_vhdl_2008" -value "1" -objects $obj
