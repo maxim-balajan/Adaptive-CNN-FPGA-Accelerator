@@ -1,6 +1,8 @@
 import yaml
 import sys, os
 import types
+from kernel_comp_inst import *
+from common_utils import safe_read
 
 from core_inst import CoreInst
 
@@ -8,11 +10,11 @@ class AdderTreeConfig():
     def __init__(self, config_path):
         with open(config_path, 'r') as f:
             config_dict = yaml.safe_load(f)
-        self.i_dataline_amount = self.__safe_read(config_dict, 'input_amount')
-        self.o_dataline_amount = self.__safe_read(config_dict, 'output_amount')
-        self.i_dataline_width = self.__safe_read(config_dict, 'input_max_bit_width')
-        self.o_dataline_width = self.__safe_read(config_dict, 'output_max_bit_width')
-        self.compile_lin = self.__safe_read(config_dict, 'compile_lib', 'work')
+        self.i_dataline_amount = safe_read(config_dict, 'input_amount')
+        self.o_dataline_amount = safe_read(config_dict, 'output_amount')
+        self.i_dataline_width = safe_read(config_dict, 'input_max_bit_width')
+        self.o_dataline_width = safe_read(config_dict, 'output_max_bit_width')
+        self.compile_lin = safe_read(config_dict, 'compile_lib', 'work')
         self.cores = []
 
         try:
@@ -23,19 +25,14 @@ class AdderTreeConfig():
             raise NameError(f'Error: Could not find necessary key "cores" in Config! Abort...')
 
 
-def safe_read(self, config:dict, key: str, default=None):
-    try:
-        return config[key]
-    except KeyError:
-        if default is not None:
-            return default
-        else:
-            raise NameError(f'Error: Could not find necessary key "{key}" in Config! Abort...')  
-
-
 def main():
 
     adder_config = AdderTreeConfig(os.path.join(os.getenv('PRJ_SCRIPTS'), 'code_generation', 'adder_tree_config.yaml'))
+
+    inst = KernelCompBundle(adder_config.cores[0], 'work')
+
+    print(inst.instantiation_to_string())
+
     return 0
 
 

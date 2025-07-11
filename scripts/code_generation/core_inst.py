@@ -1,4 +1,4 @@
-from adder_tree_gen import safe_read
+from common_utils import safe_read
 
 class CoreInst():
     def __init__(self, name: str, core_dict: dict):
