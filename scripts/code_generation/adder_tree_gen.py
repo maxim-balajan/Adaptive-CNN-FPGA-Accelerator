@@ -2,6 +2,8 @@ import yaml
 import sys, os
 import types
 
+from core_inst import CoreInst
+
 class AdderTreeConfig():
     def __init__(self, config_path):
         with open(config_path, 'r') as f:
@@ -15,31 +17,20 @@ class AdderTreeConfig():
 
         try:
             for name, core_dict in config_dict['cores'].items():
-                core = types.SimpleNamespace()
-                core.name = name
-                core.amount = self.__safe_read(core_dict, 'amount', 1)
-                core.pool_or_conv = self.__safe_read(core_dict, 'pool_or_conv', 1)
-                core.clip_adder = self.__safe_read(core_dict, 'enable_clip_adder', 1)
-                core.multiplication_line = self.__safe_read(core_dict, 'enable_multiplication_line', 0)
-                core.shift = self.__safe_read(core_dict, 'enable_shift', 0)
-                core.relu = self.__safe_read(core_dict, 'enable_relu', 1)
-                core.i_length = self.__safe_read(core_dict, 'input_length')
-                core.o_length = self.__safe_read(core_dict, 'output_length')
-                core.i_amount = self.__safe_read(core_dict, 'input_amount')
-
+                core = CoreInst(name, core_dict)
                 self.cores.append(core)
         except KeyError:
             raise NameError(f'Error: Could not find necessary key "cores" in Config! Abort...')
-    
 
-    def __safe_read(self, config:dict, key: str, default=None):
-        try:
-            return config[key]
-        except KeyError:
-            if default is not None:
-                return default
-            else:
-                raise NameError(f'Error: Could not find necessary key "{key}" in Config! Abort...')
+
+def safe_read(self, config:dict, key: str, default=None):
+    try:
+        return config[key]
+    except KeyError:
+        if default is not None:
+            return default
+        else:
+            raise NameError(f'Error: Could not find necessary key "{key}" in Config! Abort...')  
 
 
 def main():
