@@ -1,37 +1,20 @@
-import yaml
-import sys, os
-import types
-from kernel_comp_inst import *
-from common_utils import safe_read
-
-from core_inst import CoreInst
-
-class AdderTreeConfig():
-    def __init__(self, config_path):
-        with open(config_path, 'r') as f:
-            config_dict = yaml.safe_load(f)
-        self.i_dataline_amount = safe_read(config_dict, 'input_amount')
-        self.o_dataline_amount = safe_read(config_dict, 'output_amount')
-        self.i_dataline_width = safe_read(config_dict, 'input_max_bit_width')
-        self.o_dataline_width = safe_read(config_dict, 'output_max_bit_width')
-        self.compile_lin = safe_read(config_dict, 'compile_lib', 'work')
-        self.cores = []
-
-        try:
-            for name, core_dict in config_dict['cores'].items():
-                core = CoreInst(name, core_dict)
-                self.cores.append(core)
-        except KeyError:
-            raise NameError(f'Error: Could not find necessary key "cores" in Config! Abort...')
+import os
+from kernel_cores import KernelCores
+from adder_tree_config import AdderTreeConfig
 
 
 def main():
 
     adder_config = AdderTreeConfig(os.path.join(os.getenv('PRJ_SCRIPTS'), 'code_generation', 'adder_tree_config.yaml'))
 
-    inst = KernelCompBundle(adder_config.cores[0], 'work')
+    kernel_cores = KernelCores(adder_config)
 
-    print(inst.instantiation_to_string())
+    for core in adder_config.cores:
+        core.architecture_to_string()
+
+    kernel_cores.module_to_file()
+
+    print("Files successfully generated!")
 
     return 0
 

@@ -1,5 +1,5 @@
-input_amount: 300
-output_amount : 1
+matrix_input_amount: 500
+max_core_amount: 100
 input_max_bit_width : 24
 output_max_bit_width : 24
 cores:
