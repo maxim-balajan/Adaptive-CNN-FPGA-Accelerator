@@ -75,7 +75,6 @@ class CoreInst():
         template = template.replace("%%CORE_COMPILE_LIB%%", str(self.compile_lib))
         template = template.replace("%%CORE_NAME%%", str(self.name))
         template = template.replace("%%CORE_AMOUNT%%", str(self.amount))
-        template = template.replace("%%CORE_INPUT_LENGTH%%", str(self.i_amount))
         template = template.replace("%%CORE_TYPE%%", str(self.pool_or_conv))
         template = template.replace("%%CORE_CLIP_ADDER%%", str(self.clip_adder))
         template = template.replace("%%CORE_MULTIPLICATION_LINE%%", str(self.multiplication_line))

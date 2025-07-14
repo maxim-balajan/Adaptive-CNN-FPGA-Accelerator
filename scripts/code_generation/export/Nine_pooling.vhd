@@ -18,14 +18,14 @@ entity Nine_pooling is
         clk   : in std_logic;
         reset : in std_logic;
         --
-        i_activation_matrix_line  : in matrix_1d(0 to 20 * 9 - 1)(9 - 1 downto 0);
-        i_weight_matrix_line      : in matrix_1d(0 to 20 * 9 - 1)(9 - 1 downto 0);
-        i_shamt_line              : in matrix_1d(0 to 20 - 1)(9 - 1 downto 0);
-        i_bias_line               : in matrix_1d(0 to 20 - 1)(9 - 1 downto 0);
+        i_activation_matrix_line  : in matrix_1d(0 to 20 * 9 - 1)(8 - 1 downto 0);
+        i_weight_matrix_line      : in matrix_1d(0 to 20 * 9 - 1)(8 - 1 downto 0);
+        i_shamt_line              : in matrix_1d(0 to 20 - 1)(8 - 1 downto 0);
+        i_bias_line               : in matrix_1d(0 to 20 - 1)(8 - 1 downto 0);
         i_kernel_en_line          : in std_logic_vector(0 to 20 - 1);   
         i_kernel_complete_line    : in std_logic_vector(0 to 20 - 1);
         --
-        o_pixel_line         : out matrix_1d(0 to 20 - 1)(9 - 1 downto 0);
+        o_pixel_line         : out matrix_1d(0 to 20 - 1)(8 - 1 downto 0);
         o_valid_pixel_line   : out std_logic_vector(0 to 20 - 1);
         o_comp_complete_line : out std_logic_vector(0 to 20 - 1)
     );
@@ -45,7 +45,7 @@ begin
                 enable_shift                => 0,
                 enable_bias                 => 0,
                 enable_relu                 => 1,
-                input_length                => 9,
+                input_length                => 8,
                 output_length               => 8,
                 input_amount                => 9
             )
