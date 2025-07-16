@@ -37,10 +37,10 @@ class KernelCores():
         core_instances = ""
         for core in self.config.cores:
             core_instances += core.instantiation_to_string(am_offset, wm_offset, control_offset, out_offset)
-            am_offset += core.i_amount * core.amount
-            wm_offset += core.i_amount * core.amount
-            control_offset += core.amount
-            out_offset += core.amount
+            am_offset += core.max_input_amount * core.max_core_amount
+            wm_offset += core.max_input_amount * core.max_core_amount
+            control_offset += core.max_core_amount
+            out_offset += core.max_core_amount
 
         template = template.replace("%%CORE_INSTANCES%%", core_instances)
         

@@ -18,26 +18,25 @@ entity Nine_adder_plus_mult is
         clk   : in std_logic;
         reset : in std_logic;
         --
-        i_activation_matrix_line  : in matrix_1d(0 to 20 * 9 - 1)(8 - 1 downto 0);
-        i_weight_matrix_line      : in matrix_1d(0 to 20 * 9 - 1)(8 - 1 downto 0);
-        i_shamt_line              : in matrix_1d(0 to 20 - 1)(8 - 1 downto 0);
-        i_bias_line               : in matrix_1d(0 to 20 - 1)(8 - 1 downto 0);
-        i_kernel_en_line          : in std_logic_vector(0 to 20 - 1);   
-        i_kernel_complete_line    : in std_logic_vector(0 to 20 - 1);
+        i_activation_matrix_line  : in matrix_1d(0 to 100 * 20 - 1)(24 - 1 downto 0);
+        i_weight_matrix_line      : in matrix_1d(0 to 100 * 20 - 1)(24 - 1 downto 0);
+        i_shamt_line              : in matrix_1d(0 to 100 - 1)(24 - 1 downto 0);
+        i_bias_line               : in matrix_1d(0 to 100 - 1)(24 - 1 downto 0);
+        i_kernel_en_line          : in std_logic_vector(0 to 100 - 1);   
+        i_kernel_complete_line    : in std_logic_vector(0 to 100 - 1);
         --
-        o_pixel_line         : out matrix_1d(0 to 20 - 1)(8 - 1 downto 0);
-        o_valid_pixel_line   : out std_logic_vector(0 to 20 - 1);
-        o_comp_complete_line : out std_logic_vector(0 to 20 - 1)
+        o_pixel_line         : out matrix_1d(0 to 100 - 1)(24 - 1 downto 0);
+        o_valid_pixel_line   : out std_logic_vector(0 to 100 - 1);
+        o_comp_complete_line : out std_logic_vector(0 to 100 - 1)
     );
 end entity Nine_adder_plus_mult;
 
-
-architecture rtl of Nine_adder_plus_mult is
+architecture Nine_adder_plus_mult_rlt of Nine_adder_plus_mult is
 begin
 
     Nine_adder_plus_mult_GEN : for i in 0 to 20 - 1 generate
         
-        Nine_adder_plus_mult_INST : entity work.kernel_computation_unit
+        KERNEL_COMPUTATION_INST : entity work.kernel_computation_unit
             generic map (
                 pool_or_conv                => 1,
                 enable_clip_adder           => 1,
@@ -53,18 +52,35 @@ begin
                 clk                 => clk,
                 reset               => reset,
                 --
-                activation_matrix   => i_activation_matrix_line(i * 9 to (i + 1) * 9 - 1),
-                weight_matrix       => i_weight_matrix_line(i * 9 to (i + 1) * 9 - 1),
-                shamt               => i_shamt_line(i),
-                bias                => i_bias_line(i),
+                activation_matrix(0)          => i_activation_matrix_line(i + 0)(7 downto 0),
+                activation_matrix(1)          => i_activation_matrix_line(i + 1)(7 downto 0),
+                activation_matrix(2)          => i_activation_matrix_line(i + 2)(7 downto 0),
+                activation_matrix(3)          => i_activation_matrix_line(i + 3)(7 downto 0),
+                activation_matrix(4)          => i_activation_matrix_line(i + 4)(7 downto 0),
+                activation_matrix(5)          => i_activation_matrix_line(i + 5)(7 downto 0),
+                activation_matrix(6)          => i_activation_matrix_line(i + 6)(7 downto 0),
+                activation_matrix(7)          => i_activation_matrix_line(i + 7)(7 downto 0),
+                activation_matrix(8)          => i_activation_matrix_line(i + 8)(7 downto 0),
+                weight_matrix(0)              => i_weight_matrix_line(i + 0)(7 downto 0),
+                weight_matrix(1)              => i_weight_matrix_line(i + 1)(7 downto 0),
+                weight_matrix(2)              => i_weight_matrix_line(i + 2)(7 downto 0),
+                weight_matrix(3)              => i_weight_matrix_line(i + 3)(7 downto 0),
+                weight_matrix(4)              => i_weight_matrix_line(i + 4)(7 downto 0),
+                weight_matrix(5)              => i_weight_matrix_line(i + 5)(7 downto 0),
+                weight_matrix(6)              => i_weight_matrix_line(i + 6)(7 downto 0),
+                weight_matrix(7)              => i_weight_matrix_line(i + 7)(7 downto 0),
+                weight_matrix(8)              => i_weight_matrix_line(i + 8)(7 downto 0),
+                --
+                shamt               => i_shamt_line(i)(8 - 1 downto 0),
+                bias                => i_bias_line(i)(8 - 1 downto 0),
                 kernel_en           => i_kernel_en_line(i),
                 kernel_complete     => i_kernel_complete_line(i),
                 --
-                new_pixel           => o_pixel_line(i),
+                new_pixel           => o_pixel_line(i)(24 - 1 downto 0),
                 valid_pixel         => o_valid_pixel_line(i),
                 comp_complete       => o_comp_complete_line(i)
             );
 
     end generate Nine_adder_plus_mult_GEN;
 
-end architecture rtl;
+end architecture Nine_adder_plus_mult_rlt;

@@ -10,7 +10,7 @@ def main():
     kernel_cores = KernelCores(adder_config)
 
     for core in adder_config.cores:
-        core.architecture_to_string()
+        core.module_to_file()
 
     kernel_cores.module_to_file()
 
