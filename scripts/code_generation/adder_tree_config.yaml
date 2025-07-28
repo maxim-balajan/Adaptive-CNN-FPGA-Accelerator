@@ -2,7 +2,17 @@ matrix_input_amount: 6000
 max_core_amount: 300
 input_max_bit_width : 24
 output_max_bit_width : 24
-iteration: 1
+route_configs:
+  route_a:
+    pool_or_conv: 1
+    input_channel: 3
+    output_channel: 3
+    input_amount: 121
+  route_b:
+    pool_or_conv: 0
+    input_channel: 96
+    output_channel: 96
+    input_amount: 9
 cores:
   Nine_adder_plus_mult:
     global:

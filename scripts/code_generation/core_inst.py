@@ -24,6 +24,8 @@ class CoreInst():
         self.max_core_amount = safe_read(global_dict, 'max_core_amount')
         self.max_input_amount = safe_read(global_dict, 'max_input_amount')
         self.max_input_length = safe_read(global_dict, 'max_input_length')
+        # only via instantiation_to_string the start_address can be set!
+        self.start_address = -1
 
 
     def instantiation_to_string(self, am_start: int, wm_start: int, control_start: int, out_start: int) -> str:
@@ -31,6 +33,9 @@ class CoreInst():
         template = ""
         with open(template_path) as f:
             template = f.read()
+
+        # am_start and wm_start are currently equal (and will probably always be that way)
+        self.start_address = am_start
 
         template = template.replace('%%CORE_ENTITY_NAME%%', str(self.entity_name))
         template = template.replace('%%CORE_ARCHITECTURE_NAME%%', str(self.architecture_name))
