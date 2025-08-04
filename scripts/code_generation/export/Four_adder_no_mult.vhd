@@ -44,7 +44,7 @@ begin
                 enable_shift                => 0,
                 enable_bias                 => 0,
                 enable_relu                 => 1,
-                input_length                => 8,
+                input_length                => 24,
                 output_length               => 24,
                 input_amount                => 4
             )
@@ -52,17 +52,17 @@ begin
                 clk                 => clk,
                 reset               => reset,
                 --
-                activation_matrix(0)          => i_activation_matrix_line(i + 0)(7 downto 0),
-                activation_matrix(1)          => i_activation_matrix_line(i + 1)(7 downto 0),
-                activation_matrix(2)          => i_activation_matrix_line(i + 2)(7 downto 0),
-                activation_matrix(3)          => i_activation_matrix_line(i + 3)(7 downto 0),
-                weight_matrix(0)              => i_weight_matrix_line(i + 0)(7 downto 0),
-                weight_matrix(1)              => i_weight_matrix_line(i + 1)(7 downto 0),
-                weight_matrix(2)              => i_weight_matrix_line(i + 2)(7 downto 0),
-                weight_matrix(3)              => i_weight_matrix_line(i + 3)(7 downto 0),
+                activation_matrix(0)          => i_activation_matrix_line(i + 0)(23 downto 0),
+                activation_matrix(1)          => i_activation_matrix_line(i + 1)(23 downto 0),
+                activation_matrix(2)          => i_activation_matrix_line(i + 2)(23 downto 0),
+                activation_matrix(3)          => i_activation_matrix_line(i + 3)(23 downto 0),
+                weight_matrix(0)              => i_weight_matrix_line(i + 0)(23 downto 0),
+                weight_matrix(1)              => i_weight_matrix_line(i + 1)(23 downto 0),
+                weight_matrix(2)              => i_weight_matrix_line(i + 2)(23 downto 0),
+                weight_matrix(3)              => i_weight_matrix_line(i + 3)(23 downto 0),
                 --
-                shamt               => i_shamt_line(i)(8 - 1 downto 0),
-                bias                => i_bias_line(i)(8 - 1 downto 0),
+                shamt               => i_shamt_line(i)(24 - 1 downto 0),
+                bias                => i_bias_line(i)(24 - 1 downto 0),
                 kernel_en           => i_kernel_en_line(i),
                 kernel_complete     => i_kernel_complete_line(i),
                 --

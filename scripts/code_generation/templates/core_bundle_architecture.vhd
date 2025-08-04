@@ -24,7 +24,7 @@ begin
 %%CORE_WEIGHT_MATRIX%%
                 --
                 shamt               => i_shamt_line(i)(%%CORE_INPUT_LENGTH%% - 1 downto 0),
-                bias                => i_bias_line(i)(%%CORE_INPUT_LENGTH%% - 1 downto 0),
+                bias                => i_bias_line(i)(%%CORE_OUTPUT_LENGTH%% - 1 downto 0),
                 kernel_en           => i_kernel_en_line(i),
                 kernel_complete     => i_kernel_complete_line(i),
                 --

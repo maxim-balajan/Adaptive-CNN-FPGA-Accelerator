@@ -34,7 +34,7 @@ end entity Nine_adder_plus_mult;
 architecture Nine_adder_plus_mult_rlt of Nine_adder_plus_mult is
 begin
 
-    Nine_adder_plus_mult_GEN : for i in 0 to 20 - 1 generate
+    Nine_adder_plus_mult_GEN : for i in 0 to 45 - 1 generate
         
         KERNEL_COMPUTATION_INST : entity work.kernel_computation_unit
             generic map (
@@ -72,7 +72,7 @@ begin
                 weight_matrix(8)              => i_weight_matrix_line(i + 8)(7 downto 0),
                 --
                 shamt               => i_shamt_line(i)(8 - 1 downto 0),
-                bias                => i_bias_line(i)(8 - 1 downto 0),
+                bias                => i_bias_line(i)(24 - 1 downto 0),
                 kernel_en           => i_kernel_en_line(i),
                 kernel_complete     => i_kernel_complete_line(i),
                 --

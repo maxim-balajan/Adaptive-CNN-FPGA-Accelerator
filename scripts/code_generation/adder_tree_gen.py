@@ -1,6 +1,7 @@
 import os
 from kernel_cores import KernelCores
 from adder_tree_config import AdderTreeConfig
+from core_tree import CoreTree
 
 
 def main():
@@ -14,7 +15,11 @@ def main():
 
     kernel_cores.module_to_file()
 
-    print("Files successfully generated!")
+    print("Kernel_cores successfully generated!")
+
+    core_tree = CoreTree(adder_config.cores, adder_config.route_configs, 0)
+
+    core_tree.route()
 
     return 0
 

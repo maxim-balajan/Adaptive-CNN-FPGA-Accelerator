@@ -11,6 +11,7 @@ class AdderTreeConfig():
         self.o_dataline_width = safe_read(config_dict, 'output_max_bit_width')
         self.max_core_amount = safe_read(config_dict, 'max_core_amount')
         self.compile_lib = safe_read(config_dict, 'compile_lib', 'work')
+        self.route_configs = safe_read(config_dict, 'route_configs')
         self.cores: list[CoreInst] = []
 
         try:

@@ -43,12 +43,12 @@ class CoreInst():
         template = template.replace("%%CORE_TYPE%%", "Adder" if self.pool_or_conv else "Comparator")
         template = template.replace("%%CORE_AMOUNT%%", str(self.amount))
 
-        activation_matrix_line = '\n'.join([f'{f"{3 * C_TAB}i_activation_matrix_line({i})".ljust(C_PADDING)} => i_activation_matrix_line({am_start + i})({self.i_length - 1} downto 0),' for i in range(self.max_core_amount * self.max_input_amount)])
+        activation_matrix_line = '\n'.join([f'{f"{3 * C_TAB}i_activation_matrix_line({i})".ljust(C_PADDING)} => i_activation_matrix_line({am_start + i}),' for i in range(self.max_core_amount * self.max_input_amount)])
         template = template.replace("%%CORE_ACTIVATION_MATRIX_LINE%%", activation_matrix_line)
 
         weight_matrix_line = ""
         if self.pool_or_conv:
-            weight_matrix_line = '\n'.join([f'{f"{3 * C_TAB}i_weight_matrix_line({i})".ljust(C_PADDING)} => i_weight_matrix_line({wm_start + i})({self.i_length - 1} downto 0),' for i in range(self.max_core_amount * self.max_input_amount)])
+            weight_matrix_line = '\n'.join([f'{f"{3 * C_TAB}i_weight_matrix_line({i})".ljust(C_PADDING)} => i_weight_matrix_line({wm_start + i}),' for i in range(self.max_core_amount * self.max_input_amount)])
         else:
             weight_matrix_line += f'{f"{3 * C_TAB}i_weight_matrix_line".ljust(C_PADDING)} => (others => (others => \'0\')),'
         template = template.replace("%%CORE_WEIGHT_MATRIX_LINE%%", weight_matrix_line)
@@ -69,7 +69,7 @@ class CoreInst():
         template = template.replace("%%CORE_KERNEL_EN_LINE%%", kernel_en_line)
         template = template.replace("%%CORE_KERNEL_COMPLETE_LINE%%", kernel_complete_line)
 
-        pixel_line = '\n'.join([f'{f"{3 * C_TAB}o_pixel_line({i})".ljust(C_PADDING)} => o_pixel_line({out_start + i})({self.o_length - 1} downto 0),' for i in range(self.max_core_amount)])
+        pixel_line = '\n'.join([f'{f"{3 * C_TAB}o_pixel_line({i})".ljust(C_PADDING)} => o_pixel_line({out_start + i}),' for i in range(self.max_core_amount)])
         valid_pixel_line = '\n'.join([f'{f"{3 * C_TAB}o_valid_pixel_line({i})".ljust(C_PADDING)} => o_valid_pixel_line({out_start + i}),' for i in range(self.max_core_amount)])
         comp_complete_pixel_line = '\n'.join([f'{f"{3 * C_TAB}o_comp_complete_line({i})".ljust(C_PADDING)} => o_comp_complete_line({out_start + i}),' for i in range(self.max_core_amount)])
         template = template.replace("%%CORE_PIXEL_LINE%%", pixel_line)
