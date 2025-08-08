@@ -2,7 +2,7 @@
 from core_inst import CoreInst
 
 class CoreNode():
-    def __init__(self, core: CoreInst, start_address: int):
+    def __init__(self, core: CoreInst, in_start_address: int, out_start_address: int):
         self.pool_or_conv = core.pool_or_conv
         self.clip_adder = core.clip_adder
         self.multiplication_line = core.multiplication_line
@@ -12,7 +12,8 @@ class CoreNode():
         self.o_length = core.o_length
         self.i_amount = core.i_amount
 
-        self.start_address = start_address
+        self.in_start_address = in_start_address
+        self.out_start_address = out_start_address
 
         self.parent: CoreInst = None
         self.children: list[CoreInst] = [None for _ in range(self.i_amount)]

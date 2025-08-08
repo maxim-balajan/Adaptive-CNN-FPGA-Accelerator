@@ -16,6 +16,7 @@ class CoreTree():
         # Only use cores that are useful
         self.unused_cores = {}
         self.used_cores = {}
+        self.output_channel_list = [[] for i in range(self.output_channel)]
         i = 0
         for core in cores:
             if core.pool_or_conv == self.pool_or_conv:
@@ -23,12 +24,12 @@ class CoreTree():
                 for name, core_bundle in self.unused_cores.items():
                     if len(core_bundle) > 0 and core_bundle[0] == core:
                         core_bundle \
-                            += [CoreNode(core, core.start_address + i * core.i_amount) for i in range(core.amount)]
+                            += [CoreNode(core, core.in_start_address + i * core.i_amount, core.out_start_address + i) for i in range(core.amount)]
                         self.unused_cores[name] = core_bundle
                         break
                 else:
                     self.unused_cores[f'bundle_{i}'] \
-                        = [CoreNode(core, core.start_address + i * core.i_amount) for i in range(core.amount)]
+                        = [CoreNode(core, core.in_start_address + i * core.i_amount, core.out_start_address + i) for i in range(core.amount)]
                     self.used_cores[f'bundle_{i}'] = []
                     i += 1
     
@@ -62,7 +63,8 @@ class CoreTree():
             self,
             core_bundles: dict[list[CoreNode]],
             with_multiplier: int,
-            input_amount: int
+            input_amount: int,
+            bit_width: int
     ) -> tuple[int, int, str, list[CoreNode]]:
         current_core_bundle = None
         current_name = ""
@@ -71,7 +73,7 @@ class CoreTree():
             raise StopIteration(f"No core bundle with for with_multiplier == {with_multiplier} found!")
         
         for name, core_bundle in core_bundles.items():
-            if with_multiplier == core_bundle[0].multiplication_line:
+            if with_multiplier == core_bundle[0].multiplication_line and (bit_width is None or core_bundle[0].i_length == bit_width):
                 cores_needed = ceil(input_amount / core_bundle[0].i_amount)
                 if cores_needed > len(core_bundle):
                     continue
@@ -91,11 +93,15 @@ class CoreTree():
 
     def route_single_oc(self, oc_id: int):
         current_inputs = self.input_channel * self.input_amount
-        child_cores = []
+        child_cores: list[CoreNode] = []
         iteration_count = 0
+        print(f"\n##############################")
+        print(f"### Start of Routing of OC {oc_id}:")
+        print(f"##############################\n")
         while (current_inputs > 1):
             try:
-                    distance, cores_needed, bundle_name, bundle = self.find_most_fitting_core_bundle(self.unused_cores, not iteration_count, current_inputs)
+                    bit_width = None if not child_cores else child_cores[0].o_length
+                    distance, cores_needed, bundle_name, bundle = self.find_most_fitting_core_bundle(self.unused_cores, not iteration_count, current_inputs, bit_width)
                     print(f"Iteration: {iteration_count}")
                     print(f"{cores_needed} Cores of bundle '{bundle_name}'")
                     print(f'Bundle Meta:')
@@ -127,6 +133,9 @@ class CoreTree():
                         self.used_cores[bundle_name] = []
                     self.used_cores[bundle_name] += current_cores
                     self.unused_cores[bundle_name] = bundle[cores_needed::]
+
+                    # Add current_cores to output_channel_list
+                    self.output_channel_list[oc_id] += current_cores
 
                     # Set current_cores as new children for next iteration
                     child_cores = current_cores
