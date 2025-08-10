@@ -16,7 +16,7 @@ class AdderTreeConfig():
 
         try:
             for name, core_dict in config_dict['cores'].items():
-                core = CoreInst(name, core_dict, safe_read(config_dict, 'iteration', 1))
+                core = CoreInst(name, core_dict, safe_read(config_dict, 'iteration', 0))
                 self.cores.append(core)
         except KeyError:
             raise NameError(f'Error: Could not find necessary key "cores" in Config! Abort...')

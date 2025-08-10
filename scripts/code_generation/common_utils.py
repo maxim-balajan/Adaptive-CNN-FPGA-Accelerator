@@ -13,7 +13,16 @@ def safe_read(config:dict, key: str, default=None):
 def get_nth_key(dictionary, n=0):
     if n < 0:
         n += len(dictionary)
-    for i, key in enumerate(dictionary.keys()):
+    for i, key in enumerate({k: v for k, v in dictionary.items() if k != 'global'}.keys()):
         if i == n:
             return key
-    raise IndexError("dictionary index out of range") 
+    raise IndexError("dictionary index out of range")
+
+def get_nth_key_name(dictionary, n=0):
+    if n < 0:
+        n += len(dictionary)
+    for i, (k, _) in enumerate({k: v for k, v in dictionary.items() if k != 'global'}.items()):
+        if i == n:
+            return k
+    raise IndexError("dictionary index out of range")  
+

@@ -13,10 +13,10 @@ use ieee.math_real.all;
 use %%CORE_COMPILE_LIB%%.libmatrix.all;
 
 
-entity routing_cores_entity is
+entity routing_cores is
     port (
-        clk   : in std_logic;
-        reset : in std_logic;
+        clk   : IN std_logic;
+        reset : IN std_logic;
         -- KERNEL_CORES_INPUT PORTS
         o_activation_matrix_line  : OUT matrix_1d(0 to %%INPUT_AMOUNT%% - 1)(%%CORE_MAX_INPUT_LENGTH%% - 1 downto 0);
         o_weight_matrix_line      : OUT matrix_1d(0 to %%INPUT_AMOUNT%% - 1)(%%CORE_MAX_INPUT_LENGTH%% - 1 downto 0);
@@ -37,4 +37,4 @@ entity routing_cores_entity is
         o_kernel_valid    : OUT std_logic;
         o_pixel_line      : OUT matrix_1d(0 to %%MAX_OUTPUT_CHANNELS%% - 1)(%%CORE_MAX_OUTPUT_LENGTH%% - 1 downto 0)
     );
-end entity routing_cores_entity;
+end entity routing_cores;

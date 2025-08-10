@@ -17,9 +17,11 @@ def main():
 
     print("Kernel_cores successfully generated!")
 
-    core_tree = CoreTree(adder_config.cores, adder_config.route_configs, 0)
+    core_tree = CoreTree(adder_config, adder_config.route_configs, 0)
 
     core_tree.route()
+
+    core_tree.module_to_file()
 
     return 0
 

@@ -1,14 +1,22 @@
-from common_utils import safe_read, get_nth_key
+from common_utils import safe_read, get_nth_key, get_nth_key_name
 import os, sys
 import copy
 from core_inst import CoreInst
 from core_node import CoreNode
+from adder_tree_config import AdderTreeConfig
 from math import ceil
 
 class CoreTree():
-    def __init__(self, cores: list[CoreInst], route_dicts: dict, iteration: int):
+    def __init__(self, adder_tree_config: AdderTreeConfig, route_dicts: dict, iteration: int):
 
         route_dict = route_dicts[get_nth_key(route_dicts, iteration)]
+        self.architecture_name = get_nth_key_name(route_dicts, iteration)
+        self.max_output_channels = safe_read(route_dicts['global'], 'max_output_channels', 1)
+        self.max_kernel_size = safe_read(route_dicts['global'], 'max_kernel_size', 12)
+        self.max_pipeline_steps = safe_read(route_dicts['global'], 'max_pipeline_steps', 1)
+        
+        self.line_buffer_amount = safe_read(route_dicts['global'], 'line_buffer_amount', 180)
+        self.adder_tree_config = adder_tree_config
         self.input_channel = safe_read(route_dict, 'input_channel')
         self.output_channel = safe_read(route_dict, "output_channel", 1)
         self.input_amount = safe_read(route_dict, "input_amount")
@@ -16,9 +24,9 @@ class CoreTree():
         # Only use cores that are useful
         self.unused_cores = {}
         self.used_cores = {}
-        self.output_channel_list = [[] for i in range(self.output_channel)]
+        self.output_channel_list = [[] for _ in range(self.output_channel)]
         i = 0
-        for core in cores:
+        for core in adder_tree_config.cores:
             if core.pool_or_conv == self.pool_or_conv:
                 # Bundle all equivalent core bundles together to make routing less fragmented
                 for name, core_bundle in self.unused_cores.items():
@@ -153,4 +161,41 @@ class CoreTree():
             self.route_single_oc(i)
 
         print("Entire Routing finished successfully!")
+
     
+    def entity_to_string(self) -> str:
+        template_path = os.path.join(os.getenv('PRJ_SCRIPTS'), 'code_generation', 'templates', 'routing_cores_entity.vhd')
+        template = ""
+        with open(template_path) as f:
+            template = f.read()
+
+        template = template.replace("%%CORE_COMPILE_LIB%%", str(self.adder_tree_config.compile_lib))
+        template = template.replace("%%INPUT_AMOUNT%%", str(self.adder_tree_config.i_dataline_amount))
+        template = template.replace("%%MAX_CORE_AMOUNT%%", str(self.adder_tree_config.max_core_amount))
+        template = template.replace("%%CORE_MAX_INPUT_LENGTH%%", str(self.adder_tree_config.i_dataline_width))
+        template = template.replace("%%CORE_MAX_OUTPUT_LENGTH%%", str(self.adder_tree_config.o_dataline_width))
+        template = template.replace("%%MAX_OUTPUT_CHANNELS%%", str(self.max_output_channels))
+        template = template.replace("%%MAX_KERNEL_SIZE%%", str(self.max_kernel_size))
+        template = template.replace("%%LINE_BUFFER_AMOUNT%%", str(self.line_buffer_amount))
+
+        return template
+
+    
+    def architecture_to_string(self):
+        template_path = os.path.join(os.getenv('PRJ_SCRIPTS'), 'code_generation', 'templates', 'routing_cores_architecture.vhd')
+        template = ""
+        with open(template_path) as f:
+            template = f.read()
+
+        template = template.replace("%%MAX_PIPELINE_STEPS%%", str(self.max_pipeline_steps))
+        template = template.replace("%%ROUTE_ARCHITECTURE_NAME%%", str(self.architecture_name))
+
+        # TODO: Set Outputs
+
+        return template
+
+    def module_to_file(self) -> None:
+        template = self.entity_to_string() + self.architecture_to_string()
+
+        with open(os.path.join(os.getenv('PRJ_SCRIPTS'), 'code_generation', 'export', f'routing_cores.vhd'), 'w') as f:
+            f.write(template)

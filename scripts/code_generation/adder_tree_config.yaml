@@ -3,10 +3,15 @@ max_core_amount: 300
 input_max_bit_width : 24
 output_max_bit_width : 24
 route_configs:
+  global:
+    max_pipeline_steps: 5
+    max_output_channels: 5
+    max_kernel_size: 11
+    line_buffer_amount: 180
   route_a:
     pool_or_conv: 1
     input_channel: 3
-    output_channel: 2
+    output_channel: 1
     input_amount: 121
   route_b:
     pool_or_conv: 0
