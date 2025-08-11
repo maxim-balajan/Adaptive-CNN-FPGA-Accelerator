@@ -7,7 +7,7 @@ use work.libmatrix.all;
 entity line_route_unit is
 	generic (
 		vector_length        : natural   := 8;
-		G_PADDING_SIZE		 : natural := 2;
+		G_PADDING_SIZE		 : natural 	 := 2;
 		G_KERNEL_SIZE        : natural   := 5;
 		G_MAX_KERNEL_SIZE    : natural   := 12;
 		G_LINE_BUFFER_AMOUNT : natural   := 12 * 3 * 5;
@@ -35,7 +35,7 @@ architecture rtl of line_route_unit is
 
 	signal s_pixel_streams_out     : matrix_2d(0 to G_PIPELINE_STEPS)(0 to G_LINE_BUFFER_AMOUNT - 1)(vector_length - 1 downto 0);
 	signal s_enable_stream_out     : matrix_1d(0 to G_PIPELINE_STEPS)(0 to G_LINE_BUFFER_AMOUNT - 1);
-	signal s_activation_matrix_out : matrix_2d(0 to G_LINE_BUFFER_AMOUNT - 1)(0 to G_MAX_KERNEL_SIZE - 1)(vector_length - 1 downto 0);
+	signal s_activation_matrix_out : matrix_2d(0 to G_LINE_BUFFER_AMOUNT - 1)(0 to G_KERNEL_SIZE - 1)(vector_length - 1 downto 0);
 
 	signal s_tp_enable_matrix : matrix_1d(0 to G_MAX_KERNEL_SIZE - 1)(0 to G_LINE_BUFFER_AMOUNT - 1);
 
@@ -71,9 +71,9 @@ begin
 			s_enable_stream_out(s_enable_stream_out'low)(i) <= enable_matrix(i - 1)(enable_matrix'low);
 		end generate CHECK_PS_IN_GEN;
 
-		ACTIVATION_MATRIX_ROUTE_GEN : for j in 0 to G_MAX_KERNEL_SIZE - 1 generate
+		ACTIVATION_MATRIX_ROUTE_GEN : for j in 0 to G_KERNEL_SIZE - 1 generate
 
-			ACTIVATION_MATRIX_ROUTE_VAL_GEN : if (j < G_KERNEL_SIZE) and ((G_LINE_BUFFER_AMOUNT / G_KERNEL_SIZE) * G_KERNEL_SIZE >= i) generate
+			ACTIVATION_MATRIX_ROUTE_VAL_GEN : if ((G_LINE_BUFFER_AMOUNT / G_KERNEL_SIZE) * G_KERNEL_SIZE >= i) generate
 				s_activation_matrix_out(i)(j) <= activation_matrix(i)(j);
 			else generate
 				s_activation_matrix_out(i)(j) <= (others => G_DEBUG_FLAG);
@@ -90,11 +90,21 @@ begin
 
 	end generate PIXEL_STREAMS_OUT_GEN;
 
-	-- TODO: mirror this design accordingly
+	-------------------------------------------------------------------
+	-- Mirroring of Kernels...
+	-------------------------------------------------------------------
+	-- Note: if G_LINE_BUFFER_AMOUNT is not multiple of G_KERNEL_SIZE,
+	--		 the rest "mod" values are left as undefined
+	--		 -> is ok because they should never be used regardless...
+	-------------------------------------------------------------------
 
-	FLAT_GEN : for j in 0 to G_LINE_BUFFER_AMOUNT * G_MAX_KERNEL_SIZE - 1 generate
-		activation_matrix_out(j) <= s_activation_matrix_out(j / G_MAX_KERNEL_SIZE)(j mod G_MAX_KERNEL_SIZE);
-	end generate FLAT_GEN;
+	FLAT_GEN_Y : for j in 0 to G_LINE_BUFFER_AMOUNT / G_KERNEL_SIZE - 1 generate
+		FLAT_GEN_X1: for i in 0 to G_KERNEL_SIZE - 1 generate
+			FLAT_GEN_X2: for k in 0 to G_KERNEL_SIZE - 1 generate
+				activation_matrix_out(j * (G_KERNEL_SIZE ** 2) + i * G_KERNEL_SIZE + k) <= s_activation_matrix_out((j + 1) * G_KERNEL_SIZE - i - 1)(G_KERNEL_SIZE - k - 1);
+			end generate;
+		end generate FLAT_GEN_X1;
+	end generate FLAT_GEN_Y;
 
 	-- Set outputs
 	s_tp_enable_matrix <= transpose_matrix1d(enable_matrix);
