@@ -7,7 +7,7 @@
 
 ####################################################################
 # Removed older tmp projects at: /tmp/vivado_sim.configurable_slider.*
-# Using temporary path.........: /tmp/vivado_sim.configurable_slider.Om1T80
+# Using temporary path.........: /tmp/vivado_sim.configurable_slider.zVSxl9
 # Using config (if exists).....: /home/maxim/Documents/Uni/BA/bachelor-thesis/wave_config/configurable_slider_tb.wcfg
 ####################################################################
 
@@ -73,4 +73,4 @@ Built simulation snapshot configurable_slider_tb_sim
     ** Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
 
 start_gui
-INFO: [Common 17-206] Exiting xsim at Wed Jul  2 13:55:25 2025...
+INFO: [Common 17-206] Exiting xsim at Mon Aug 11 13:22:07 2025...

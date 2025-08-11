@@ -103,6 +103,8 @@ class CoreTree():
         current_inputs = self.input_channel * self.input_amount
         child_cores: list[CoreNode] = []
         iteration_count = 0
+        # Int for marking the address if input should be taken from i_kernel_activation_matrix
+        configurable_slider_input_id = oc_id * self.input_amount
         print(f"\n##############################")
         print(f"### Start of Routing of OC {oc_id}:")
         print(f"##############################\n")
@@ -112,6 +114,7 @@ class CoreTree():
                     distance, cores_needed, bundle_name, bundle = self.find_most_fitting_core_bundle(self.unused_cores, not iteration_count, current_inputs, bit_width)
                     print(f"Iteration: {iteration_count}")
                     print(f"{cores_needed} Cores of bundle '{bundle_name}'")
+                    print(f"{len(child_cores)} Child Cores")
                     print(f'Bundle Meta:')
                     print(f"   Multplication: {bundle[0].multiplication_line}")
                     print(f"   Input-Amount.: {bundle[0].i_amount}")
@@ -121,11 +124,6 @@ class CoreTree():
 
                     current_cores = bundle[0:cores_needed:]
 
-                    # Identify which port nodes should be empty
-                    if distance > 0:
-                        empty_childs = current_cores[-1].children[-distance:len(current_cores[-1].children):]
-                        for i in range(len(empty_childs)):
-                            empty_childs[i] = -1
                     # Set correct children if its not the first iteration
                     if iteration_count > 0:
                         for core in current_cores:
@@ -135,7 +133,20 @@ class CoreTree():
                                 core.children[i] = child_cores.pop(0)
                                 core.children[i].parent = core
                             else:
-                                break
+                                continue
+                            break
+                    else:
+                        # Set i_kernel_activation_matrix inputs, if its the first iteration
+                        for core in current_cores:
+                            for i in range(len(core.children)):
+                                core.children[i] = configurable_slider_input_id
+                                configurable_slider_input_id += 1
+
+                    # Identify which port nodes should be empty
+                    if distance > 0:
+                        for i in range(distance):
+                            current_cores[-1].children[-(i+1)] = -1
+
                     # Remove current_cores from unused cores and add them to used bucket
                     if self.used_cores.get(bundle_name) is None:
                         self.used_cores[bundle_name] = []
@@ -153,7 +164,6 @@ class CoreTree():
                 print("Resources exhausted! Can't continue the routing")
                 sys.exit(1)
                 
-
         print(f"Routing for OC {oc_id} finished successfully!")
 
     def route(self):
@@ -190,7 +200,28 @@ class CoreTree():
         template = template.replace("%%MAX_PIPELINE_STEPS%%", str(self.max_pipeline_steps))
         template = template.replace("%%ROUTE_ARCHITECTURE_NAME%%", str(self.architecture_name))
 
-        # TODO: Set Outputs
+        C_TAB = 4 * " "
+        output_string = ""
+        for i, oc in enumerate(self.output_channel_list):
+            for core_node in oc:
+                # set children nodes
+                for cid, children in enumerate(core_node.children):
+                    # child is either start signal or empty
+                    # TODO: add control signals, shamt and bias...
+                    if isinstance(children, int):
+                        if children < 0 :
+                            output_string += f'{C_TAB}o_activation_matrix_line({core_node.in_start_address + cid}) <= (others => \'0\');\n'
+                            output_string += f'{C_TAB}o_weight_matrix_line({core_node.in_start_address + cid}) <= (others => \'0\');\n'
+                        else:
+                            output_string += f'{C_TAB}o_activation_matrix_line({core_node.in_start_address + cid}) <= s_cs_kernel_matrix({children});\n'
+                            output_string += f'{C_TAB}o_weight_matrix_line({core_node.in_start_address + cid}) <= s_wm_weight_matrix({children});\n'
+                    else:
+                        output_string += f'{C_TAB}o_activation_matrix_line({core_node.in_start_address + cid}) <= s_kc_pixel_line({children.pipeline_steps})({children.out_start_address});\n'
+                        output_string += f'{C_TAB}o_weight_matrix_line({core_node.in_start_address + cid}) <= (others => \'0\');\n'
+
+        template = template.replace("%%ROUTE_SIGNAL_OUTPUT%%", output_string)
+
+        # TODO: Make final output for core with no parent
 
         return template
 

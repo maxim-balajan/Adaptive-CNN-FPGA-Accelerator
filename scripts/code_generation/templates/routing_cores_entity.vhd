@@ -32,6 +32,9 @@ entity routing_cores is
         i_kernel_complete          : IN std_logic;
 		i_kernel_en                : IN std_logic;
 		i_kernel_activation_matrix : IN matrix_1d(0 to %%MAX_KERNEL_SIZE%% * %%LINE_BUFFER_AMOUNT%% - 1)(%%CORE_MAX_INPUT_LENGTH%% - 1 downto 0);
+        -- WEIGHT MODULE OUTPUTS
+        i_kernel_weight_en     : IN std_logic;
+        i_kernel_weight_matrix : IN matrix_1d(0 to %%MAX_KERNEL_SIZE%% * %%LINE_BUFFER_AMOUNT%% - 1)(%%CORE_MAX_INPUT_LENGTH%% - 1 downto 0); 
         -- ROUTING CORES OUTPUTS
         o_kernel_complete : OUT std_logic;
         o_kernel_valid    : OUT std_logic;

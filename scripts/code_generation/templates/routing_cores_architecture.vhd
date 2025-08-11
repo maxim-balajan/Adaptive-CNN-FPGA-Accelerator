@@ -15,6 +15,10 @@ architecture %%ROUTE_ARCHITECTURE_NAME%% of routing_cores is
     SIGNAL s_cs_kernel_en       : std_logic;
     SIGNAL s_cs_kernel_complete : std_logic;
 
+    -- WEIGHT MODULE OUTPUT REGISTERS (1 cycle)
+    SIGNAL s_wm_weight_en     : std_logic;
+    SIGNAL s_wm_weight_matrix : matrix_1d(i_kernel_weight_matrix'RANGE)(i_kernel_weight_matrix(i_kernel_weight_matrix'LOW)'RANGE);
+
     -- KERNEL CORES OUTPUT SHIFT REGISTERS (delay bounded by C_MAX_PIPELINE_STEPS)
     SIGNAL s_kc_pixel_line : matrix_2d(0 to C_MAX_PIPELINE_STEPS - 1)(i_pixel_line'RANGE)(i_pixel_line(i_pixel_line'LOW)'RANGE);
     SIGNAL s_kc_valid_line : matrix_1d(0 to C_MAX_PIPELINE_STEPS - 1)(i_valid_pixel_line'RANGE);
@@ -32,6 +36,10 @@ begin
                 s_cs_kernel_en       <= '0';
                 s_cs_kernel_complete <= '0';
 
+                -- Reset of WEIGHT MODULE OUTPUT REGISTERS
+                s_wm_weight_en     <= '0';
+                s_wm_weight_matrix <= (others => (others => '0'));
+
                 -- Reset of KERNEL CORES OUTPUT SHIFT REGISTERS
                 s_kc_pixel_line(1 to C_MAX_PIPELINE_STEPS - 1) <= (others => (others => (others => '0')));
                 s_kc_valid_line(1 to C_MAX_PIPELINE_STEPS - 1) <= (others => (others => '0'));
@@ -43,6 +51,10 @@ begin
                 s_cs_kernel_matrix   <= i_kernel_activation_matrix;
                 s_cs_kernel_en       <= i_kernel_en;
                 s_cs_kernel_complete <= i_kernel_complete;
+
+                -- 1 cycle delay for WEIGHT MODULE OUTPUT
+                s_wm_weight_en     <= i_kernel_weight_en;
+                s_wm_weight_matrix <= i_kernel_weight_matrix;
 
                 -- SHIFT REGISTERS for KERNEL CORES OUTPUT
                 s_kc_pixel_line(1 to C_MAX_PIPELINE_STEPS - 1) <= s_kc_pixel_line(0 to C_MAX_PIPELINE_STEPS - 2);
@@ -61,9 +73,15 @@ begin
     s_kc_comp_line(s_kc_comp_line'LOW)   <= i_comp_complete_line; 
 
     -------------------------------------------
-    -- OUTPUTs
+    -- INTERMEDIATE OUTPUTs
     -------------------------------------------
 
 %%ROUTE_SIGNAL_OUTPUT%%
+
+    -------------------------------------------
+    -- FINAL OUTPUTs
+    -------------------------------------------
+
+%%ROUTE_SIGNAL_FINAL_OUTPUT%%
 
 end architecture %%ROUTE_ARCHITECTURE_NAME%%;

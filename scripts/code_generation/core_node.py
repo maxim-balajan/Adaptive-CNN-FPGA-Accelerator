@@ -12,6 +12,9 @@ class CoreNode():
         self.o_length = core.o_length
         self.i_amount = core.i_amount
 
+        # TODO: make more generic in routing
+        self.pipeline_steps = 1
+
         self.in_start_address = in_start_address
         self.out_start_address = out_start_address
 

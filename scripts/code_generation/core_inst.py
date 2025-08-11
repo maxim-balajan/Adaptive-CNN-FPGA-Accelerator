@@ -115,12 +115,12 @@ class CoreInst():
         template = template.replace("%%CORE_INPUT_LENGTH%%", str(self.i_length))
         template = template.replace("%%CORE_OUTPUT_LENGTH%%", str(self.o_length))
 
-        activation_matrix_line = '\n'.join([f'{f"{4 * C_TAB}activation_matrix({i})".ljust(C_PADDING)} => i_activation_matrix_line(i + {i})({self.i_length - 1} downto 0),' for i in range(self.i_amount)])
+        activation_matrix_line = '\n'.join([f'{f"{4 * C_TAB}activation_matrix({i})".ljust(C_PADDING)} => i_activation_matrix_line(i * {self.i_amount} + {i})({self.i_length - 1} downto 0),' for i in range(self.i_amount)])
         template = template.replace("%%CORE_ACTIVATION_MATRIX%%", activation_matrix_line)
 
         weight_matrix_line = ""
         if self.pool_or_conv:
-            weight_matrix_line = '\n'.join([f'{f"{4 * C_TAB}weight_matrix({i})".ljust(C_PADDING)} => i_weight_matrix_line(i + {i})({self.i_length - 1} downto 0),' for i in range(self.i_amount)])
+            weight_matrix_line = '\n'.join([f'{f"{4 * C_TAB}weight_matrix({i})".ljust(C_PADDING)} => i_weight_matrix_line(i * {self.i_amount} + {i})({self.i_length - 1} downto 0),' for i in range(self.i_amount)])
         else:
             weight_matrix_line += f'{f"{4 * C_TAB}weight_matrix".ljust(C_PADDING)} => (others => (others => \'0\')),'
         template = template.replace("%%CORE_WEIGHT_MATRIX%%", weight_matrix_line)
