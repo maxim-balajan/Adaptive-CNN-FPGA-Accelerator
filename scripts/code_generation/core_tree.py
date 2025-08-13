@@ -143,9 +143,8 @@ class CoreTree():
                                 configurable_slider_input_id += 1
 
                     # Identify which port nodes should be empty
-                    if distance > 0:
-                        for i in range(distance):
-                            current_cores[-1].children[-(i+1)] = -1
+                    for i in range(distance):
+                        current_cores[-1].children[-(i+1)] = -1
 
                     # Remove current_cores from unused cores and add them to used bucket
                     if self.used_cores.get(bundle_name) is None:
@@ -201,27 +200,56 @@ class CoreTree():
         template = template.replace("%%ROUTE_ARCHITECTURE_NAME%%", str(self.architecture_name))
 
         C_TAB = 4 * " "
+        C_PADDING = 35
         output_string = ""
+        final_cores = []
         for i, oc in enumerate(self.output_channel_list):
+            output_string += f'\n{C_TAB}-- Output Channel {i} Routing...\n'
             for core_node in oc:
+                is_start_node = False
+                # Check if final core was found
+                if core_node.parent is None:
+                    final_cores.append((i, core_node))
                 # set children nodes
                 for cid, children in enumerate(core_node.children):
                     # child is either start signal or empty
-                    # TODO: add control signals, shamt and bias...
                     if isinstance(children, int):
                         if children < 0 :
-                            output_string += f'{C_TAB}o_activation_matrix_line({core_node.in_start_address + cid}) <= (others => \'0\');\n'
-                            output_string += f'{C_TAB}o_weight_matrix_line({core_node.in_start_address + cid}) <= (others => \'0\');\n'
+                            output_string += f'{f"{C_TAB}o_activation_matrix_line({core_node.in_start_address + cid})".ljust(C_PADDING)} <= (others => \'0\');\n'
+                            output_string += f'{f"{C_TAB}o_weight_matrix_line({core_node.in_start_address + cid})".ljust(C_PADDING)} <= (others => \'0\');\n'
                         else:
-                            output_string += f'{C_TAB}o_activation_matrix_line({core_node.in_start_address + cid}) <= s_cs_kernel_matrix({children});\n'
-                            output_string += f'{C_TAB}o_weight_matrix_line({core_node.in_start_address + cid}) <= s_wm_weight_matrix({children});\n'
+                            # If one child is a configurable slider output, then all children are configurable slider output (or empty...)
+                            is_start_node = True 
+                            output_string += f'{f"{C_TAB}o_activation_matrix_line({core_node.in_start_address + cid})".ljust(C_PADDING)} <= s_cs_kernel_matrix({children});\n'
+                            output_string += f'{f"{C_TAB}o_weight_matrix_line({core_node.in_start_address + cid})".ljust(C_PADDING)} <= s_wm_weight_matrix({children});\n'
                     else:
-                        output_string += f'{C_TAB}o_activation_matrix_line({core_node.in_start_address + cid}) <= s_kc_pixel_line({children.pipeline_steps})({children.out_start_address});\n'
-                        output_string += f'{C_TAB}o_weight_matrix_line({core_node.in_start_address + cid}) <= (others => \'0\');\n'
+                        output_string += f'{f"{C_TAB}o_activation_matrix_line({core_node.in_start_address + cid})".ljust(C_PADDING)} <= s_kc_pixel_line({children.pipeline_steps})({children.out_start_address});\n'
+                        output_string += f'{f"{C_TAB}o_weight_matrix_line({core_node.in_start_address + cid})".ljust(C_PADDING)} <= (others => \'0\');\n'
+                
+                # bias and shamt assignment
+                output_string += f'{f"{C_TAB}o_bias_line({core_node.out_start_address})".ljust(C_PADDING)} <= s_wm_bias_line({core_node.out_start_address});\n'
+                output_string += f'{f"{C_TAB}o_shamt_line({core_node.out_start_address})".ljust(C_PADDING)} <= s_wm_shamt_line({core_node.out_start_address});\n'
+                
+                # kernel_en and kernel_complete assignment
+                if is_start_node:
+                    output_string += f'{f"{C_TAB}o_kernel_en_line({core_node.out_start_address})".ljust(C_PADDING)} <= s_cs_kernel_en;\n'
+                    output_string += f'{f"{C_TAB}o_kernel_complete_line({core_node.out_start_address})".ljust(C_PADDING)} <= s_cs_kernel_complete;\n'
+                else:
+                    # CL from children necessary! All of them should be timed equally -> only take the enable signal of the first child
+                    output_string += f'{f"{C_TAB}o_kernel_en_line({core_node.out_start_address})".ljust(C_PADDING)} <= s_kc_valid_line({core_node.children[0].pipeline_steps})({core_node.children[0].out_start_address});\n'
+                    output_string += f'{f"{C_TAB}o_kernel_complete_line({core_node.out_start_address})".ljust(C_PADDING)} <= s_kc_comp_line({core_node.children[0].pipeline_steps})({core_node.children[0].out_start_address});\n'
 
         template = template.replace("%%ROUTE_SIGNAL_OUTPUT%%", output_string)
 
-        # TODO: Make final output for core with no parent
+        # Make final output for cores with no parent
+        output_string = ""
+        for oc_id, core in final_cores:
+            output_string += f'{C_TAB}o_kernel_complete <= s_kc_comp_line({core.pipeline_steps})({core.out_start_address});\n'
+            output_string += f'{C_TAB}o_kernel_valid    <= s_kc_valid_line({core.pipeline_steps})({core.out_start_address});\n'
+            output_string += f'{C_TAB}o_pixel_line({oc_id})   <= s_kc_pixel_line({core.pipeline_steps})({core.out_start_address});\n'
+
+
+        template = template.replace("%%ROUTE_SIGNAL_FINAL_OUTPUT%%", output_string)
 
         return template
 

@@ -18,6 +18,8 @@ architecture %%ROUTE_ARCHITECTURE_NAME%% of routing_cores is
     -- WEIGHT MODULE OUTPUT REGISTERS (1 cycle)
     SIGNAL s_wm_weight_en     : std_logic;
     SIGNAL s_wm_weight_matrix : matrix_1d(i_kernel_weight_matrix'RANGE)(i_kernel_weight_matrix(i_kernel_weight_matrix'LOW)'RANGE);
+    SIGNAL s_wm_shamt_line    : matrix_1d(i_shamt_line'RANGE)(i_shamt_line(i_shamt_line'LOW)'RANGE);
+    SIGNAL s_wm_bias_line     : matrix_1d(i_bias_line'RANGE)(i_bias_line(i_bias_line'LOW)'RANGE);
 
     -- KERNEL CORES OUTPUT SHIFT REGISTERS (delay bounded by C_MAX_PIPELINE_STEPS)
     SIGNAL s_kc_pixel_line : matrix_2d(0 to C_MAX_PIPELINE_STEPS - 1)(i_pixel_line'RANGE)(i_pixel_line(i_pixel_line'LOW)'RANGE);
@@ -39,6 +41,8 @@ begin
                 -- Reset of WEIGHT MODULE OUTPUT REGISTERS
                 s_wm_weight_en     <= '0';
                 s_wm_weight_matrix <= (others => (others => '0'));
+                s_wm_shamt_line    <= (others => (others => '0'));
+                s_wm_bias_line     <= (others => (others => '0'));
 
                 -- Reset of KERNEL CORES OUTPUT SHIFT REGISTERS
                 s_kc_pixel_line(1 to C_MAX_PIPELINE_STEPS - 1) <= (others => (others => (others => '0')));
@@ -55,6 +59,8 @@ begin
                 -- 1 cycle delay for WEIGHT MODULE OUTPUT
                 s_wm_weight_en     <= i_kernel_weight_en;
                 s_wm_weight_matrix <= i_kernel_weight_matrix;
+                s_wm_shamt_line    <= i_shamt_line;
+                s_wm_bias_line     <= i_bias_line;
 
                 -- SHIFT REGISTERS for KERNEL CORES OUTPUT
                 s_kc_pixel_line(1 to C_MAX_PIPELINE_STEPS - 1) <= s_kc_pixel_line(0 to C_MAX_PIPELINE_STEPS - 2);
