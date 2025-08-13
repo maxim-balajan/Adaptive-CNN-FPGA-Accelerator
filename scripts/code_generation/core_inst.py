@@ -5,7 +5,10 @@ C_TAB = " " * 4
 C_PADDING = 45
 
 class CoreInst():
-    def __init__(self, name: str, core_dict: dict, iteration: int):
+    def __init__(self, name: str, core_dict: dict, template_dir, export_dir, iteration: int):
+        self.template_dir = template_dir
+        self.export_dir = export_dir
+
         core_architecture_dict = core_dict[get_nth_key(core_dict, iteration)]
         self.entity_name = name
         self.architecture_name = get_nth_key(core_dict, iteration)
@@ -30,7 +33,7 @@ class CoreInst():
 
 
     def instantiation_to_string(self, am_start: int, wm_start: int, control_start: int, out_start: int) -> str:
-        template_path = os.path.join(os.getenv('PRJ_SCRIPTS'), 'code_generation', 'templates', 'core_bundle_inst.vhd')
+        template_path = os.path.join(self.template_dir, 'core_bundle_inst.vhd')
         template = ""
         with open(template_path) as f:
             template = f.read()
@@ -45,43 +48,43 @@ class CoreInst():
         template = template.replace("%%CORE_TYPE%%", "Adder" if self.pool_or_conv else "Comparator")
         template = template.replace("%%CORE_AMOUNT%%", str(self.amount))
 
-        activation_matrix_line = '\n'.join([f'{f"{3 * C_TAB}i_activation_matrix_line({i})".ljust(C_PADDING)} => i_activation_matrix_line({am_start + i}),' for i in range(self.max_core_amount * self.max_input_amount)])
+        activation_matrix_line = f'{f"{3 * C_TAB}i_activation_matrix_line".ljust(C_PADDING)} => i_activation_matrix_line({am_start} TO {am_start + self.max_core_amount * self.max_input_amount - 1}),'
         template = template.replace("%%CORE_ACTIVATION_MATRIX_LINE%%", activation_matrix_line)
 
         weight_matrix_line = ""
         if self.pool_or_conv:
-            weight_matrix_line = '\n'.join([f'{f"{3 * C_TAB}i_weight_matrix_line({i})".ljust(C_PADDING)} => i_weight_matrix_line({wm_start + i}),' for i in range(self.max_core_amount * self.max_input_amount)])
+            weight_matrix_line = f'{f"{3 * C_TAB}i_weight_matrix_line".ljust(C_PADDING)} => i_weight_matrix_line({wm_start} TO {wm_start + self.max_core_amount * self.max_input_amount - 1}),' 
         else:
-            weight_matrix_line += f'{f"{3 * C_TAB}i_weight_matrix_line".ljust(C_PADDING)} => (others => (others => \'0\')),'
+            weight_matrix_line = f'{f"{3 * C_TAB}i_weight_matrix_line".ljust(C_PADDING)} => (others => (others => \'0\')),'
         template = template.replace("%%CORE_WEIGHT_MATRIX_LINE%%", weight_matrix_line)
 
         shamt_line = ""
         if self.pool_or_conv and self.shift:
-            shamt_line = '\n'.join([f'{f"{3 * C_TAB}i_shamt_line({i})".ljust(C_PADDING)} => i_shamt_line({control_start + i})({self.i_length - 1} downto 0),' for i in range(self.max_core_amount)])
+            shamt_line = f'{f"{3 * C_TAB}i_shamt_line".ljust(C_PADDING)} => i_shamt_line({control_start} TO {control_start + self.max_core_amount - 1}),'
         else:
-            shamt_line += f'{f"{3 * C_TAB}i_shamt_line".ljust(C_PADDING)} => (others => (others => \'0\')),'
+            shamt_line = f'{f"{3 * C_TAB}i_shamt_line".ljust(C_PADDING)} => (others => (others => \'0\')),'
         template = template.replace("%%CORE_SHAMT_LINE%%", shamt_line)
 
         bias_line = ""
         bias_line += f'{f"{3 * C_TAB}i_bias_line".ljust(C_PADDING)} => (others => (others => \'0\')),'
         template = template.replace("%%CORE_BIAS_LINE%%", bias_line)
 
-        kernel_en_line = '\n'.join([f'{f"{3 * C_TAB}i_kernel_en_line({i})".ljust(C_PADDING)} => i_kernel_en_line({control_start + i}),' for i in range(self.max_core_amount)])
-        kernel_complete_line = '\n'.join([f'{f"{3 * C_TAB}i_kernel_complete_line({i})".ljust(C_PADDING)} => i_kernel_complete_line({control_start + i}),' for i in range(self.max_core_amount)])
+        kernel_en_line = f'{f"{3 * C_TAB}i_kernel_en_line".ljust(C_PADDING)} => i_kernel_en_line({control_start} TO {control_start + self.max_core_amount - 1}),'
+        kernel_complete_line = f'{f"{3 * C_TAB}i_kernel_complete_line".ljust(C_PADDING)} => i_kernel_complete_line({control_start} TO {control_start + self.max_core_amount - 1}),'
         template = template.replace("%%CORE_KERNEL_EN_LINE%%", kernel_en_line)
         template = template.replace("%%CORE_KERNEL_COMPLETE_LINE%%", kernel_complete_line)
 
-        pixel_line = '\n'.join([f'{f"{3 * C_TAB}o_pixel_line({i})".ljust(C_PADDING)} => o_pixel_line({out_start + i}),' for i in range(self.max_core_amount)])
-        valid_pixel_line = '\n'.join([f'{f"{3 * C_TAB}o_valid_pixel_line({i})".ljust(C_PADDING)} => o_valid_pixel_line({out_start + i}),' for i in range(self.max_core_amount)])
-        comp_complete_pixel_line = '\n'.join([f'{f"{3 * C_TAB}o_comp_complete_line({i})".ljust(C_PADDING)} => o_comp_complete_line({out_start + i}),' for i in range(self.max_core_amount)])
+        pixel_line = f'{f"{3 * C_TAB}o_pixel_line".ljust(C_PADDING)} => o_pixel_line({out_start} TO {out_start + self.max_core_amount - 1}),'
+        valid_pixel_line = f'{f"{3 * C_TAB}o_valid_pixel_line".ljust(C_PADDING)} => o_valid_pixel_line({out_start} TO {out_start + self.max_core_amount - 1}),'
+        comp_complete_pixel_line = f'{f"{3 * C_TAB}o_comp_complete_line".ljust(C_PADDING)} => o_comp_complete_line({out_start} TO {out_start + self.max_core_amount - 1})'
         template = template.replace("%%CORE_PIXEL_LINE%%", pixel_line)
         template = template.replace("%%CORE_VALID_PIXEL_LINE%%", valid_pixel_line)
-        template = template.replace("%%CORE_COMP_COMPLETE_LINE%%", comp_complete_pixel_line[:-1:])
+        template = template.replace("%%CORE_COMP_COMPLETE_LINE%%", comp_complete_pixel_line)
 
         return template
              
     def entity_to_string(self) -> str:
-        template_path = os.path.join(os.getenv('PRJ_SCRIPTS'), 'code_generation', 'templates', 'core_bundle_entity.vhd')
+        template_path = os.path.join(self.template_dir, 'core_bundle_entity.vhd')
         template = ""
         with open(template_path) as f:
             template = f.read()
@@ -96,7 +99,7 @@ class CoreInst():
 
 
     def architecture_to_string(self) -> str:
-        template_path = os.path.join(os.getenv('PRJ_SCRIPTS'), 'code_generation', 'templates', 'core_bundle_architecture.vhd')
+        template_path = os.path.join(self.template_dir, 'core_bundle_architecture.vhd')
         template = ""
         with open(template_path) as f:
             template = f.read()
@@ -131,5 +134,5 @@ class CoreInst():
     def module_to_file(self) -> None:
         template = self.entity_to_string() + self.architecture_to_string()
 
-        with open(os.path.join(os.getenv('PRJ_SCRIPTS'), 'code_generation', 'export', f'{self.entity_name}.vhd'), 'w') as f:
+        with open(os.path.join(self.export_dir, f'{self.entity_name}.vhd'), 'w') as f:
             f.write(template)

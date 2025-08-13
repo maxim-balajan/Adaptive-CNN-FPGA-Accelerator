@@ -1,0 +1,92 @@
+
+####################################################################
+#
+# Elaboration and Simulation of adder_tree_gen_tb
+#
+####################################################################
+
+####################################################################
+# Removed older tmp projects at: /tmp/vivado_sim.adder_tree_gen.*
+# Using temporary path.........: /tmp/vivado_sim.adder_tree_gen.FVCXzY
+# Using config (if exists).....: /home/maxim/Documents/Uni/BA/bachelor-thesis/wave_config/adder_tree_gen_tb.wcfg
+####################################################################
+
+#####################################################
+# Starting Compilation...:                          #
+#####################################################
+
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/libmatrix.vhd" into library work
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/libutil.vhd" into library work
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/clip_adder.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'clip_adder'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/kernel_computation_step.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'kernel_computation_step'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/kernel_computation_unit.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'kernel_computation_unit'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sim_1/adder_tree_simulation/generated_source/Five_adder_plus_mult.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'Five_adder_plus_mult'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sim_1/adder_tree_simulation/generated_source/Three_adder_no_mult.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'Three_adder_no_mult'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sim_1/adder_tree_simulation/generated_source/Nine_pooling.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'Nine_pooling'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sim_1/adder_tree_simulation/generated_source/kernel_cores.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'kernel_cores'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sim_1/adder_tree_simulation/generated_source/routing_cores.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'routing_cores'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sim_1/adder_tree_simulation/adder_tree_gen_tb.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'adder_tree_gen_tb'
+
+#####################################################
+# Starting Elaboration...:                          #
+#####################################################
+
+Vivado Simulator v2023.2
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+Running: /tools/Xilinx/Vivado/2023.2/bin/unwrapped/lnx64.o/xelab adder_tree_gen_tb -s adder_tree_gen_tb_sim --debug typical 
+Multi-threading is on. Using 10 slave threads.
+Starting static elaboration
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling package std.standard
+Compiling package std.textio
+Compiling package ieee.std_logic_1164
+Compiling package ieee.numeric_std
+Compiling package work.libmatrix
+Compiling package work.libutil
+Compiling package std.env
+Compiling package ieee.math_real
+Compiling architecture route_a of entity work.routing_cores [routing_cores_default]
+Compiling architecture rtl of entity work.clip_adder [\clip_adder(vector_length=24)\]
+Compiling architecture rtl of entity work.kernel_computation_step [\kernel_computation_step(vector_...]
+Compiling architecture rtl of entity work.kernel_computation_step [\kernel_computation_step(vector_...]
+Compiling architecture rtl of entity work.kernel_computation_step [\kernel_computation_step(vector_...]
+Compiling architecture rtl of entity work.kernel_computation_unit [\kernel_computation_unit(enable_...]
+Compiling architecture five_adder_plus_mult_rlt of entity work.Five_adder_plus_mult [five_adder_plus_mult_default]
+Compiling architecture rtl of entity work.kernel_computation_unit [\kernel_computation_unit(enable_...]
+Compiling architecture three_adder_no_mult_rtl of entity work.Three_adder_no_mult [three_adder_no_mult_default]
+Compiling architecture rtl of entity work.kernel_computation_step [\kernel_computation_step(vector_...]
+Compiling architecture rtl of entity work.kernel_computation_step [\kernel_computation_step(vector_...]
+Compiling architecture rtl of entity work.kernel_computation_step [\kernel_computation_step(vector_...]
+Compiling architecture rtl of entity work.kernel_computation_step [\kernel_computation_step(vector_...]
+Compiling architecture rtl of entity work.kernel_computation_unit [\kernel_computation_unit(pool_or...]
+Compiling architecture nine_pooling_rtl of entity work.Nine_pooling [nine_pooling_default]
+Compiling architecture rtl of entity work.kernel_cores [kernel_cores_default]
+Compiling architecture bench of entity work.adder_tree_gen_tb
+Built simulation snapshot adder_tree_gen_tb_sim
+
+#####################################################
+# Starting Simulation...:                           #
+#####################################################
+
+****** xsim v2023.2 (64-bit)
+  **** SW Build 4029153 on Fri Oct 13 20:13:54 MDT 2023
+  **** IP Build 4028589 on Sat Oct 14 00:45:43 MDT 2023
+  **** SharedData Build 4025554 on Tue Oct 10 17:18:54 MDT 2023
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+
+start_gui
+INFO: [Common 17-206] Exiting xsim at Wed Aug 13 15:53:17 2025...

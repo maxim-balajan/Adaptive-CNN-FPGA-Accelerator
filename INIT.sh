@@ -33,6 +33,7 @@ alias prj_simulate_generic_slider="'$PRJ_SCRIPTS/simulation/simulation_executor.
 alias prj_simulate_line_unit="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g line_unit                     | tee '$PRJ_GENERATED_PATH/line_unit.log'"
 alias prj_simulate_line_control_unit="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g line_control_unit     | tee '$PRJ_GENERATED_PATH/line_control_unit.log'"
 alias prj_simulate_configurable_slider="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g configurable_slider | tee '$PRJ_GENERATED_PATH/configurable_slider.log'"
+alias prj_simulate_adder_tree_gen="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g adder_tree_gen           | tee '$PRJ_GENERATED_PATH/adder_tree_gen_tb.log'"
 
 # Vivado Project Aliases
 prj_vivado_init() {
@@ -62,6 +63,19 @@ prj_simulate_help() {
     echo "# prj_simulate_configurable_slider: Run TB for new configurable sliders"
     echo "###########################################################################"
 }
+
+# Script for generating adder/comparator trees
+prj_adder_gen() {
+    python -u "$PRJ_SCRIPTS/code_generation/adder_tree_gen.py" "$@" | tee "$PRJ_GENERATED_PATH/adder_tree_gen.log"
+}
+
+# Makro for easily running the generation necessary for the simulation
+prj_adder_gen_sim() {
+    python -u "$PRJ_SCRIPTS/code_generation/adder_tree_gen.py" \
+        -d "$PRJ_HW_SIMS_PATH/adder_tree_simulation/generated_source" \
+        -c "$PRJ_HW_SIMS_PATH/adder_tree_simulation/adder_tree_config.yaml" | tee "$PRJ_GENERATED_PATH/adder_tree_gen.log"
+}
+
 
 
 # Script for executing the Training of the Model
@@ -240,6 +254,9 @@ echo "##########################################################################
 echo "# prj_train...........: Run the Training Script of the AlexNet Model"
 echo "# prj_build_simulation: Run the building process for the" 
 echo "#                       C++ reference implementation"
+echo "# prj_adder_gen.......: Run the generation of the Adder/Comparator Trees"
+echo "# prj_adder_gen_sim...: Run the generation of the Adder/Comparator Trees"
+echo "#                       (only used for the TB)"
 echo "# prj_run_simulation..: Run the C++ reference implementation"
 echo "###########################################################################"
 echo "# Simulation Tools...:"

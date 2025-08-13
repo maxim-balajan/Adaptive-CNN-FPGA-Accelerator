@@ -2,13 +2,16 @@ from adder_tree_config import AdderTreeConfig
 import os
 
 class KernelCores():
-    def __init__(self, config: AdderTreeConfig, architecture_name='rtl'):
+    def __init__(self, config: AdderTreeConfig, template_dir: str, export_dir, architecture_name='rtl'):
         self.architecture_name = architecture_name
         self.config = config
+        self.template_dir = template_dir
+        self.export_dir = export_dir
+
 
 
     def entity_to_string(self) -> str:
-        template_path = os.path.join(os.getenv('PRJ_SCRIPTS'), 'code_generation', 'templates', 'kernel_cores_entity.vhd')
+        template_path = os.path.join(self.template_dir, 'kernel_cores_entity.vhd')
         template = ""
         with open(template_path) as f:
             template = f.read()
@@ -23,7 +26,7 @@ class KernelCores():
     
 
     def architecture_to_string(self) -> str:
-        template_path = os.path.join(os.getenv('PRJ_SCRIPTS'), 'code_generation', 'templates', 'kernel_cores_architecture.vhd')
+        template_path = os.path.join(self.template_dir, 'kernel_cores_architecture.vhd')
         template = ""
         with open(template_path) as f:
             template = f.read()
@@ -51,6 +54,6 @@ class KernelCores():
     def module_to_file(self) -> None:
         template = self.entity_to_string() + self.architecture_to_string()
 
-        with open(os.path.join(os.getenv('PRJ_SCRIPTS'), 'code_generation', 'export', f'kernel_cores.vhd'), 'w') as f:
+        with open(os.path.join(self.export_dir, f'kernel_cores.vhd'), 'w') as f:
             f.write(template)
 

@@ -71,6 +71,19 @@ elif [ "$TB" == "configurable_slider" ]; then
         $PRJ_HW_SOURCES_PATH/line_route_unit.vhd        \
         $PRJ_HW_SOURCES_PATH/configurable_slider.vhd    \
         $PRJ_HW_SIMS_PATH/configurable_slider_tb.vhd  
+elif [ "$TB" == "adder_tree_gen" ]; then
+    $PRJ_SCRIPTS/simulation/generic_simulation_run.sh ${GUI} adder_tree_gen \
+        $PRJ_HW_SOURCES_PATH/libmatrix.vhd                                                 \
+        $PRJ_HW_SOURCES_PATH/libutil.vhd                                                   \
+        $PRJ_HW_SOURCES_PATH/clip_adder.vhd                                                \
+        $PRJ_HW_SOURCES_PATH/kernel_computation_step.vhd                                   \
+        $PRJ_HW_SOURCES_PATH/kernel_computation_unit.vhd                                   \
+        $PRJ_HW_SIMS_PATH/adder_tree_simulation/generated_source/Five_adder_plus_mult.vhd  \
+        $PRJ_HW_SIMS_PATH/adder_tree_simulation/generated_source/Three_adder_no_mult.vhd   \
+        $PRJ_HW_SIMS_PATH/adder_tree_simulation/generated_source/Nine_pooling.vhd          \
+        $PRJ_HW_SIMS_PATH/adder_tree_simulation/generated_source/kernel_cores.vhd          \
+        $PRJ_HW_SIMS_PATH/adder_tree_simulation/generated_source/routing_cores.vhd         \
+        $PRJ_HW_SIMS_PATH/adder_tree_simulation/adder_tree_gen_tb.vhd 
 else
     echo "Unknown Testbench: $TB"
     echo "Usage: $0 [Top-Unit] [Source-Files...]"

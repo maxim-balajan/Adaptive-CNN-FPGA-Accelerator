@@ -7,8 +7,10 @@ from adder_tree_config import AdderTreeConfig
 from math import ceil
 
 class CoreTree():
-    def __init__(self, adder_tree_config: AdderTreeConfig, route_dicts: dict, iteration: int):
+    def __init__(self, adder_tree_config: AdderTreeConfig, route_dicts: dict, templates_dir: str, export_dir: str, iteration: int):
 
+        self.template_dir = templates_dir
+        self.export_dir = export_dir
         route_dict = route_dicts[get_nth_key(route_dicts, iteration)]
         self.architecture_name = get_nth_key_name(route_dicts, iteration)
         self.max_output_channels = safe_read(route_dicts['global'], 'max_output_channels', 1)
@@ -151,6 +153,8 @@ class CoreTree():
                         self.used_cores[bundle_name] = []
                     self.used_cores[bundle_name] += current_cores
                     self.unused_cores[bundle_name] = bundle[cores_needed::]
+                    if not self.unused_cores[bundle_name]:
+                        self.unused_cores.pop(bundle_name)
 
                     # Add current_cores to output_channel_list
                     self.output_channel_list[oc_id] += current_cores
@@ -173,7 +177,7 @@ class CoreTree():
 
     
     def entity_to_string(self) -> str:
-        template_path = os.path.join(os.getenv('PRJ_SCRIPTS'), 'code_generation', 'templates', 'routing_cores_entity.vhd')
+        template_path = os.path.join(self.template_dir, 'routing_cores_entity.vhd')
         template = ""
         with open(template_path) as f:
             template = f.read()
@@ -191,7 +195,7 @@ class CoreTree():
 
     
     def architecture_to_string(self):
-        template_path = os.path.join(os.getenv('PRJ_SCRIPTS'), 'code_generation', 'templates', 'routing_cores_architecture.vhd')
+        template_path = os.path.join(self.template_dir, 'routing_cores_architecture.vhd')
         template = ""
         with open(template_path) as f:
             template = f.read()
@@ -256,5 +260,5 @@ class CoreTree():
     def module_to_file(self) -> None:
         template = self.entity_to_string() + self.architecture_to_string()
 
-        with open(os.path.join(os.getenv('PRJ_SCRIPTS'), 'code_generation', 'export', f'routing_cores.vhd'), 'w') as f:
+        with open(os.path.join(self.export_dir, f'routing_cores.vhd'), 'w') as f:
             f.write(template)

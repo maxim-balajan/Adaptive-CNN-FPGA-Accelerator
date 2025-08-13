@@ -1,0 +1,27 @@
+Kernel_cores successfully generated!
+
+##############################
+### Start of Routing of OC 0:
+##############################
+
+Iteration: 0
+2 Cores of bundle 'bundle_0'
+0 Child Cores
+Bundle Meta:
+   Multplication: 1
+   Input-Amount.: 5
+   Input-Width..: 8
+   Output-Width.: 24
+
+Iteration: 1
+1 Cores of bundle 'bundle_1'
+2 Child Cores
+Bundle Meta:
+   Multplication: 0
+   Input-Amount.: 3
+   Input-Width..: 24
+   Output-Width.: 24
+
+Routing for OC 0 finished successfully!
+Entire Routing finished successfully!
+routing_cores successfully generated!

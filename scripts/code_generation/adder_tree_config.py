@@ -3,7 +3,7 @@ import yaml
 from common_utils import safe_read
 
 class AdderTreeConfig():
-    def __init__(self, config_path):
+    def __init__(self, config_path, template_dir, export_dir):
         with open(config_path, 'r') as f:
             config_dict = yaml.safe_load(f)
         self.i_dataline_amount = safe_read(config_dict, 'matrix_input_amount')
@@ -16,7 +16,7 @@ class AdderTreeConfig():
 
         try:
             for name, core_dict in config_dict['cores'].items():
-                core = CoreInst(name, core_dict, safe_read(config_dict, 'iteration', 0))
+                core = CoreInst(name, core_dict, template_dir, export_dir, safe_read(config_dict, 'iteration', 0))
                 self.cores.append(core)
         except KeyError:
             raise NameError(f'Error: Could not find necessary key "cores" in Config! Abort...')

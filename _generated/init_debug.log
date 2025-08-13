@@ -36,6 +36,9 @@
 # prj_train...........: Run the Training Script of the AlexNet Model
 # prj_build_simulation: Run the building process for the
 #                       C++ reference implementation
+# prj_adder_gen.......: Run the generation of the Adder/Comparator Trees
+# prj_adder_gen_sim...: Run the generation of the Adder/Comparator Trees
+#                       (only used for the TB)
 # prj_run_simulation..: Run the C++ reference implementation
 ###########################################################################
 # Simulation Tools...:
