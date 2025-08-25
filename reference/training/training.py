@@ -16,6 +16,7 @@ import brevitas.onnx as bo
 from brevitas.core.quant import QuantType
 import torch.nn.functional as F
 
+from PerInputChanClampedConv2d import PerInChanClampedQuantConv2d
 from brevitas.quant import Int8WeightPerTensorFixedPoint, Int8ActPerTensorFixedPoint, Int8BiasPerTensorFloatInternalScaling, Int8BiasPerTensorFixedPointInternalScaling
 
 import numpy as np
@@ -29,17 +30,22 @@ class QuantAlexNet(nn.Module):
         super(QuantAlexNet, self).__init__()
         self.features = nn.Sequential(
             qnn.QuantIdentity(act_quant=Int8ActPerTensorFixedPoint, bit_width=8, return_quant_tensor=True),
-            qnn.QuantConv2d(3, 96, 11, 4, weight_quant=Int8WeightPerTensorFixedPoint, bias=False, weight_bit_width=8),
+            #qnn.QuantConv2d(3, 96, 11, 4, weight_quant=Int8WeightPerTensorFixedPoint, bias=False, weight_bit_width=8),
+            PerInChanClampedQuantConv2d(3, 96, 11, stride=4, bias=False),
             qnn.QuantReLU(act_quant=Int8ActPerTensorFixedPoint, bit_width=8, return_quant_tensor=True),
             nn.MaxPool2d(3, 2),
-            qnn.QuantConv2d(96, 256, 5, 1, 2, weight_quant=Int8WeightPerTensorFixedPoint, bias=False, weight_bit_width=8),
+            #qnn.QuantConv2d(96, 256, 5, 1, 2, weight_quant=Int8WeightPerTensorFixedPoint, bias=False, weight_bit_width=8),
+            PerInChanClampedQuantConv2d(96, 256, 5, padding=2, bias=False),
             qnn.QuantReLU(act_quant=Int8ActPerTensorFixedPoint, bit_width=8, return_quant_tensor=True),
             nn.MaxPool2d(3, 2),
-            qnn.QuantConv2d(256, 384, 3, 1, 1, weight_quant=Int8WeightPerTensorFixedPoint, bias=False, weight_bit_width=8),
+            #qnn.QuantConv2d(256, 384, 3, 1, 1, weight_quant=Int8WeightPerTensorFixedPoint, bias=False, weight_bit_width=8),
+            PerInChanClampedQuantConv2d(256, 384, 3, padding=1, bias=False),
             qnn.QuantReLU(act_quant=Int8ActPerTensorFixedPoint, bit_width=8, return_quant_tensor=True),
-            qnn.QuantConv2d(384, 384, 3, 1, 1, weight_quant=Int8WeightPerTensorFixedPoint, bias=False, weight_bit_width=8),
+            #qnn.QuantConv2d(384, 384, 3, 1, 1, weight_quant=Int8WeightPerTensorFixedPoint, bias=False, weight_bit_width=8),
+            PerInChanClampedQuantConv2d(384, 384, 3, padding=1, bias=False),
             qnn.QuantReLU(act_quant=Int8ActPerTensorFixedPoint, bit_width=8, return_quant_tensor=True),
-            qnn.QuantConv2d(384, 256, 3, 1, 1, weight_quant=Int8WeightPerTensorFixedPoint, bias=False, weight_bit_width=8),
+            #qnn.QuantConv2d(384, 256, 3, 1, 1, weight_quant=Int8WeightPerTensorFixedPoint, bias=False, weight_bit_width=8),
+            PerInChanClampedQuantConv2d(384, 256, 3, padding=1, bias=False),
             qnn.QuantReLU(act_quant=Int8ActPerTensorFixedPoint, bit_width=8, return_quant_tensor=True),
             nn.MaxPool2d(3, 2)  
         )
@@ -137,10 +143,9 @@ def train(model, args, training_loader, validation_loader):
 
             # Gather data and report
             running_loss += loss.item()
-            if i % 100 == 99:
-                last_loss = running_loss / 100 # loss per batch
-                print('  batch {} loss: {}'.format(i + 1, last_loss))
-                running_loss = 0.
+            last_loss = running_loss / 1 # loss per batch
+            print('  batch {} loss: {}'.format(i + 1, last_loss))
+            running_loss = 0.
             
             del inputs
             del labels
