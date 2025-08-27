@@ -1,4 +1,4 @@
-import os
+import sys, os
 from pathlib import Path
 
 from torch import nn
@@ -7,6 +7,7 @@ import torchvision
 import torchvision.transforms as transforms
 from torchvision.datasets import CIFAR10
 from torch.utils.data import DataLoader
+import torch.multiprocessing as mp
 
 import onnx
 from onnx2pytorch import ConvertModel
@@ -31,21 +32,21 @@ class QuantAlexNet(nn.Module):
         self.features = nn.Sequential(
             qnn.QuantIdentity(act_quant=Int8ActPerTensorFixedPoint, bit_width=8, return_quant_tensor=True),
             #qnn.QuantConv2d(3, 96, 11, 4, weight_quant=Int8WeightPerTensorFixedPoint, bias=False, weight_bit_width=8),
-            PerInChanClampedQuantConv2d(3, 96, 11, stride=4, bias=False),
+            PerInChanClampedQuantConv2d(3, 96, 11, stride=4, groups=1),
             qnn.QuantReLU(act_quant=Int8ActPerTensorFixedPoint, bit_width=8, return_quant_tensor=True),
             nn.MaxPool2d(3, 2),
             #qnn.QuantConv2d(96, 256, 5, 1, 2, weight_quant=Int8WeightPerTensorFixedPoint, bias=False, weight_bit_width=8),
-            PerInChanClampedQuantConv2d(96, 256, 5, padding=2, bias=False),
+            PerInChanClampedQuantConv2d(96, 256, 5, padding=2, groups=6),
             qnn.QuantReLU(act_quant=Int8ActPerTensorFixedPoint, bit_width=8, return_quant_tensor=True),
             nn.MaxPool2d(3, 2),
             #qnn.QuantConv2d(256, 384, 3, 1, 1, weight_quant=Int8WeightPerTensorFixedPoint, bias=False, weight_bit_width=8),
-            PerInChanClampedQuantConv2d(256, 384, 3, padding=1, bias=False),
+            PerInChanClampedQuantConv2d(256, 384, 3, padding=1, bias=False, groups=8),
             qnn.QuantReLU(act_quant=Int8ActPerTensorFixedPoint, bit_width=8, return_quant_tensor=True),
             #qnn.QuantConv2d(384, 384, 3, 1, 1, weight_quant=Int8WeightPerTensorFixedPoint, bias=False, weight_bit_width=8),
-            PerInChanClampedQuantConv2d(384, 384, 3, padding=1, bias=False),
+            PerInChanClampedQuantConv2d(384, 384, 3, padding=1, bias=False, groups=8),
             qnn.QuantReLU(act_quant=Int8ActPerTensorFixedPoint, bit_width=8, return_quant_tensor=True),
             #qnn.QuantConv2d(384, 256, 3, 1, 1, weight_quant=Int8WeightPerTensorFixedPoint, bias=False, weight_bit_width=8),
-            PerInChanClampedQuantConv2d(384, 256, 3, padding=1, bias=False),
+            PerInChanClampedQuantConv2d(384, 256, 3, padding=1, bias=False, groups=8),
             qnn.QuantReLU(act_quant=Int8ActPerTensorFixedPoint, bit_width=8, return_quant_tensor=True),
             nn.MaxPool2d(3, 2)  
         )
@@ -275,6 +276,15 @@ def export_datasets(training_set, validation_set):
 def main():
     args = parse_arguments()
 
+    #torch.backends.cudnn.benchmark = False
+
+    #import gc
+    #gc.collect()
+    torch.cuda.empty_cache()
+
+    #print(torch.cuda.memory_summary(device=0, abbreviated=False))
+
+
     model = QuantAlexNet()
 
     use_gpu = torch.cuda.is_available()
@@ -302,5 +312,13 @@ def main():
         inference(model, args, validation_loader, 39)
 
 if __name__ == "__main__":
-    main() 
+    try:
+        p = mp.Process(target=main)
+        p.start()
+        p.join()
+    except Exception as e:
+        print("ERROR OCCURED:")
+        print(e)
+        sys.exit(1)
 
+#prj_train -t -i -e 50 -b 20 -o Alex_test.onnx
