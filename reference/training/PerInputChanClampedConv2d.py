@@ -38,21 +38,12 @@ class PerInChanClampedQuantConv2d(nn.Module):
 
     def forward(self, x):
         # Partial grouped conv (QuantTensor)
-        y_qt = self.partial(x)
-        # Convert QuantTensor to plain Tensor for reshaping & summing
-        y = getattr(y_qt, "tensor", y_qt)  # works across Brevitas versions
+        p = self.partial(x)
 
-        N, Cg, H, W = y.shape  # Cg = out_ch * in_ch
-        # Reshape to [N, in_ch, out_ch, H, W] so each [*, c, o, :, :] is a single partial
-        y = y.view(N, self.groups, self.out_ch, H, W)
-        # Flatten (c,o) back to channel axis to clamp each partial map independently
-        y = y.view(N, self.groups * self.out_ch, H, W)
+        N, Cg, H, W = p.shape  # Cg = out_ch * groups
 
-        # Clamp each partial with Int8 activation quantization
-        y_partial_qt = self.partial_clamp(y)
-        y_partial = getattr(y_partial_qt, "tensor", y_partial_qt)
+        p = self.partial_clamp(p)
 
-        # Reshape back and sum over input channels to finish accumulation
-        y_partial = y_partial.view(N, self.groups, self.out_ch, H, W)
-        out = y_partial.sum(dim=1)  # [N, out_ch, H, W]
+        p = p.view(N, self.groups, self.out_ch, H, W)
+        out = p.sum(dim=1) 
         return out
