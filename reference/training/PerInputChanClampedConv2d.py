@@ -45,5 +45,5 @@ class PerInChanClampedQuantConv2d(nn.Module):
         p = self.partial_clamp(p)
 
         p = p.view(N, self.groups, self.out_ch, H, W)
-        out = p.sum(dim=1) 
+        out = p.tensor.sum(dim=1) 
         return out
