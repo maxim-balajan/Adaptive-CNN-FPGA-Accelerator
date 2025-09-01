@@ -33,21 +33,27 @@ class QuantAlexNet(nn.Module):
             qnn.QuantIdentity(act_quant=Int8ActPerTensorFixedPoint, bit_width=8, return_quant_tensor=True),
             #qnn.QuantConv2d(3, 96, 11, 4, weight_quant=Int8WeightPerTensorFixedPoint, bias=False, weight_bit_width=8),
             PerInChanClampedQuantConv2d(3, 96, 11, stride=4, groups=1),
-            qnn.QuantReLU(act_quant=Int8ActPerTensorFixedPoint, bit_width=8),
+            #nn.ReLU(),
+            qnn.QuantReLU(act_quant=Int8ActPerTensorFixedPoint, bit_width=8, return_quant_tensor=True),
+
             nn.MaxPool2d(3, 2),
             #qnn.QuantConv2d(96, 256, 5, 1, 2, weight_quant=Int8WeightPerTensorFixedPoint, bias=False, weight_bit_width=8),
             PerInChanClampedQuantConv2d(96, 256, 5, padding=2, groups=12),
-            qnn.QuantReLU(act_quant=Int8ActPerTensorFixedPoint, bit_width=8),
+            #nn.ReLU(),
+            qnn.QuantReLU(act_quant=Int8ActPerTensorFixedPoint, bit_width=8, return_quant_tensor=True),
             nn.MaxPool2d(3, 2),
             #qnn.QuantConv2d(256, 384, 3, 1, 1, weight_quant=Int8WeightPerTensorFixedPoint, bias=False, weight_bit_width=8),
             PerInChanClampedQuantConv2d(256, 384, 3, padding=1, bias=False, groups=16),
-            qnn.QuantReLU(act_quant=Int8ActPerTensorFixedPoint, bit_width=8),
+            #nn.ReLU(),
+            qnn.QuantReLU(act_quant=Int8ActPerTensorFixedPoint, bit_width=8, return_quant_tensor=True),
             #qnn.QuantConv2d(384, 384, 3, 1, 1, weight_quant=Int8WeightPerTensorFixedPoint, bias=False, weight_bit_width=8),
             PerInChanClampedQuantConv2d(384, 384, 3, padding=1, bias=False, groups=16),
-            qnn.QuantReLU(act_quant=Int8ActPerTensorFixedPoint, bit_width=8),
+            #nn.ReLU(),
+            qnn.QuantReLU(act_quant=Int8ActPerTensorFixedPoint, bit_width=8, return_quant_tensor=True),
             #qnn.QuantConv2d(384, 256, 3, 1, 1, weight_quant=Int8WeightPerTensorFixedPoint, bias=False, weight_bit_width=8),
             PerInChanClampedQuantConv2d(384, 256, 3, padding=1, bias=False, groups=16),
-            qnn.QuantReLU(act_quant=Int8ActPerTensorFixedPoint, bit_width=8),
+            #nn.ReLU(),
+            qnn.QuantReLU(act_quant=Int8ActPerTensorFixedPoint, bit_width=8, return_quant_tensor=True),
             nn.MaxPool2d(3, 2)  
         )
 
@@ -114,7 +120,7 @@ def train(model, args, training_loader, validation_loader):
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=0.001)
 
-    use_gpu = torch.cuda.is_available()
+    use_gpu = False
 
     def train_one_epoch(epoch_index, training_loader, use_gpu):
         running_loss = 0.
@@ -192,7 +198,7 @@ def train(model, args, training_loader, validation_loader):
         epoch_number += 1
 
 def inference(model, args, validation_loader, batch_amount):
-    use_gpu = torch.cuda.is_available()
+    use_gpu = False
     latency = 0.0
 
     total_correct = 0
@@ -287,7 +293,7 @@ def main():
 
     model = QuantAlexNet()
 
-    use_gpu = torch.cuda.is_available()
+    use_gpu = False
     if use_gpu:
         model = model.cuda()
         print("USE GPU")
