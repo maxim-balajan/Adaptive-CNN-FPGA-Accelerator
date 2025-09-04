@@ -35,6 +35,17 @@ class PerInChanClampedQuantConv2d(nn.Module):
             return_quant_tensor=True
         )
 
+    def int8_sum(self, x, dim=1):
+        """
+        Perform saturating int8 accumulation along given dimension.
+        """
+        values = torch.unbind(x, dim=dim)
+        acc = values[0].clone()
+        for v in values[1:]:
+            acc = torch.clamp(acc.to(torch.int32) + v.to(torch.int32), -2**15, 2**15 - 1).to(torch.int16)
+        return acc
+
+
 
     def forward(self, x):
         # Partial grouped conv (QuantTensor)
@@ -45,5 +56,5 @@ class PerInChanClampedQuantConv2d(nn.Module):
         p = self.partial_clamp(p)
 
         p = p.view(N, self.groups, self.out_ch, H, W)
-        out = p.tensor.sum(dim=1) 
+        out = self.int8_sum(p.tensor, dim=1)
         return out

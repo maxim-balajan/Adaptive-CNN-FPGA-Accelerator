@@ -27,32 +27,49 @@ import time
 
 class QuantAlexNet(nn.Module):
     
-    def __init__(self):
+    def __init__(self, groups: bool):
         super(QuantAlexNet, self).__init__()
+
+        self.groups = groups
+
+        self.features_groups = nn.Sequential(
+            qnn.QuantIdentity(act_quant=Int8ActPerTensorFixedPoint, bit_width=8, return_quant_tensor=True),
+            PerInChanClampedQuantConv2d(3, 96, 11, stride=4, groups=1),
+            qnn.QuantReLU(act_quant=Int8ActPerTensorFixedPoint, bit_width=8, return_quant_tensor=True),
+            nn.MaxPool2d(3, 2),
+
+            PerInChanClampedQuantConv2d(96, 256, 5, padding=2, groups=12),
+            qnn.QuantReLU(act_quant=Int8ActPerTensorFixedPoint, bit_width=8, return_quant_tensor=True),
+            nn.MaxPool2d(3, 2),
+    
+            PerInChanClampedQuantConv2d(256, 384, 3, padding=1, bias=False, groups=16),
+            qnn.QuantReLU(act_quant=Int8ActPerTensorFixedPoint, bit_width=8, return_quant_tensor=True),
+            
+            PerInChanClampedQuantConv2d(384, 384, 3, padding=1, bias=False, groups=16),
+            qnn.QuantReLU(act_quant=Int8ActPerTensorFixedPoint, bit_width=8, return_quant_tensor=True),
+            
+            PerInChanClampedQuantConv2d(384, 256, 3, padding=1, bias=False, groups=16),
+            qnn.QuantReLU(act_quant=Int8ActPerTensorFixedPoint, bit_width=8, return_quant_tensor=True),
+            nn.MaxPool2d(3, 2)  
+        )
+
         self.features = nn.Sequential(
             qnn.QuantIdentity(act_quant=Int8ActPerTensorFixedPoint, bit_width=8, return_quant_tensor=True),
-            #qnn.QuantConv2d(3, 96, 11, 4, weight_quant=Int8WeightPerTensorFixedPoint, bias=False, weight_bit_width=8),
-            PerInChanClampedQuantConv2d(3, 96, 11, stride=4, groups=1),
-            #nn.ReLU(),
+            qnn.QuantConv2d(3, 96, 11, 4, weight_quant=Int8WeightPerTensorFixedPoint, bias=False, weight_bit_width=8),
             qnn.QuantReLU(act_quant=Int8ActPerTensorFixedPoint, bit_width=8, return_quant_tensor=True),
+            nn.MaxPool2d(3, 2),
+            
+            qnn.QuantConv2d(96, 256, 5, 1, 2, weight_quant=Int8WeightPerTensorFixedPoint, bias=False, weight_bit_width=8),
+            qnn.QuantReLU(act_quant=Int8ActPerTensorFixedPoint, bit_width=8, return_quant_tensor=True),
+            nn.MaxPool2d(3, 2),
 
-            nn.MaxPool2d(3, 2),
-            #qnn.QuantConv2d(96, 256, 5, 1, 2, weight_quant=Int8WeightPerTensorFixedPoint, bias=False, weight_bit_width=8),
-            PerInChanClampedQuantConv2d(96, 256, 5, padding=2, groups=12),
-            #nn.ReLU(),
+            qnn.QuantConv2d(256, 384, 3, 1, 1, weight_quant=Int8WeightPerTensorFixedPoint, bias=False, weight_bit_width=8),
             qnn.QuantReLU(act_quant=Int8ActPerTensorFixedPoint, bit_width=8, return_quant_tensor=True),
-            nn.MaxPool2d(3, 2),
-            #qnn.QuantConv2d(256, 384, 3, 1, 1, weight_quant=Int8WeightPerTensorFixedPoint, bias=False, weight_bit_width=8),
-            PerInChanClampedQuantConv2d(256, 384, 3, padding=1, bias=False, groups=16),
-            #nn.ReLU(),
+            
+            qnn.QuantConv2d(384, 384, 3, 1, 1, weight_quant=Int8WeightPerTensorFixedPoint, bias=False, weight_bit_width=8),
             qnn.QuantReLU(act_quant=Int8ActPerTensorFixedPoint, bit_width=8, return_quant_tensor=True),
-            #qnn.QuantConv2d(384, 384, 3, 1, 1, weight_quant=Int8WeightPerTensorFixedPoint, bias=False, weight_bit_width=8),
-            PerInChanClampedQuantConv2d(384, 384, 3, padding=1, bias=False, groups=16),
-            #nn.ReLU(),
-            qnn.QuantReLU(act_quant=Int8ActPerTensorFixedPoint, bit_width=8, return_quant_tensor=True),
-            #qnn.QuantConv2d(384, 256, 3, 1, 1, weight_quant=Int8WeightPerTensorFixedPoint, bias=False, weight_bit_width=8),
-            PerInChanClampedQuantConv2d(384, 256, 3, padding=1, bias=False, groups=16),
-            #nn.ReLU(),
+            
+            qnn.QuantConv2d(384, 256, 3, 1, 1, weight_quant=Int8WeightPerTensorFixedPoint, bias=False, weight_bit_width=8),
             qnn.QuantReLU(act_quant=Int8ActPerTensorFixedPoint, bit_width=8, return_quant_tensor=True),
             nn.MaxPool2d(3, 2)  
         )
@@ -68,7 +85,7 @@ class QuantAlexNet(nn.Module):
         )
         
     def forward(self, x):
-        out = self.features(x)
+        out = self.features(x) if not self.groups else self.features_groups(x)
         out = torch.flatten(out, 1)
         out = self.classifier(out)
         return out
@@ -76,6 +93,7 @@ class QuantAlexNet(nn.Module):
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
+    parser.add_argument("--groups", "-g", help="If given, the grouping of Input Channel will be done", action="store_true")
     parser.add_argument("--train", "-t", help="If explicitly given, the training phase will be executed",
                     action="store_true")
     parser.add_argument("--infer", "-i", help="If explicitly given, the inference phase will be executed",
@@ -291,7 +309,7 @@ def main():
     #print(torch.cuda.memory_summary(device=0, abbreviated=False))
 
 
-    model = QuantAlexNet()
+    model = QuantAlexNet(args.groups)
 
     use_gpu = False
     if use_gpu:
