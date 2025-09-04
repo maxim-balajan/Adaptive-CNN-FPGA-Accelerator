@@ -10,7 +10,8 @@ enum class LayerType {
     MaxPooling = 3,
     QuantConvolution = 4,
     QuantDense = 5,
-    Quant = 6
+    Quant = 6,
+    ReduceSum = 7,
 };
 
 template<typename T, typename ACC>

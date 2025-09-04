@@ -13,6 +13,7 @@
 #include "../src/layers/convolution.h"
 #include "../src/layers/dense.h"
 #include "../src/layers/flatten.h"
+#include "../src/layers/reduce_sum.h"
 #include "../src/layers/max_pooling.h"
 #include "../src/layers/quant_convolution.h"
 #include "../src/layers/quant_dense.h"

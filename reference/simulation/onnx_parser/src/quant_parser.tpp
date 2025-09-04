@@ -151,7 +151,7 @@ namespace {
                 //cout << "Padding: " << padding << endl;
                 //cout << "Stride: " << stride << endl;
 
-                QuantConvolution<T, ACC> convolution(kernel, bias, batching, curr_dimensions[2], curr_dimensions[3], curr_dimensions[1], padding, stride, s_b, s_x, s_w, s_y);
+                QuantConvolution<T, ACC> convolution(kernel, bias, batching, curr_dimensions[2], curr_dimensions[3], curr_dimensions[1], padding, stride, 1, s_b, s_x, s_w, s_y);
                 layers.push_back(make_unique<QuantConvolution<T, ACC>>(convolution));
 
                 cout << "QuantConv(..., ..., " << curr_dimensions[0] << ", " << curr_dimensions[1] << ", ";
