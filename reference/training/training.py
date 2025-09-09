@@ -138,7 +138,7 @@ def train(model, args, training_loader, validation_loader):
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=0.001)
 
-    use_gpu = False
+    use_gpu = torch.cuda.is_available()
 
     def train_one_epoch(epoch_index, training_loader, use_gpu):
         running_loss = 0.
@@ -216,7 +216,7 @@ def train(model, args, training_loader, validation_loader):
         epoch_number += 1
 
 def inference(model, args, validation_loader, batch_amount):
-    use_gpu = False
+    use_gpu = torch.cuda.is_available()
     latency = 0.0
 
     total_correct = 0
@@ -311,7 +311,7 @@ def main():
 
     model = QuantAlexNet(args.groups)
 
-    use_gpu = False
+    use_gpu = torch.cuda.is_available()
     if use_gpu:
         model = model.cuda()
         print("USE GPU")
