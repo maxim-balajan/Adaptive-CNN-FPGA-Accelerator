@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="memory_test_tb_sim.wdb" id="1">
+         <top_modules>
+            <top_module name="libmatrix" />
+            <top_module name="memory_test_tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="18.853 ns"></ZoomStartTime>
+      <ZoomEndTime time="115.854 ns"></ZoomEndTime>
+      <Cursor1Time time="31.653 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="157"></NameColumnWidth>
+      <ValueColumnWidth column_width="149"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="54" />
+   <wvobject type="logic" fp_name="/memory_test_tb/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/memory_test_tb/reset">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/memory_test_tb/i_wt_s_axis_tdata">
+      <obj_property name="ElementShortName">i_wt_s_axis_tdata[255:0]</obj_property>
+      <obj_property name="ObjectShortName">i_wt_s_axis_tdata[255:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/memory_test_tb/i_wt_s_axis_tkeep">
+      <obj_property name="ElementShortName">i_wt_s_axis_tkeep[31:0]</obj_property>
+      <obj_property name="ObjectShortName">i_wt_s_axis_tkeep[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/memory_test_tb/i_px_s_axis_tdata_matrix">
+      <obj_property name="ElementShortName">i_px_s_axis_tdata_matrix[0:31][7:0]</obj_property>
+      <obj_property name="ObjectShortName">i_px_s_axis_tdata_matrix[0:31][7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/memory_test_tb/i_wt_s_axis_tdata_matrix">
+      <obj_property name="ElementShortName">i_wt_s_axis_tdata_matrix[0:31][7:0]</obj_property>
+      <obj_property name="ObjectShortName">i_wt_s_axis_tdata_matrix[0:31][7:0]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/memory_test_tb/i_wt_cnt">
+      <obj_property name="ElementShortName">i_wt_cnt</obj_property>
+      <obj_property name="ObjectShortName">i_wt_cnt</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/memory_test_tb/i_px_cnt">
+      <obj_property name="ElementShortName">i_px_cnt</obj_property>
+      <obj_property name="ObjectShortName">i_px_cnt</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/memory_test_tb/i_wt_s_axis_tlast">
+      <obj_property name="ElementShortName">i_wt_s_axis_tlast</obj_property>
+      <obj_property name="ObjectShortName">i_wt_s_axis_tlast</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/memory_test_tb/o_wt_s_axis_tready">
+      <obj_property name="ElementShortName">o_wt_s_axis_tready</obj_property>
+      <obj_property name="ObjectShortName">o_wt_s_axis_tready</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/memory_test_tb/i_wt_s_axis_tvalid">
+      <obj_property name="ElementShortName">i_wt_s_axis_tvalid</obj_property>
+      <obj_property name="ObjectShortName">i_wt_s_axis_tvalid</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/memory_test_tb/i_px_s_axis_tdata">
+      <obj_property name="ElementShortName">i_px_s_axis_tdata[255:0]</obj_property>
+      <obj_property name="ObjectShortName">i_px_s_axis_tdata[255:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/memory_test_tb/i_px_s_axis_tkeep">
+      <obj_property name="ElementShortName">i_px_s_axis_tkeep[31:0]</obj_property>
+      <obj_property name="ObjectShortName">i_px_s_axis_tkeep[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/memory_test_tb/i_px_s_axis_tlast">
+      <obj_property name="ElementShortName">i_px_s_axis_tlast</obj_property>
+      <obj_property name="ObjectShortName">i_px_s_axis_tlast</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/memory_test_tb/o_px_s_axis_tready">
+      <obj_property name="ElementShortName">o_px_s_axis_tready</obj_property>
+      <obj_property name="ObjectShortName">o_px_s_axis_tready</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/memory_test_tb/i_px_s_axis_tvalid">
+      <obj_property name="ElementShortName">i_px_s_axis_tvalid</obj_property>
+      <obj_property name="ObjectShortName">i_px_s_axis_tvalid</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/memory_test_tb/o_px_m_axis_tdata">
+      <obj_property name="ElementShortName">o_px_m_axis_tdata[255:0]</obj_property>
+      <obj_property name="ObjectShortName">o_px_m_axis_tdata[255:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/memory_test_tb/o_px_m_axis_tkeep">
+      <obj_property name="ElementShortName">o_px_m_axis_tkeep[31:0]</obj_property>
+      <obj_property name="ObjectShortName">o_px_m_axis_tkeep[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/memory_test_tb/o_px_m_axis_tlast">
+      <obj_property name="ElementShortName">o_px_m_axis_tlast</obj_property>
+      <obj_property name="ObjectShortName">o_px_m_axis_tlast</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/memory_test_tb/i_px_m_axis_tready">
+      <obj_property name="ElementShortName">i_px_m_axis_tready</obj_property>
+      <obj_property name="ObjectShortName">i_px_m_axis_tready</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/memory_test_tb/o_px_m_axis_tvalid">
+      <obj_property name="ElementShortName">o_px_m_axis_tvalid</obj_property>
+      <obj_property name="ObjectShortName">o_px_m_axis_tvalid</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/memory_test_tb/clk_period">
+      <obj_property name="ElementShortName">clk_period</obj_property>
+      <obj_property name="ObjectShortName">clk_period</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/memory_test_tb/vector_length">
+      <obj_property name="ElementShortName">vector_length</obj_property>
+      <obj_property name="ObjectShortName">vector_length</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/memory_test_tb/channel_amount">
+      <obj_property name="ElementShortName">channel_amount</obj_property>
+      <obj_property name="ObjectShortName">channel_amount</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/memory_test_tb/iterations">
+      <obj_property name="ElementShortName">iterations</obj_property>
+      <obj_property name="ObjectShortName">iterations</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider26" type="divider">
+      <obj_property name="label">MEM_TEST_DUT</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/memory_test_tb/memory_test_inst/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/memory_test_tb/memory_test_inst/reset">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/memory_test_tb/memory_test_inst/i_wt_s_axis_tdata">
+      <obj_property name="ElementShortName">i_wt_s_axis_tdata[255:0]</obj_property>
+      <obj_property name="ObjectShortName">i_wt_s_axis_tdata[255:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/memory_test_tb/memory_test_inst/i_wt_s_axis_tkeep">
+      <obj_property name="ElementShortName">i_wt_s_axis_tkeep[31:0]</obj_property>
+      <obj_property name="ObjectShortName">i_wt_s_axis_tkeep[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/memory_test_tb/memory_test_inst/i_wt_s_axis_tlast">
+      <obj_property name="ElementShortName">i_wt_s_axis_tlast</obj_property>
+      <obj_property name="ObjectShortName">i_wt_s_axis_tlast</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/memory_test_tb/memory_test_inst/o_wt_s_axis_tready">
+      <obj_property name="ElementShortName">o_wt_s_axis_tready</obj_property>
+      <obj_property name="ObjectShortName">o_wt_s_axis_tready</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/memory_test_tb/memory_test_inst/i_wt_s_axis_tvalid">
+      <obj_property name="ElementShortName">i_wt_s_axis_tvalid</obj_property>
+      <obj_property name="ObjectShortName">i_wt_s_axis_tvalid</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/memory_test_tb/memory_test_inst/i_px_s_axis_tdata">
+      <obj_property name="ElementShortName">i_px_s_axis_tdata[255:0]</obj_property>
+      <obj_property name="ObjectShortName">i_px_s_axis_tdata[255:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/memory_test_tb/memory_test_inst/i_px_s_axis_tkeep">
+      <obj_property name="ElementShortName">i_px_s_axis_tkeep[31:0]</obj_property>
+      <obj_property name="ObjectShortName">i_px_s_axis_tkeep[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/memory_test_tb/memory_test_inst/i_px_s_axis_tlast">
+      <obj_property name="ElementShortName">i_px_s_axis_tlast</obj_property>
+      <obj_property name="ObjectShortName">i_px_s_axis_tlast</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/memory_test_tb/memory_test_inst/o_px_s_axis_tready">
+      <obj_property name="ElementShortName">o_px_s_axis_tready</obj_property>
+      <obj_property name="ObjectShortName">o_px_s_axis_tready</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/memory_test_tb/memory_test_inst/i_px_s_axis_tvalid">
+      <obj_property name="ElementShortName">i_px_s_axis_tvalid</obj_property>
+      <obj_property name="ObjectShortName">i_px_s_axis_tvalid</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/memory_test_tb/memory_test_inst/o_px_m_axis_tdata">
+      <obj_property name="ElementShortName">o_px_m_axis_tdata[255:0]</obj_property>
+      <obj_property name="ObjectShortName">o_px_m_axis_tdata[255:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/memory_test_tb/memory_test_inst/o_px_m_axis_tkeep">
+      <obj_property name="ElementShortName">o_px_m_axis_tkeep[31:0]</obj_property>
+      <obj_property name="ObjectShortName">o_px_m_axis_tkeep[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/memory_test_tb/memory_test_inst/o_px_m_axis_tlast">
+      <obj_property name="ElementShortName">o_px_m_axis_tlast</obj_property>
+      <obj_property name="ObjectShortName">o_px_m_axis_tlast</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/memory_test_tb/memory_test_inst/i_px_m_axis_tready">
+      <obj_property name="ElementShortName">i_px_m_axis_tready</obj_property>
+      <obj_property name="ObjectShortName">i_px_m_axis_tready</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/memory_test_tb/memory_test_inst/o_px_m_axis_tvalid">
+      <obj_property name="ElementShortName">o_px_m_axis_tvalid</obj_property>
+      <obj_property name="ObjectShortName">o_px_m_axis_tvalid</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/memory_test_tb/memory_test_inst/s_sa_wt_tdata">
+      <obj_property name="ElementShortName">s_sa_wt_tdata[0:31][7:0]</obj_property>
+      <obj_property name="ObjectShortName">s_sa_wt_tdata[0:31][7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/memory_test_tb/memory_test_inst/s_sa_px_tdata">
+      <obj_property name="ElementShortName">s_sa_px_tdata[0:31][7:0]</obj_property>
+      <obj_property name="ObjectShortName">s_sa_px_tdata[0:31][7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/memory_test_tb/memory_test_inst/s_weight_mem">
+      <obj_property name="ElementShortName">s_weight_mem[0:159][7:0]</obj_property>
+      <obj_property name="ObjectShortName">s_weight_mem[0:159][7:0]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/memory_test_tb/memory_test_inst/s_weight_cnt">
+      <obj_property name="ElementShortName">s_weight_cnt</obj_property>
+      <obj_property name="ObjectShortName">s_weight_cnt</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/memory_test_tb/memory_test_inst/s_pixel_mem">
+      <obj_property name="ElementShortName">s_pixel_mem[0:159][7:0]</obj_property>
+      <obj_property name="ObjectShortName">s_pixel_mem[0:159][7:0]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/memory_test_tb/memory_test_inst/s_pixel_cnt">
+      <obj_property name="ElementShortName">s_pixel_cnt</obj_property>
+      <obj_property name="ObjectShortName">s_pixel_cnt</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/memory_test_tb/memory_test_inst/s_done_weight">
+      <obj_property name="ElementShortName">s_done_weight</obj_property>
+      <obj_property name="ObjectShortName">s_done_weight</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/memory_test_tb/memory_test_inst/s_done_activations">
+      <obj_property name="ElementShortName">s_done_activations</obj_property>
+      <obj_property name="ObjectShortName">s_done_activations</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/memory_test_tb/memory_test_inst/vector_length">
+      <obj_property name="ElementShortName">vector_length</obj_property>
+      <obj_property name="ObjectShortName">vector_length</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/memory_test_tb/memory_test_inst/channel_amount">
+      <obj_property name="ElementShortName">channel_amount</obj_property>
+      <obj_property name="ObjectShortName">channel_amount</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/memory_test_tb/memory_test_inst/iterations">
+      <obj_property name="ElementShortName">iterations</obj_property>
+      <obj_property name="ObjectShortName">iterations</obj_property>
+   </wvobject>
+</wave_config>

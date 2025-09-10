@@ -35,6 +35,10 @@ package libmatrix is
 		r : matrix_1d
 	) return matrix_1d;
 
+	function f_flatten_matrix1d (
+		input : matrix_1d
+	) return std_logic_vector;
+
 end package libmatrix;
 
 package body libmatrix is
@@ -110,5 +114,23 @@ package body libmatrix is
 		return tmp;
 
 	end function transpose_matrix1d;
+
+	function f_flatten_matrix1d (
+		input : matrix_1d
+	) return std_logic_vector is
+
+		variable tmp : std_logic_vector(input(input'low)'length * input'length - 1 downto 0);
+
+	begin
+
+		for i in input'range loop
+
+			tmp := tmp(tmp'high - input(input'low)'length downto 0) & input(i);
+
+		end loop;
+
+		return tmp;
+
+	end function f_flatten_matrix1d;
 
 end package body libmatrix;

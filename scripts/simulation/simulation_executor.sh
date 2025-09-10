@@ -84,6 +84,11 @@ elif [ "$TB" == "adder_tree_gen" ]; then
         $PRJ_HW_SIMS_PATH/adder_tree_simulation/generated_source/kernel_cores.vhd          \
         $PRJ_HW_SIMS_PATH/adder_tree_simulation/generated_source/routing_cores.vhd         \
         $PRJ_HW_SIMS_PATH/adder_tree_simulation/adder_tree_gen_tb.vhd 
+elif [ "$TB" == "memory_test" ]; then
+    $PRJ_SCRIPTS/simulation/generic_simulation_run.sh ${GUI} memory_test \
+        $PRJ_HW_SOURCES_PATH/libmatrix.vhd        \
+        $PRJ_HW_SOURCES_PATH/memory_test.vhd      \
+        $PRJ_HW_SIMS_PATH/memory_test_tb.vhd  
 else
     echo "Unknown Testbench: $TB"
     echo "Usage: $0 [Top-Unit] [Source-Files...]"

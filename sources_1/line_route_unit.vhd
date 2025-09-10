@@ -64,7 +64,7 @@ begin
 	PIXEL_STREAMS_OUT_GEN : for i in 0 to G_LINE_BUFFER_AMOUNT - 1 generate
 
 		CHECK_PS_IN_GEN : if i mod G_KERNEL_SIZE = 0 generate
-			s_pixel_streams_out(s_pixel_streams_out'low)(i) <= pixel_streams_in(i);
+			s_pixel_streams_out(s_pixel_streams_out'low)(i) <= pixel_streams_in(i / G_KERNEL_SIZE);
 			s_enable_stream_out(s_enable_stream_out'low)(i) <= valid_pixel_streams;
 		else generate
 			s_pixel_streams_out(s_pixel_streams_out'low)(i) <= activation_matrix(i - 1)(activation_matrix'low);
