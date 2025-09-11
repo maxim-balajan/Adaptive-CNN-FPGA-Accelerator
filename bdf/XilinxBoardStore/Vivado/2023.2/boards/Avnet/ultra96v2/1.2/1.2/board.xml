@@ -21,9 +21,9 @@
  
 <board 
 	schema_version="2.2" 
-	vendor="Avnet-tria" 
+	vendor="avnet.com" 
 	name="Ultra96v2" 
-	display_name="Avnet-Tria Ultra96-V2 Single Board Computer" 
+	display_name="Ultra96-V2 Single Board Computer" 
 	url="http://avnet.me/ultra96-v2" 
 	preset_file="preset.xml">
 
@@ -41,7 +41,7 @@
   <revision id="1">Rev 2</revision>
 </compatible_board_revisions>
 
-<file_version>1.3</file_version>
+<file_version>1.2</file_version>
 
 <description>Ultra96-V2 Single Board Computer</description>
 
