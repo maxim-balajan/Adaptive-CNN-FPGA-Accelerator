@@ -80,8 +80,5 @@ set_property top Memory_Retrieval_wrapper [current_fileset]
 # Update compile order
 update_compile_order -fileset sources_1
 
-# Save and close the project
-save_project_as $PROJECT_NAME
-
 puts "Project $PROJECT_NAME created successfully at $PROJECT_DIR"
 
