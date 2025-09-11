@@ -63,7 +63,7 @@ if { $list_projs eq "" } {
 
 # CHANGE DESIGN NAME HERE
 variable design_name
-set design_name Memory_Retrival
+set design_name Memory_Retrieval
 
 # This script was generated for a remote BD. To create a non-remote design,
 # change the variable <run_remote_bd_flow> to <0>.
@@ -72,7 +72,7 @@ set run_remote_bd_flow 1
 if { $run_remote_bd_flow == 1 } {
   # Set the reference directory for source file relative paths (by default 
   # the value is script directory path)
-  set origin_dir ./Documents/Uni/BA/bachelor-thesis/bd
+  set origin_dir "$PROJECT_DIR/${PROJECT_NAME}.srcs/sources_1/bd"
 
   # Use origin directory path location variable, if specified in the tcl shell
   if { [info exists ::origin_dir_loc] } {

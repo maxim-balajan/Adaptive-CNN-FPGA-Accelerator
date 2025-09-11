@@ -5,9 +5,8 @@ if {![info exists ::env(PRJ_ROOT_PATH)]} {
 }
 set PRJ_ROOT_PATH $::env(PRJ_ROOT_PATH)
 set HOME $::env(HOME)
-set PROJECT_NAME "AlexNet-Test2"
+set PROJECT_NAME "AlexNet-Accelerator"
 set PROJECT_DIR "${PRJ_ROOT_PATH}/${PROJECT_NAME}"
-#set board_repo_path "/$HOME/.Xilinx/Vivado/2023.2/xhub/board_store/xilinx_board_store/XilinxBoardStore/Vivado/*/boards"
 
 create_project $PROJECT_NAME $PROJECT_DIR -part xczu3eg-sbva484-1-i -force
 
@@ -16,8 +15,8 @@ set origin_dir "."
 set obj [current_project]
 set_property -name "board_part_repo_paths" -value "[file normalize "$PRJ_ROOT_PATH/bdf"]" -objects $obj
 set_property -name "board_part" -value "avnet.com:ultra96v2:part0:1.2" -objects $obj
-set_property target_language VHDL [current_project]
-set_property simulator_language VHDL [current_project]
+set_property target_language VHDL -objects $obj
+set_property simulator_language VHDL -objects $obj
 
 #add_files {"${PRJ_ROOT_PATH}/bd/Memory_Retrival/Memory_Retrival.bd"}
 
@@ -55,11 +54,34 @@ if {[file exists $SIM_DIR]} {
     puts "WARNING: Simulation directory $SIM_DIR does not exist."
 }
 
+# ============================================================
+# Include the Block Design TCL script
+# ============================================================
+source ./Memory_Retrieval.tcl
 
-set_property top generic_slider [current_fileset]
+# Validate and Save the block design
+validate_bd_design
+save_bd_design
 
+# ============================================================
+# Generate wrapper from the BD and set it as top
+# ============================================================
+set bd_path "$PROJECT_DIR/${PROJECT_NAME}.srcs/sources_1/bd/Memory_Retrieval/Memory_Retrieval.bd"
 
+# Generate HDL wrapper
+make_wrapper -files [get_files $bd_path] -top
+
+# Add the generated wrapper to the project
+add_files "$PROJECT_DIR/${PROJECT_NAME}.srcs/sources_1/bd/Memory_Retrieval/hdl/Memory_Retrieval_wrapper.vhd"
+
+# Set the wrapper as the top module
+set_property top Memory_Retrieval_wrapper [current_fileset]
+
+# Update compile order
 update_compile_order -fileset sources_1
+
+# Save and close the project
+save_project_as $PROJECT_NAME
 
 puts "Project $PROJECT_NAME created successfully at $PROJECT_DIR"
 
