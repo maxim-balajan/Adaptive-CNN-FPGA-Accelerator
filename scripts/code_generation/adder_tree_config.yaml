@@ -25,13 +25,13 @@ cores:
       max_input_amount: 20
       max_input_length: 24
     Nine_adder_plus_mult_rlt:
-      amount: 45
+      amount: 41
       pool_or_conv : 1
       enable_clip_adder : 1
       enable_multiplication_line : 1
       enable_shift: 0
       enable_bias: 0
-      enable_relu : 1
+      enable_relu : 0
       input_length : 8
       output_length : 24
       input_amount: 9
@@ -42,7 +42,7 @@ cores:
       max_input_amount: 20
       max_input_length: 24
     Four_adder_no_mult_rtl:
-      amount: 20
+      amount: 15
       pool_or_conv : 1
       enable_clip_adder : 1
       enable_multiplication_line : 0

@@ -34,7 +34,7 @@ end entity Four_adder_no_mult;
 architecture Four_adder_no_mult_rtl of Four_adder_no_mult is
 begin
 
-    Four_adder_no_mult_GEN : for i in 0 to 20 - 1 generate
+    Four_adder_no_mult_GEN : for i in 0 to 15 - 1 generate
         
         KERNEL_COMPUTATION_INST : entity work.kernel_computation_unit
             generic map (

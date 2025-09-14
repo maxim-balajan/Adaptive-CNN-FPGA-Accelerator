@@ -34,7 +34,7 @@ end entity Nine_adder_plus_mult;
 architecture Nine_adder_plus_mult_rlt of Nine_adder_plus_mult is
 begin
 
-    Nine_adder_plus_mult_GEN : for i in 0 to 45 - 1 generate
+    Nine_adder_plus_mult_GEN : for i in 0 to 41 - 1 generate
         
         KERNEL_COMPUTATION_INST : entity work.kernel_computation_unit
             generic map (
@@ -43,7 +43,7 @@ begin
                 enable_multiplication_line  => 1,
                 enable_shift                => 0,
                 enable_bias                 => 0,
-                enable_relu                 => 1,
+                enable_relu                 => 0,
                 input_length                => 8,
                 output_length               => 24,
                 input_amount                => 9

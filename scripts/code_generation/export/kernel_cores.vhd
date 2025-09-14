@@ -35,7 +35,7 @@ architecture rtl of kernel_cores is
 begin
 
 
-	-- Adder Core Bundle with 45 Cores
+	-- Adder Core Bundle with 41 Cores
 
 	Nine_adder_plus_mult_inst : entity work.Nine_adder_plus_mult(Nine_adder_plus_mult_rlt)
 		port map (
@@ -54,7 +54,7 @@ begin
             o_comp_complete_line              => o_comp_complete_line(0 TO 99)
 		);
 
-	-- Adder Core Bundle with 20 Cores
+	-- Adder Core Bundle with 15 Cores
 
 	Four_adder_no_mult_inst : entity work.Four_adder_no_mult(Four_adder_no_mult_rtl)
 		port map (
