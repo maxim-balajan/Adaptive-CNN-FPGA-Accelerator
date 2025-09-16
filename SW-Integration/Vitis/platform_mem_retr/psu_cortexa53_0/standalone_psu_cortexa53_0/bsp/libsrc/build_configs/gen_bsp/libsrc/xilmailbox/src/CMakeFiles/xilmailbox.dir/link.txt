@@ -1,0 +1,2 @@
+aarch64-none-elf-ar qc libxilmailbox.a CMakeFiles/xilmailbox.dir/PS/xilmailbox_ipips.c.obj CMakeFiles/xilmailbox.dir/PS/xilmailbox_ipips_control.c.obj CMakeFiles/xilmailbox.dir/PS/xilmailbox_ipips_intr.c.obj CMakeFiles/xilmailbox.dir/xilmailbox.c.obj
+/home/maxim/Xillinx/Vitis/2024.1/gnu/aarch64/lin/aarch64-none/bin/aarch64-none-elf-ranlib libxilmailbox.a

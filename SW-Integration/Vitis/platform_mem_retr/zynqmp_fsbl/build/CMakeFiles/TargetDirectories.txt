@@ -1,0 +1,3 @@
+/home/maxim/Documents/Uni/BA/bachelor-thesis/SW-Integration/Vitis/platform_mem_retr/zynqmp_fsbl/build/CMakeFiles/fsbl.elf.dir
+/home/maxim/Documents/Uni/BA/bachelor-thesis/SW-Integration/Vitis/platform_mem_retr/zynqmp_fsbl/build/CMakeFiles/edit_cache.dir
+/home/maxim/Documents/Uni/BA/bachelor-thesis/SW-Integration/Vitis/platform_mem_retr/zynqmp_fsbl/build/CMakeFiles/rebuild_cache.dir

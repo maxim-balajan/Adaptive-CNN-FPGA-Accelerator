@@ -1,0 +1,15 @@
+{
+  "name": "app_mem_ret",
+  "type": "HOST",
+  "platform": "/home/maxim/Documents/Uni/BA/bachelor-thesis/SW-Integration/Vitis/platform_mem_retr/export/platform_mem_retr/platform_mem_retr.xpfm",
+  "domain": "standalone_psu_cortexa53_0",
+  "cpuInstance": "psu_cortexa53_0",
+  "cpuType": "cortex-a53",
+  "os": "standalone",
+  "configuration": {
+    "componentType": "HOST",
+    "hostToolchainConfigurations": []
+  },
+  "domainRealName": "standalone_psu_cortexa53_0",
+  "applicationFlow": "EMBEDDED"
+}
