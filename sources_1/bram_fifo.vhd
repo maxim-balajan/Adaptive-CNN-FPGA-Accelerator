@@ -12,6 +12,7 @@ entity bram_fifo is
 	port (
 		clk      : in std_logic;
 		reset    : in std_logic;
+		--
 		set_full : in std_logic;
 		depth    : in std_logic_vector(integer(ceil(log2(real(G_MAX_DEPTH)))) - 1 downto 0);
 		--

@@ -35,7 +35,7 @@ alias prj_simulate_line_control_unit="'$PRJ_SCRIPTS/simulation/simulation_execut
 alias prj_simulate_configurable_slider="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g configurable_slider | tee '$PRJ_GENERATED_PATH/configurable_slider.log'"
 alias prj_simulate_adder_tree_gen="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g adder_tree_gen           | tee '$PRJ_GENERATED_PATH/adder_tree_gen_tb.log'"
 alias prj_simulate_memory_test="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g memory_test                 | tee '$PRJ_GENERATED_PATH/memory_test_tb.log'"
-
+alias prj_simulate_temp_layer_acc="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g temp_layer_accumulator   | tee '$PRJ_GENERATED_PATH/temp_layer_accumulator.log'"
 
 # Vivado Project Aliases
 prj_vivado_init() {
@@ -63,6 +63,8 @@ prj_simulate_help() {
     echo "# prj_simulate_line_unit..........: Run TB for a Line Unit"
     echo "# prj_simulate_line_control_unit..: Run TB for the Line Unit CL"
     echo "# prj_simulate_configurable_slider: Run TB for new configurable sliders"
+    echo "# prj_simulate_memory_test........: Run TB for the AXI memory test"
+    echo "# prj_simulate_temp_layer_acc.....: Run TB for Temporary Layer Storage"
     echo "###########################################################################"
 }
 

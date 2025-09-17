@@ -89,6 +89,13 @@ elif [ "$TB" == "memory_test" ]; then
         $PRJ_HW_SOURCES_PATH/libmatrix.vhd        \
         $PRJ_HW_SOURCES_PATH/memory_test.vhd      \
         $PRJ_HW_SIMS_PATH/memory_test_tb.vhd  
+elif [ "$TB" == "temp_layer_accumulator" ]; then
+    $PRJ_SCRIPTS/simulation/generic_simulation_run.sh ${GUI} temp_layer_accumulator \
+        $PRJ_HW_SOURCES_PATH/libmatrix.vhd              \
+        $PRJ_HW_SOURCES_PATH/bram_fifo.vhd              \
+        $PRJ_HW_SOURCES_PATH/clip_adder.vhd             \
+        $PRJ_HW_SOURCES_PATH/temp_layer_accumulator.vhd \
+        $PRJ_HW_SIMS_PATH/temp_layer_accumulator_tb.vhd  
 else
     echo "Unknown Testbench: $TB"
     echo "Usage: $0 [Top-Unit] [Source-Files...]"
