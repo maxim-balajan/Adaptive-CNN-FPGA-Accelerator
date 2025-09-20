@@ -91,9 +91,9 @@ static void disable_intr_system(INTC *IntcInstancePtr, u16 TxIntrId,
 // uncomment to enable debug
 #define ACC_INTERFACE_DBG
 
-AccInterface AccInterface::instance;
+MemInterface MemInterface::instance;
 
-AccInterface::AccInterface() {
+MemInterface::MemInterface() {
     int status_wt, status_px;
 
     config_wt = XAxiDma_LookupConfig(DMA_WT_ID);
@@ -183,8 +183,8 @@ struct MemResult MemInterface::run(u8 *tx_buffer_wt, u8 *tx_buffer_px) {
 #endif
 
     int status;
-    u8 *result_px_ptr = reinterpret_cast<u8*>(RX_PX_BUFFER_BASE);
-    *result_px_ptr = 0;
+    u8 *result_ptr_px = reinterpret_cast<u8*>(RX_PX_BUFFER_BASE);
+    *result_ptr_px = 0;
 
     tx_done_px = 0;
     rx_done_px = 0;

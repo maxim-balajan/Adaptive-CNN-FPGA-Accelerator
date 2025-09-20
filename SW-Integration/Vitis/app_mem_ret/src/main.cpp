@@ -4,7 +4,7 @@
 #include <sys/_intsup.h>
 #include <sys/types.h>
 #include <xiltimer.h>
-#include "acc_interface.h"
+#include "mem_interface.h"
 
 using namespace std;
 
