@@ -133,9 +133,9 @@ begin
 	begin
 
 		wait until rising_edge(o_kernel_complete);
-        wait until rising_edge(clk);
-        wait until rising_edge(clk);
-				
+		wait until rising_edge(clk);
+		wait until rising_edge(clk);
+
 		std.env.finish;
 
 	end process TB_PROC;

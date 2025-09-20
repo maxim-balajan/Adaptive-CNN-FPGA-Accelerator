@@ -7,16 +7,17 @@
 struct MemResult {
     bool error;
     u64 time_ns;
-    u8 result;
+    size_t result_length;
+    u8 *result;
 };
 
 class MemInterface {
    private:
     XAxiDma axi_dma_wt;
     XAxiDma axi_dma_px;             
-#ifndef SDT
+
     INTC intc;
-#endif
+
 
     XAxiDma_Config *config_wt;
     XAxiDma_Config *config_px;
@@ -25,14 +26,13 @@ class MemInterface {
 
    public:
     // Flags interrupt handlers use to notify the application context the events.
-    volatile u32 rx_done_wt;
+    volatile u32 tx_done_wt;
     volatile u32 error_wt;
-    volatile XTime end_time_wt;
 
     volatile u32 tx_done_px;
     volatile u32 rx_done_px;
     volatile u32 error_px;
-    volatile XTime end_time_px;
+    volatile XTime end_time;
 
     static MemInterface instance;
 
@@ -40,5 +40,5 @@ class MemInterface {
     MemInterface(MemInterface &other) = delete;
     void operator=(const MemInterface &) = delete;
 
-    struct MemResult run(u8 *tx_buffer, int length);
+    struct MemResult run(u8 *tx_buffer_wt, u8 *tx_buffer_px) {
 };

@@ -60,26 +60,15 @@ DEFAULT SET TO 0x01000000
 #define DMA_WT_RX_INTR_ID XPAR_FABRIC_AXI_DMA_1_INTR     // S2MM only
 
 
-#define TX_BUFFER_BASE (MEM_BASE_ADDR + 0x00100000)
+#define TX_WT_BUFFER_BASE (MEM_BASE_ADDR + 0x00100000)
+#define TX_PX_BUFFER_BASE (MEM_BASE_ADDR + 0x00200000)
 #define RX_PX_BUFFER_BASE (MEM_BASE_ADDR + 0x00300000)
-#define RX_WT_BUFFER_BASE (MEM_BASE_ADDR + 0x00400000)
 #define RX_BUFFER_HIGH (MEM_BASE_ADDR + 0x005FFFFF)
 
-#ifndef SDT
-#ifdef XPAR_INTC_0_DEVICE_ID
-#define INTC_DEVICE_ID XPAR_INTC_0_DEVICE_ID
-#else
 #define INTC_DEVICE_ID XPAR_SCUGIC_SINGLE_DEVICE_ID
-#endif
 
-#ifdef XPAR_INTC_0_DEVICE_ID
-#define INTC XIntc
-#define INTC_HANDLER XIntc_InterruptHandler
-#else
 #define INTC XScuGic
 #define INTC_HANDLER XScuGic_InterruptHandler
-#endif
-#endif
 
 // time_out loop counter for reset
 
@@ -94,13 +83,10 @@ DEFAULT SET TO 0x01000000
 static void tx_intr_handler(void *callback);
 static void rx_intr_handler(void *callback);
 
-#ifndef SDT
 static int setup_intr_system(INTC *IntcInstancePtr, XAxiDma *AxiDmaPtr,
                              u16 TxIntrId, u16 RxIntrId);
 static void disable_intr_system(INTC *IntcInstancePtr, u16 TxIntrId,
                                 u16 RxIntrId);
-
-#endif
 
 // uncomment to enable debug
 #define ACC_INTERFACE_DBG
@@ -191,62 +177,79 @@ AccInterface::AccInterface() {
 
 }
 
-struct MemResult MemInterface::run(u8 *tx_buffer, int length) {
+struct MemResult MemInterface::run(u8 *tx_buffer_wt, u8 *tx_buffer_px) {
 #ifdef ACC_INTERFACE_DBG
-    xil_printf("AccInterface run\r\n");
+    xil_printf("MemInterface run\r\n");
 #endif
 
     int status;
-    int* result_px_ptr = reinterpret_cast<int*>(RX_PX_BUFFER_BASE);
-    int* result_wt_ptr = reinterpret_cast<int*>(RX_WT_BUFFER_BASE);
+    u8 *result_px_ptr = reinterpret_cast<u8*>(RX_PX_BUFFER_BASE);
     *result_px_ptr = 0;
-    *result_wt_ptr = 0;
 
     tx_done_px = 0;
     rx_done_px = 0;
     error_px = 0;
 
-    rx_done_wt = 0;
+    tx_done_wt = 0;
     error_wt = 0;
 
     // Flush the buffers before the DMA transfer, in case the Data Cache is enabled
-    Xil_DCacheFlushRange(reinterpret_cast<UINTPTR>(tx_buffer), length);
-    Xil_DCacheFlushRange(reinterpret_cast<UINTPTR>(result_ptr_px), sizeof(int));
-    Xil_DCacheFlushRange(reinterpret_cast<UINTPTR>(result_ptr_wt), sizeof(int));
+    Xil_DCacheFlushRange(reinterpret_cast<UINTPTR>(tx_buffer_px), sizeof(u8) * 5 * 128);
+    Xil_DCacheFlushRange(reinterpret_cast<UINTPTR>(tx_buffer_wt), sizeof(u8) * 5 * 128);
+    Xil_DCacheFlushRange(reinterpret_cast<UINTPTR>(result_ptr_px), sizeof(u8) * 10 * 128);
 
 #ifdef ACC_INTERFACE_DBG
-    xil_printf("AccInterface GetTime start\r\n");
+    xil_printf("MemInterface GetTime start\r\n");
 #endif
 
     XTime start_time;
     XTime_GetTime(&start_time);
 
-    status = XAxiDma_SimpleTransfer(&axi_dma, reinterpret_cast<UINTPTR>(result_ptr), 1,
+    status = XAxiDma_SimpleTransfer(&axi_dma_px, reinterpret_cast<UINTPTR>(result_ptr_px), sizeof(u8) * 10 * 128,
                                     XAXIDMA_DEVICE_TO_DMA);
 
     if (status != XST_SUCCESS) {
 #ifdef ACC_INTERFACE_DBG
-        xil_printf("rx_buffer transfer was not successful %d\r\n", status);
+        xil_printf("rx_buffer transfer was not successful for pixels %d\r\n", status);
 #endif
-        struct AccResult res = {
+        struct MemResult res = {
             true,  // error
             0,     // time_ns
+            0,     // length
             0,     // result
         };
 
         return res;
     }
 
-    status = XAxiDma_SimpleTransfer(&axi_dma, reinterpret_cast<UINTPTR>(tx_buffer), length,
+    status = XAxiDma_SimpleTransfer(&axi_dma_px, reinterpret_cast<UINTPTR>(tx_buffer_px), sizeof(u8) * 5 * 128,
                                     XAXIDMA_DMA_TO_DEVICE);
 
     if (status != XST_SUCCESS) {
 #ifdef ACC_INTERFACE_DBG
-        xil_printf("tx_buffer transfer was not successful %d\r\n", status);
+        xil_printf("tx_buffer transfer Pixels was not successful %d\r\n", status);
 #endif
-        struct AccResult res = {
+        struct MemResult res = {
             true,  // error
             0,     // time_ns
+            0,     // length
+            0,     // result
+        };
+
+        return res;
+    }
+
+    status = XAxiDma_SimpleTransfer(&axi_dma_wt, reinterpret_cast<UINTPTR>(tx_buffer_wt), sizeof(u8) * 5 * 128,
+                                    XAXIDMA_DMA_TO_DEVICE);
+
+    if (status != XST_SUCCESS) {
+#ifdef ACC_INTERFACE_DBG
+        xil_printf("tx_buffer transfer Weights was not successful %d\r\n", status);
+#endif
+        struct MemResult res = {
+            true,  // error
+            0,     // time_ns
+            0,     // length
             0,     // result
         };
 
@@ -255,34 +258,52 @@ struct MemResult MemInterface::run(u8 *tx_buffer, int length) {
 
     status = Xil_WaitForEventSet(POLL_TIMEOUT_COUNTER, NUMBER_OF_EVENTS, &error);
     if (status == XST_SUCCESS) {
-        if (!tx_done) {
+        if (!tx_done_px || !tx_done_wt) {
 #ifdef ACC_INTERFACE_DBG
             xil_printf("Transmit error %d\r\n", status);
 #endif
-        } else if (status == XST_SUCCESS && !rx_done) {
+        } else if (status == XST_SUCCESS && !rx_done_px) {
 #ifdef ACC_INTERFACE_DBG
             xil_printf("Receive error %d\r\n", status);
 #endif
         }
 
-        struct AccResult res = {
+        struct MemResult res = {
             true,  // error
             0,     // time_ns
+            0,     // length
             0,     // result
         };
 
         return res;
     }
 
-    // Wait for TX done or time_out
-    status = Xil_WaitForEventSet(POLL_TIMEOUT_COUNTER, NUMBER_OF_EVENTS, &tx_done);
+    // Wait for TX of weights done or time_out
+    status = Xil_WaitForEventSet(POLL_TIMEOUT_COUNTER, NUMBER_OF_EVENTS, &tx_done_wt);
     if (status != XST_SUCCESS) {
 #ifdef ACC_INTERFACE_DBG
-        xil_printf("Transmit failed %d\r\n", status);
+        xil_printf("Transmit failed for Weights %d\r\n", status);
 #endif
-        struct AccResult res = {
+        struct MemResult res = {
             true,  // error
             0,     // time_ns
+            0,     // length
+            0,     // result
+        };
+
+        return res;
+    }
+
+    // Wait for TX of Pixels done or time_out
+    status = Xil_WaitForEventSet(POLL_TIMEOUT_COUNTER, NUMBER_OF_EVENTS, &tx_done_px);
+    if (status != XST_SUCCESS) {
+#ifdef ACC_INTERFACE_DBG
+        xil_printf("Transmit failed for Pixels %d\r\n", status);
+#endif
+        struct MemResult res = {
+            true,  // error
+            0,     // time_ns
+            0,     // length
             0,     // result
         };
 
@@ -290,15 +311,16 @@ struct MemResult MemInterface::run(u8 *tx_buffer, int length) {
     }
 
     // Wait for RX done or time_out
-    status = Xil_WaitForEventSet(POLL_TIMEOUT_COUNTER, NUMBER_OF_EVENTS, &rx_done);
+    status = Xil_WaitForEventSet(POLL_TIMEOUT_COUNTER, NUMBER_OF_EVENTS, &rx_done_px);
     if (status != XST_SUCCESS) {
 #ifdef ACC_INTERFACE_DBG
         xil_printf("Receive failed %d\r\n", status);
 #endif
 
-        struct AccResult res = {
+        struct MemResult res = {
             true,  // error
             0,     // time_ns
+            0,     // length
             0,     // result
         };
 
@@ -306,16 +328,17 @@ struct MemResult MemInterface::run(u8 *tx_buffer, int length) {
     }
 
 #ifdef ACC_INTERFACE_DBG
-    xil_printf("AccInterface Done\r\n");
+    xil_printf("MemInterface Done\r\n");
 #endif
 
 
     u64 time_ns = ((end_time - start_time) * 1000 * 1000 * 1000) / (COUNTS_PER_SECOND);
 
-    struct AccResult res = {
-        false,    // error
-        time_ns,  // time_ns
-        static_cast<u8>(*result_ptr)    // result
+    struct MemResult res = {
+        false,                  // error
+        time_ns,                // time_ns
+        sizeof(u8) * 10 * 128,  // length
+        result_ptr_px           // result
     };
 
     return res;
@@ -363,7 +386,13 @@ static void tx_intr_handler(void *callback) {
     // hardware to recover from the error, and return with no further
     // processing.
     if ((irq_status & XAXIDMA_IRQ_ERROR_MASK)) {
-        AccInterface::instance.error = 1;
+        if (axi_dm_inst == &axi_dma_wt) {
+            MemInterface::instance.error_wt = 1;
+        } 
+        else {
+            MemInterface::instance.error_px = 1;
+        }
+        
 
         // Reset should never fail for transmit channel
         XAxiDma_Reset(axi_dma_inst);
@@ -383,7 +412,13 @@ static void tx_intr_handler(void *callback) {
 
     // If Completion interrupt is asserted, then set the TxDone flag
     if ((irq_status & XAXIDMA_IRQ_IOC_MASK)) {
-        AccInterface::instance.tx_done = 1;
+        if (axi_dm_inst == &axi_dma_wt) {
+            MemInterface::instance.tx_done_wt = 1;
+        } 
+        else {
+            MemInterface::instance.tx_done_px = 1;
+        }
+        
     }
 }
 
@@ -423,7 +458,7 @@ static void rx_intr_handler(void *callback) {
     // hardware to recover from the error, and return with no further
     // processing.
     if ((irq_status & XAXIDMA_IRQ_ERROR_MASK)) {
-        AccInterface::instance.error = 1;
+        MemInterface::instance.error_px = 1;
 
         // Reset could fail and hang NEED a way to handle this or do not call it??
         XAxiDma_Reset(axi_dma_inst);
@@ -444,18 +479,18 @@ static void rx_intr_handler(void *callback) {
     // If completion interrupt is asserted, then set RxDone flag
     if ((irq_status & XAXIDMA_IRQ_IOC_MASK)) {
 #ifdef ACC_INTERFACE_DBG
-        xil_printf("AccInterface GetTime end\r\n");
+        xil_printf("MemInterface GetTime end\r\n");
 #endif
 
         // Get time in two steps because of volatile qualifier of end_time
         XTime tmp;
         XTime_GetTime(&tmp);
-        AccInterface::instance.end_time = tmp;
+        MemInterface::instance.end_time = tmp;
 
-        AccInterface::instance.rx_done = 1;
+        MemInterface::instance.rx_done_px = 1;
     }
 }
-#ifndef SDT
+
 /*****************************************************************************/
 /*
  *
@@ -474,90 +509,32 @@ static void rx_intr_handler(void *callback) {
  * @note		None.
  *
  ******************************************************************************/
-static int setup_intr_system(INTC *IntcInstancePtr, XAxiDma *AxiDmaPtr,
-                             u16 TxIntrId, u16 RxIntrId) {
+static int setup_intr_system(INTC *IntcInstancePtr, XAxiDma *AxiDmaPtr, u16 TxIntrId, u16 RxIntrId) {
     int status;
 
-#ifdef XPAR_INTC_0_DEVICE_ID
+    XScuGic_Config *IntcConfig = XScuGic_LookupConfig(INTC_DEVICE_ID);
+    if (!IntcConfig) return XST_FAILURE;
 
-    // Initialize the interrupt controller and connect the ISRs
-    status = XIntc_Initialize(IntcInstancePtr, INTC_DEVICE_ID);
-    if (status != XST_SUCCESS) {
-        xil_printf("Failed init intc\r\n");
-        return XST_FAILURE;
-    }
+    status = XScuGic_CfgInitialize(IntcInstancePtr, IntcConfig, IntcConfig->CpuBaseAddress);
+    if (status != XST_SUCCESS) return XST_FAILURE;
 
-    status = XIntc_Connect(IntcInstancePtr, TxIntrId,
-                           (XInterruptHandler)tx_intr_handler, AxiDmaPtr);
-    if (status != XST_SUCCESS) {
-        xil_printf("Failed tx connect intc\r\n");
-        return XST_FAILURE;
-    }
-
-    status = XIntc_Connect(IntcInstancePtr, RxIntrId,
-                           (XInterruptHandler)rx_intr_handler, AxiDmaPtr);
-    if (status != XST_SUCCESS) {
-        xil_printf("Failed rx connect intc\r\n");
-        return XST_FAILURE;
-    }
-
-    // Start the interrupt controller
-    status = XIntc_Start(IntcInstancePtr, XIN_REAL_MODE);
-    if (status != XST_SUCCESS) {
-        xil_printf("Failed to start intc\r\n");
-        return XST_FAILURE;
-    }
-
-    XIntc_Enable(IntcInstancePtr, TxIntrId);
-    XIntc_Enable(IntcInstancePtr, RxIntrId);
-
-#else
-
-    XScuGic_Config *IntcConfig;
-
-    // Initialize the interrupt controller driver so that it is ready to use.
-    IntcConfig = XScuGic_LookupConfig(INTC_DEVICE_ID);
-    if (NULL == IntcConfig) {
-        return XST_FAILURE;
-    }
-
-    status = XScuGic_CfgInitialize(IntcInstancePtr, IntcConfig,
-                                   IntcConfig->CpuBaseAddress);
-    if (status != XST_SUCCESS) {
-        return XST_FAILURE;
-    }
-
-    XScuGic_SetPriorityTriggerType(IntcInstancePtr, TxIntrId, 0xA0, 0x3);
-
-    XScuGic_SetPriorityTriggerType(IntcInstancePtr, RxIntrId, 0xA0, 0x3);
-
-    // Connect the device driver handler that will be called when an
-    // interrupt for the device occurs, the handler defined above performs
-    // the specific interrupt processing for the device.
-    status = XScuGic_Connect(IntcInstancePtr, TxIntrId,
-                             (Xil_InterruptHandler)tx_intr_handler, AxiDmaPtr);
-    if (status != XST_SUCCESS) {
-        return status;
+    if (TxIntrId != 0xFFFF) {
+        status = XScuGic_Connect(IntcInstancePtr, TxIntrId,
+                                 (Xil_InterruptHandler)tx_intr_handler, AxiDmaPtr);
+        if (status != XST_SUCCESS) return status;
+        XScuGic_Enable(IntcInstancePtr, TxIntrId);
     }
 
     status = XScuGic_Connect(IntcInstancePtr, RxIntrId,
                              (Xil_InterruptHandler)rx_intr_handler, AxiDmaPtr);
-    if (status != XST_SUCCESS) {
-        return status;
-    }
-
-    XScuGic_Enable(IntcInstancePtr, TxIntrId);
+    if (status != XST_SUCCESS) return status;
     XScuGic_Enable(IntcInstancePtr, RxIntrId);
 
-#endif
-
-    // Enable interrupts from the hardware
-
+    // Initialize exceptions and register top-level handler
     Xil_ExceptionInit();
     Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT,
                                  (Xil_ExceptionHandler)INTC_HANDLER,
                                  (void *)IntcInstancePtr);
-
     Xil_ExceptionEnable();
 
     return XST_SUCCESS;
@@ -577,15 +554,7 @@ static int setup_intr_system(INTC *IntcInstancePtr, XAxiDma *AxiDmaPtr,
  * @note		None.
  *
  ******************************************************************************/
-static void disable_intr_system(INTC *IntcInstancePtr, u16 TxIntrId,
-                                u16 RxIntrId) {
-#ifdef XPAR_INTC_0_DEVICE_ID
-    // Disconnect the interrupts for the DMA TX and RX channels
-    XIntc_Disconnect(IntcInstancePtr, TxIntrId);
-    XIntc_Disconnect(IntcInstancePtr, RxIntrId);
-#else
-    XScuGic_Disconnect(IntcInstancePtr, TxIntrId);
+static void disable_intr_system(INTC *IntcInstancePtr, u16 TxIntrId, u16 RxIntrId) {
+    if (TxIntrId != 0xFFFF) XScuGic_Disconnect(IntcInstancePtr, TxIntrId);
     XScuGic_Disconnect(IntcInstancePtr, RxIntrId);
-#endif
 }
-#endif
