@@ -15,3 +15,6 @@ wait_on_run impl_1
 # Export the bitstream file
 set BIT_FILE "${PROJECT_DIR}/${PROJECT_NAME}.runs/impl_1/${PROJECT_NAME}.bit"
 puts "Bitstream generated at: $BIT_FILE"
+
+write_hw_platform -include_bit -fixed -force "${PROJECT_DIR}/Memory_Retrieval_wrapper_with_big_ILA.xsa"
+puts "Hardware platform was created at ${PROJECT_DIR}/Memory_Retrieval_wrapper_with_big_ILA.xsa"

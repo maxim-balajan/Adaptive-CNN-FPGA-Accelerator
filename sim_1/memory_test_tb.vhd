@@ -13,7 +13,7 @@ architecture bench of memory_test_tb is
 	constant clk_period : time := 5 ns;
 	-- Generics
 	constant vector_length  : natural := 8;
-	constant channel_amount : natural := 32;
+	constant channel_amount : natural := 16;
 	constant iterations     : natural := 5;
 	-- Ports
 	signal clk               : std_logic := '0';
@@ -36,12 +36,12 @@ architecture bench of memory_test_tb is
 	signal o_px_m_axis_tdata  : std_logic_vector(vector_length * channel_amount - 1 downto 0);
 	signal o_px_m_axis_tkeep  : std_logic_vector(channel_amount - 1 downto 0);
 	signal o_px_m_axis_tlast  : std_logic;
-	signal i_px_m_axis_tready : std_logic;
+	signal i_px_m_axis_tready : std_logic := '0';
 	signal o_px_m_axis_tvalid : std_logic;
 
 begin
 
-	memory_test_inst : entity work.memory_test
+	memory_test_inst : entity work.memory_test_wrapper
 		generic map (
 			vector_length  => vector_length,
 			channel_amount => channel_amount,
@@ -51,27 +51,27 @@ begin
 			clk   => clk,
 			reset => reset,
 			--
-			i_wt_s_axis_tdata  => i_wt_s_axis_tdata,
-			i_wt_s_axis_tkeep  => i_wt_s_axis_tkeep,
-			i_wt_s_axis_tlast  => i_wt_s_axis_tlast,
-			o_wt_s_axis_tready => o_wt_s_axis_tready,
-			i_wt_s_axis_tvalid => i_wt_s_axis_tvalid,
-			--
-			i_px_s_axis_tdata  => i_px_s_axis_tdata,
-			i_px_s_axis_tkeep  => i_px_s_axis_tkeep,
-			i_px_s_axis_tlast  => i_px_s_axis_tlast,
-			o_px_s_axis_tready => o_px_s_axis_tready,
-			i_px_s_axis_tvalid => i_px_s_axis_tvalid,
-			--
-			o_px_m_axis_tdata  => o_px_m_axis_tdata,
-			o_px_m_axis_tkeep  => o_px_m_axis_tkeep,
-			o_px_m_axis_tlast  => o_px_m_axis_tlast,
-			i_px_m_axis_tready => i_px_m_axis_tready,
-			o_px_m_axis_tvalid => o_px_m_axis_tvalid
+			wt_s_axis_tdata   => i_wt_s_axis_tdata,
+			wt_s_axis_tkeep   => i_wt_s_axis_tkeep,
+			wt_s_axis_tlast   => i_wt_s_axis_tlast,
+			wt_s_axis_tready  => o_wt_s_axis_tready,
+			wt_s_axis_tvalid  => i_wt_s_axis_tvalid,
+			-- 
+			px_s_axis_tdata   => i_px_s_axis_tdata,
+			px_s_axis_tkeep   => i_px_s_axis_tkeep,
+			px_s_axis_tlast   => i_px_s_axis_tlast,
+			px_s_axis_tready  => o_px_s_axis_tready,
+			px_s_axis_tvalid  => i_px_s_axis_tvalid,
+			-- 
+			px_m_axis_tdata   => o_px_m_axis_tdata,
+			px_m_axis_tkeep   => o_px_m_axis_tkeep,
+			px_m_axis_tlast   => o_px_m_axis_tlast,
+			px_m_axis_tready  => i_px_m_axis_tready,
+			px_m_axis_tvalid  => o_px_m_axis_tvalid
 		);
 
 	clk                <= not clk after clk_period / 2;
-	i_px_m_axis_tready <= '1';
+	i_px_m_axis_tready <= not i_px_m_axis_tready after clk_period;
 
 	SET_WEIGHTS : process (clk) is
 	begin
@@ -137,7 +137,7 @@ begin
 				i_px_s_axis_tvalid <= '0';
 			else
 				
-				if o_wt_s_axis_tready = '1' then
+				if o_px_s_axis_tready = '1' then
 
 					for i in 0 to channel_amount - 1 loop
 

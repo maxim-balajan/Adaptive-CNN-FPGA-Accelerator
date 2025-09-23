@@ -57,7 +57,7 @@ if {[file exists $SIM_DIR]} {
 # ============================================================
 # Include the Block Design TCL script
 # ============================================================
-source ./Memory_Retrieval_with_ILA.tcl
+source ./Memory_Retrieval_with_big_ILA.tcl
 
 # Validate and Save the block design
 validate_bd_design
@@ -82,3 +82,4 @@ update_compile_order -fileset sources_1
 
 puts "Project $PROJECT_NAME created successfully at $PROJECT_DIR"
 
+source ./synth.tcl
