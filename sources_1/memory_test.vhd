@@ -7,8 +7,8 @@ use work.libmatrix.all;
 entity memory_test is
 	generic (
 		vector_length  : natural := 8;
-		channel_amount : natural := 32;
-		iterations     : natural := 5
+		channel_amount : natural := 16;
+		iterations     : natural := 40
 	);
 	port (
 		clk   : in std_logic;
@@ -37,7 +37,9 @@ end entity memory_test;
 architecture rtl of memory_test is
 
 	signal s_sa_wt_tdata : matrix_1d(0 to channel_amount - 1)(vector_length - 1 downto 0);
+	signal s_wt_rx_iterations : integer range 0 to iterations;
 	signal s_sa_px_tdata : matrix_1d(0 to channel_amount - 1)(vector_length - 1 downto 0);
+	signal s_px_rx_iterations : integer range 0 to iterations;
 
 	signal   s_weight_mem  : matrix_1d(0 to channel_amount * iterations - 1)(vector_length - 1 downto 0);
 	constant C_EMPTY_BURST : matrix_1d(0 to channel_amount - 1)(vector_length - 1 downto 0) := (others => (others => '0'));
@@ -78,31 +80,51 @@ begin
 				o_px_m_axis_tlast  <= '0';
 				o_px_m_axis_tvalid <= '0';
 				--
+				s_px_rx_iterations <= 0;
+				s_wt_rx_iterations <= 0;
+				--
 				s_weight_cnt <= 0;
 				s_pixel_cnt  <= 0;
 			else
-				-- weight update
+				----------------------------------------
+				-- Weight Retrieval
+				----------------------------------------
 				o_wt_s_axis_tready <= '1';
-				if i_wt_s_axis_tlast = '1' then
+
+				-- if last burst has been reached, then quit weight retrieval
+				if s_wt_rx_iterations >= iterations - 1 and i_wt_s_axis_tlast = '1' then
 					s_done_weight      <= '1';
 					o_wt_s_axis_tready <= '0';
 				end if;
 
+				-- save data if not all iterations have concluded and increment iteration variable
 				if i_wt_s_axis_tvalid = '1' and s_done_weight = '0' then
 					s_weight_mem <= s_weight_mem(channel_amount to s_weight_mem'high) & s_sa_wt_tdata;
+					s_wt_rx_iterations <= s_wt_rx_iterations + 1;
 				end if;
-				-- pixel update
+
+
+				----------------------------------------
+				-- Pixel Retrieval
+				----------------------------------------
+
+				-- if last burst has been reached, then quit pixel retrieval
 				o_px_s_axis_tready <= '1';
-				if i_px_s_axis_tlast = '1' then
+				if s_px_rx_iterations >= iterations - 1 and i_px_s_axis_tlast = '1' then
 					s_done_activations <= '1';
 					o_px_s_axis_tready <= '0';
 				end if;
 
+				-- save data if not all iterations have concluded and increment iteration variable
 				if i_px_s_axis_tvalid = '1' and s_done_activations = '0' then
 					s_pixel_mem <= s_pixel_mem(channel_amount to s_pixel_mem'high) & s_sa_px_tdata;
 				end if;
 
-				-- output update
+				----------------------------------------
+				-- TX write process
+				-- TODO: check this shit
+				----------------------------------------
+
 				if s_done_activations = '1' and s_done_weight = '1' then
 					o_px_m_axis_tvalid <= '1';
 				end if;
@@ -122,7 +144,7 @@ begin
 						else
 							o_px_m_axis_tlast <= '0';
 						end if;
-						s_pixel_mem      <= s_pixel_mem(channel_amount to s_pixel_mem'high) & C_EMPTY_BURST;
+						s_pixel_mem       <= s_pixel_mem(channel_amount to s_pixel_mem'high) & C_EMPTY_BURST;
 						o_px_m_axis_tdata <= f_flatten_matrix1d(s_pixel_mem(0 to channel_amount - 1));
 					else
 						o_px_m_axis_tvalid <= '0';
