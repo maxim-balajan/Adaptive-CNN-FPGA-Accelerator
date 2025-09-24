@@ -6,12 +6,21 @@ use ieee.math_real.all;
 entity memory_test_wrapper is
 	generic (
 		vector_length  : natural := 8;
-		channel_amount : natural := 32;
-		iterations     : natural := 5
+		channel_amount : natural := 16;
+		iterations     : natural := 40
 	);
 	port (
 		clk   : in std_logic;
 		reset : in std_logic;
+		-- Control Logic Outputs
+		o_wt_rx_iterations : out std_logic_vector(15 downto 0);
+		o_wt_tx_iterations : out std_logic_vector(15 downto 0);
+		--
+		o_px_rx_iterations : out std_logic_vector(15 downto 0);
+		o_px_tx_iterations : out std_logic_vector(15 downto 0);
+		--
+		o_done_weight      : out std_logic;
+		o_done_activations : out std_logic;
 		-- Weight Inputs
 		wt_s_axis_tdata  : in std_logic_vector(vector_length * channel_amount - 1 downto 0);
 		wt_s_axis_tkeep  : in std_logic_vector(channel_amount - 1 downto 0);
@@ -44,8 +53,18 @@ begin
 			iterations     => iterations
 		)
 		port map (
-			clk                => clk,
-			reset              => reset,
+			clk   => clk,
+			reset => reset,
+			-- Control Logic Outputs
+			o_wt_rx_iterations => o_wt_rx_iterations,
+			o_wt_tx_iterations => o_wt_tx_iterations,
+			--
+			o_px_rx_iterations => o_px_rx_iterations,
+			o_px_tx_iterations => o_px_tx_iterations,
+			--
+			o_done_weight      => o_done_weight,
+			o_done_activations => o_done_activations,
+			--
 			i_wt_s_axis_tdata  => wt_s_axis_tdata,
 			i_wt_s_axis_tkeep  => wt_s_axis_tkeep,
 			i_wt_s_axis_tlast  => wt_s_axis_tlast,

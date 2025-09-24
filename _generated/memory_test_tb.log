@@ -1,0 +1,64 @@
+
+####################################################################
+#
+# Elaboration and Simulation of memory_test_tb
+#
+####################################################################
+
+####################################################################
+# Removed older tmp projects at: /tmp/vivado_sim.memory_test.*
+# Using temporary path.........: /tmp/vivado_sim.memory_test.k9S6mO
+# Using config (if exists).....: /home/maxim/Documents/Uni/BA/bachelor-thesis/wave_config/memory_test_tb.wcfg
+####################################################################
+
+#####################################################
+# Starting Compilation...:                          #
+#####################################################
+
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/libmatrix.vhd" into library work
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/memory_test.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'memory_test'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/memory_test_wrapper.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'memory_test_wrapper'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sim_1/memory_test_tb.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'memory_test_tb'
+
+#####################################################
+# Starting Elaboration...:                          #
+#####################################################
+
+Vivado Simulator v2023.2
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+Running: /tools/Xilinx/Vivado/2023.2/bin/unwrapped/lnx64.o/xelab memory_test_tb -s memory_test_tb_sim --debug typical 
+Multi-threading is on. Using 10 slave threads.
+Starting static elaboration
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling package std.standard
+Compiling package std.textio
+Compiling package ieee.std_logic_1164
+Compiling package ieee.numeric_std
+Compiling package ieee.math_real
+Compiling package work.libmatrix
+Compiling package std.env
+Compiling architecture rtl of entity work.memory_test [\memory_test(iterations=5)\]
+Compiling architecture rtl of entity work.memory_test_wrapper [\memory_test_wrapper(iterations=...]
+Compiling architecture bench of entity work.memory_test_tb
+Built simulation snapshot memory_test_tb_sim
+
+#####################################################
+# Starting Simulation...:                           #
+#####################################################
+
+****** xsim v2023.2 (64-bit)
+  **** SW Build 4029153 on Fri Oct 13 20:13:54 MDT 2023
+  **** IP Build 4028589 on Sat Oct 14 00:45:43 MDT 2023
+  **** SharedData Build 4025554 on Tue Oct 10 17:18:54 MDT 2023
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+
+start_gui
+INFO: [Common 17-206] Exiting xsim at Wed Sep 24 15:05:34 2025...

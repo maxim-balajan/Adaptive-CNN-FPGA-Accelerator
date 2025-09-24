@@ -13,6 +13,15 @@ entity memory_test is
 	port (
 		clk   : in std_logic;
 		reset : in std_logic;
+		-- Control Logic Outputs
+		o_wt_rx_iterations : out std_logic_vector(15 downto 0);
+		o_wt_tx_iterations : out std_logic_vector(15 downto 0);
+		--
+		o_px_rx_iterations : out std_logic_vector(15 downto 0);
+		o_px_tx_iterations : out std_logic_vector(15 downto 0);
+		--
+		o_done_weight      : out std_logic;
+		o_done_activations : out std_logic;
 		-- Weight Inputs
 		i_wt_s_axis_tdata  : in std_logic_vector(vector_length * channel_amount - 1 downto 0);
 		i_wt_s_axis_tkeep  : in std_logic_vector(channel_amount - 1 downto 0);
@@ -166,5 +175,12 @@ begin
 	----------------------------------------
 	o_wt_s_axis_tready <= s_wt_s_axis_tready;
 	o_px_s_axis_tready <= s_px_s_axis_tready;
+	-- Control Logic
+	o_wt_rx_iterations <= std_logic_vector(to_unsigned(s_wt_rx_iterations, o_wt_rx_iterations'length));
+	o_wt_tx_iterations <= std_logic_vector(to_unsigned(s_wt_tx_iterations, o_wt_tx_iterations'length));
+	o_px_rx_iterations <= std_logic_vector(to_unsigned(s_px_rx_iterations, o_px_rx_iterations'length));
+	o_px_tx_iterations <= std_logic_vector(to_unsigned(s_px_tx_iterations, o_px_tx_iterations'length));
+	o_done_weight      <= s_done_weight;
+	o_done_activations <= o_done_activations;
 
 end architecture rtl;
