@@ -42,8 +42,8 @@ entity memory_test is
 		o_px_m_axis_tvalid : out std_logic
 	);
 	-- Macro to mark this entity to be not optimized
-	attribute dont_touch : string;
-	attribute dont_touch of memory_test : entity is "true";
+	--attribute dont_touch : string;
+	--attribute dont_touch of memory_test : entity is "true";
 
 end entity memory_test;
 
@@ -52,13 +52,13 @@ architecture rtl of memory_test is
 	signal s_sa_wt_tdata      : matrix_1d(0 to channel_amount - 1)(vector_length - 1 downto 0);
 	signal s_wt_s_axis_tready : std_logic;
 
-	attribute dont_touch of s_wt_s_axis_tready : signal is "true";
+	--attribute dont_touch of s_wt_s_axis_tready : signal is "true";
 
 	signal s_wt_rx_iterations : integer;
 	signal s_sa_px_tdata      : matrix_1d(0 to channel_amount - 1)(vector_length - 1 downto 0);
 	signal s_px_s_axis_tready : std_logic;
 
-	attribute dont_touch of s_px_s_axis_tready : signal is "true";
+	--attribute dont_touch of s_px_s_axis_tready : signal is "true";
 
 	signal s_px_rx_iterations : integer;
 
@@ -115,7 +115,7 @@ begin
 				-- if last burst has been reached, then quit weight retrieval
 				if s_wt_rx_iterations >= iterations - 1 and (i_wt_s_axis_tlast = '1' or s_wt_s_axis_tready = '0') then
 					s_done_weight      <= '1';
-					--s_wt_s_axis_tready <= '0';
+					s_wt_s_axis_tready <= '0';
 				end if;
 
 				-- save data if not all iterations have concluded and increment iteration variable
@@ -132,7 +132,7 @@ begin
 				s_px_s_axis_tready <= '1';
 				if s_px_rx_iterations >= iterations - 1 and (i_px_s_axis_tlast = '1' or s_px_s_axis_tready = '0') then
 					s_done_activations <= '1';
-					--s_px_s_axis_tready <= '0';
+					s_px_s_axis_tready <= '0';
 				end if;
 
 				-- save data if not all iterations have concluded and increment iteration variable

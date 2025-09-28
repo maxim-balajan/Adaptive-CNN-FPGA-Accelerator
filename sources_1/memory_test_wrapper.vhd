@@ -45,8 +45,8 @@ end entity memory_test_wrapper;
 architecture rtl of memory_test_wrapper is
 
 	-- Macro to mark this instance to be not optimized
-	attribute dont_touch : string;
-	attribute dont_touch of memory_test_inst : label is "true";
+	--attribute dont_touch : string;
+	--attribute dont_touch of memory_test_inst : label is "true";
 
 begin
 
