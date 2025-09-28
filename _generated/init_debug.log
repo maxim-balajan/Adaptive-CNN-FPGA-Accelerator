@@ -51,6 +51,8 @@
 # prj_simulate_line_unit..........: Run TB for a Line Unit
 # prj_simulate_line_control_unit..: Run TB for the Line Unit CL
 # prj_simulate_configurable_slider: Run TB for new configurable sliders
+# prj_simulate_memory_test........: Run TB for the AXI memory test
+# prj_simulate_temp_layer_acc.....: Run TB for Temporary Layer Storage
 ###########################################################################
 # Vivado Tools...:
 ###########################################################################

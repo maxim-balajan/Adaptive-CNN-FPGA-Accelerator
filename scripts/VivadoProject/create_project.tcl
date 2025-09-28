@@ -57,7 +57,7 @@ if {[file exists $SIM_DIR]} {
 # ============================================================
 # Include the Block Design TCL script
 # ============================================================
-source ./Memory_Retrieval_with_bigger_ILA.tcl
+source ./Memory_Retrieval_AXI_plus_AXIS_ILA.tcl
 
 # Validate and Save the block design
 validate_bd_design
