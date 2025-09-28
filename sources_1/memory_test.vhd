@@ -41,22 +41,26 @@ entity memory_test is
 		i_px_m_axis_tready : in std_logic;
 		o_px_m_axis_tvalid : out std_logic
 	);
+	-- Macro to mark this entity to be not optimized
+	attribute dont_touch : string;
+	attribute dont_touch of memory_test : entity is "true";
+
 end entity memory_test;
 
 architecture rtl of memory_test is
 
 	signal s_sa_wt_tdata      : matrix_1d(0 to channel_amount - 1)(vector_length - 1 downto 0);
 	signal s_wt_s_axis_tready : std_logic;
-	signal s_wt_rx_iterations : integer range 0 to iterations;
+	signal s_wt_rx_iterations : integer;
 	signal s_sa_px_tdata      : matrix_1d(0 to channel_amount - 1)(vector_length - 1 downto 0);
 	signal s_px_s_axis_tready : std_logic;
-	signal s_px_rx_iterations : integer range 0 to iterations;
+	signal s_px_rx_iterations : integer;
 
 	signal   s_weight_mem       : matrix_1d(0 to channel_amount * iterations - 1)(vector_length - 1 downto 0);
 	constant C_EMPTY_BURST      : matrix_1d(0 to channel_amount - 1)(vector_length - 1 downto 0) := (others => (others => '0'));
-	signal   s_wt_tx_iterations : integer range 0 to iterations;
+	signal   s_wt_tx_iterations : integer;
 	signal   s_pixel_mem        : matrix_1d(0 to channel_amount * iterations - 1)(vector_length - 1 downto 0);
-	signal   s_px_tx_iterations : integer range 0 to iterations;
+	signal   s_px_tx_iterations : integer;
 
 	signal s_done_weight      : std_logic;
 	signal s_done_activations : std_logic;
@@ -105,7 +109,7 @@ begin
 				-- if last burst has been reached, then quit weight retrieval
 				if s_wt_rx_iterations >= iterations - 1 and (i_wt_s_axis_tlast = '1' or s_wt_s_axis_tready = '0') then
 					s_done_weight      <= '1';
-					s_wt_s_axis_tready <= '0';
+					--s_wt_s_axis_tready <= '0';
 				end if;
 
 				-- save data if not all iterations have concluded and increment iteration variable
@@ -122,7 +126,7 @@ begin
 				s_px_s_axis_tready <= '1';
 				if s_px_rx_iterations >= iterations - 1 and (i_px_s_axis_tlast = '1' or s_px_s_axis_tready = '0') then
 					s_done_activations <= '1';
-					s_px_s_axis_tready <= '0';
+					--s_px_s_axis_tready <= '0';
 				end if;
 
 				-- save data if not all iterations have concluded and increment iteration variable
