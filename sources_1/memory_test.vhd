@@ -51,9 +51,15 @@ architecture rtl of memory_test is
 
 	signal s_sa_wt_tdata      : matrix_1d(0 to channel_amount - 1)(vector_length - 1 downto 0);
 	signal s_wt_s_axis_tready : std_logic;
+
+	attribute dont_touch of s_wt_s_axis_tready : signal is "true";
+
 	signal s_wt_rx_iterations : integer;
 	signal s_sa_px_tdata      : matrix_1d(0 to channel_amount - 1)(vector_length - 1 downto 0);
 	signal s_px_s_axis_tready : std_logic;
+
+	attribute dont_touch of s_px_s_axis_tready : signal is "true";
+
 	signal s_px_rx_iterations : integer;
 
 	signal   s_weight_mem       : matrix_1d(0 to channel_amount * iterations - 1)(vector_length - 1 downto 0);
