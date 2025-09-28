@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<sdx:platform xmlns:sdx="http://www.xilinx.com/sdx" sdx:library="sdx" sdx:name="plat_fixed_reset" sdx:vendor="xilinx.com" sdx:version="1.0">
+    <sdx:description/>
+    <sdx:hardwarePlatforms>
+        <sdx:hardwarePlatform sdx:name="Memory_Retrieval_wrapper_fixed_reset.xsa" sdx:path="hw"/>
+    </sdx:hardwarePlatforms>
+    <sdx:softwarePlatforms>
+        <sdx:softwarePlatform sdx:name="plat_fixed_reset.spfm" sdx:path="sw"/>
+    </sdx:softwarePlatforms>
+</sdx:platform>

@@ -18,6 +18,3 @@
 .peers.ini
 .repo.yaml
 .vitisWorkspace.json
-
-# For now ignore everything
-*
