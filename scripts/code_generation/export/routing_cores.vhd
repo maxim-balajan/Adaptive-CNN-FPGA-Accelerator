@@ -17,7 +17,7 @@ entity routing_cores is
     port (
         clk   : IN std_logic;
         reset : IN std_logic;
-        -- KERNEL_CORES_INPUT PORTS
+        -- KERNEL CORES INPUT PORTS
         o_activation_matrix_line  : OUT matrix_1d(0 to 6000 - 1)(24 - 1 downto 0);
         o_weight_matrix_line      : OUT matrix_1d(0 to 6000 - 1)(24 - 1 downto 0);
         o_shamt_line              : OUT matrix_1d(0 to 300 - 1)(24 - 1 downto 0);

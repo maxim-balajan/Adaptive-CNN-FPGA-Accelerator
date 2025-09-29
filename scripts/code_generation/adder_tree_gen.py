@@ -2,6 +2,7 @@ import os
 from kernel_cores import KernelCores
 from adder_tree_config import AdderTreeConfig
 from core_tree import CoreTree
+from routed_kernel_cores import RoutedKernelCores
 
 
 import argparse
@@ -36,7 +37,7 @@ def main():
 
     kernel_cores.module_to_file()
 
-    print("Kernel_cores successfully generated!")
+    print(" # kernel_cores.vhd successfully generated!")
 
     core_tree = CoreTree(adder_config, adder_config.route_configs, args.templates, args.destination, 0)
 
@@ -44,7 +45,13 @@ def main():
 
     core_tree.module_to_file()
 
-    print("routing_cores successfully generated!")
+    print(" # routing_cores.vhd successfully generated!")
+
+    routed_cores = RoutedKernelCores(kernel_cores, core_tree)
+
+    routed_cores.module_to_file()
+
+    print(" # routed_kernel_cores.vhd successfully_generated!")
 
     return 0
 
