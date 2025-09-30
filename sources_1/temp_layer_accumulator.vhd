@@ -14,7 +14,7 @@ entity temp_layer_accumulator is
 	port (
 		clk   : in std_logic;
 		reset : in std_logic;
-		-- Global enable
+		-- Global enable: If set to 0, stall entire unit and set outputs to low
 		i_en : in std_logic;
 		-- OUTPUT of ROUTING CORES
 		i_kernel_complete : in std_logic;
@@ -34,7 +34,6 @@ end entity temp_layer_accumulator;
 
 architecture rtl of temp_layer_accumulator is
 
-	signal s_en : std_logic;
 	signal s_valid_pixel_line     : std_logic_vector(0 to 1);
 	signal s_kernel_complete_line : std_logic_vector(0 to 1);
 
@@ -56,24 +55,24 @@ begin
 	begin
 
 		if rising_edge(clk) then
-			s_en <= i_en;
 			if reset = '1' then
-				s_en <= '0';
 				s_valid_pixel_line     <= (others => '0');
 				s_kernel_complete_line <= (others => '0');
 				--
 				s_pixel_lines <= (others => (others => (others => '0')));
 				--
 				s_current_oc    <= (others => '0');
-				s_current_pixel <= (others => '0');
+				s_current_pixel <= (others => '1');
 				s_enable_relu   <= i_enable_relu;
 				s_shamt         <= i_shamt;
 			elsif i_en = '1' then
+				report "Reached";
 				if i_kernel_valid = '1' and i_kernel_complete = '0' then
+					report "Also Reached";
 					s_current_pixel <= s_current_pixel + 1;
 					if s_current_pixel = unsigned(i_pixel_amount) - 1 then
-						s_current_pixel <= (others => '0') ;
-						s_current_oc <= s_current_oc + 1;
+						s_current_pixel <= (others => '0');
+						s_current_oc    <= s_current_oc + 1;
 					end if;
 				end if;
 				-- set first constant delays
@@ -116,7 +115,7 @@ begin
 			depth    => i_pixel_amount,
 			--
 			din   => s_added_temp_layer_pixel,
-			wr_en => (s_valid_pixel_line(0) and not s_kernel_complete_line(0)) and s_en,
+			wr_en => (s_valid_pixel_line(0) and not s_kernel_complete_line(0)) and i_en,
 			rd_en => (i_kernel_valid and not i_kernel_complete) and i_en,
 			--
 			dout  => s_temp_layer_pixel,
@@ -138,11 +137,12 @@ begin
 	-- Set Outputs
 	-------------------------------------------
 
-	o_kernel_valid    <= s_valid_pixel_line(s_valid_pixel_line'high);
-	o_kernel_complete <= s_kernel_complete_line(s_kernel_complete_line'high);
+	o_kernel_valid    <= s_valid_pixel_line(s_valid_pixel_line'high) 	     when i_en = '1' else '0';
+	o_kernel_complete <= s_kernel_complete_line(s_kernel_complete_line'high) when i_en = '1' else '0';
 
 	PIXEL_LINE_GEN : for i in 0 to g_oc_amount - 1 generate
-		o_pixel_line(i) <= s_pixel_lines(s_pixel_lines'high)(i)(g_clipped_vector_length - 1 downto 0);
+		o_pixel_line(i) <= s_pixel_lines(s_pixel_lines'high)(i)(g_clipped_vector_length - 1 downto 0)
+							when i_en = '1' else (others => '0');
 	end generate PIXEL_LINE_GEN;
 
 end architecture rtl;
