@@ -14,18 +14,17 @@ entity temp_layer_accumulator is
 	port (
 		clk   : in std_logic;
 		reset : in std_logic;
-		-- Reset unit except of the BRAM FIFO
-		partial_reset : in std_logic;
+		-- Global enable
+		i_en : in std_logic;
 		-- OUTPUT of ROUTING CORES
 		i_kernel_complete : in std_logic;
 		i_kernel_valid    : in std_logic;
 		i_pixel_line      : in matrix_1d(0 to g_oc_amount - 1)(g_vector_length - 1 downto 0);
-		-- INPUTS of BRAM FIFO
+		-- WEIGHT CONTROL OUTPUT (Registered)
 		i_pixel_amount : in std_logic_vector(integer(ceil(log2(real(g_max_fifo_depth)))) - 1 downto 0);
-		-- CONTROL LOGIC
-		i_retrieve_output : in std_logic;
-		i_enable_relu     : in std_logic;
-		i_shamt           : in std_logic_vector(g_vector_length - 1 downto 0);
+		i_oc_size      : in std_logic_vector(15 downto 0);
+		i_enable_relu  : in std_logic;
+		i_shamt        : in std_logic_vector(g_vector_length - 1 downto 0);
 		-- Sanitized Outputs
 		o_kernel_complete : out std_logic;
 		o_kernel_valid    : out std_logic;
@@ -35,14 +34,16 @@ end entity temp_layer_accumulator;
 
 architecture rtl of temp_layer_accumulator is
 
+	signal s_en : std_logic;
 	signal s_valid_pixel_line     : std_logic_vector(0 to 1);
 	signal s_kernel_complete_line : std_logic_vector(0 to 1);
 
 	signal s_pixel_lines : matrix_2d(0 to 1)(0 to g_oc_amount  - 1)(g_vector_length - 1 downto 0);
 
-	signal s_retrieve_output : std_logic;
-	signal s_enable_relu     : std_logic;
-	signal s_shamt           : std_logic_vector(g_vector_length - 1 downto 0);
+	signal s_current_oc    : unsigned(i_oc_size'range);
+	signal s_current_pixel : unsigned(i_pixel_amount'range);
+	signal s_enable_relu   : std_logic;
+	signal s_shamt         : std_logic_vector(g_vector_length - 1 downto 0);
 
 	-- FIFO signals
 	signal s_temp_layer_pixel         : std_logic_vector(g_vector_length - 1 downto 0);
@@ -55,28 +56,42 @@ begin
 	begin
 
 		if rising_edge(clk) then
-			if reset = '1' or partial_reset = '1' then
+			s_en <= i_en;
+			if reset = '1' then
+				s_en <= '0';
 				s_valid_pixel_line     <= (others => '0');
 				s_kernel_complete_line <= (others => '0');
 				--
 				s_pixel_lines <= (others => (others => (others => '0')));
 				--
-				s_retrieve_output <= i_retrieve_output;
-				s_enable_relu     <= i_enable_relu;
-				s_shamt           <= i_shamt;
-			else
+				s_current_oc    <= (others => '0');
+				s_current_pixel <= (others => '0');
+				s_enable_relu   <= i_enable_relu;
+				s_shamt         <= i_shamt;
+			elsif i_en = '1' then
+				if i_kernel_valid = '1' and i_kernel_complete = '0' then
+					s_current_pixel <= s_current_pixel + 1;
+					if s_current_pixel = unsigned(i_pixel_amount) - 1 then
+						s_current_pixel <= (others => '0') ;
+						s_current_oc <= s_current_oc + 1;
+					end if;
+				end if;
 				-- set first constant delays
 				s_valid_pixel_line(0)     <= i_kernel_valid;
 				s_kernel_complete_line(0) <= i_kernel_complete;
 				s_pixel_lines(0)          <= i_pixel_line;
 
 				-- delay other pixel lines and enable lines
-				s_valid_pixel_line(1)                  <= s_valid_pixel_line(0) and s_retrieve_output;
+				if s_current_oc = unsigned(i_oc_size) - 1 then
+					s_valid_pixel_line(1) <= s_valid_pixel_line(0);
+				else
+					s_valid_pixel_line(1) <= '0';
+				end if;
 				s_kernel_complete_line(1)              <= s_kernel_complete_line(0);
 				s_pixel_lines(1)(1 to g_oc_amount - 1) <= s_pixel_lines(0)(1 to g_oc_amount - 1);
 
 				-- set first pixel line with shifted + relu'd value
-				if (signed(s_shifted_temp_layer_pixel) > 0 or s_enable_relu = '0') and s_retrieve_output = '1' then
+				if (signed(s_shifted_temp_layer_pixel) > 0 or s_enable_relu = '0') and s_current_oc = unsigned(i_oc_size) - 1 then
 					s_pixel_lines(1)(0) <= s_shifted_temp_layer_pixel;
 				else
 					s_pixel_lines(1)(0) <= (others => '0');
@@ -101,8 +116,8 @@ begin
 			depth    => i_pixel_amount,
 			--
 			din   => s_added_temp_layer_pixel,
-			wr_en => s_valid_pixel_line(0) and not s_kernel_complete_line(0),
-			rd_en => i_kernel_valid and not i_kernel_complete,
+			wr_en => (s_valid_pixel_line(0) and not s_kernel_complete_line(0)) and s_en,
+			rd_en => (i_kernel_valid and not i_kernel_complete) and i_en,
 			--
 			dout  => s_temp_layer_pixel,
 			full  => open,

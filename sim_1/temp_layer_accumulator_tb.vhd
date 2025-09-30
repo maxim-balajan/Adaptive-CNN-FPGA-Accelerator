@@ -19,12 +19,12 @@ architecture bench of temp_layer_accumulator_tb is
 	-- Ports
 	signal clk               : std_logic := '1';
 	signal reset             : std_logic;
-	signal partial_reset     : std_logic;
+	signal i_en              : std_logic;
 	signal i_kernel_complete : std_logic;
 	signal i_kernel_valid    : std_logic;
 	signal i_pixel_line      : matrix_1d(0 to g_oc_amount - 1)(g_vector_length - 1 downto 0);
 	signal i_pixel_amount    : std_logic_vector(integer(ceil(log2(real(g_max_fifo_depth)))) - 1 downto 0);
-	signal i_retrieve_output : std_logic;
+	signal i_oc_size         : std_logic_vector(15 downto 0);
 	signal i_enable_relu     : std_logic;
 	signal i_shamt           : std_logic_vector(g_vector_length - 1 downto 0);
 	signal o_kernel_complete : std_logic;
@@ -44,16 +44,16 @@ begin
 			clk   => clk,
 			reset => reset,
 			--
-			partial_reset => partial_reset,
+			i_en => i_en,
 			--
 			i_kernel_complete => i_kernel_complete,
 			i_kernel_valid    => i_kernel_valid,
 			i_pixel_line      => i_pixel_line,
 			--
-			i_pixel_amount    => i_pixel_amount,
-			i_retrieve_output => i_retrieve_output,
-			i_enable_relu     => i_enable_relu,
-			i_shamt           => i_shamt,
+			i_pixel_amount => i_pixel_amount,
+			i_oc_size      => i_oc_size,
+			i_enable_relu  => i_enable_relu,
+			i_shamt        => i_shamt,
 			--
 			o_kernel_complete => o_kernel_complete,
 			o_kernel_valid    => o_kernel_valid,
@@ -73,8 +73,10 @@ begin
 		-- 4 pixel per iteration
 		i_pixel_amount(2 downto 0)                   <= "100";
 		i_pixel_amount(i_pixel_amount'high downto 3) <= (others => '0');
+		-- 4 output channels, meaning 4 iterations
+		i_oc_size <= x"0004";
 		wait for 2 * clk_period;
-		reset                                        <= '0';
+		reset     <= '0';
 		wait;
 
 	end process RESET_PROC;
@@ -84,8 +86,6 @@ begin
 
 		i_kernel_complete <= '0';
 		i_kernel_valid    <= '0';
-		partial_reset     <= '0';
-		i_retrieve_output <= '0';
 
 		for i in i_pixel_line'range loop
 
@@ -97,29 +97,32 @@ begin
 
 		for l in 0 to 3 loop
 
-			for k in 0 to 3 loop
+			for en_count in 0 to 2 loop
 
-				i_kernel_complete <= '0';
-				i_kernel_valid    <= '1';
-				wait for clk_period;
+				i_en <= '1' when en_count = 0 else '0';
 
-				i_kernel_complete <= '1' when k = 3 and l = 3 else '0';
-				i_kernel_valid    <= '0';
-				i_pixel_line      <= (others => (others => '1'));
-				wait for 2 * clk_period;
+				for k in 0 to 3 loop
 
-				for i in i_pixel_line'range loop
+					i_kernel_complete <= '0';
+					i_kernel_valid    <= '1';
+					wait for clk_period;
 
-					i_pixel_line(i) <= std_logic_vector(to_signed(i + 1, i_pixel_line(i)'length));
+					i_kernel_complete <= '1' when k = 3 and l = 3 else '0';
+					i_kernel_valid    <= '0';
+					i_pixel_line      <= (others => (others => '1'));
+					--wait for 2 * clk_period;
+
+					for i in i_pixel_line'range loop
+
+						i_pixel_line(i) <= std_logic_vector(to_signed(i + 1, i_pixel_line(i)'length));
+
+					end loop;
 
 				end loop;
 
 			end loop;
 
-			partial_reset     <= '1' when l < 3 else '0';
-			i_retrieve_output <= '1' when l = 2 else '0';
 			wait for clk_period;
-			partial_reset     <= '0';
 
 		end loop;
 
