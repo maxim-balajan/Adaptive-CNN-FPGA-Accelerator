@@ -25,21 +25,21 @@ architecture bench of lenet_accel_tb is
 	constant total_input_channel_conv_1  : natural              := 1;
 	constant total_input_channel_conv_2  : natural              := 6;
 	constant total_output_channel_conv_2 : natural              := 16;
-	constant scale_path                  : string               := "../data/scale_values.data";
+	constant scale_path                  : string               := "../../data/scale_values.data";
 	constant conv_shift_ids              : int_list             := (1, 2);
 	constant dense_shift_ids             : int_list             := (3, 4, 5);
 	constant dense_weight_widths         : int_list             := (400, 120, 84);
 	constant dense_weight_heights        : int_list             := (120, 84, 10);
 	constant conv_weight_paths           : string_list          :=
 	(
-	  "../data/layer_weight_0.data",
-	  "../data/layer_weight_1.data"
+	  "../../data/layer_weight_0.data",
+	  "../../data/layer_weight_1.data"
 	);
 	constant dense_weight_paths          : string_list          :=
 	(
-	  "../data/layer_weight_2.data",
-	  "../data/layer_weight_3.data",
-	  "../data/layer_weight_4.data"
+	  "../../data/layer_weight_2.data",
+	  "../../data/layer_weight_3.data",
+	  "../../data/layer_weight_4.data"
 	);
 	-- Ports
 	signal clk           : std_logic := '0';
@@ -50,10 +50,10 @@ architecture bench of lenet_accel_tb is
 	signal comp_complete : std_logic;
 
 	-- write all input data to matrix_1d
-	constant input_path_2 : string := "../data/input_2.data";
+	constant input_path_2 : string := "../../data/input_2.data";
 
 	signal   s_input_stream_2 : matrix_1d(0 to input_width * input_height - 1)(vector_length - 1 downto 0) := init_from_file(input_path_2, vector_length, input_width * input_height);
-	constant input_path_7     : string                                                                     := "../data/input_7.data";
+	constant input_path_7     : string                                                                     := "../../data/input_7.data";
 	signal   s_input_stream_7 : matrix_1d(0 to input_width * input_height - 1)(vector_length - 1 downto 0) := init_from_file(input_path_7, vector_length, input_width * input_height);
 	signal   s_read_pointer   : integer range 0 to (input_width * input_height);
 

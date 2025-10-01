@@ -1,0 +1,313 @@
+
+####################################################################
+#
+# Elaboration and Simulation of lenet_accel_tb
+#
+####################################################################
+
+####################################################################
+# Removed older tmp projects at: /tmp/vivado_sim.lenet_accel.*
+# Using temporary path.........: /tmp/vivado_sim.lenet_accel.KL2FZo
+# Using config (if exists).....: /home/maxim/Documents/Uni/BA/bachelor-thesis/wave_config/lenet_accel_tb.wcfg
+####################################################################
+
+#####################################################
+# Starting Compilation...:                          #
+#####################################################
+
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/old_sources/libmatrix.vhd" into library work
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/old_sources/libmemory.vhd" into library work
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/old_sources/libutil.vhd" into library work
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/old_sources/clip_adder.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'clip_adder'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/old_sources/bram_single_port.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'bram_single_port'
+WARNING: [VRFC 10-2115] shared variables must be of a protected type [/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/old_sources/bram_single_port.vhd:27]
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/old_sources/bram_fifo.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'bram_fifo'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/old_sources/bram_streaming_fifo.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'bram_streaming_fifo'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/old_sources/line_buffer.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'line_buffer'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/old_sources/kernel_slider.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'kernel_slider'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/old_sources/convolution_slider.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'convolution_slider'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/old_sources/pooling_slider.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'pooling_slider'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/old_sources/matrix_vector_mac_unit.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'matrix_vector_mac_unit'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/old_sources/matrix_vector_mem_interconnect.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'matrix_vector_mem_interconnect'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/old_sources/matrix_vector_unit.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'matrix_vector_unit'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/old_sources/dense_layer.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'dense_layer'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/old_sources/dense_layer_combined.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'dense_layer_combined'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/old_sources/softmax_layer.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'softmax_layer'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/old_sources/softmax_unit.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'softmax_unit'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/kernel_computation_step.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'kernel_computation_step'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/kernel_computation_unit.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'kernel_computation_unit'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/old_sources/conv_weight_memory.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'conv_weight_memory'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/old_sources/conv_pool_pipeline.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'conv_pool_pipeline'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/old_sources/conv_pipeline.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'conv_pipeline'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/old_sources/conv_seq.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'conv_seq'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/old_sources/conv_par.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'conv_par'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/old_sources/conv_combined.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'conv_combined'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/old_sources/lenet_accel.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'lenet_accel'
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/maxim/Documents/Uni/BA/bachelor-thesis/sim_1/lenet_accel_tb.vhd" into library work
+INFO: [VRFC 10-3107] analyzing entity 'lenet_accel_tb'
+
+#####################################################
+# Starting Elaboration...:                          #
+#####################################################
+
+Vivado Simulator v2023.2
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+Running: /tools/Xilinx/Vivado/2023.2/bin/unwrapped/lnx64.o/xelab lenet_accel_tb -s lenet_accel_tb_sim --debug typical 
+Multi-threading is on. Using 10 slave threads.
+Starting static elaboration
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling package std.standard
+Compiling package std.textio
+Compiling package ieee.std_logic_1164
+Compiling package ieee.numeric_std
+Compiling package ieee.math_real
+Compiling package work.libmatrix
+Compiling package work.libutil
+Compiling package work.libmemory
+Compiling package std.env
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=25,data=...]
+Compiling architecture rtl of entity work.conv_weight_memory [\conv_weight_memory(data_path="....]
+Compiling architecture rtl of entity work.clip_adder [\clip_adder(vector_length=24)\]
+Compiling architecture rtl of entity work.kernel_computation_step [\kernel_computation_step(vector_...]
+Compiling architecture rtl of entity work.kernel_computation_step [\kernel_computation_step(vector_...]
+Compiling architecture rtl of entity work.kernel_computation_step [\kernel_computation_step(vector_...]
+Compiling architecture rtl of entity work.kernel_computation_step [\kernel_computation_step(vector_...]
+Compiling architecture rtl of entity work.kernel_computation_step [\kernel_computation_step(vector_...]
+Compiling architecture rtl of entity work.kernel_computation_unit [\kernel_computation_unit(enable_...]
+Compiling architecture rtl of entity work.bram_fifo [\bram_fifo(depth=27)\]
+Compiling architecture rtl of entity work.line_buffer [\line_buffer(depth=27)\]
+Compiling architecture rtl of entity work.kernel_slider [\kernel_slider(input_width=28,ke...]
+Compiling architecture rtl of entity work.pooling_slider [pooling_slider_default]
+Compiling architecture rtl of entity work.kernel_computation_step [\kernel_computation_step(input_w...]
+Compiling architecture rtl of entity work.kernel_computation_step [\kernel_computation_step(input_w...]
+Compiling architecture rtl of entity work.kernel_computation_unit [\kernel_computation_unit(pool_or...]
+Compiling architecture rtl of entity work.conv_pool_pipeline [\conv_pool_pipeline(total_output...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=25,data=...]
+Compiling architecture rtl of entity work.conv_weight_memory [\conv_weight_memory(current_chan...]
+Compiling architecture rtl of entity work.conv_pool_pipeline [\conv_pool_pipeline(total_output...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=25,data=...]
+Compiling architecture rtl of entity work.conv_weight_memory [\conv_weight_memory(current_chan...]
+Compiling architecture rtl of entity work.conv_pool_pipeline [\conv_pool_pipeline(total_output...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=25,data=...]
+Compiling architecture rtl of entity work.conv_weight_memory [\conv_weight_memory(current_chan...]
+Compiling architecture rtl of entity work.conv_pool_pipeline [\conv_pool_pipeline(total_output...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=25,data=...]
+Compiling architecture rtl of entity work.conv_weight_memory [\conv_weight_memory(current_chan...]
+Compiling architecture rtl of entity work.conv_pool_pipeline [\conv_pool_pipeline(total_output...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=25,data=...]
+Compiling architecture rtl of entity work.conv_weight_memory [\conv_weight_memory(current_chan...]
+Compiling architecture rtl of entity work.conv_pool_pipeline [\conv_pool_pipeline(total_output...]
+Compiling architecture rtl of entity work.bram_fifo [\bram_fifo(depth=31)\]
+Compiling architecture rtl of entity work.line_buffer [\line_buffer(depth=31)\]
+Compiling architecture rtl of entity work.kernel_slider [kernel_slider_default]
+Compiling architecture rtl of entity work.convolution_slider [convolution_slider_default]
+Compiling architecture rtl of entity work.conv_par [\conv_par(weight_path="../../dat...]
+Compiling architecture rtl of entity work.bram_streaming_fifo [\bram_streaming_fifo(depth=196)\]
+Compiling architecture rtl of entity work.bram_fifo [\bram_fifo(depth=13)\]
+Compiling architecture rtl of entity work.line_buffer [\line_buffer(depth=13)\]
+Compiling architecture rtl of entity work.kernel_slider [\kernel_slider(input_width=14)\]
+Compiling architecture rtl of entity work.convolution_slider [\convolution_slider(input_width=...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=400,data...]
+Compiling architecture rtl of entity work.conv_weight_memory [\conv_weight_memory(total_input_...]
+Compiling architecture rtl of entity work.kernel_computation_unit [\kernel_computation_unit(enable_...]
+Compiling architecture rtl of entity work.conv_pipeline [\conv_pipeline(input_width=10,in...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=400,data...]
+Compiling architecture rtl of entity work.conv_weight_memory [\conv_weight_memory(total_input_...]
+Compiling architecture rtl of entity work.conv_pipeline [\conv_pipeline(input_width=10,in...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=400,data...]
+Compiling architecture rtl of entity work.conv_weight_memory [\conv_weight_memory(total_input_...]
+Compiling architecture rtl of entity work.conv_pipeline [\conv_pipeline(input_width=10,in...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=400,data...]
+Compiling architecture rtl of entity work.conv_weight_memory [\conv_weight_memory(total_input_...]
+Compiling architecture rtl of entity work.conv_pipeline [\conv_pipeline(input_width=10,in...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=400,data...]
+Compiling architecture rtl of entity work.conv_weight_memory [\conv_weight_memory(total_input_...]
+Compiling architecture rtl of entity work.conv_pipeline [\conv_pipeline(input_width=10,in...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=400,data...]
+Compiling architecture rtl of entity work.conv_weight_memory [\conv_weight_memory(total_input_...]
+Compiling architecture rtl of entity work.conv_pipeline [\conv_pipeline(input_width=10,in...]
+Compiling architecture rtl of entity work.kernel_computation_step [\kernel_computation_step(vector_...]
+Compiling architecture rtl of entity work.kernel_computation_step [\kernel_computation_step(vector_...]
+Compiling architecture rtl of entity work.kernel_computation_unit [\kernel_computation_unit(enable_...]
+Compiling architecture rtl of entity work.bram_fifo [\bram_fifo(depth=9)\]
+Compiling architecture rtl of entity work.line_buffer [\line_buffer(depth=9)\]
+Compiling architecture rtl of entity work.kernel_slider [\kernel_slider(input_width=10,ke...]
+Compiling architecture rtl of entity work.pooling_slider [\pooling_slider(original_input_w...]
+Compiling architecture rtl of entity work.conv_pool_pipeline [\conv_pool_pipeline(input_length...]
+Compiling architecture rtl of entity work.conv_seq [\conv_seq(weight_path="../../dat...]
+Compiling architecture rtl of entity work.conv_combined [\conv_combined(weight_path_conv_...]
+Compiling architecture rtl of entity work.matrix_vector_mac_unit [matrix_vector_mac_unit_default]
+Compiling architecture rtl of entity work.matrix_vector_unit [matrix_vector_unit_default]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture behavioral of entity work.bram_single_port [\bram_single_port(depth=604,data...]
+Compiling architecture rtl of entity work.matrix_vector_mem_interconnect [\matrix_vector_mem_interconnect(...]
+Compiling architecture rtl of entity work.dense_layer [\dense_layer(weight_paths=("../....]
+Compiling architecture rtl of entity work.dense_layer_combined [\dense_layer_combined(shift_path...]
+Compiling architecture rtl of entity work.softmax_layer [\softmax_layer(input_amount=10,i...]
+Compiling architecture rtl of entity work.softmax_layer [\softmax_layer(input_amount=5,in...]
+Compiling architecture rtl of entity work.softmax_layer [\softmax_layer(input_amount=3,in...]
+Compiling architecture rtl of entity work.softmax_layer [\softmax_layer(input_amount=2,in...]
+Compiling architecture rtl of entity work.softmax_unit [softmax_unit_default]
+Compiling architecture rtl of entity work.lenet_accel [\lenet_accel(1,28)(0,1)(0,2)(0,2...]
+Compiling architecture bench of entity work.lenet_accel_tb
+Built simulation snapshot lenet_accel_tb_sim
+
+#####################################################
+# Starting Simulation...:                           #
+#####################################################
+
+****** xsim v2023.2 (64-bit)
+  **** SW Build 4029153 on Fri Oct 13 20:13:54 MDT 2023
+  **** IP Build 4028589 on Sat Oct 14 00:45:43 MDT 2023
+  **** SharedData Build 4025554 on Tue Oct 10 17:18:54 MDT 2023
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+
+start_gui
+INFO: [Common 17-206] Exiting xsim at Wed Oct  1 15:48:15 2025...

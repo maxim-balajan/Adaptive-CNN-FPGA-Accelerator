@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="lenet_accel_tb_sim.wdb" id="1">
+         <top_modules>
+            <top_module name="lenet_accel_tb" />
+            <top_module name="libmatrix" />
+            <top_module name="libmemory" />
+            <top_module name="libutil" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="11.973982 us"></ZoomStartTime>
+      <ZoomEndTime time="234.917204 us"></ZoomEndTime>
+      <Cursor1Time time="178.595000 us"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="157"></NameColumnWidth>
+      <ValueColumnWidth column_width="157"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="32" />
+   <wvobject type="logic" fp_name="/lenet_accel_tb/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/lenet_accel_tb/reset">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/lenet_accel_tb/pixel_stream">
+      <obj_property name="ElementShortName">pixel_stream[7:0]</obj_property>
+      <obj_property name="ObjectShortName">pixel_stream[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/lenet_accel_tb/valid_pixel">
+      <obj_property name="ElementShortName">valid_pixel</obj_property>
+      <obj_property name="ObjectShortName">valid_pixel</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/lenet_accel_tb/image_label">
+      <obj_property name="ElementShortName">image_label[3:0]</obj_property>
+      <obj_property name="ObjectShortName">image_label[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/lenet_accel_tb/comp_complete">
+      <obj_property name="ElementShortName">comp_complete</obj_property>
+      <obj_property name="ObjectShortName">comp_complete</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/lenet_accel_tb/s_input_stream_2">
+      <obj_property name="ElementShortName">s_input_stream_2[0:1023][7:0]</obj_property>
+      <obj_property name="ObjectShortName">s_input_stream_2[0:1023][7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/lenet_accel_tb/s_input_stream_7">
+      <obj_property name="ElementShortName">s_input_stream_7[0:1023][7:0]</obj_property>
+      <obj_property name="ObjectShortName">s_input_stream_7[0:1023][7:0]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/lenet_accel_tb/s_read_pointer">
+      <obj_property name="ElementShortName">s_read_pointer</obj_property>
+      <obj_property name="ObjectShortName">s_read_pointer</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/lenet_accel_tb/s_actual_input_stream">
+      <obj_property name="ElementShortName">s_actual_input_stream[0:1023][7:0]</obj_property>
+      <obj_property name="ObjectShortName">s_actual_input_stream[0:1023][7:0]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/lenet_accel_tb/s_invalid_delay">
+      <obj_property name="ElementShortName">s_invalid_delay</obj_property>
+      <obj_property name="ObjectShortName">s_invalid_delay</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/lenet_accel_tb/s_iteration">
+      <obj_property name="ElementShortName">s_iteration</obj_property>
+      <obj_property name="ObjectShortName">s_iteration</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/lenet_accel_tb/clk_period">
+      <obj_property name="ElementShortName">clk_period</obj_property>
+      <obj_property name="ObjectShortName">clk_period</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/lenet_accel_tb/vector_length">
+      <obj_property name="ElementShortName">vector_length</obj_property>
+      <obj_property name="ObjectShortName">vector_length</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/lenet_accel_tb/accumulator_length">
+      <obj_property name="ElementShortName">accumulator_length</obj_property>
+      <obj_property name="ObjectShortName">accumulator_length</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/lenet_accel_tb/input_width">
+      <obj_property name="ElementShortName">input_width</obj_property>
+      <obj_property name="ObjectShortName">input_width</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/lenet_accel_tb/input_height">
+      <obj_property name="ElementShortName">input_height</obj_property>
+      <obj_property name="ObjectShortName">input_height</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/lenet_accel_tb/kernel_size">
+      <obj_property name="ElementShortName">kernel_size</obj_property>
+      <obj_property name="ObjectShortName">kernel_size</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/lenet_accel_tb/pooling_size">
+      <obj_property name="ElementShortName">pooling_size</obj_property>
+      <obj_property name="ObjectShortName">pooling_size</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/lenet_accel_tb/enable_clip_adder">
+      <obj_property name="ElementShortName">enable_clip_adder</obj_property>
+      <obj_property name="ObjectShortName">enable_clip_adder</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/lenet_accel_tb/total_input_channel_conv_1">
+      <obj_property name="ElementShortName">total_input_channel_conv_1</obj_property>
+      <obj_property name="ObjectShortName">total_input_channel_conv_1</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/lenet_accel_tb/total_input_channel_conv_2">
+      <obj_property name="ElementShortName">total_input_channel_conv_2</obj_property>
+      <obj_property name="ObjectShortName">total_input_channel_conv_2</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/lenet_accel_tb/total_output_channel_conv_2">
+      <obj_property name="ElementShortName">total_output_channel_conv_2</obj_property>
+      <obj_property name="ObjectShortName">total_output_channel_conv_2</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/lenet_accel_tb/scale_path">
+      <obj_property name="ElementShortName">scale_path[1:28]</obj_property>
+      <obj_property name="ObjectShortName">scale_path[1:28]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/lenet_accel_tb/conv_shift_ids">
+      <obj_property name="ElementShortName">conv_shift_ids[0:1]</obj_property>
+      <obj_property name="ObjectShortName">conv_shift_ids[0:1]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/lenet_accel_tb/dense_shift_ids">
+      <obj_property name="ElementShortName">dense_shift_ids[0:2]</obj_property>
+      <obj_property name="ObjectShortName">dense_shift_ids[0:2]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/lenet_accel_tb/dense_weight_widths">
+      <obj_property name="ElementShortName">dense_weight_widths[0:2]</obj_property>
+      <obj_property name="ObjectShortName">dense_weight_widths[0:2]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/lenet_accel_tb/dense_weight_heights">
+      <obj_property name="ElementShortName">dense_weight_heights[0:2]</obj_property>
+      <obj_property name="ObjectShortName">dense_weight_heights[0:2]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/lenet_accel_tb/conv_weight_paths">
+      <obj_property name="ElementShortName">conv_weight_paths[0:1][1:30]</obj_property>
+      <obj_property name="ObjectShortName">conv_weight_paths[0:1][1:30]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/lenet_accel_tb/dense_weight_paths">
+      <obj_property name="ElementShortName">dense_weight_paths[0:2][1:30]</obj_property>
+      <obj_property name="ObjectShortName">dense_weight_paths[0:2][1:30]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/lenet_accel_tb/input_path_2">
+      <obj_property name="ElementShortName">input_path_2[1:23]</obj_property>
+      <obj_property name="ObjectShortName">input_path_2[1:23]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/lenet_accel_tb/input_path_7">
+      <obj_property name="ElementShortName">input_path_7[1:23]</obj_property>
+      <obj_property name="ObjectShortName">input_path_7[1:23]</obj_property>
+   </wvobject>
+</wave_config>
