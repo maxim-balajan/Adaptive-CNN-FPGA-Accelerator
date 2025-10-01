@@ -122,6 +122,7 @@ begin
 		assert kernel_complete = '1'
 			report "Kernel Complete was not set in time after 50us! Aborting further simulation..."
 			severity FAILURE;
+		wait for 5000 * clk_period;
 		finish;
 
 	end process TB;

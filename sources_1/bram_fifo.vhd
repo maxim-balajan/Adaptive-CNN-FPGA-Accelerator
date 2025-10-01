@@ -6,12 +6,13 @@ use work.libmatrix.all;
 
 entity bram_fifo is
 	generic (
-		vector_length : natural := 8;
-		G_MAX_DEPTH   : natural := 227
+		vector_length          : natural := 8;
+		G_MAX_DEPTH            : natural := 227;
+		G_NEAR_FULL_THREASHOLD : natural := 3
 	);
 	port (
-		clk      : in std_logic;
-		reset    : in std_logic;
+		clk   : in std_logic;
+		reset : in std_logic;
 		--
 		set_full : in std_logic;
 		depth    : in std_logic_vector(integer(ceil(log2(real(G_MAX_DEPTH)))) - 1 downto 0);
@@ -20,9 +21,10 @@ entity bram_fifo is
 		wr_en : in std_logic;
 		rd_en : in std_logic;
 		--
-		dout  : out std_logic_vector(vector_length - 1 downto 0);
-		full  : out std_logic;
-		empty : out std_logic
+		dout      : out std_logic_vector(vector_length - 1 downto 0);
+		near_full : out std_logic;
+		full      : out std_logic;
+		empty     : out std_logic
 	);
 end entity bram_fifo;
 
@@ -35,6 +37,7 @@ architecture rtl of bram_fifo is
 
 	-- Register for storing the actual depth of FIFO
 	signal s_actual_depth : unsigned(integer(ceil(log2(real(G_MAX_DEPTH)))) - 1 downto 0);
+	signal s_entry_amount : signed(integer(ceil(log2(real(G_MAX_DEPTH)))) downto 0);
 	-- This signal is used to write 0s for s_actual_depth many cycles if set_full = '1'
 	-- This is to accomodate that BRAM can't be reset
 	signal s_is_invalid : std_logic;
@@ -43,22 +46,25 @@ architecture rtl of bram_fifo is
 	signal s_read_pointer  : unsigned(integer(ceil(log2(real(G_MAX_DEPTH)))) - 1 downto 0);
 	signal s_write_pointer : unsigned(integer(ceil(log2(real(G_MAX_DEPTH)))) - 1 downto 0);
 
-	signal s_empty : std_logic;
-	signal s_full  : std_logic;
+	signal s_empty             : std_logic;
+	signal s_full, s_near_full : std_logic;
 
 	signal s_last_write : std_logic;
 	signal s_dout       : std_logic_vector(vector_length - 1 downto 0);
 
 begin
 
-	s_empty <= std_logic_vector(s_read_pointer) ?= std_logic_vector(s_write_pointer) and not s_last_write;
-	s_full  <= std_logic_vector(s_read_pointer) ?= std_logic_vector(s_write_pointer) and s_last_write;
+	s_empty     <= std_logic_vector(s_read_pointer) ?= std_logic_vector(s_write_pointer) and not s_last_write;
+	s_full      <= std_logic_vector(s_read_pointer) ?= std_logic_vector(s_write_pointer) and s_last_write;
+	s_near_full <= '1' when s_entry_amount > (signed(resize(s_actual_depth, s_entry_amount'length)) - G_NEAR_FULL_THREASHOLD) else '0';
 
-	empty <= s_empty;
-	full  <= s_full;
-	dout  <= s_dout;
+	empty     <= s_empty;
+	full      <= s_full;
+	near_full <= s_near_full;
+	dout      <= s_dout;
 
 	process (clk, reset) is
+		variable v_entry_amount : signed(integer(ceil(log2(real(G_MAX_DEPTH)))) downto 0);
 	begin
 
 		if rising_edge(clk) then
@@ -68,10 +74,18 @@ begin
 				-- When last_write is set to one, the fifo is flagged as "full" and only contains zeros
 				s_last_write <= set_full;
 				-- If s_is_invalid is set to '1', the first actual_depth read cycles are performed, but 0s are always returned
-				s_is_invalid   <= set_full;
+				s_is_invalid <= set_full;
+				if set_full = '1' then
+					s_entry_amount(s_entry_amount'high) <= '0';
+					s_entry_amount(s_entry_amount'high - 1 downto 0) <= signed(depth);
+				else
+					s_entry_amount <= (others => '0');
+				end if;
 				s_actual_depth <= unsigned(depth);
 				s_dout         <= (others => '0');
 			else
+				-- Store entry amount in variable to subtract/add in one iteration
+				v_entry_amount := s_entry_amount;
 				-- Reset of last write value and put on it 0 for now
 				s_last_write <= '0';
 				if rd_en = '1' and s_empty = '0' then
@@ -90,6 +104,7 @@ begin
 						s_is_invalid   <= '0';
 						s_read_pointer <= (others => '0');
 					end if;
+					v_entry_amount := v_entry_amount - 1;
 				end if;
 				if wr_en = '1' and (s_full = '0' or rd_en = '1') then
 					s_last_write <= '1';
@@ -101,11 +116,15 @@ begin
 					else
 						s_write_pointer <= (others => '0');
 					end if;
+
+					v_entry_amount := v_entry_amount + 1;
 				end if;
 				-- If neither read nor wright was performed, hold old state and overwrite initial reset statement
 				if not (rd_en = '1' and s_empty = '0') and not (wr_en = '1' and (s_full = '0' or rd_en = '1')) then
 					s_last_write <= s_last_write;
 				end if;
+				-- Write entry amount variable back to take changes into effect
+				s_entry_amount <= v_entry_amount;
 			end if;
 		end if;
 

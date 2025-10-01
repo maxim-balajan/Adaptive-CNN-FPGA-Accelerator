@@ -23,7 +23,7 @@ architecture bench of bram_fifo_tb is
 	signal rd_en : std_logic;
 	signal full : std_logic;
 	signal empty : std_logic;
-	signal din : std_logic_vector(vector_length - 1 downto 0) := (others => '0');
+	signal din : std_logic_vector(vector_length - 1 downto 0) := x"01";
 	signal dout : std_logic_vector(vector_length - 1 downto 0);
 begin
 
