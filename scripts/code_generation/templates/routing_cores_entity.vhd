@@ -17,6 +17,8 @@ entity routing_cores is
     port (
         clk   : IN std_logic;
         reset : IN std_logic;
+        -- Global enable: If set to 0, stall entire unit and set outputs to low
+        i_en  : IN std_logic;
         -- KERNEL CORES INPUT PORTS
         o_activation_matrix_line  : OUT matrix_1d(0 to %%INPUT_AMOUNT%% - 1)(%%CORE_MAX_INPUT_LENGTH%% - 1 downto 0);
         o_weight_matrix_line      : OUT matrix_1d(0 to %%INPUT_AMOUNT%% - 1)(%%CORE_MAX_INPUT_LENGTH%% - 1 downto 0);

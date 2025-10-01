@@ -14,6 +14,9 @@ entity kernel_computation_step is
 	port (
 		clk                 : in std_logic;
 		reset               : in std_logic;
+		-- Global enable: If set to 0, stall entire unit and set outputs to low
+		i_en : in std_logic;
+		--
 		input_matrix        : in matrix_1d(0 to input_width - 1)(vector_length - 1 downto 0);
 		kernel_en           : in std_logic;
 		kernel_complete     : in std_logic;
@@ -41,7 +44,7 @@ begin
 				s_input_matrix    <= (others => (others => '0'));
 				s_kernel_en_del   <= '0';
 				s_kernel_comp_del <= '0';
-			else
+			elsif i_en = '1' then
 				s_input_matrix(input_matrix'range) <= input_matrix;
 				s_kernel_en_del                    <= kernel_en;
 				s_kernel_comp_del                  <= kernel_complete;
@@ -82,9 +85,9 @@ begin
 
 	end generate MAP_GEN;
 
-	-- Set outputs
+	-- Set gated outputs
 	output_matrix       <= s_output_matrix;
-	kernel_en_del       <= s_kernel_en_del;
+	kernel_en_del       <= s_kernel_en_del ;
 	kernel_complete_del <= s_kernel_comp_del;
 
 end architecture rtl;

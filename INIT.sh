@@ -36,6 +36,8 @@ alias prj_simulate_configurable_slider="'$PRJ_SCRIPTS/simulation/simulation_exec
 alias prj_simulate_adder_tree_gen="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g adder_tree_gen           | tee '$PRJ_GENERATED_PATH/adder_tree_gen_tb.log'"
 alias prj_simulate_memory_test="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g memory_test                 | tee '$PRJ_GENERATED_PATH/memory_test_tb.log'"
 alias prj_simulate_temp_layer_acc="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g temp_layer_accumulator   | tee '$PRJ_GENERATED_PATH/temp_layer_accumulator.log'"
+alias prj_simulate_kernel_comp_unit="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g kernel_comp_unit       | tee '$PRJ_GENERATED_PATH/kernel_comp_unit.log'"
+alias prj_simulate_lenet_accel="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g lenet_accel       | tee '$PRJ_GENERATED_PATH/lenet_accel.log'"
 
 # Vivado Project Aliases
 prj_vivado_init() {

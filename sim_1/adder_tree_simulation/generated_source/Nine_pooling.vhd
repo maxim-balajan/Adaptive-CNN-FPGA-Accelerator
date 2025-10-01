@@ -17,6 +17,8 @@ entity Nine_pooling is
     port (
         clk   : in std_logic;
         reset : in std_logic;
+        -- Global enable: If set to 0, stall entire unit and set outputs to low 
+        i_en  : in std_logic;
         --
         i_activation_matrix_line  : in matrix_1d(0 to 2 * 10 - 1)(24 - 1 downto 0);
         i_weight_matrix_line      : in matrix_1d(0 to 2 * 10 - 1)(24 - 1 downto 0);
@@ -44,6 +46,8 @@ begin
                 enable_shift                => 0,
                 enable_bias                 => 0,
                 enable_relu                 => 1,
+                -- Dont sanitize outputs inside of unit, otherwise wont work as expected
+                G_SANITIZE_OUTPUT           => 0,
                 input_length                => 24,
                 output_length               => 24,
                 input_amount                => 9
@@ -51,6 +55,8 @@ begin
             port map (
                 clk                 => clk,
                 reset               => reset,
+                --
+                i_en                => i_en,
                 --
                 activation_matrix(0)          => i_activation_matrix_line(i * 9 + 0)(23 downto 0),
                 activation_matrix(1)          => i_activation_matrix_line(i * 9 + 1)(23 downto 0),

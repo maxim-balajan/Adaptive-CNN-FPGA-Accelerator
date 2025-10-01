@@ -6,6 +6,8 @@
 			clk   => clk,
 			reset => reset,
 			--
+			i_en  => i_en,
+			--
 %%CORE_ACTIVATION_MATRIX_LINE%%
 %%CORE_WEIGHT_MATRIX_LINE%%
 %%CORE_SHAMT_LINE%%

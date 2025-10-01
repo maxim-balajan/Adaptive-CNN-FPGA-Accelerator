@@ -5,3 +5,5 @@ venv
 AlexNet-Accelerator
 *.str
 .Xil
+sources_1/old_sources
+data

@@ -17,6 +17,8 @@ entity kernel_cores is
     port (
         clk   : in std_logic;
         reset : in std_logic;
+        -- Global enable: If set to 0, stall entire unit and set outputs to low
+        i_en  : in std_logic;
         -- KERNEL_CORES_INPUT PORTS
         i_activation_matrix_line  : in matrix_1d(0 to %%INPUT_AMOUNT%% - 1)(%%CORE_MAX_INPUT_LENGTH%% - 1 downto 0);
         i_weight_matrix_line      : in matrix_1d(0 to %%INPUT_AMOUNT%% - 1)(%%CORE_MAX_INPUT_LENGTH%% - 1 downto 0);

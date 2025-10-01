@@ -49,7 +49,7 @@ begin
                 s_kc_valid_line(1 to C_MAX_PIPELINE_STEPS - 1) <= (others => (others => '0'));
                 s_kc_comp_line(1 to C_MAX_PIPELINE_STEPS - 1)  <= (others => (others => '0'));
 
-            else
+            elsif i_en = '1' then
 
                 -- 1 cycle delay for CONFIGURABLE SLIDER OUTPUT
                 s_cs_kernel_matrix   <= i_kernel_activation_matrix;

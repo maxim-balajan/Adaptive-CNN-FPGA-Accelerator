@@ -17,6 +17,8 @@ entity kernel_cores is
     port (
         clk   : in std_logic;
         reset : in std_logic;
+        -- Global enable: If set to 0, stall entire unit and set outputs to low
+        i_en  : in std_logic;
         -- KERNEL_CORES_INPUT PORTS
         i_activation_matrix_line  : in matrix_1d(0 to 6000 - 1)(24 - 1 downto 0);
         i_weight_matrix_line      : in matrix_1d(0 to 6000 - 1)(24 - 1 downto 0);
@@ -42,6 +44,8 @@ begin
 			clk   => clk,
 			reset => reset,
 			--
+			i_en  => i_en,
+			--
             i_activation_matrix_line          => i_activation_matrix_line(0 TO 1999),
             i_weight_matrix_line              => i_weight_matrix_line(0 TO 1999),
             i_shamt_line                      => (others => (others => '0')),
@@ -61,6 +65,8 @@ begin
 			clk   => clk,
 			reset => reset,
 			--
+			i_en  => i_en,
+			--
             i_activation_matrix_line          => i_activation_matrix_line(2000 TO 3999),
             i_weight_matrix_line              => i_weight_matrix_line(2000 TO 3999),
             i_shamt_line                      => (others => (others => '0')),
@@ -79,6 +85,8 @@ begin
 		port map (
 			clk   => clk,
 			reset => reset,
+			--
+			i_en  => i_en,
 			--
             i_activation_matrix_line          => i_activation_matrix_line(4000 TO 5999),
             i_weight_matrix_line              => (others => (others => '0')),

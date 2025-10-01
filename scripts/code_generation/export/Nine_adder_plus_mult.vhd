@@ -17,6 +17,8 @@ entity Nine_adder_plus_mult is
     port (
         clk   : in std_logic;
         reset : in std_logic;
+        -- Global enable: If set to 0, stall entire unit and set outputs to low 
+        i_en  : in std_logic;
         --
         i_activation_matrix_line  : in matrix_1d(0 to 100 * 20 - 1)(24 - 1 downto 0);
         i_weight_matrix_line      : in matrix_1d(0 to 100 * 20 - 1)(24 - 1 downto 0);
@@ -51,6 +53,8 @@ begin
             port map (
                 clk                 => clk,
                 reset               => reset,
+                --
+                i_en                => i_en,
                 --
                 activation_matrix(0)          => i_activation_matrix_line(i * 9 + 0)(7 downto 0),
                 activation_matrix(1)          => i_activation_matrix_line(i * 9 + 1)(7 downto 0),

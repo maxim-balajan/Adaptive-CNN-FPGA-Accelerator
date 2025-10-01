@@ -12,6 +12,8 @@ begin
                 enable_shift                => %%CORE_SHIFT%%,
                 enable_bias                 => %%CORE_BIAS%%,
                 enable_relu                 => %%CORE_RELU%%,
+                -- Dont sanitize outputs inside of unit, otherwise wont work as expected
+                G_SANITIZE_OUTPUT           => 0,
                 input_length                => %%CORE_INPUT_LENGTH%%,
                 output_length               => %%CORE_OUTPUT_LENGTH%%,
                 input_amount                => %%CORE_INPUT_AMOUNT%%
@@ -19,6 +21,8 @@ begin
             port map (
                 clk                 => clk,
                 reset               => reset,
+                --
+                i_en                => i_en,
                 --
 %%CORE_ACTIVATION_MATRIX%%
 %%CORE_WEIGHT_MATRIX%%

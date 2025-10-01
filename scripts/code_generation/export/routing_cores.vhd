@@ -17,6 +17,8 @@ entity routing_cores is
     port (
         clk   : IN std_logic;
         reset : IN std_logic;
+        -- Global enable: If set to 0, stall entire unit and set outputs to low
+        i_en  : IN std_logic;
         -- KERNEL CORES INPUT PORTS
         o_activation_matrix_line  : OUT matrix_1d(0 to 6000 - 1)(24 - 1 downto 0);
         o_weight_matrix_line      : OUT matrix_1d(0 to 6000 - 1)(24 - 1 downto 0);
@@ -94,7 +96,7 @@ begin
                 s_kc_valid_line(1 to C_MAX_PIPELINE_STEPS - 1) <= (others => (others => '0'));
                 s_kc_comp_line(1 to C_MAX_PIPELINE_STEPS - 1)  <= (others => (others => '0'));
 
-            else
+            elsif i_en = '1' then
 
                 -- 1 cycle delay for CONFIGURABLE SLIDER OUTPUT
                 s_cs_kernel_matrix   <= i_kernel_activation_matrix;

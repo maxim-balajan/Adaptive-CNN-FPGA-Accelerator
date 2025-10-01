@@ -15,7 +15,8 @@ architecture bench of kernel_computation_unit_tb is
 	constant vector_length : integer := 8;
 	constant kernel_size   : integer := 5;
 	-- Ports
-	signal clk               : std_logic := '0';
+	signal clk               : std_logic := '1';
+	signal i_en 			 : std_logic := '0';
 	signal reset             : std_logic;
 	signal activation_matrix : matrix_1d(0 to kernel_size ** 2 - 1)(vector_length - 1 downto 0);
 	signal weight_matrix     : matrix_1d(0 to kernel_size ** 2 - 1)(vector_length - 1 downto 0);
@@ -36,11 +37,14 @@ begin
 			enable_bias                => 0,
 			enable_multiplication_line => 1,
 			enable_shift               => 1,
-			enable_relu                => 1
+			enable_relu                => 0
 		)
 		port map (
 			clk               => clk,
 			reset             => reset,
+			--
+			i_en => i_en ,
+			--
 			activation_matrix => activation_matrix,
 			weight_matrix     => weight_matrix,
 			shamt             => x"01",
@@ -53,7 +57,7 @@ begin
 		);
 
 	clk               <= not clk after clk_period / 2;
-	reset             <= '1' after 0 ns, '0' after 10 ns;
+	reset             <= '1' after 0 ns, '0' after 20 ns;
 	activation_matrix <=
 	(
 	  others => (others => '1')
@@ -88,7 +92,7 @@ begin
 	    x"03",
 	    x"04",
 	    x"05"
-	  ) after 20 ns;
+	  ) after 40 ns;
 	weight_matrix     <=
 	(
 	  x"01",
@@ -151,14 +155,16 @@ begin
 	    x"FE",
 	    x"FF",
 	    x"05"
-	  ) after 20 ns;
-	kernel_en         <= '1' after 0 ns, '0' after 20 ns,  '1' after 30 ns;
-	kernel_complete   <= '0' after 0 ns, '1' after 30 ns;
+	  ) after 40 ns;
+
+	i_en <= not i_en after clk_period;
+	kernel_en         <= '1' after 0 ns, '0' after 40 ns,  '1' after 60 ns;
+	kernel_complete   <= '0' after 0 ns, '1' after 60 ns;
 
 	TB : process is
 	begin
 
-		wait for 30 * clk_period;
+		wait for 70 * clk_period;
 		finish;
 
 	end process TB;

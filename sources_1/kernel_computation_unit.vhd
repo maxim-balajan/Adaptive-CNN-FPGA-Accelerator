@@ -17,14 +17,19 @@ entity kernel_computation_unit is
 		--! enables the bias addition before relu at the end (only matters for pool_or_conv = 1 and enable_shift = 1)
 		enable_bias : integer range 0 to 1 := 1;
 		--! enables the relu step at the end of the computation (only matters for pool_or_conv = 1)
-		enable_relu   : integer range 0 to 1                                                                  := 1;
-		input_length  : natural                                                                               := 8;
-		output_length : integer range 0 to ((3 ** enable_multiplication_line) ** pool_or_conv) * input_length := 8;
-		input_amount  : natural                                                                               := 25
+		enable_relu : integer range 0 to 1 := 1;
+		--! sanazizes output if no enable is set
+		G_SANITIZE_OUTPUT : integer range 0 to 1                                                                  := 1;
+		input_length      : natural                                                                               := 8;
+		output_length     : integer range 0 to ((3 ** enable_multiplication_line) ** pool_or_conv) * input_length := 8;
+		input_amount      : natural                                                                               := 25
 	);
 	port (
-		clk               : in std_logic;
-		reset             : in std_logic;
+		clk   : in std_logic;
+		reset : in std_logic;
+		--
+		i_en : in std_logic := '1';
+		-- Global enable: If set to 0, stall entire unit and set outputs to low
 		activation_matrix : in matrix_1d(0 to input_amount - 1)(input_length - 1 downto 0);
 		-- only used for some convolutions; unused for pooling
 		weight_matrix : in matrix_1d(0 to input_amount - 1)(input_length - 1 downto 0);
@@ -96,9 +101,6 @@ architecture rtl of kernel_computation_unit is
 	signal s_valid_pixel   : std_logic;
 	signal s_comp_complete : std_logic;
 
-	-- This signal is necessary in order to never incorrectly pipeline values
-	signal s_reset_del : std_logic;
-
 	-- Delayed input signals
 	signal s_activation_matrix : matrix_1d(0 to input_amount - 1)(input_length - 1 downto 0);
 	signal s_weight_matrix     : matrix_1d(0 to input_amount - 1)(input_length - 1 downto 0);
@@ -118,19 +120,11 @@ begin
 				s_weight_matrix     <= (others => (others => '0'));
 				s_kernel_en         <= '0';
 				s_kernel_complete   <= '0';
-				s_reset_del         <= '1';
-			else
+			elsif i_en = '1' then
 				s_activation_matrix <= activation_matrix;
 				s_weight_matrix     <= weight_matrix;
-				-- Big hack that solves pipelining of illegal value; don't know how to solve this differently
-				if s_reset_del = '1' then
-					s_kernel_en       <= '0';
-					s_kernel_complete <= '0';
-					s_reset_del       <= '0';
-				else
-					s_kernel_en       <= kernel_en;
-					s_kernel_complete <= kernel_complete;
-				end if;
+				s_kernel_en         <= kernel_en;
+				s_kernel_complete   <= kernel_complete;
 			end if;
 		end if;
 
@@ -160,8 +154,11 @@ begin
 				pool_or_conv  => pool_or_conv
 			)
 			port map (
-				clk                 => clk,
-				reset               => reset,
+				clk   => clk,
+				reset => reset,
+				--
+				i_en => i_en,
+				--
 				input_matrix        => s_pipeline_values(i)(0 to integer(ceil(real(input_amount) / real(2 ** i))) - 1),
 				kernel_en           => s_kernel_en_line(i),
 				kernel_complete     => s_kernel_complete_line(i),
@@ -191,7 +188,7 @@ begin
 						s_kernel_en_shift       <= '0';
 						s_kernel_complete_shift <= '0';
 						s_pipeline_begin_shift  <= (others => '0');
-					else
+					elsif i_en = '1' then
 						s_kernel_en_shift       <= s_kernel_en_line(s_kernel_en_line'high);
 						s_kernel_complete_shift <= s_kernel_complete_line(s_kernel_complete_line'high);
 						s_pipeline_begin_shift  <= s_pipeline_end;
@@ -213,7 +210,7 @@ begin
 							s_kernel_en_bias       <= '0';
 							s_kernel_complete_bias <= '0';
 							s_pipeline_begin_bias  <= (others => '0');
-						else
+						elsif i_en = '1' then
 							s_kernel_en_bias       <= s_kernel_en_shift;
 							s_kernel_complete_bias <= s_kernel_complete_shift;
 							s_pipeline_begin_bias  <= s_pipeline_result_shift;
@@ -279,7 +276,7 @@ begin
 					s_kernel_en_relu       <= '0';
 					s_kernel_complete_relu <= '0';
 					s_pipeline_begin_relu  <= (others => '0');
-				else
+				elsif i_en = '1' then
 					s_kernel_en_relu       <= s_valid_pixel;
 					s_kernel_complete_relu <= s_comp_complete;
 					s_pipeline_begin_relu  <= s_new_pixel;
@@ -291,13 +288,59 @@ begin
 		-- ReLU computation
 		s_pipeline_result_relu <= (others => '0') when signed(s_pipeline_begin_relu) < 0 else s_pipeline_begin_relu;
 		-- Set outputs
-		new_pixel     <= s_pipeline_result_relu;
-		valid_pixel   <= s_kernel_en_relu;
-		comp_complete <= s_kernel_complete_relu;
+
+		SANT_RELU_GEN : if G_SANITIZE_OUTPUT = 1 generate
+
+			OUTPUT_PROC_WITH_RELU : process (clk) is
+			begin
+
+				if rising_edge(clk) then
+					if reset = '1' or i_en = '0' then
+						new_pixel     <= (others => '0');
+						valid_pixel   <= '0';
+						comp_complete <= '0';
+					else
+						new_pixel     <= s_pipeline_result_relu;
+						valid_pixel   <= s_kernel_en_relu;
+						comp_complete <= s_kernel_complete_relu;
+					end if;
+				end if;
+
+			end process OUTPUT_PROC_WITH_RELU;
+
+		else generate
+			new_pixel     <= s_pipeline_result_relu;
+			valid_pixel   <= s_kernel_en_relu;
+			comp_complete <= s_kernel_complete_relu;
+		end generate SANT_RELU_GEN;
+
 	else generate
-		new_pixel     <= s_new_pixel;
-		valid_pixel   <= s_valid_pixel;
-		comp_complete <= s_comp_complete;
+
+		SANT_GEN_NO_RELU : if G_SANITIZE_OUTPUT = 1 generate
+
+			OUTPUT_PROC_WO_RELU : process (clk) is
+			begin
+
+				if rising_edge(clk) then
+					if reset = '1' or i_en = '0' then
+						new_pixel     <= (others => '0');
+						valid_pixel   <= '0';
+						comp_complete <= '0';
+					else
+						new_pixel     <= s_new_pixel;
+						valid_pixel   <= s_valid_pixel;
+						comp_complete <= s_comp_complete;
+					end if;
+				end if;
+
+			end process OUTPUT_PROC_WO_RELU;
+
+		else generate
+			new_pixel     <= s_new_pixel;
+			valid_pixel   <= s_valid_pixel;
+			comp_complete <= s_comp_complete;
+		end generate SANT_GEN_NO_RELU;
+
 	end generate RELU_GEN;
 
 end architecture rtl;

@@ -17,6 +17,8 @@ ENTITY routed_kernel_cores IS
 	PORT (
 		clk   : IN std_logic;
 		reset : IN std_logic;
+		-- Global enable: If set to 0, stall entire unit and set outputs to low
+		i_en  : IN std_logic;
 		-- CONFIGURABLE SLIDER OUTPUTS
 		i_kernel_complete          : IN std_logic;
 		i_kernel_en                : IN std_logic;
@@ -54,6 +56,8 @@ BEGIN
 		PORT MAP (
 			clk   => clk,
 			reset => reset,
+			--
+			i_en  => i_en,
 			-- KERNEL CORES INPUT PORTS
 			o_activation_matrix_line => s_activation_matrix_line,
 			o_weight_matrix_line     => s_weight_matrix_line,
@@ -84,6 +88,8 @@ BEGIN
 		PORT MAP (
 			clk                      => clk,
 			reset                    => reset,
+			--
+			i_en					 => i_en,
             -- KERNEL CORES INPUT PORTS
 			i_activation_matrix_line => s_activation_matrix_line,
 			i_weight_matrix_line     => s_weight_matrix_line,

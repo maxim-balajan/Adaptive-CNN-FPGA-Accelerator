@@ -17,6 +17,8 @@ ENTITY routed_kernel_cores IS
 	PORT (
 		clk   : IN std_logic;
 		reset : IN std_logic;
+		-- Global enable: If set to 0, stall entire unit and set outputs to low
+		i_en  : IN std_logic;
 		-- CONFIGURABLE SLIDER OUTPUTS
 		i_kernel_complete          : IN std_logic;
 		i_kernel_en                : IN std_logic;
