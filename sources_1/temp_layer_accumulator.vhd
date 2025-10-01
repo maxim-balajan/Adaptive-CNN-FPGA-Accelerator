@@ -66,9 +66,7 @@ begin
 				s_enable_relu   <= i_enable_relu;
 				s_shamt         <= i_shamt;
 			elsif i_en = '1' then
-				report "Reached";
 				if i_kernel_valid = '1' and i_kernel_complete = '0' then
-					report "Also Reached";
 					s_current_pixel <= s_current_pixel + 1;
 					if s_current_pixel = unsigned(i_pixel_amount) - 1 then
 						s_current_pixel <= (others => '0');
@@ -137,12 +135,11 @@ begin
 	-- Set Outputs
 	-------------------------------------------
 
-	o_kernel_valid    <= s_valid_pixel_line(s_valid_pixel_line'high) 	     when i_en = '1' else '0';
-	o_kernel_complete <= s_kernel_complete_line(s_kernel_complete_line'high) when i_en = '1' else '0';
+	o_kernel_valid    <= s_valid_pixel_line(s_valid_pixel_line'high);
+	o_kernel_complete <= s_kernel_complete_line(s_kernel_complete_line'high);
 
 	PIXEL_LINE_GEN : for i in 0 to g_oc_amount - 1 generate
-		o_pixel_line(i) <= s_pixel_lines(s_pixel_lines'high)(i)(g_clipped_vector_length - 1 downto 0)
-							when i_en = '1' else (others => '0');
+		o_pixel_line(i) <= s_pixel_lines(s_pixel_lines'high)(i)(g_clipped_vector_length - 1 downto 0);
 	end generate PIXEL_LINE_GEN;
 
 end architecture rtl;

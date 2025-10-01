@@ -109,6 +109,7 @@ begin
 
 				for k in 0 to 3 loop
 
+					wait until rising_edge(i_en);
 					i_kernel_complete <= '0';
 					i_kernel_valid    <= '1';
 					wait until rising_edge(i_en);
@@ -117,7 +118,7 @@ begin
 					i_kernel_complete <= '1' when k = 3 and l = 3 else '0';
 					i_kernel_valid    <= '0';
 					i_pixel_line      <= (others => (others => '1'));
-					wait for 2 * clk_period;
+					wait for clk_period;
 
 					for i in s_pixel_line'range loop
 
