@@ -53,7 +53,7 @@ begin
 		);
 
 	clk <= not clk after clk_period / 2;
-	i_en <= '1';
+	i_en <= not i_en after clk_period;
 
 	INPUT_PROC : process is
 	begin
@@ -91,16 +91,16 @@ begin
 		i_kernel_weight_matrix(7) <= std_logic_vector(to_signed(1, i_kernel_weight_matrix(7)'length));
 		i_kernel_weight_matrix(8) <= std_logic_vector(to_signed(-4, i_kernel_weight_matrix(8)'length));
 
-		--wait until rising_edge(i_en);
-		wait for clk_period;
+		wait until rising_edge(i_en);
+		--wait for clk_period;
 		-- Invalid Kernels
 		i_kernel_complete          <= '0';
 		i_kernel_en                <= '0';
 		i_kernel_activation_matrix <= (others => (others => '1'));
 		i_kernel_weight_matrix     <= (others => (others => '1'));
-		wait for c_wait_cycles * clk_period;
+		--wait for c_wait_cycles * clk_period;
 		for i in 0 to c_wait_cycles loop
-			--wait until rising_edge(i_en);
+			wait until rising_edge(i_en);
 		end loop;
 		-- Second Valid Kernel
 		i_kernel_complete <= '0';
@@ -127,8 +127,8 @@ begin
 		i_kernel_activation_matrix(7) <= std_logic_vector(to_signed(-5, i_kernel_activation_matrix(7)'length));
 		i_kernel_activation_matrix(8) <= std_logic_vector(to_signed(9, i_kernel_activation_matrix(8)'length));
 
-		--wait until rising_edge(i_en);
-		wait for clk_period;
+		wait until rising_edge(i_en);
+		--wait for clk_period;
 		-- Finish up
 		i_kernel_complete <= '1';
 		i_kernel_en       <= '0';

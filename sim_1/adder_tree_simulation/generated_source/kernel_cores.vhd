@@ -39,27 +39,6 @@ begin
 
 	-- Adder Core Bundle with 2 Cores
 
-	Five_adder_plus_mult_inst : entity work.Five_adder_plus_mult(Five_adder_plus_mult_rlt)
-		port map (
-			clk   => clk,
-			reset => reset,
-			--
-			i_en  => i_en,
-			--
-            i_activation_matrix_line          => i_activation_matrix_line(0 TO 39),
-            i_weight_matrix_line              => i_weight_matrix_line(0 TO 39),
-            i_shamt_line                      => (others => (others => '0')),
-            i_bias_line                       => (others => (others => '0')),
-            i_kernel_en_line                  => i_kernel_en_line(0 TO 4),
-            i_kernel_complete_line            => i_kernel_complete_line(0 TO 4),
-			--
-            o_pixel_line                      => o_pixel_line(0 TO 4),
-            o_valid_pixel_line                => o_valid_pixel_line(0 TO 4),
-            o_comp_complete_line              => o_comp_complete_line(0 TO 4)
-		);
-
-	-- Adder Core Bundle with 2 Cores
-
 	Three_adder_no_mult_inst : entity work.Three_adder_no_mult(Three_adder_no_mult_rtl)
 		port map (
 			clk   => clk,
@@ -67,16 +46,37 @@ begin
 			--
 			i_en  => i_en,
 			--
-            i_activation_matrix_line          => i_activation_matrix_line(40 TO 54),
-            i_weight_matrix_line              => i_weight_matrix_line(40 TO 54),
+            i_activation_matrix_line          => i_activation_matrix_line(0 TO 14),
+            i_weight_matrix_line              => i_weight_matrix_line(0 TO 14),
             i_shamt_line                      => (others => (others => '0')),
             i_bias_line                       => (others => (others => '0')),
-            i_kernel_en_line                  => i_kernel_en_line(5 TO 7),
-            i_kernel_complete_line            => i_kernel_complete_line(5 TO 7),
+            i_kernel_en_line                  => i_kernel_en_line(0 TO 2),
+            i_kernel_complete_line            => i_kernel_complete_line(0 TO 2),
 			--
-            o_pixel_line                      => o_pixel_line(5 TO 7),
-            o_valid_pixel_line                => o_valid_pixel_line(5 TO 7),
-            o_comp_complete_line              => o_comp_complete_line(5 TO 7)
+            o_pixel_line                      => o_pixel_line(0 TO 2),
+            o_valid_pixel_line                => o_valid_pixel_line(0 TO 2),
+            o_comp_complete_line              => o_comp_complete_line(0 TO 2)
+		);
+
+	-- Adder Core Bundle with 2 Cores
+
+	Five_adder_plus_mult_inst : entity work.Five_adder_plus_mult(Five_adder_plus_mult_rlt)
+		port map (
+			clk   => clk,
+			reset => reset,
+			--
+			i_en  => i_en,
+			--
+            i_activation_matrix_line          => i_activation_matrix_line(15 TO 54),
+            i_weight_matrix_line              => i_weight_matrix_line(15 TO 54),
+            i_shamt_line                      => (others => (others => '0')),
+            i_bias_line                       => (others => (others => '0')),
+            i_kernel_en_line                  => i_kernel_en_line(3 TO 7),
+            i_kernel_complete_line            => i_kernel_complete_line(3 TO 7),
+			--
+            o_pixel_line                      => o_pixel_line(3 TO 7),
+            o_valid_pixel_line                => o_valid_pixel_line(3 TO 7),
+            o_comp_complete_line              => o_comp_complete_line(3 TO 7)
 		);
 
 	-- Comparator Core Bundle with 2 Cores

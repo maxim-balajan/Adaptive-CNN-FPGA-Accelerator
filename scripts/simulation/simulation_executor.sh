@@ -105,6 +105,15 @@ elif [ "$TB" == "kernel_comp_unit" ]; then
         $PRJ_HW_SOURCES_PATH/kernel_computation_step.vhd              \
         $PRJ_HW_SOURCES_PATH/kernel_computation_unit.vhd \
         $PRJ_HW_SIMS_PATH/kernel_computation_unit_tb.vhd  
+elif [ "$TB" == "config_unit" ]; then
+    $PRJ_SCRIPTS/simulation/generic_simulation_run.sh ${GUI} config_unit \
+        $PRJ_HW_SOURCES_PATH/config_unit.vhd \
+        $PRJ_HW_SIMS_PATH/config_unit_tb.vhd  
+elif [ "$TB" == "weight_unit" ]; then
+    CWD="$PWD"
+    cd $PRJ_HW_SIMS_PATH/weight_unit/
+    python run_vunit_tb.py     
+    cd $CWD    
 elif [ "$TB" == "lenet_accel" ]; then
     $PRJ_SCRIPTS/simulation/generic_simulation_run.sh ${GUI} lenet_accel \
         $PRJ_HW_SOURCES_PATH/old_sources/lib*.vhd              \

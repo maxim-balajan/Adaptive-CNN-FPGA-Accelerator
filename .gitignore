@@ -7,3 +7,5 @@ AlexNet-Accelerator
 .Xil
 sources_1/old_sources
 data
+verification
+sim_1/*/vunit_out

@@ -42,6 +42,10 @@ package libutil is
 		list : int_list
 	) return matrix_1d;
 
+	function f_sum_bits_slv(
+		vector : std_logic_vector
+	) return natural;
+
 end package libutil;
 
 package body libutil is
@@ -125,6 +129,21 @@ package body libutil is
 		end loop;
 
 		return tmp;
+	end function;
+
+	function f_sum_bits_slv(
+		vector : std_logic_vector
+	) return natural is
+		variable tmp : natural := 0;
+	begin
+		for i in vector'range loop
+			if vector(i) = '1' then
+				tmp := tmp + 1;
+			end if;
+		end loop;
+
+		return tmp;
+
 	end function;
 
 end package body libutil;

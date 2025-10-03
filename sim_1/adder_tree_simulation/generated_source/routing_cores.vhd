@@ -131,53 +131,53 @@ begin
 
 
     -- Output Channel 0 Routing...
-    o_activation_matrix_line(0)     <= s_cs_kernel_matrix(0);
-    o_weight_matrix_line(0)         <= s_wm_weight_matrix(0);
-    o_activation_matrix_line(1)     <= s_cs_kernel_matrix(1);
-    o_weight_matrix_line(1)         <= s_wm_weight_matrix(1);
-    o_activation_matrix_line(2)     <= s_cs_kernel_matrix(2);
-    o_weight_matrix_line(2)         <= s_wm_weight_matrix(2);
-    o_activation_matrix_line(3)     <= s_cs_kernel_matrix(3);
-    o_weight_matrix_line(3)         <= s_wm_weight_matrix(3);
-    o_activation_matrix_line(4)     <= s_cs_kernel_matrix(4);
-    o_weight_matrix_line(4)         <= s_wm_weight_matrix(4);
+    o_activation_matrix_line(15)    <= s_cs_kernel_matrix(0);
+    o_weight_matrix_line(15)        <= s_wm_weight_matrix(0);
+    o_activation_matrix_line(16)    <= s_cs_kernel_matrix(1);
+    o_weight_matrix_line(16)        <= s_wm_weight_matrix(1);
+    o_activation_matrix_line(17)    <= s_cs_kernel_matrix(2);
+    o_weight_matrix_line(17)        <= s_wm_weight_matrix(2);
+    o_activation_matrix_line(18)    <= s_cs_kernel_matrix(3);
+    o_weight_matrix_line(18)        <= s_wm_weight_matrix(3);
+    o_activation_matrix_line(19)    <= s_cs_kernel_matrix(4);
+    o_weight_matrix_line(19)        <= s_wm_weight_matrix(4);
+    o_bias_line(3)                  <= s_wm_bias_line(3);
+    o_shamt_line(3)                 <= s_wm_shamt_line(3);
+    o_kernel_en_line(3)             <= s_cs_kernel_en;
+    o_kernel_complete_line(3)       <= s_cs_kernel_complete;
+    o_activation_matrix_line(20)    <= s_cs_kernel_matrix(5);
+    o_weight_matrix_line(20)        <= s_wm_weight_matrix(5);
+    o_activation_matrix_line(21)    <= s_cs_kernel_matrix(6);
+    o_weight_matrix_line(21)        <= s_wm_weight_matrix(6);
+    o_activation_matrix_line(22)    <= s_cs_kernel_matrix(7);
+    o_weight_matrix_line(22)        <= s_wm_weight_matrix(7);
+    o_activation_matrix_line(23)    <= s_cs_kernel_matrix(8);
+    o_weight_matrix_line(23)        <= s_wm_weight_matrix(8);
+    o_activation_matrix_line(24)    <= (others => '0');
+    o_weight_matrix_line(24)        <= (others => '0');
+    o_bias_line(4)                  <= s_wm_bias_line(4);
+    o_shamt_line(4)                 <= s_wm_shamt_line(4);
+    o_kernel_en_line(4)             <= s_cs_kernel_en;
+    o_kernel_complete_line(4)       <= s_cs_kernel_complete;
+    o_activation_matrix_line(0)     <= s_kc_pixel_line(1)(3);
+    o_weight_matrix_line(0)         <= (others => '0');
+    o_activation_matrix_line(1)     <= s_kc_pixel_line(1)(4);
+    o_weight_matrix_line(1)         <= (others => '0');
+    o_activation_matrix_line(2)     <= (others => '0');
+    o_weight_matrix_line(2)         <= (others => '0');
     o_bias_line(0)                  <= s_wm_bias_line(0);
     o_shamt_line(0)                 <= s_wm_shamt_line(0);
-    o_kernel_en_line(0)             <= s_cs_kernel_en;
-    o_kernel_complete_line(0)       <= s_cs_kernel_complete;
-    o_activation_matrix_line(5)     <= s_cs_kernel_matrix(5);
-    o_weight_matrix_line(5)         <= s_wm_weight_matrix(5);
-    o_activation_matrix_line(6)     <= s_cs_kernel_matrix(6);
-    o_weight_matrix_line(6)         <= s_wm_weight_matrix(6);
-    o_activation_matrix_line(7)     <= s_cs_kernel_matrix(7);
-    o_weight_matrix_line(7)         <= s_wm_weight_matrix(7);
-    o_activation_matrix_line(8)     <= s_cs_kernel_matrix(8);
-    o_weight_matrix_line(8)         <= s_wm_weight_matrix(8);
-    o_activation_matrix_line(9)     <= (others => '0');
-    o_weight_matrix_line(9)         <= (others => '0');
-    o_bias_line(1)                  <= s_wm_bias_line(1);
-    o_shamt_line(1)                 <= s_wm_shamt_line(1);
-    o_kernel_en_line(1)             <= s_cs_kernel_en;
-    o_kernel_complete_line(1)       <= s_cs_kernel_complete;
-    o_activation_matrix_line(40)    <= s_kc_pixel_line(1)(0);
-    o_weight_matrix_line(40)        <= (others => '0');
-    o_activation_matrix_line(41)    <= s_kc_pixel_line(1)(1);
-    o_weight_matrix_line(41)        <= (others => '0');
-    o_activation_matrix_line(42)    <= (others => '0');
-    o_weight_matrix_line(42)        <= (others => '0');
-    o_bias_line(5)                  <= s_wm_bias_line(5);
-    o_shamt_line(5)                 <= s_wm_shamt_line(5);
-    o_kernel_en_line(5)             <= s_kc_valid_line(1)(0);
-    o_kernel_complete_line(5)       <= s_kc_comp_line(1)(0);
+    o_kernel_en_line(0)             <= s_kc_valid_line(1)(3);
+    o_kernel_complete_line(0)       <= s_kc_comp_line(1)(3);
 
 
     -------------------------------------------
     -- FINAL OUTPUTs
     -------------------------------------------
 
-    o_kernel_complete <= s_kc_comp_line(1)(5);
-    o_kernel_valid    <= s_kc_valid_line(1)(5);
-    o_pixel_line(0)   <= s_kc_pixel_line(1)(5);
+    o_kernel_complete <= s_kc_comp_line(1)(0);
+    o_kernel_valid    <= s_kc_valid_line(1)(0);
+    o_pixel_line(0)   <= s_kc_pixel_line(1)(0);
 
 
 end architecture route_a;

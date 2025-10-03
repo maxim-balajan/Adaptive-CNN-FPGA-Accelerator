@@ -14,23 +14,6 @@ route_configs:
     output_channel: 1
     input_amount: 9
 cores:
-  Five_adder_plus_mult:
-    global:
-      max_core_amount: 5
-      max_input_amount: 8
-      max_input_length: 24
-    Five_adder_plus_mult_rlt:
-      amount: 2
-      pool_or_conv : 1
-      enable_clip_adder : 1
-      enable_multiplication_line : 1
-      enable_shift: 0
-      enable_bias: 0
-      enable_relu : 0
-      input_length : 8
-      output_length : 24
-      input_amount: 5
-
   Three_adder_no_mult:
     global:
       max_core_amount: 3
@@ -47,6 +30,23 @@ cores:
       input_length : 24
       output_length : 24
       input_amount: 3
+      
+  Five_adder_plus_mult:
+    global:
+      max_core_amount: 5
+      max_input_amount: 8
+      max_input_length: 24
+    Five_adder_plus_mult_rlt:
+      amount: 2
+      pool_or_conv : 1
+      enable_clip_adder : 1
+      enable_multiplication_line : 1
+      enable_shift: 0
+      enable_bias: 0
+      enable_relu : 0
+      input_length : 8
+      output_length : 24
+      input_amount: 5
   
   Nine_pooling:
     global:

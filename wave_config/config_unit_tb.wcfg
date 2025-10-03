@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="config_unit_tb_sim.wdb" id="1">
+         <top_modules>
+            <top_module name="config_unit_tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0.000 ns"></ZoomStartTime>
+      <ZoomEndTime time="75.001 ns"></ZoomEndTime>
+      <Cursor1Time time="25.648 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="276"></NameColumnWidth>
+      <ValueColumnWidth column_width="96"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="28" />
+   <wvobject type="logic" fp_name="/config_unit_tb/config_unit_inst/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/config_unit_tb/config_unit_inst/reset">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/config_unit_tb/config_unit_inst/i_wt_s_axis_tdata">
+      <obj_property name="ElementShortName">i_wt_s_axis_tdata[127:0]</obj_property>
+      <obj_property name="ObjectShortName">i_wt_s_axis_tdata[127:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/config_unit_tb/config_unit_inst/i_wt_s_axis_tkeep">
+      <obj_property name="ElementShortName">i_wt_s_axis_tkeep[15:0]</obj_property>
+      <obj_property name="ObjectShortName">i_wt_s_axis_tkeep[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/config_unit_tb/config_unit_inst/i_wt_s_axis_tlast">
+      <obj_property name="ElementShortName">i_wt_s_axis_tlast</obj_property>
+      <obj_property name="ObjectShortName">i_wt_s_axis_tlast</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/config_unit_tb/config_unit_inst/o_wt_s_axis_tready">
+      <obj_property name="ElementShortName">o_wt_s_axis_tready</obj_property>
+      <obj_property name="ObjectShortName">o_wt_s_axis_tready</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/config_unit_tb/config_unit_inst/i_wt_s_axis_tvalid">
+      <obj_property name="ElementShortName">i_wt_s_axis_tvalid</obj_property>
+      <obj_property name="ObjectShortName">i_wt_s_axis_tvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/config_unit_tb/config_unit_inst/o_config_valid">
+      <obj_property name="ElementShortName">o_config_valid</obj_property>
+      <obj_property name="ObjectShortName">o_config_valid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/config_unit_tb/config_unit_inst/o_config_valid_1c">
+      <obj_property name="ElementShortName">o_config_valid_1c</obj_property>
+      <obj_property name="ObjectShortName">o_config_valid_1c</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/config_unit_tb/config_unit_inst/o_config_error">
+      <obj_property name="ElementShortName">o_config_error</obj_property>
+      <obj_property name="ObjectShortName">o_config_error</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/config_unit_tb/config_unit_inst/o_config_error_1c">
+      <obj_property name="ElementShortName">o_config_error_1c</obj_property>
+      <obj_property name="ObjectShortName">o_config_error_1c</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/config_unit_tb/config_unit_inst/o_image_input_length">
+      <obj_property name="ElementShortName">o_image_input_length[15:0]</obj_property>
+      <obj_property name="ObjectShortName">o_image_input_length[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/config_unit_tb/config_unit_inst/o_image_output_length">
+      <obj_property name="ElementShortName">o_image_output_length[15:0]</obj_property>
+      <obj_property name="ObjectShortName">o_image_output_length[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/config_unit_tb/config_unit_inst/o_input_channel_size">
+      <obj_property name="ElementShortName">o_input_channel_size[15:0]</obj_property>
+      <obj_property name="ObjectShortName">o_input_channel_size[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/config_unit_tb/config_unit_inst/o_output_channel_size">
+      <obj_property name="ElementShortName">o_output_channel_size[15:0]</obj_property>
+      <obj_property name="ObjectShortName">o_output_channel_size[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/config_unit_tb/config_unit_inst/o_input_channel_iterations">
+      <obj_property name="ElementShortName">o_input_channel_iterations[15:0]</obj_property>
+      <obj_property name="ObjectShortName">o_input_channel_iterations[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/config_unit_tb/config_unit_inst/o_kernel_size">
+      <obj_property name="ElementShortName">o_kernel_size[7:0]</obj_property>
+      <obj_property name="ObjectShortName">o_kernel_size[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/config_unit_tb/config_unit_inst/o_padding_size">
+      <obj_property name="ElementShortName">o_padding_size[7:0]</obj_property>
+      <obj_property name="ObjectShortName">o_padding_size[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/config_unit_tb/config_unit_inst/o_stride_bit_mask">
+      <obj_property name="ElementShortName">o_stride_bit_mask[7:0]</obj_property>
+      <obj_property name="ObjectShortName">o_stride_bit_mask[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/config_unit_tb/config_unit_inst/o_shamt">
+      <obj_property name="ElementShortName">o_shamt[7:0]</obj_property>
+      <obj_property name="ObjectShortName">o_shamt[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/config_unit_tb/config_unit_inst/o_pool_or_conv">
+      <obj_property name="ElementShortName">o_pool_or_conv</obj_property>
+      <obj_property name="ObjectShortName">o_pool_or_conv</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/config_unit_tb/config_unit_inst/o_enable_relu">
+      <obj_property name="ElementShortName">o_enable_relu</obj_property>
+      <obj_property name="ObjectShortName">o_enable_relu</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/config_unit_tb/config_unit_inst/s_config_memory">
+      <obj_property name="ElementShortName">s_config_memory[127:0]</obj_property>
+      <obj_property name="ObjectShortName">s_config_memory[127:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/config_unit_tb/config_unit_inst/s_config_valid">
+      <obj_property name="ElementShortName">s_config_valid</obj_property>
+      <obj_property name="ObjectShortName">s_config_valid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/config_unit_tb/config_unit_inst/s_config_valid_1c">
+      <obj_property name="ElementShortName">s_config_valid_1c</obj_property>
+      <obj_property name="ObjectShortName">s_config_valid_1c</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/config_unit_tb/config_unit_inst/s_config_error">
+      <obj_property name="ElementShortName">s_config_error</obj_property>
+      <obj_property name="ObjectShortName">s_config_error</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/config_unit_tb/config_unit_inst/s_config_error_1c">
+      <obj_property name="ElementShortName">s_config_error_1c</obj_property>
+      <obj_property name="ObjectShortName">s_config_error_1c</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/config_unit_tb/config_unit_inst/s_wt_s_axis_tready">
+      <obj_property name="ElementShortName">s_wt_s_axis_tready</obj_property>
+      <obj_property name="ObjectShortName">s_wt_s_axis_tready</obj_property>
+   </wvobject>
+</wave_config>
