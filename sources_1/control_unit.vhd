@@ -142,7 +142,8 @@ begin
 
 	end process TRANSITION_PROC;
 
-	OUTPUT_PROC : process (s_current_state, i_wt_s_axis_tdata, i_wt_s_axis_tkeep, i_wt_s_axis_tlast, i_wt_s_axis_tvalid) is
+	OUTPUT_PROC : process (s_current_state, i_wt_s_axis_tdata, i_wt_s_axis_tkeep, i_wt_s_axis_tlast,
+	                       i_wt_s_axis_tvalid, s_wt_2_cfg_s_axis_tready, s_wt_2_wt_s_axis_tready) is
 	begin
 
 		case s_current_state is
