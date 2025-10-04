@@ -57,7 +57,7 @@ package weight_unit_tb_pkg is
 		-- WEIGHT MODULE OUTPUTS
 		o_kernel_weight_init   : std_logic;
 		o_kernel_weight_error  : std_logic;
-		o_kernel_weight_matrix : matrix_1d(0 to C_MAX_WEIGHT_AMOUNT - 1)(C_MAX_WEIGHT_BIT_WIDTH - 1 downto 0);
+		o_kernel_weight_matrix : matrix_1d(0 to C_MAX_WEIGHT_AMOUNT - 1)(7 downto 0);
 	end record t_tb_i;
 
 	----------------------------------------------------------------------

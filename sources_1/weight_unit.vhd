@@ -56,7 +56,7 @@ begin
 
 	WEIGHT_PROC : process (clk) is
 
-		variable v_weight_amount : unsigned(31 downto 0) := s_weight_amount;
+		variable v_weight_amount : unsigned(31 downto 0);
 
 	begin
 
@@ -85,9 +85,10 @@ begin
 
 					if s_wt_s_axis_tready = '1' and i_wt_s_axis_tvalid = '1' then
 						-- Retrieve Memory with shift register
-						s_weight_mem <= s_weight_mem(s_sa_wt_tdata'length to s_weight_mem'high) & s_sa_wt_tdata;
+						s_weight_mem <=  s_sa_wt_tdata & s_weight_mem(0 to s_weight_mem'high - s_sa_wt_tdata'length);
 						-- Increment amount of weights received, take tkeep into account!
-						v_weight_amount := v_weight_amount + f_sum_bits_slv(i_wt_s_axis_tkeep);
+						-- TODO: change to add 0xFFFF always because the unit will break if tkeep is not 0xFFFF during tlast=1
+						v_weight_amount := s_init_weight_amount + f_sum_bits_slv(i_wt_s_axis_tkeep);
 						-- Weights are filled completely
 						if v_weight_amount >= s_weight_amount then
 							-- set completion flag depending if transaction was valid or not
@@ -100,7 +101,7 @@ begin
                             -- -> Module is finished and shouldn't assert ready anymore
 							s_wt_s_axis_tready <= '0';
 						end if;
-						s_weight_amount <= v_weight_amount;
+						s_init_weight_amount <= v_weight_amount;
 					end if;
 				else
 					s_wt_s_axis_tready <= '0';

@@ -30,6 +30,7 @@ except:
 
 
 my_vunit.add_osvvm()
+my_vunit.add_verification_components()
 
 
 #############

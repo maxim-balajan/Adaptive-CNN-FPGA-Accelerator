@@ -9,6 +9,7 @@ use tb_lib.weight_unit_tc_pkg.all;
 
 library vunit_lib;
 	context vunit_lib.vunit_context;
+	context vunit_lib.vc_context;
 
 library osvvm;
 	context osvvm.OsvvmContext;
@@ -19,11 +20,11 @@ entity weight_unit_tb is
 		runner_cfg : string      := runner_cfg_default;
 		stop_level : log_level_t := error;
 		-- TB
-		G_RND_SEED  : STRING               := "123";
+		G_RND_SEED  : STRING               := "xxx";
 		G_LOG_LEVEL : INTEGER range 0 to 2 := 1;
 		-- DUT
 		G_WEIGHT_BIT_WIDTH : INTEGER range 2 to 128 := 8;
-		G_WEIGHT_AMOUNT    : NATURAL                := 128
+		G_WEIGHT_AMOUNT    : NATURAL                := 512
 	);
 end entity weight_unit_tb;
 
@@ -33,6 +34,14 @@ architecture bench of weight_unit_tb is
 	signal clk    : std_logic := '0';
 	signal s_tb_i : t_tb_i;
 	signal s_tb_o : t_tb_o;
+
+	constant stream_master : axi_stream_master_t := new_axi_stream_master(data_length => 128);
+
+    signal tvalid : std_logic;
+    signal tready : std_logic;
+    signal tdata : std_logic_vector(127 downto 0);
+    signal tlast : std_logic;
+    signal tkeep : std_logic_vector(15 downto 0);
 
 begin
 
@@ -44,16 +53,34 @@ begin
 		port map (
 			clk                           => s_tb_i.clk,
 			reset                         => s_tb_o.reset,
-			i_wt_s_axis_tdata             => s_tb_o.i_wt_s_axis_tdata,
-			i_wt_s_axis_tkeep             => s_tb_o.i_wt_s_axis_tkeep,
-			i_wt_s_axis_tlast             => s_tb_o.i_wt_s_axis_tlast,
-			o_wt_s_axis_tready            => s_tb_i.o_wt_s_axis_tready,
-			i_wt_s_axis_tvalid            => s_tb_o.i_wt_s_axis_tvalid,
+			i_wt_s_axis_tdata             => tdata,
+			i_wt_s_axis_tkeep             => tkeep,
+			i_wt_s_axis_tlast             => tlast,
+			o_wt_s_axis_tready            => tready,
+			i_wt_s_axis_tvalid            => tvalid,
 			i_input_channel_per_iteration => s_tb_o.i_input_channel_per_iteration,
 			i_kernel_size                 => s_tb_o.i_kernel_size,
 			o_kernel_weight_init          => s_tb_i.o_kernel_weight_init,
 			o_kernel_weight_error         => s_tb_i.o_kernel_weight_error,
-			o_kernel_weight_matrix        => open
+			o_kernel_weight_matrix        => s_tb_i.o_kernel_weight_matrix
+		);
+
+	axi_stream_master_inst : entity vunit_lib.axi_stream_master
+		generic map (
+			master => stream_master
+		)
+		port map (
+			aclk     => s_tb_i.clk,
+			areset_n => not s_tb_o.reset,
+			tvalid   => tvalid,
+			tready   => tready,
+			tdata    => tdata,
+			tlast    => tlast,
+			tkeep    => tkeep,
+			tstrb    => open,
+			tid      => open,
+			tdest    => open,
+			tuser    => open
 		);
 
 	main : process is
@@ -78,9 +105,9 @@ begin
 		while test_suite loop
 
 			if run("TC_0000") then
-				TC_0000(s_tb_o, s_tb_i);
+				TC_0000(net, stream_master, s_tb_o, s_tb_i);
 			elsif run("TC_0001") then
-				TC_0001(s_tb_o, s_tb_i);
+				TC_0001(net, stream_master, s_tb_o, s_tb_i);
 			else
 				report "main: invalid test case assigned: " & enabled_test_cases(runner_cfg)
 					severity failure;
@@ -115,7 +142,7 @@ begin
 			s_tb_i.G_WEIGHT_BIT_WIDTH <= G_WEIGHT_BIT_WIDTH;
 			s_tb_i.G_WEIGHT_AMOUNT    <= G_WEIGHT_AMOUNT;
 
-            wait;
+			wait;
 
 		end process p_one_time;
 
