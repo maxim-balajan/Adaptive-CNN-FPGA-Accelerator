@@ -79,6 +79,8 @@ package body control_unit_tc_pkg is
 
 		for n in 0 to 2 loop
 
+			tb_o.i_temp_comp_complete <= '0';
+
 			iteration_amount := integer(ceil(real(11 * 11 * 3) / real(128 / tb_i.g_weight_bit_width)));
 
 			-- Note: The weight unit takes in values in reversed order. Because of that, the first left_over
@@ -98,6 +100,13 @@ package body control_unit_tc_pkg is
 
 			for i in 1 to iteration_amount - 1 loop
 
+				-- Random wait cycle
+				for j in 0 to sv_rnd.RandInt(0, 10) - 1 loop
+
+					wait until rising_edge(tb_i.clk);
+
+				end loop;
+
 				tlast := '1' when i = (iteration_amount - 1) else '0';
 
 				push_axi_stream(net, stream,
@@ -105,13 +114,6 @@ package body control_unit_tc_pkg is
 	                tlast => tlast,
 	                tkeep => x"FFFF"
 	              );
-
-				-- Random wait cycle
-				for j in 0 to sv_rnd.RandInt(0, 10) - 1 loop
-
-					wait until rising_edge(tb_i.clk);
-
-				end loop;
 
 			end loop;
 
@@ -129,6 +131,13 @@ package body control_unit_tc_pkg is
 			end loop;
 
 			tb_o.i_temp_comp_complete <= '1';
+
+			-- Random wait cycle
+			for j in 0 to sv_rnd.RandInt(2, 15) - 1 loop
+
+				wait until rising_edge(tb_i.clk);
+
+			end loop;
 
 		end loop;
 

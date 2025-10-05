@@ -1,22 +1,22 @@
 [*]
 [*] GTKWave Analyzer v3.3.123 (w)1999-2025 BSI
-[*] Sun Oct  5 11:55:13 2025
+[*] Sun Oct  5 12:35:34 2025
 [*]
 [dumpfile] "/home/maxim/Documents/Uni/BA/bachelor-thesis/sim_1/control_unit/vunit_out/test_output/tb_lib.control_unit_tb.tb_cfg_0.TC_0000_9c5fda2a5870957b9247fc4176550e89e3d0a3cd/ghdl/wave.ghw"
-[dumpfile_mtime] "Sun Oct  5 11:51:12 2025"
-[dumpfile_size] 122005
+[dumpfile_mtime] "Sun Oct  5 12:34:43 2025"
+[dumpfile_size] 231317
 [savefile] "/home/maxim/Documents/Uni/BA/bachelor-thesis/sim_1/control_unit/control_unit.cfg.gtkw"
 [timestart] 0
 [size] 1670 848
 [pos] -27 -24
-*-27.988085 238000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-29.460373 1809000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] top.
 [treeopen] top.control_unit_tb.
 [treeopen] top.control_unit_tb.control_unit_inst.
 [sst_width] 269
 [signals_width] 313
 [sst_expanded] 1
-[sst_vpaned_height] 367
+[sst_vpaned_height] 528
 @200
 -AXIS Interface
 @28
@@ -34,7 +34,6 @@ top.control_unit_tb.control_unit_inst.o_overall_error
 top.control_unit_tb.control_unit_inst.o_overall_done
 top.control_unit_tb.control_unit_inst.i_temp_comp_complete
 top.control_unit_tb.control_unit_inst.o_kernel_weight_init
-@29
 top.control_unit_tb.control_unit_inst.o_kernel_weight_error
 @200
 -Control Unit - RESET SIGNALS
@@ -54,7 +53,9 @@ top.control_unit_tb.control_unit_inst.o_pool_or_conv
 #{top.control_unit_tb.control_unit_inst.s_current_oc_amount[15:0]} top.control_unit_tb.control_unit_inst.s_current_oc_amount[15] top.control_unit_tb.control_unit_inst.s_current_oc_amount[14] top.control_unit_tb.control_unit_inst.s_current_oc_amount[13] top.control_unit_tb.control_unit_inst.s_current_oc_amount[12] top.control_unit_tb.control_unit_inst.s_current_oc_amount[11] top.control_unit_tb.control_unit_inst.s_current_oc_amount[10] top.control_unit_tb.control_unit_inst.s_current_oc_amount[9] top.control_unit_tb.control_unit_inst.s_current_oc_amount[8] top.control_unit_tb.control_unit_inst.s_current_oc_amount[7] top.control_unit_tb.control_unit_inst.s_current_oc_amount[6] top.control_unit_tb.control_unit_inst.s_current_oc_amount[5] top.control_unit_tb.control_unit_inst.s_current_oc_amount[4] top.control_unit_tb.control_unit_inst.s_current_oc_amount[3] top.control_unit_tb.control_unit_inst.s_current_oc_amount[2] top.control_unit_tb.control_unit_inst.s_current_oc_amount[1] top.control_unit_tb.control_unit_inst.s_current_oc_amount[0]
 #{top.control_unit_tb.control_unit_inst.o_current_ic_amount[15:0]} top.control_unit_tb.control_unit_inst.o_current_ic_amount[15] top.control_unit_tb.control_unit_inst.o_current_ic_amount[14] top.control_unit_tb.control_unit_inst.o_current_ic_amount[13] top.control_unit_tb.control_unit_inst.o_current_ic_amount[12] top.control_unit_tb.control_unit_inst.o_current_ic_amount[11] top.control_unit_tb.control_unit_inst.o_current_ic_amount[10] top.control_unit_tb.control_unit_inst.o_current_ic_amount[9] top.control_unit_tb.control_unit_inst.o_current_ic_amount[8] top.control_unit_tb.control_unit_inst.o_current_ic_amount[7] top.control_unit_tb.control_unit_inst.o_current_ic_amount[6] top.control_unit_tb.control_unit_inst.o_current_ic_amount[5] top.control_unit_tb.control_unit_inst.o_current_ic_amount[4] top.control_unit_tb.control_unit_inst.o_current_ic_amount[3] top.control_unit_tb.control_unit_inst.o_current_ic_amount[2] top.control_unit_tb.control_unit_inst.o_current_ic_amount[1] top.control_unit_tb.control_unit_inst.o_current_ic_amount[0]
 #{top.control_unit_tb.control_unit_inst.o_shamt[7:0]} top.control_unit_tb.control_unit_inst.o_shamt[7] top.control_unit_tb.control_unit_inst.o_shamt[6] top.control_unit_tb.control_unit_inst.o_shamt[5] top.control_unit_tb.control_unit_inst.o_shamt[4] top.control_unit_tb.control_unit_inst.o_shamt[3] top.control_unit_tb.control_unit_inst.o_shamt[2] top.control_unit_tb.control_unit_inst.o_shamt[1] top.control_unit_tb.control_unit_inst.o_shamt[0]
+@23
 #{top.control_unit_tb.control_unit_inst.o_stride_bit_mask[7:0]} top.control_unit_tb.control_unit_inst.o_stride_bit_mask[7] top.control_unit_tb.control_unit_inst.o_stride_bit_mask[6] top.control_unit_tb.control_unit_inst.o_stride_bit_mask[5] top.control_unit_tb.control_unit_inst.o_stride_bit_mask[4] top.control_unit_tb.control_unit_inst.o_stride_bit_mask[3] top.control_unit_tb.control_unit_inst.o_stride_bit_mask[2] top.control_unit_tb.control_unit_inst.o_stride_bit_mask[1] top.control_unit_tb.control_unit_inst.o_stride_bit_mask[0]
+@22
 #{top.control_unit_tb.control_unit_inst.o_padding_size[7:0]} top.control_unit_tb.control_unit_inst.o_padding_size[7] top.control_unit_tb.control_unit_inst.o_padding_size[6] top.control_unit_tb.control_unit_inst.o_padding_size[5] top.control_unit_tb.control_unit_inst.o_padding_size[4] top.control_unit_tb.control_unit_inst.o_padding_size[3] top.control_unit_tb.control_unit_inst.o_padding_size[2] top.control_unit_tb.control_unit_inst.o_padding_size[1] top.control_unit_tb.control_unit_inst.o_padding_size[0]
 #{top.control_unit_tb.control_unit_inst.o_kernel_size[7:0]} top.control_unit_tb.control_unit_inst.o_kernel_size[7] top.control_unit_tb.control_unit_inst.o_kernel_size[6] top.control_unit_tb.control_unit_inst.o_kernel_size[5] top.control_unit_tb.control_unit_inst.o_kernel_size[4] top.control_unit_tb.control_unit_inst.o_kernel_size[3] top.control_unit_tb.control_unit_inst.o_kernel_size[2] top.control_unit_tb.control_unit_inst.o_kernel_size[1] top.control_unit_tb.control_unit_inst.o_kernel_size[0]
 #{top.control_unit_tb.control_unit_inst.o_input_channel_per_iteration[15:0]} top.control_unit_tb.control_unit_inst.o_input_channel_per_iteration[15] top.control_unit_tb.control_unit_inst.o_input_channel_per_iteration[14] top.control_unit_tb.control_unit_inst.o_input_channel_per_iteration[13] top.control_unit_tb.control_unit_inst.o_input_channel_per_iteration[12] top.control_unit_tb.control_unit_inst.o_input_channel_per_iteration[11] top.control_unit_tb.control_unit_inst.o_input_channel_per_iteration[10] top.control_unit_tb.control_unit_inst.o_input_channel_per_iteration[9] top.control_unit_tb.control_unit_inst.o_input_channel_per_iteration[8] top.control_unit_tb.control_unit_inst.o_input_channel_per_iteration[7] top.control_unit_tb.control_unit_inst.o_input_channel_per_iteration[6] top.control_unit_tb.control_unit_inst.o_input_channel_per_iteration[5] top.control_unit_tb.control_unit_inst.o_input_channel_per_iteration[4] top.control_unit_tb.control_unit_inst.o_input_channel_per_iteration[3] top.control_unit_tb.control_unit_inst.o_input_channel_per_iteration[2] top.control_unit_tb.control_unit_inst.o_input_channel_per_iteration[1] top.control_unit_tb.control_unit_inst.o_input_channel_per_iteration[0]
