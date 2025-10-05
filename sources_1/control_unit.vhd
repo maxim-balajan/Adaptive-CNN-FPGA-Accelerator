@@ -41,17 +41,19 @@ entity control_unit is
 		o_rst_bram_fifo     : out std_logic;
 		-- Control Signals
 		i_temp_comp_complete : in std_logic;
-		o_group_id           : out std_logic_vector(7 downto 0);
-		o_current_state      : out std_logic_vector(7 downto 0);
-		o_overall_done       : out std_logic
+		o_current_ic_amount  : out std_logic_vector(15 downto 0);
+		o_current_oc_amount  : out std_logic_vector(15 downto 0);
+		o_current_state      : out std_logic_vector(2 downto 0);
+		o_overall_done       : out std_logic;
+		o_overall_error      : out std_logic
 	);
 end entity control_unit;
 
 architecture rtl of control_unit is
 
 	type control_state_t is (
-		e_CONFIG_RETR, e_1st_RST_SUBMODULE,
-		e_WT_RETR, e_WT_INIT, e_2nd_RST_SUBMODULE, e_DONE, e_ERROR
+		e_CONFIG_RETR, e_RST_SUBMODULE,
+		e_WT_RETR, e_WT_INIT, e_DONE, e_ERROR
 	);
 
 	signal s_current_state : control_state_t;
@@ -82,11 +84,16 @@ architecture rtl of control_unit is
 	-- Control signals
 	-------------------------
 	-- CL of Control Unit
-	signal s_group_id   : unsigned(15 downto 0);
-	signal s_current_oc : unsigned(15 downto 0);
+	signal s_current_ic_amount : unsigned(15 downto 0);
+	signal s_current_oc_amount : unsigned(15 downto 0);
+	signal s_current_state_slv : std_logic_vector(2 downto 0);
+	signal s_overall_done      : std_logic;
+	signal s_overall_error     : std_logic;
 
 	-- CL Weight Unit <-> Control Unit <-> Config Unit
 	signal s_kernel_size                 : std_logic_vector(7 downto 0);
+	signal s_input_channel_size          : std_logic_vector(15 downto 0);
+	signal s_output_channel_size         : std_logic_vector(15 downto 0);
 	signal s_input_channel_per_iteration : std_logic_vector(15 downto 0);
 	signal s_pool_or_conv                : std_logic;
 
@@ -103,20 +110,29 @@ architecture rtl of control_unit is
 begin
 
 	TRANSITION_PROC : process (clk) is
+
+		variable v_current_ic_amount : unsigned(15 downto 0);
+		variable v_current_oc_amount : unsigned(15 downto 0);
+		constant C_IC_ZERO           : unsigned(15 downto 0) := (others => '0');
+
 	begin
 
 		if rising_edge(clk) then
 			if reset = '1' then
 				s_current_state <= e_CONFIG_RETR;
+
+				-- Start at fist iteration
+				s_current_ic_amount <= (others => '0');
+				s_current_oc_amount <= (others => '0');
 			else
 				case s_current_state is
 					when e_CONFIG_RETR =>
 						if s_config_valid = '1' then
-							s_current_state <= e_1st_RST_SUBMODULE;
+							s_current_state <= e_RST_SUBMODULE;
 						elsif s_config_error = '1' then
 							s_current_state <= e_ERROR;
 						end if;
-					when e_1st_RST_SUBMODULE =>
+					when e_RST_SUBMODULE =>
 						if s_pool_or_conv = '1' then
 							s_current_state <= e_WT_RETR;
 						else
@@ -129,12 +145,31 @@ begin
 							s_current_state <= e_ERROR;
 						end if;
 					when e_WT_INIT =>
-						null;
-					when e_2nd_RST_SUBMODULE =>
-						null;
+						if i_temp_comp_complete = '1' then
+							-- Increment the amount of IC calculated and also keep track of the current output channel
+							v_current_ic_amount := unsigned(s_current_ic_amount);
+							v_current_oc_amount := unsigned(s_current_oc_amount);
+							
+							v_current_ic_amount := v_current_ic_amount + unsigned(s_input_channel_per_iteration);
+							if v_current_ic_amount >= unsigned(s_input_channel_size) then
+								v_current_ic_amount := (others => '0');
+								v_current_oc_amount := v_current_oc_amount + 1;
+							end if;
+							-- Write back variables to take changes into affect
+							s_current_ic_amount <= v_current_ic_amount;
+							s_current_oc_amount <= v_current_oc_amount;
+
+							if v_current_oc_amount = unsigned(s_output_channel_size) and v_current_ic_amount = C_IC_ZERO then
+								s_current_state <= e_DONE;
+							else
+								s_current_state <= e_RST_SUBMODULE;
+							end if;
+						end if;
 					when e_DONE =>
+						-- If done, stay here until reset
 						null;
 					when e_ERROR =>
+						-- If error occurred, stay here until reset
 						null;
 				end case;
 			end if;
@@ -143,15 +178,11 @@ begin
 	end process TRANSITION_PROC;
 
 	OUTPUT_PROC : process (s_current_state, i_wt_s_axis_tdata, i_wt_s_axis_tkeep, i_wt_s_axis_tlast,
-	                       i_wt_s_axis_tvalid, s_wt_2_cfg_s_axis_tready, s_wt_2_wt_s_axis_tready) is
+	                       i_wt_s_axis_tvalid, s_wt_2_cfg_s_axis_tready, s_wt_2_wt_s_axis_tready, s_pool_or_conv) is
 	begin
 
 		case s_current_state is
 			when e_CONFIG_RETR =>
-				-- Start at fist iteration
-				s_group_id   <= (others => '0');
-				s_current_oc <= (others => '0');
-
 				-- Reset all modules except config unit
 				s_rst_cfg_unit      <= '0';
 				s_rst_wt_unit       <= '1';
@@ -173,19 +204,39 @@ begin
 				s_wt_2_wt_s_axis_tkeep  <= (others => '0');
 				s_wt_2_wt_s_axis_tlast  <= '0';
 				s_wt_2_wt_s_axis_tvalid <= '0';
-			when e_1st_RST_SUBMODULE =>
+
+				-- set overall control signals signal
+				s_current_state_slv <= "000";
+				s_overall_done      <= '0';
+				s_overall_error     <= '0';
+			when e_RST_SUBMODULE =>
 				-- Reset all modules except Config Unit, BRAM FIFO and Weight Unit
 				-- -> that way configuration values are stored
 				s_rst_cfg_unit      <= '0';
-				s_rst_wt_unit       <= '0';
+				s_rst_wt_unit       <= '1';
 				s_rst_config_slider <= '1';
 				s_rst_kernel_cores  <= '1';
-				s_rst_accumulator   <= '1';
+				s_rst_accumulator   <= not s_pool_or_conv;
 				s_rst_bram_fifo     <= '0';
 
 				-- In this cycle, no values should be read from the weight stream
 				-- -> ready has to be on Low
 				o_wt_s_axis_tready <= '0';
+
+				s_wt_2_cfg_s_axis_tdata  <= (others => '0');
+				s_wt_2_cfg_s_axis_tkeep  <= (others => '0');
+				s_wt_2_cfg_s_axis_tlast  <= '0';
+				s_wt_2_cfg_s_axis_tvalid <= '0';
+
+				s_wt_2_wt_s_axis_tdata  <= (others => '0');
+				s_wt_2_wt_s_axis_tkeep  <= (others => '0');
+				s_wt_2_wt_s_axis_tlast  <= '0';
+				s_wt_2_wt_s_axis_tvalid <= '0';
+
+				-- set overall control signals signal
+				s_current_state_slv <= "001";
+				s_overall_done      <= '0';
+				s_overall_error     <= '0';
 			when e_WT_RETR =>
 				-- Now Configurable Slider can start receive values until its just before initialized
 				s_rst_cfg_unit      <= '0';
@@ -208,14 +259,89 @@ begin
 				s_wt_2_cfg_s_axis_tkeep  <= (others => '0');
 				s_wt_2_cfg_s_axis_tlast  <= '0';
 				s_wt_2_cfg_s_axis_tvalid <= '0';
+
+				-- set overall control signals signal
+				s_current_state_slv <= "010";
+				s_overall_done      <= '0';
+				s_overall_error     <= '0';
 			when e_WT_INIT =>
-				null;
-			when e_2nd_RST_SUBMODULE =>
-				null;
+				-- Now that weight was initialized, all units can calculate
+				s_rst_cfg_unit      <= '0';
+				s_rst_wt_unit       <= '0';
+				s_rst_config_slider <= '0';
+				s_rst_kernel_cores  <= '0';
+				s_rst_accumulator   <= '0';
+				s_rst_bram_fifo     <= '0';
+
+				-- Don't accept incomming weight/configuration values anymore
+				o_wt_s_axis_tready <= '0';
+
+				s_wt_2_wt_s_axis_tdata  <= (others => '0');
+				s_wt_2_wt_s_axis_tkeep  <= (others => '0');
+				s_wt_2_wt_s_axis_tlast  <= '0';
+				s_wt_2_wt_s_axis_tvalid <= '0';
+
+				s_wt_2_cfg_s_axis_tdata  <= (others => '0');
+				s_wt_2_cfg_s_axis_tkeep  <= (others => '0');
+				s_wt_2_cfg_s_axis_tlast  <= '0';
+				s_wt_2_cfg_s_axis_tvalid <= '0';
+
+				-- set overall control signals signal
+				s_current_state_slv <= "011";
+				s_overall_done      <= '0';
+				s_overall_error     <= '0';
 			when e_DONE =>
-				null;
+				-- Hold all units except BRAM FIFO on reset until overall reset occures
+				s_rst_cfg_unit      <= '1';
+				s_rst_wt_unit       <= '1';
+				s_rst_config_slider <= '1';
+				s_rst_kernel_cores  <= '1';
+				s_rst_accumulator   <= '1';
+				s_rst_bram_fifo     <= '0';
+
+				-- Don't accept incomming weight/configuration when unit was finished
+				o_wt_s_axis_tready <= '0';
+
+				s_wt_2_wt_s_axis_tdata  <= (others => '0');
+				s_wt_2_wt_s_axis_tkeep  <= (others => '0');
+				s_wt_2_wt_s_axis_tlast  <= '0';
+				s_wt_2_wt_s_axis_tvalid <= '0';
+
+				s_wt_2_cfg_s_axis_tdata  <= (others => '0');
+				s_wt_2_cfg_s_axis_tkeep  <= (others => '0');
+				s_wt_2_cfg_s_axis_tlast  <= '0';
+				s_wt_2_cfg_s_axis_tvalid <= '0';
+
+				-- set overall control signals signal
+				s_current_state_slv <= "100";
+				s_overall_done      <= '1';
+				s_overall_error     <= '0';
 			when e_ERROR =>
-				null;
+				-- Hold all units on reset until overall reset occures
+				s_rst_cfg_unit      <= '1';
+				s_rst_wt_unit       <= '1';
+				s_rst_config_slider <= '1';
+				s_rst_kernel_cores  <= '1';
+				s_rst_accumulator   <= '1';
+				s_rst_bram_fifo     <= '1';
+
+				-- Don't accept incomming weight/configuration when unit was finished
+				o_wt_s_axis_tready <= '0';
+
+				s_wt_2_wt_s_axis_tdata  <= (others => '0');
+				s_wt_2_wt_s_axis_tkeep  <= (others => '0');
+				s_wt_2_wt_s_axis_tlast  <= '0';
+				s_wt_2_wt_s_axis_tvalid <= '0';
+
+				s_wt_2_cfg_s_axis_tdata  <= (others => '0');
+				s_wt_2_cfg_s_axis_tkeep  <= (others => '0');
+				s_wt_2_cfg_s_axis_tlast  <= '0';
+				s_wt_2_cfg_s_axis_tvalid <= '0';
+
+				-- set overall control signals signal
+				s_current_state_slv <= "111";
+				s_overall_done      <= '0';
+				s_overall_error     <= '1';
 		end case;
 
 	end process OUTPUT_PROC;
@@ -261,8 +387,8 @@ begin
 			-- CONFIG Outputs
 			o_image_input_length          => o_image_input_length,
 			o_image_output_length         => o_image_output_length,
-			o_input_channel_size          => o_input_channel_size,
-			o_output_channel_size         => o_output_channel_size,
+			o_input_channel_size          => s_input_channel_size,
+			o_output_channel_size         => s_output_channel_size,
 			o_input_channel_per_iteration => s_input_channel_per_iteration,
 			o_kernel_size                 => s_kernel_size,
 			o_padding_size                => o_padding_size,
@@ -271,5 +397,26 @@ begin
 			o_pool_or_conv                => s_pool_or_conv,
 			o_enable_relu                 => o_enable_relu
 		);
+
+	-------------------------------------------
+	-- Set Outputs
+	-------------------------------------------
+
+	o_input_channel_size          <= s_input_channel_size;
+	o_output_channel_size         <= s_output_channel_size;
+	o_input_channel_per_iteration <= s_input_channel_per_iteration;
+	o_kernel_size                 <= s_kernel_size;
+	o_pool_or_conv                <= s_pool_or_conv;
+	o_kernel_weight_init          <= s_kernel_weight_init;
+	o_kernel_weight_error         <= s_kernel_weight_error;
+	o_rst_config_slider           <= s_rst_config_slider;
+	o_rst_kernel_cores            <= s_rst_kernel_cores;
+	o_rst_accumulator             <= s_rst_accumulator;
+	o_rst_bram_fifo               <= s_rst_bram_fifo;
+	o_current_ic_amount           <= std_logic_vector(s_current_ic_amount);
+	o_current_oc_amount           <= std_logic_vector(s_current_oc_amount);
+	o_current_state               <= s_current_state_slv;
+	o_overall_done                <= s_overall_done;
+	o_overall_error               <= s_overall_error;
 
 end architecture rtl;

@@ -37,32 +37,56 @@ architecture bench of control_unit_tb is
 
 	constant stream_master : axi_stream_master_t := new_axi_stream_master(data_length => 128);
 
-    signal tvalid : std_logic;
-    signal tready : std_logic;
-    signal tdata : std_logic_vector(127 downto 0);
-    signal tlast : std_logic;
-    signal tkeep : std_logic_vector(15 downto 0);
+	signal tvalid : std_logic;
+	signal tready : std_logic;
+	signal tdata  : std_logic_vector(127 downto 0);
+	signal tlast  : std_logic;
+	signal tkeep  : std_logic_vector(15 downto 0);
 
 begin
 
-	weight_unit_inst : entity work.weight_unit
+	control_unit_inst : entity work.control_unit
 		generic map (
-			g_weight_bit_width => G_WEIGHT_BIT_WIDTH,
-			g_weight_amount    => G_WEIGHT_AMOUNT
+			G_WEIGHT_BIT_WIDTH => G_WEIGHT_BIT_WIDTH,
+			G_WEIGHT_AMOUNT    => G_WEIGHT_AMOUNT
 		)
 		port map (
 			clk                           => s_tb_i.clk,
 			reset                         => s_tb_o.reset,
+			-- AXIS Interface
 			i_wt_s_axis_tdata             => tdata,
 			i_wt_s_axis_tkeep             => tkeep,
 			i_wt_s_axis_tlast             => tlast,
 			o_wt_s_axis_tready            => tready,
 			i_wt_s_axis_tvalid            => tvalid,
-			i_input_channel_per_iteration => s_tb_o.i_input_channel_per_iteration,
-			i_kernel_size                 => s_tb_o.i_kernel_size,
+			-- CONFIG Outputs
+			o_image_input_length          => s_tb_i.o_image_input_length,
+			o_image_output_length         => s_tb_i.o_image_output_length,
+			o_input_channel_size          => s_tb_i.o_input_channel_size,
+			o_output_channel_size         => s_tb_i.o_output_channel_size,
+			o_input_channel_per_iteration => s_tb_i.o_input_channel_per_iteration,
+			o_kernel_size                 => s_tb_i.o_kernel_size,
+			o_padding_size                => s_tb_i.o_padding_size,
+			o_stride_bit_mask             => s_tb_i.o_stride_bit_mask,
+			o_shamt                       => s_tb_i.o_shamt,
+			o_pool_or_conv                => s_tb_i.o_pool_or_conv,
+			o_enable_relu                 => s_tb_i.o_enable_relu,
+			-- WEIGHT MODULE OUTPUTS
 			o_kernel_weight_init          => s_tb_i.o_kernel_weight_init,
 			o_kernel_weight_error         => s_tb_i.o_kernel_weight_error,
-			o_kernel_weight_matrix        => s_tb_i.o_kernel_weight_matrix
+			o_kernel_weight_matrix        => s_tb_i.o_kernel_weight_matrix,
+			-- RESET OUTPUTS
+			o_rst_config_slider           => s_tb_i.o_rst_config_slider,
+			o_rst_kernel_cores            => s_tb_i.o_rst_kernel_cores,
+			o_rst_accumulator             => s_tb_i.o_rst_accumulator,
+			o_rst_bram_fifo               => s_tb_i.o_rst_bram_fifo,
+			-- Control Signals
+			i_temp_comp_complete          => s_tb_o.i_temp_comp_complete,
+			o_current_ic_amount           => s_tb_i.o_current_ic_amount,
+			o_current_oc_amount           => s_tb_i.o_current_oc_amount,
+			o_current_state               => s_tb_i.o_current_state,
+			o_overall_done                => s_tb_i.o_overall_done,
+			o_overall_error               => s_tb_i.o_overall_error
 		);
 
 	axi_stream_master_inst : entity vunit_lib.axi_stream_master

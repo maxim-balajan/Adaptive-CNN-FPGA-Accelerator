@@ -33,11 +33,6 @@ package weight_unit_tb_pkg is
 
 	type t_tb_o is record
 		reset : std_logic;
-		--
-		i_wt_s_axis_tdata  : std_logic_vector(127 downto 0);
-		i_wt_s_axis_tkeep  : std_logic_vector(15 downto 0);
-		i_wt_s_axis_tlast  : std_logic;
-		i_wt_s_axis_tvalid : std_logic;
 		-- CONFIG MODULE OUTPUTS
 		i_input_channel_per_iteration : std_logic_vector(15 downto 0);
 		i_kernel_size                 : std_logic_vector(7 downto 0);
