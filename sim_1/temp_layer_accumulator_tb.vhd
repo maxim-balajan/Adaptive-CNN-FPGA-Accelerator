@@ -1,7 +1,6 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-use ieee.math_real.all;
 use work.libmatrix.all;
 
 entity temp_layer_accumulator_tb is
@@ -17,19 +16,22 @@ architecture bench of temp_layer_accumulator_tb is
 	constant g_max_fifo_depth        : natural := 27 ** 2;
 	constant g_oc_amount             : natural := 5;
 	-- Ports
-	signal clk               : std_logic := '1';
-	signal reset             : std_logic;
-	signal i_en              : std_logic := '0';
-	signal i_kernel_complete : std_logic;
-	signal i_kernel_valid    : std_logic;
-	signal i_pixel_line, s_pixel_line      : matrix_1d(0 to g_oc_amount - 1)(g_vector_length - 1 downto 0);
-	signal i_pixel_amount    : std_logic_vector(integer(ceil(log2(real(g_max_fifo_depth)))) - 1 downto 0);
-	signal i_oc_size         : std_logic_vector(15 downto 0);
-	signal i_enable_relu     : std_logic;
-	signal i_shamt           : std_logic_vector(g_vector_length - 1 downto 0);
-	signal o_kernel_complete : std_logic;
-	signal o_kernel_valid    : std_logic;
-	signal o_pixel_line      : matrix_1d(0 to g_oc_amount - 1)(g_clipped_vector_length - 1 downto 0);
+	signal clk                           : std_logic := '1';
+	signal reset                         : std_logic;
+	signal i_en                          : std_logic := '0';
+	signal i_kernel_complete             : std_logic;
+	signal i_kernel_valid                : std_logic;
+	signal i_pixel_line, s_pixel_line    : matrix_1d(0 to g_oc_amount - 1)(g_vector_length - 1 downto 0);
+	signal i_pixel_amount                : std_logic_vector(31 downto 0);
+	signal i_pool_or_conv                : std_logic;
+	signal i_current_ic_amount           : std_logic_vector(15 downto 0);
+	signal i_input_channel_per_iteration : std_logic_vector(15 downto 0);
+	signal i_input_channel_size          : std_logic_vector(15 downto 0);
+	signal i_enable_relu                 : std_logic;
+	signal i_shamt                       : std_logic_vector(g_vector_length - 1 downto 0);
+	signal o_kernel_complete             : std_logic;
+	signal o_kernel_valid                : std_logic;
+	signal o_pixel_line                  : matrix_1d(0 to g_oc_amount - 1)(g_clipped_vector_length - 1 downto 0);
 
 begin
 
@@ -41,23 +43,22 @@ begin
 			g_oc_amount             => g_oc_amount
 		)
 		port map (
-			clk   => clk,
-			reset => reset,
-			--
-			i_en => i_en,
-			--
-			i_kernel_complete => i_kernel_complete,
-			i_kernel_valid    => i_kernel_valid,
-			i_pixel_line      => i_pixel_line,
-			--
-			i_pixel_amount => i_pixel_amount,
-			i_oc_size      => i_oc_size,
-			i_enable_relu  => i_enable_relu,
-			i_shamt        => i_shamt,
-			--
-			o_kernel_complete => o_kernel_complete,
-			o_kernel_valid    => o_kernel_valid,
-			o_pixel_line      => o_pixel_line
+			clk                           => clk,
+			reset                         => reset,
+			i_en                          => i_en,
+			i_kernel_complete             => i_kernel_complete,
+			i_kernel_valid                => i_kernel_valid,
+			i_pixel_line                  => i_pixel_line,
+			i_pixel_amount                => i_pixel_amount,
+			i_pool_or_conv                => i_pool_or_conv,
+			i_current_ic_amount           => i_current_ic_amount,
+			i_input_channel_per_iteration => i_input_channel_per_iteration,
+			i_input_channel_size          => i_input_channel_size,
+			i_enable_relu                 => i_enable_relu,
+			i_shamt                       => i_shamt,
+			o_kernel_complete             => o_kernel_complete,
+			o_kernel_valid                => o_kernel_valid,
+			o_pixel_line                  => o_pixel_line
 		);
 
 	clk <= not clk after clk_period / 2;
@@ -70,13 +71,15 @@ begin
 		i_shamt(1 downto 0)                   <= "01";
 		i_shamt(g_vector_length - 1 downto 2) <= (others => '0');
 		i_enable_relu                         <= '1';
+		i_pool_or_conv                        <= '1';
 		-- 4 pixel per iteration
 		i_pixel_amount(2 downto 0)                   <= "100";
 		i_pixel_amount(i_pixel_amount'high downto 3) <= (others => '0');
-		-- 4 output channels, meaning 4 iterations
-		i_oc_size <= x"0004";
+
+		i_input_channel_per_iteration <= std_logic_vector(to_unsigned(4, i_input_channel_per_iteration'length));
+		i_input_channel_size          <= std_logic_vector(to_unsigned(8, i_input_channel_per_iteration'length));
 		wait for 2 * clk_period;
-		reset     <= '0';
+		reset                         <= '0';
 		wait;
 
 	end process RESET_PROC;
@@ -86,8 +89,9 @@ begin
 	PIXEL_PROC : process is
 	begin
 
-		i_kernel_complete <= '0';
-		i_kernel_valid    <= '0';
+		i_kernel_complete   <= '0';
+		i_kernel_valid      <= '0';
+		i_current_ic_amount <= (others => '0');
 
 		for i in s_pixel_line'range loop
 
@@ -103,42 +107,43 @@ begin
 
 		for l in 0 to 3 loop
 
-			--for en_count in 0 to 2 loop
+			-- for en_count in 0 to 2 loop
 
-			--	i_en <= '1' when en_count = 1 else '0';
+			--  i_en <= '1' when en_count = 1 else '0';
 
-				for k in 0 to 3 loop
+			for k in 0 to 3 loop
 
-					wait until rising_edge(i_en);
-					i_kernel_complete <= '0';
-					i_kernel_valid    <= '1';
-					wait until rising_edge(i_en);
-					wait for clk_period;
+				wait until rising_edge(i_en);
+				i_kernel_complete <= '0';
+				i_kernel_valid    <= '1';
+				wait until rising_edge(i_en);
+				wait for clk_period;
 
-					i_kernel_complete <= '1' when k = 3 and l = 3 else '0';
-					i_kernel_valid    <= '0';
-					i_pixel_line      <= (others => (others => '1'));
-					wait for clk_period;
+				i_kernel_complete <= '1' when k = 3 and l = 3 else '0';
+				i_kernel_valid    <= '0';
+				i_pixel_line      <= (others => (others => '1'));
+				wait for clk_period;
 
-					for i in s_pixel_line'range loop
+				for i in s_pixel_line'range loop
 
-						s_pixel_line(i) <= std_logic_vector(signed(s_pixel_line(i)) + 1);
-
-					end loop;
-
-					wait for 0 ns;
-
-					i_pixel_line <= s_pixel_line;
+					s_pixel_line(i) <= std_logic_vector(signed(s_pixel_line(i)) + 1);
 
 				end loop;
 
-			--end loop;
+				wait for 0 ns;
 
-			--wait for clk_period;
+				i_pixel_line <= s_pixel_line;
+
+			end loop;
+
+			i_current_ic_amount <= std_logic_vector((unsigned(i_current_ic_amount) + unsigned(i_input_channel_per_iteration)) mod unsigned(i_input_channel_size));
+		-- end loop;
+
+		-- wait for clk_period;
 
 		end loop;
 
-		--i_en <= '1';
+		-- i_en <= '1';
 
 		-- i_kernel_complete <= '1';
 
