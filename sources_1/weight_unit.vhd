@@ -49,7 +49,7 @@ begin
 	----------------------------------------
 
 	TDATA_MAP_GEN : for i in s_sa_wt_tdata'range generate
-		s_sa_wt_tdata(s_sa_wt_tdata'length - i - 1) <= i_wt_s_axis_tdata((i + 1) * g_weight_bit_width - 1 downto i * g_weight_bit_width)
+		s_sa_wt_tdata(i) <= i_wt_s_axis_tdata((i + 1) * g_weight_bit_width - 1 downto i * g_weight_bit_width)
 	                                               when i_wt_s_axis_tkeep(i) = '1' else
 	                                               (others => '0');
 	end generate TDATA_MAP_GEN;
@@ -84,11 +84,14 @@ begin
 					s_wt_s_axis_tready <= '1';
 
 					if s_wt_s_axis_tready = '1' and i_wt_s_axis_tvalid = '1' then
-						-- Retrieve Memory with shift register
-						s_weight_mem <=  s_sa_wt_tdata & s_weight_mem(0 to s_weight_mem'high - s_sa_wt_tdata'length);
+						-- Retrieve Memory with indexer
+						for i in 0 to 128 / g_weight_bit_width - 1 loop
+							s_weight_mem(to_integer(s_init_weight_amount + i)) <= s_sa_wt_tdata(i);
+						end loop;
+						--s_weight_mem <=  s_sa_wt_tdata & s_weight_mem(0 to s_weight_mem'high - s_sa_wt_tdata'length);
 						-- Increment amount of weights received, take tkeep into account!
 						-- TODO: change to add 0xFFFF always because the unit will break if tkeep is not 0xFFFF during tlast=1
-						v_weight_amount := s_init_weight_amount + f_sum_bits_slv(i_wt_s_axis_tkeep);
+						v_weight_amount := s_init_weight_amount + 16;
 						-- Weights are filled completely
 						if v_weight_amount >= s_weight_amount then
 							-- set completion flag depending if transaction was valid or not
