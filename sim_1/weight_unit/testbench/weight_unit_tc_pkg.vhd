@@ -66,28 +66,11 @@ package body weight_unit_tc_pkg is
 
 		iteration_amount := integer(ceil(real(11 * 11 * 3) / real(128 / tb_i.g_weight_bit_width)));
 
-		-- Note: The weight unit takes in values in reversed order. Because of that, the first left_over
-		-- bytes need to be filled with garbled data to keep the alignment because the unit needs a stream
-		-- that ends with tlast=1 and tkeep=0xFFFF ! Otherwise the unit will break...
-		
-		left_over                              := iteration_amount * (128 / tb_i.g_weight_bit_width) - (11 * 11 * 3);
-		tdata(8 * left_over - 1 downto 0)      := (others => 'U');
-		tdata(tdata'high downto 8 * left_over) := (others => '1');
-		push_axi_stream(net, stream,
-	                tdata => tdata,
-	                tlast => '1',
-	                tkeep => x"FFFF"
-	              );
-
-		osvvm.AlertLogPkg.Log("Left_over: " & Integer'image(left_over));
-
 		for i in 1 to iteration_amount - 1 loop
-
-			tlast := '1' when i = (iteration_amount - 1) else '0';
 
 			push_axi_stream(net, stream,
 	                tdata => x"000102030405060708090A0B0C0D0E0F",
-	                tlast => tlast,
+	                tlast => '0',
 	                tkeep => x"FFFF"
 	              );
 
@@ -97,6 +80,28 @@ package body weight_unit_tc_pkg is
 				wait until rising_edge(tb_i.clk);
 
 			end loop;
+
+		end loop;
+
+		left_over                              := ((128 / tb_i.g_weight_bit_width)) - (iteration_amount * (128 / tb_i.g_weight_bit_width) - (11 * 11 * 3));
+		osvvm.AlertLogPkg.Log("Left_over: " & Integer'image(left_over));
+		
+		tdata(8 * left_over - 1 downto 0)      := (others => '1');
+		tdata(tdata'high downto 8 * left_over) := (others => 'U');
+		tkeep(left_over - 1 downto 0)          := (others => '1');
+		tkeep(tkeep'high downto left_over)     := (others => '0');
+		push_axi_stream(net, stream,
+	                tdata => tdata,
+	                tlast => '1',
+	                tkeep => tkeep
+	              );
+
+		osvvm.AlertLogPkg.Log("Left_over: " & Integer'image(left_over));
+
+		-- Random wait cycle
+		for j in 0 to sv_rnd.RandInt(0, 10) - 1 loop
+
+			wait until rising_edge(tb_i.clk);
 
 		end loop;
 

@@ -1,27 +1,28 @@
 [*]
 [*] GTKWave Analyzer v3.3.123 (w)1999-2025 BSI
-[*] Sat Oct  4 15:15:38 2025
+[*] Mon Oct  6 14:12:13 2025
 [*]
 [dumpfile] "/home/maxim/Documents/Uni/BA/bachelor-thesis/sim_1/weight_unit/vunit_out/test_output/tb_lib.weight_unit_tb.tb_cfg_0.TC_0000_1c7676a429299abd65dff84512cc46bfba137ea6/ghdl/wave.ghw"
-[dumpfile_mtime] "Sat Oct  4 15:11:05 2025"
-[dumpfile_size] 96131
+[dumpfile_mtime] "Mon Oct  6 12:39:45 2025"
+[dumpfile_size] 75987
 [savefile] "/home/maxim/Documents/Uni/BA/bachelor-thesis/sim_1/weight_unit/wave.cfg.gtkw"
 [timestart] 0
 [size] 1670 848
 [pos] -27 -24
-*-27.983292 335000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-28.033188 1190000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] top.
 [treeopen] top.weight_unit_tb.
 [treeopen] top.weight_unit_tb.weight_unit_inst.
 [treeopen] top.weight_unit_tb.weight_unit_inst.o_kernel_weight_matrix.
 [sst_width] 297
-[signals_width] 286
+[signals_width] 322
 [sst_expanded] 1
 [sst_vpaned_height] 528
+@29
+top.weight_unit_tb.s_tb_i.clk
 @28
 top.weight_unit_tb.s_tb_i.o_kernel_weight_error
 top.weight_unit_tb.s_tb_i.o_kernel_weight_init
-top.weight_unit_tb.s_tb_i.clk
 @420
 top.weight_unit_tb.s_tb_i.g_weight_amount
 top.weight_unit_tb.s_tb_i.g_weight_bit_width
@@ -42,7 +43,6 @@ top.weight_unit_tb.weight_unit_inst.s_weight_error
 top.weight_unit_tb.weight_unit_inst.s_weight_init
 @24
 #{top.weight_unit_tb.weight_unit_inst.s_weight_amount[31:0]} top.weight_unit_tb.weight_unit_inst.s_weight_amount[31] top.weight_unit_tb.weight_unit_inst.s_weight_amount[30] top.weight_unit_tb.weight_unit_inst.s_weight_amount[29] top.weight_unit_tb.weight_unit_inst.s_weight_amount[28] top.weight_unit_tb.weight_unit_inst.s_weight_amount[27] top.weight_unit_tb.weight_unit_inst.s_weight_amount[26] top.weight_unit_tb.weight_unit_inst.s_weight_amount[25] top.weight_unit_tb.weight_unit_inst.s_weight_amount[24] top.weight_unit_tb.weight_unit_inst.s_weight_amount[23] top.weight_unit_tb.weight_unit_inst.s_weight_amount[22] top.weight_unit_tb.weight_unit_inst.s_weight_amount[21] top.weight_unit_tb.weight_unit_inst.s_weight_amount[20] top.weight_unit_tb.weight_unit_inst.s_weight_amount[19] top.weight_unit_tb.weight_unit_inst.s_weight_amount[18] top.weight_unit_tb.weight_unit_inst.s_weight_amount[17] top.weight_unit_tb.weight_unit_inst.s_weight_amount[16] top.weight_unit_tb.weight_unit_inst.s_weight_amount[15] top.weight_unit_tb.weight_unit_inst.s_weight_amount[14] top.weight_unit_tb.weight_unit_inst.s_weight_amount[13] top.weight_unit_tb.weight_unit_inst.s_weight_amount[12] top.weight_unit_tb.weight_unit_inst.s_weight_amount[11] top.weight_unit_tb.weight_unit_inst.s_weight_amount[10] top.weight_unit_tb.weight_unit_inst.s_weight_amount[9] top.weight_unit_tb.weight_unit_inst.s_weight_amount[8] top.weight_unit_tb.weight_unit_inst.s_weight_amount[7] top.weight_unit_tb.weight_unit_inst.s_weight_amount[6] top.weight_unit_tb.weight_unit_inst.s_weight_amount[5] top.weight_unit_tb.weight_unit_inst.s_weight_amount[4] top.weight_unit_tb.weight_unit_inst.s_weight_amount[3] top.weight_unit_tb.weight_unit_inst.s_weight_amount[2] top.weight_unit_tb.weight_unit_inst.s_weight_amount[1] top.weight_unit_tb.weight_unit_inst.s_weight_amount[0]
-@23
 #{top.weight_unit_tb.weight_unit_inst.s_init_weight_amount[31:0]} top.weight_unit_tb.weight_unit_inst.s_init_weight_amount[31] top.weight_unit_tb.weight_unit_inst.s_init_weight_amount[30] top.weight_unit_tb.weight_unit_inst.s_init_weight_amount[29] top.weight_unit_tb.weight_unit_inst.s_init_weight_amount[28] top.weight_unit_tb.weight_unit_inst.s_init_weight_amount[27] top.weight_unit_tb.weight_unit_inst.s_init_weight_amount[26] top.weight_unit_tb.weight_unit_inst.s_init_weight_amount[25] top.weight_unit_tb.weight_unit_inst.s_init_weight_amount[24] top.weight_unit_tb.weight_unit_inst.s_init_weight_amount[23] top.weight_unit_tb.weight_unit_inst.s_init_weight_amount[22] top.weight_unit_tb.weight_unit_inst.s_init_weight_amount[21] top.weight_unit_tb.weight_unit_inst.s_init_weight_amount[20] top.weight_unit_tb.weight_unit_inst.s_init_weight_amount[19] top.weight_unit_tb.weight_unit_inst.s_init_weight_amount[18] top.weight_unit_tb.weight_unit_inst.s_init_weight_amount[17] top.weight_unit_tb.weight_unit_inst.s_init_weight_amount[16] top.weight_unit_tb.weight_unit_inst.s_init_weight_amount[15] top.weight_unit_tb.weight_unit_inst.s_init_weight_amount[14] top.weight_unit_tb.weight_unit_inst.s_init_weight_amount[13] top.weight_unit_tb.weight_unit_inst.s_init_weight_amount[12] top.weight_unit_tb.weight_unit_inst.s_init_weight_amount[11] top.weight_unit_tb.weight_unit_inst.s_init_weight_amount[10] top.weight_unit_tb.weight_unit_inst.s_init_weight_amount[9] top.weight_unit_tb.weight_unit_inst.s_init_weight_amount[8] top.weight_unit_tb.weight_unit_inst.s_init_weight_amount[7] top.weight_unit_tb.weight_unit_inst.s_init_weight_amount[6] top.weight_unit_tb.weight_unit_inst.s_init_weight_amount[5] top.weight_unit_tb.weight_unit_inst.s_init_weight_amount[4] top.weight_unit_tb.weight_unit_inst.s_init_weight_amount[3] top.weight_unit_tb.weight_unit_inst.s_init_weight_amount[2] top.weight_unit_tb.weight_unit_inst.s_init_weight_amount[1] top.weight_unit_tb.weight_unit_inst.s_init_weight_amount[0]
 @28
 top.weight_unit_tb.weight_unit_inst.s_wt_s_axis_tready
