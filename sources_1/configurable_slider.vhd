@@ -38,6 +38,7 @@ end entity configurable_slider;
 architecture rtl of configurable_slider is
 
 	-- Control signals
+	-- TODO : add earlier init_complete and give it to top level wrapper
 	signal s_init_complete    : std_logic;
 	signal s_full_stream_line : std_logic_vector(0 to G_LINE_BUFFER_AMOUNT - 1);
 

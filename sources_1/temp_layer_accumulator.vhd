@@ -21,7 +21,6 @@ entity temp_layer_accumulator is
 		i_kernel_valid    : in std_logic;
 		i_pixel_line      : in matrix_1d(0 to g_oc_amount - 1)(g_vector_length - 1 downto 0);
 		-- Control unit OUTPUT (Registered)
-		-- TODO: add pool_or_conv CL and refactor so that it takes current_ic_amount, input_channel_per_iteration and input_channel_size into account
 		i_pixel_amount                : in std_logic_vector(31 downto 0);
 		i_pool_or_conv                : in std_logic;
 		i_current_ic_amount           : in std_logic_vector(15 downto 0);
@@ -68,7 +67,7 @@ begin
 				-- delay other pixel lines and enable lines
 				if unsigned(i_current_ic_amount) + unsigned(i_input_channel_per_iteration) >= unsigned(i_input_channel_size) or i_pool_or_conv = '0' then
 					s_valid_pixel_line(1) <= s_valid_pixel_line(0);
-					-- TODO : refactor i_shamt to i_enable_shift if shift unit changes
+					-- Note : refactor i_shamt to i_enable_shift if shift unit changes
 					if i_pool_or_conv = '0' then
 						s_pixel_lines(1)(0) <= s_added_temp_layer_pixel;
 					elsif signed(s_shifted_temp_layer_pixel) > 0 or i_enable_relu = '0' then
@@ -87,7 +86,7 @@ begin
 
 	end process DELAY_PROC;
 
-	-- TODO: if hardware usage to much, replace with static unit that can be reconfigured
+	-- Note: if hardware usage to much, replace with static unit that can be reconfigured
 
 	s_shifted_temp_layer_pixel <= std_logic_vector(shift_right(signed(s_added_temp_layer_pixel), to_integer(unsigned(i_shamt))));
 
