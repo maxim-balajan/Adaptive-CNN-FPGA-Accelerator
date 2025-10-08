@@ -72,8 +72,7 @@ begin
 
 	axi_stream_master_inst : entity vunit_lib.axi_stream_master
 		generic map (
-			master => stream_master,
-			drive_invalid_val => '0'
+			master => stream_master
 		)
 		port map (
 			aclk     => s_tb_i.clk,
