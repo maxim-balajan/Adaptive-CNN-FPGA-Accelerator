@@ -7,12 +7,12 @@ use work.libmatrix.all;
 entity configurable_slider is
 	generic (
 		vector_length        : natural   := 8;
-		G_IMG_MAX_LENGTH     : natural   := 55;
+		G_IMG_MAX_LENGTH     : natural   := 230;
 		G_KERNEL_SIZE        : natural   := 5;
 		G_PADDING_SIZE       : natural   := 2;
 		G_MAX_KERNEL_SIZE    : natural   := 12;
-		G_LINE_BUFFER_AMOUNT : natural   := 12 * 3 * 5;
-		G_PIPELINE_STEPS     : natural   := 2;
+		G_LINE_BUFFER_AMOUNT : natural   := 16 * 5;
+		G_PIPELINE_STEPS     : natural   := 1;
 		G_DEBUG_FLAG         : std_logic := '0'
 	);
 	port (

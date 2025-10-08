@@ -2,6 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use ieee.math_real.all;
+use work.libmatrix.all;
 
 entity axis_data_width_converter is
 	generic (
@@ -27,21 +28,6 @@ entity axis_data_width_converter is
 end entity axis_data_width_converter;
 
 architecture rtl of axis_data_width_converter is
-
-	-- Method for multiplexing incoming data into the buffer
-
-	function f_mux_incoming_data (
-		s_axis_tdata    : std_logic_vector;
-		internal_memory : std_logic_vector;
-		byte_size       : integer
-	) return std_logic_vector is
-	begin
-
-		return (internal_memory'length - 1 downto (G_INPUT_BYTE_WIDTH + byte_size) * 8 => 'U')
-                & s_axis_tdata(G_INPUT_BYTE_WIDTH * 8 - 1 downto 0)
-                & internal_memory(byte_size * 8 - 1 downto 0);
-
-	end function f_mux_incoming_data;
 
 begin
 
@@ -76,7 +62,6 @@ begin
 	end generate PASSTHROUGH_GEN;
 
 	DOWNSIZE_GEN : if G_INPUT_BYTE_WIDTH > G_OUTPUT_BYTE_WIDTH generate
-		signal s_internal_memory : std_logic_vector(G_INPUT_BYTE_WIDTH * 8 + G_OUTPUT_BYTE_WIDTH * 8 - 1 downto 0);
 
 		signal s_s_axis_tready : std_logic;
 
@@ -85,9 +70,23 @@ begin
 		signal s_m_axis_tlast  : std_logic;
 		signal s_m_axis_tvalid : std_logic;
 
+		signal s_internal_memory : std_logic_vector(G_INPUT_BYTE_WIDTH * 8 + G_OUTPUT_BYTE_WIDTH * 8 - 1 downto 0);
+
+		signal s_barrel_shifted_internal_memory : matrix_1d(0 to G_OUTPUT_BYTE_WIDTH)(s_internal_memory'range);
+
 		signal s_element_count : unsigned(integer(log2(ceil(real(s_internal_memory'length)))) - 1 downto 0);
 
 	begin
+
+		-- Function does not work for synthesis so generate all possible shifts via generate statement and multiplex
+
+		BARREL_SHIFT_GEN : for byte_size in 0 to G_OUTPUT_BYTE_WIDTH generate
+			s_barrel_shifted_internal_memory(byte_size) <=
+			(s_internal_memory'length - 1 downto (G_INPUT_BYTE_WIDTH + byte_size) * 8 => 'U')
+			  & i_s_axis_tdata(G_INPUT_BYTE_WIDTH * 8 - 1 downto 0)
+			  & s_internal_memory(byte_size * 8 - 1 downto 0);
+
+		end generate BARREL_SHIFT_GEN;
 
 		SHIFT_MUX_PROC : process (clk) is
 
@@ -123,7 +122,7 @@ begin
 						s_s_axis_tready <= '0';
 
 						-- Mux incoming data into temporary buffer
-						v_tmp_internal_memory := f_mux_incoming_data(i_s_axis_tdata, v_tmp_internal_memory, v_tmp_element_count);
+						v_tmp_internal_memory := s_barrel_shifted_internal_memory(v_tmp_element_count);
 						v_tmp_element_count   := v_tmp_element_count + G_INPUT_BYTE_WIDTH;
 					end if;
 
@@ -137,11 +136,11 @@ begin
 
 					if v_tmp_element_count >= G_OUTPUT_BYTE_WIDTH then
 						s_m_axis_tvalid <= '1';
-						s_m_axis_tdata <= v_tmp_internal_memory(G_OUTPUT_BYTE_WIDTH * 8 - 1 downto 0);
+						s_m_axis_tdata  <= v_tmp_internal_memory(G_OUTPUT_BYTE_WIDTH * 8 - 1 downto 0);
 						s_m_axis_tkeep  <= (others => '1');
 					end if;
 
-					if (v_tmp_internal_memory'length) / 8 - v_tmp_element_count >= G_INPUT_BYTE_WIDTH then 
+					if (v_tmp_internal_memory'length) / 8 - v_tmp_element_count >= G_INPUT_BYTE_WIDTH then
 						s_s_axis_tready <= '1';
 					end if;
 
