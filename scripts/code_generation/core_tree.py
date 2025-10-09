@@ -102,7 +102,7 @@ class CoreTree():
 
 
     def route_single_oc(self, oc_id: int):
-        current_inputs = self.input_channel * self.input_amount
+        current_inputs = self.input_channel * self.input_amount if self.pool_or_conv == 1 else self.input_amount
         child_cores: list[CoreNode] = []
         iteration_count = 0
         # Int for marking the address if input should be taken from i_kernel_activation_matrix
@@ -113,7 +113,7 @@ class CoreTree():
         while (current_inputs > 1):
             try:
                     bit_width = None if not child_cores else child_cores[0].o_length
-                    distance, cores_needed, bundle_name, bundle = self.find_most_fitting_core_bundle(self.unused_cores, not iteration_count, current_inputs, bit_width)
+                    distance, cores_needed, bundle_name, bundle = self.find_most_fitting_core_bundle(self.unused_cores, not iteration_count and self.pool_or_conv, current_inputs, bit_width)
                     print(f"Iteration: {iteration_count}")
                     print(f"{cores_needed} Cores of bundle '{bundle_name}'")
                     print(f"{len(child_cores)} Child Cores")
@@ -247,9 +247,10 @@ class CoreTree():
 
         # Make final output for cores with no parent
         output_string = ""
+        # only take kernel_complete and of fist child
+        output_string += f'{C_TAB}o_kernel_complete <= s_kc_comp_line({final_cores[0][1].pipeline_steps})({final_cores[0][1].out_start_address});\n'
+        output_string += f'{C_TAB}o_kernel_valid    <= s_kc_valid_line({final_cores[0][1].pipeline_steps})({final_cores[0][1].out_start_address});\n'
         for oc_id, core in final_cores:
-            output_string += f'{C_TAB}o_kernel_complete <= s_kc_comp_line({core.pipeline_steps})({core.out_start_address});\n'
-            output_string += f'{C_TAB}o_kernel_valid    <= s_kc_valid_line({core.pipeline_steps})({core.out_start_address});\n'
             output_string += f'{C_TAB}o_pixel_line({oc_id})   <= s_kc_pixel_line({core.pipeline_steps})({core.out_start_address});\n'
 
 
