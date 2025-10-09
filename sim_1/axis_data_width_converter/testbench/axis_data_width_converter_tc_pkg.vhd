@@ -53,6 +53,14 @@ package body axis_data_width_converter_tc_pkg is
 
 		for i in 0 to 2 * tb_i.G_OUTPUT_BYTE_WIDTH loop
 
+			if i = 5 then
+				tb_o.reset <= '1';
+				wait until rising_edge(tb_i.clk);
+				wait until rising_edge(tb_i.clk);
+				tb_o.reset <= '0';
+				wait until rising_edge(tb_i.clk);
+			end if;
+
 			v_tlast := '0' when i /= 2 * tb_i.G_OUTPUT_BYTE_WIDTH - 1 else '1';
 
 			push_axi_stream(net, stream,

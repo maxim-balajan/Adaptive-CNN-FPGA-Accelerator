@@ -78,6 +78,10 @@ begin
 		stride_bit_mask     <= std_logic_vector(to_unsigned(1, stride_bit_mask'length));
 		wait for clk_period;
 		reset               <= '0';
+		wait until rising_edge(kernel_complete) for 5000 * clk_period;
+		reset <= '1';
+		wait for 1.5 * clk_period;
+		reset <= '0';
 		wait;
 
 	end process RESET_PROC;
@@ -122,7 +126,10 @@ begin
 		assert kernel_complete = '1'
 			report "Kernel Complete was not set in time after 50us! Aborting further simulation..."
 			severity FAILURE;
-		wait for 5000 * clk_period;
+		wait until rising_edge(kernel_complete) for 5000 * clk_period;
+			assert kernel_complete = '1'
+				report "Kernel Complete was not set in time after 50us! Aborting further simulation..."
+				severity FAILURE;
 		finish;
 
 	end process TB;
