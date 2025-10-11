@@ -19,8 +19,8 @@ entity axis_data_width_converter is
 		o_s_axis_tready : out std_logic;
 		i_s_axis_tvalid : in std_logic;
 		-- AXIS OUTPUT
-		o_m_axis_tdata  : out std_logic_vector(G_OUTPUT_BYTE_WIDTH * 8 - 1 downto 0);
-		o_m_axis_tkeep  : out std_logic_vector(G_OUTPUT_BYTE_WIDTH - 1 downto 0);
+		o_m_axis_tdata  : out std_logic_vector(G_INPUT_BYTE_WIDTH * 8 - 1 downto 0);
+		o_m_axis_tkeep  : out std_logic_vector(G_INPUT_BYTE_WIDTH - 1 downto 0);
 		o_m_axis_tlast  : out std_logic;
 		i_m_axis_tready : in std_logic;
 		o_m_axis_tvalid : out std_logic
@@ -36,28 +36,26 @@ begin
 
 		-- Passthrough pipelined for helping when reconfiguring unit
 
-		process (clk) is
-		begin
-
-			if rising_edge(clk) then
-				if reset = '1' then
-					o_s_axis_tready <= '0';
-					--
-					o_m_axis_tdata  <= (others => '0');
-					o_m_axis_tkeep  <= (others => '0');
-					o_m_axis_tlast  <= '0';
-					o_m_axis_tvalid <= '0';
-				else
-					o_s_axis_tready <= i_m_axis_tready;
-					--
-					o_m_axis_tdata  <= i_s_axis_tdata;
-					o_m_axis_tkeep  <= i_s_axis_tkeep;
-					o_m_axis_tlast  <= i_s_axis_tlast;
-					o_m_axis_tvalid <= i_s_axis_tvalid;
-				end if;
-			end if;
-
-		end process;
+		axis_pipeline_step_inst : entity work.axis_pipeline_step
+			generic map (
+				G_BYTE_WIDTH => G_INPUT_BYTE_WIDTH
+			)
+			port map (
+				clk   => clk,
+				reset => reset,
+				-- AXIS INPUT
+				i_s_axis_tdata  => i_s_axis_tdata,
+				i_s_axis_tkeep  => i_s_axis_tkeep,
+				i_s_axis_tlast  => i_s_axis_tlast,
+				o_s_axis_tready => o_s_axis_tready,
+				i_s_axis_tvalid => i_s_axis_tvalid,
+				-- AXIS OUTPUT
+				o_m_axis_tdata  => o_m_axis_tdata,
+				o_m_axis_tkeep  => o_m_axis_tkeep,
+				o_m_axis_tlast  => o_m_axis_tlast,
+				i_m_axis_tready => i_m_axis_tready,
+				o_m_axis_tvalid => o_m_axis_tvalid
+			);
 
 	end generate PASSTHROUGH_GEN;
 
@@ -65,8 +63,8 @@ begin
 
 		signal s_s_axis_tready : std_logic;
 
-		signal s_m_axis_tdata  : std_logic_vector(o_m_axis_tdata'range);
-		signal s_m_axis_tkeep  : std_logic_vector(o_m_axis_tkeep'range);
+		signal s_m_axis_tdata  : std_logic_vector(G_OUTPUT_BYTE_WIDTH * 8 - 1 downto 0);
+		signal s_m_axis_tkeep  : std_logic_vector(G_OUTPUT_BYTE_WIDTH - 1 downto 0);
 		signal s_m_axis_tlast  : std_logic;
 		signal s_m_axis_tvalid : std_logic;
 
@@ -82,9 +80,12 @@ begin
 
 		BARREL_SHIFT_GEN : for byte_size in 0 to G_OUTPUT_BYTE_WIDTH generate
 			s_barrel_shifted_internal_memory(byte_size) <=
-			(s_internal_memory'length - 1 downto (G_INPUT_BYTE_WIDTH + byte_size) * 8 => 'U')
+			(
+			  s_internal_memory'length - 1 downto (G_INPUT_BYTE_WIDTH + byte_size) * 8 => 'U'
+			)
 			  & i_s_axis_tdata(G_INPUT_BYTE_WIDTH * 8 - 1 downto 0)
-			  & s_internal_memory(byte_size * 8 - 1 downto 0);
+			  & s_internal_memory(byte_size * 8 - 1 downto 0
+			                     );
 
 		end generate BARREL_SHIFT_GEN;
 
@@ -159,10 +160,12 @@ begin
 		o_s_axis_tready <= s_s_axis_tready;
 
 		-- Set Master AXIS Interface
-		o_m_axis_tdata  <= s_m_axis_tdata;
-		o_m_axis_tkeep  <= s_m_axis_tkeep;
-		o_m_axis_tvalid <= s_m_axis_tvalid;
-		o_m_axis_tlast  <= s_m_axis_tlast;
+		o_m_axis_tdata(s_m_axis_tdata'range)                             <= s_m_axis_tdata;
+		o_m_axis_tdata(o_m_axis_tdata'high downto s_m_axis_tdata'length) <= (others => '0');
+		o_m_axis_tkeep(s_m_axis_tkeep'range)                             <= s_m_axis_tkeep;
+		o_m_axis_tkeep(o_m_axis_tkeep'high downto s_m_axis_tkeep'length) <= (others => '0');
+		o_m_axis_tvalid                                                  <= s_m_axis_tvalid;
+		o_m_axis_tlast                                                   <= s_m_axis_tlast;
 	end generate DOWNSIZE_GEN;
 
 	UPSIZE_GEN : if G_INPUT_BYTE_WIDTH < G_OUTPUT_BYTE_WIDTH generate
