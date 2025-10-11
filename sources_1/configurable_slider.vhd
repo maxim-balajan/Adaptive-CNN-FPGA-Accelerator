@@ -28,6 +28,10 @@ entity configurable_slider is
 		kernel_size     : in std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
 		padding_size    : in std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
 		stride_bit_mask : in std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
+		-- Control Logic
+		init_complete     : out std_logic;
+		init_complete_1ce : out std_logic;
+		init_complete_2ce : out std_logic;
 		--
 		kernel_complete          : out std_logic;
 		kernel_en                : out std_logic;
@@ -38,9 +42,10 @@ end entity configurable_slider;
 architecture rtl of configurable_slider is
 
 	-- Control signals
-	-- TODO : add earlier init_complete and give it to top level wrapper
-	signal s_init_complete    : std_logic;
-	signal s_full_stream_line : std_logic_vector(0 to G_LINE_BUFFER_AMOUNT - 1);
+	signal s_init_complete     : std_logic;
+	signal s_init_complete_1ce : std_logic;
+	signal s_init_complete_2ce : std_logic;
+	signal s_full_stream_line  : std_logic_vector(0 to G_LINE_BUFFER_AMOUNT - 1);
 
 	-- The main inputs every linebuffer or line_unit gets from the routing unit
 	signal s_line_buffer_streams : matrix_1d(0 to G_LINE_BUFFER_AMOUNT - 1)(vector_length - 1 downto 0);
@@ -100,6 +105,8 @@ begin
 			enable_matrix       => s_enable_matrix,
 			--
 			init_complete         => s_init_complete,
+			init_complete_1ce     => s_init_complete_1ce,
+			init_complete_2ce     => s_init_complete_2ce,
 			activation_matrix_out => s_activation_matrix_nulled,
 			pixel_streams_out     => s_line_buffer_streams,
 			set_full_stream_out   => s_full_stream_line,
@@ -133,7 +140,14 @@ begin
 
 	end generate LINE_BUFFER_GEN;
 
-	-- Set output of activation matrix
+	----------------------------------------
+	-- Set outputs
+	----------------------------------------
+
 	kernel_activation_matrix <= s_activation_matrix_nulled;
+
+	init_complete     <= s_init_complete;
+	init_complete_1ce <= s_init_complete_1ce;
+	init_complete_2ce <= s_init_complete_2ce;
 
 end architecture rtl;

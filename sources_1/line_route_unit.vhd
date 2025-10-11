@@ -7,7 +7,7 @@ use work.libmatrix.all;
 entity line_route_unit is
 	generic (
 		vector_length        : natural   := 8;
-		G_PADDING_SIZE		 : natural 	 := 2;
+		G_PADDING_SIZE       : natural   := 2;
 		G_KERNEL_SIZE        : natural   := 5;
 		G_MAX_KERNEL_SIZE    : natural   := 12;
 		G_LINE_BUFFER_AMOUNT : natural   := 12 * 3 * 5;
@@ -24,6 +24,8 @@ entity line_route_unit is
 		enable_matrix       : in matrix_1d(0 to G_LINE_BUFFER_AMOUNT - 1)(0 to G_MAX_KERNEL_SIZE - 1);
 		--
 		init_complete         : out std_logic;
+		init_complete_1ce     : out std_logic;
+		init_complete_2ce     : out std_logic;
 		activation_matrix_out : out matrix_1d(0 to G_LINE_BUFFER_AMOUNT * G_MAX_KERNEL_SIZE - 1)(vector_length - 1 downto 0);
 		pixel_streams_out     : out matrix_1d(0 to G_LINE_BUFFER_AMOUNT - 1)(vector_length - 1 downto 0);
 		set_full_stream_out   : out std_logic_vector(0 to G_LINE_BUFFER_AMOUNT - 1);
@@ -52,9 +54,9 @@ begin
 			else
 				if valid_pixel_streams = '1' then
 					s_pixel_streams_out(s_pixel_streams_out'low + 1 to s_pixel_streams_out'high)
- 						<= s_pixel_streams_out(s_pixel_streams_out'low to s_pixel_streams_out'high - 1);
+ <= s_pixel_streams_out(s_pixel_streams_out'low to s_pixel_streams_out'high - 1);
 					s_enable_stream_out(s_enable_stream_out'low + 1 to s_enable_stream_out'high)
- 						<= s_enable_stream_out(s_enable_stream_out'low to s_enable_stream_out'high - 1);
+ <= s_enable_stream_out(s_enable_stream_out'low to s_enable_stream_out'high - 1);
 				end if;
 			end if;
 		end if;
@@ -82,11 +84,12 @@ begin
 		end generate ACTIVATION_MATRIX_ROUTE_GEN;
 
 		-- Set Full LB depending on the padding size
+
 		CHECK_SET_FULL_GEN : if i mod G_KERNEL_SIZE < G_PADDING_SIZE generate
 			set_full_stream_out(i) <= '1';
 		else generate
 			set_full_stream_out(i) <= '0';
-		end generate;
+		end generate CHECK_SET_FULL_GEN;
 
 	end generate PIXEL_STREAMS_OUT_GEN;
 
@@ -94,22 +97,29 @@ begin
 	-- Mirroring of Kernels...
 	-------------------------------------------------------------------
 	-- Note: if G_LINE_BUFFER_AMOUNT is not multiple of G_KERNEL_SIZE,
-	--		 the rest "mod" values are left as undefined
-	--		 -> is ok because they should never be used regardless...
+	--     the rest "mod" values are left as undefined
+	--     -> is ok because they should never be used regardless...
 	-------------------------------------------------------------------
 
 	FLAT_GEN_Y : for j in 0 to G_LINE_BUFFER_AMOUNT / G_KERNEL_SIZE - 1 generate
-		FLAT_GEN_X1: for i in 0 to G_KERNEL_SIZE - 1 generate
-			FLAT_GEN_X2: for k in 0 to G_KERNEL_SIZE - 1 generate
+
+		FLAT_GEN_X1 : for i in 0 to G_KERNEL_SIZE - 1 generate
+
+			FLAT_GEN_X2 : for k in 0 to G_KERNEL_SIZE - 1 generate
 				activation_matrix_out(j * (G_KERNEL_SIZE ** 2) + i * G_KERNEL_SIZE + k) <= s_activation_matrix_out((j + 1) * G_KERNEL_SIZE - i - 1)(G_KERNEL_SIZE - k - 1);
-			end generate;
+			end generate FLAT_GEN_X2;
+
 		end generate FLAT_GEN_X1;
+
 	end generate FLAT_GEN_Y;
 
 	-- Set outputs
 	s_tp_enable_matrix <= transpose_matrix1d(enable_matrix);
-	init_complete      <= and s_tp_enable_matrix(G_KERNEL_SIZE - 1);
-	pixel_streams_out  <= s_pixel_streams_out(s_pixel_streams_out'high);
-	enable_stream_out  <= s_enable_stream_out(s_enable_stream_out'high);
+	-- get actual init complete and a one and a two cycle earlier init complete
+	init_complete     <= and s_tp_enable_matrix(G_KERNEL_SIZE - 1);
+	init_complete_1ce <= and s_tp_enable_matrix(G_KERNEL_SIZE - 2);
+	init_complete_2ce <= and s_tp_enable_matrix(G_KERNEL_SIZE - 3);
+	pixel_streams_out <= s_pixel_streams_out(s_pixel_streams_out'high);
+	enable_stream_out <= s_enable_stream_out(s_enable_stream_out'high);
 
 end architecture rtl;
