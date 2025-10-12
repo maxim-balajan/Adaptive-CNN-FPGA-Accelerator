@@ -59,7 +59,7 @@ package axis_2_pxs_tb_pkg is
 		clk : std_logic;
 		-- Pixel Stream Output
 		o_valid_pixel_streams : std_logic;
-		o_pixel_streams       : matrix_1d(0 to C_MAX_INPUT_BYTE_WIDTH)(7 downto 0);
+		o_pixel_streams       : matrix_1d(0 to C_MAX_INPUT_BYTE_WIDTH - 1)(7 downto 0);
 	end record t_tb_i;
 
 	----------------------------------------------------------------------

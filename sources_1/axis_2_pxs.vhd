@@ -33,7 +33,7 @@ entity axis_2_pxs is
 		i_cs_init : in std_logic;
 		-- Pixel Stream Output
 		o_valid_pixel_streams : out std_logic;
-		o_pixel_streams       : out matrix_1d(0 to G_INPUT_BYTE_WIDTH)(G_BRAM_BYTE_WIDTH * 8 - 1 downto 0)
+		o_pixel_streams       : out matrix_1d(0 to G_INPUT_BYTE_WIDTH - 1)(G_BRAM_BYTE_WIDTH * 8 - 1 downto 0)
 	);
 end entity axis_2_pxs;
 

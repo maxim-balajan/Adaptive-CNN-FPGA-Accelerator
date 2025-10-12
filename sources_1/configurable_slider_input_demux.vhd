@@ -28,7 +28,7 @@ entity configurable_slider_input_demux is
 		i_empty       : in std_logic_vector(G_DATA_BYTE_WIDTH / G_BRAM_BYTE_WIDTH - 1 downto 0);
 		--
 		o_valid_pixel_streams : out std_logic;
-		o_pixel_streams       : out matrix_1d(0 to G_DATA_BYTE_WIDTH - 1)(G_BRAM_BYTE_WIDTH * 8 - 1 downto 0)
+		o_pixel_streams       : out matrix_1d(0 to G_DATA_BYTE_WIDTH / G_BRAM_BYTE_WIDTH - 1)(G_BRAM_BYTE_WIDTH * 8 - 1 downto 0)
 	);
 end entity configurable_slider_input_demux;
 
@@ -38,15 +38,19 @@ architecture rtl of configurable_slider_input_demux is
 	constant C_BRAM_PER_IC : natural := G_DATA_BYTE_WIDTH / (G_INPUT_CHANNEL_PER_ITERATION * G_BRAM_BYTE_WIDTH);
 
 	signal s_current_read_id     : natural range 0 to C_BRAM_PER_IC - 1;
-	signal s_pixel_input_x       : unsigned(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
-	signal s_pixel_input_y       : unsigned(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) downto 0);
-	signal s_actual_input_length : unsigned(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
+	signal s_pixel_input_x       : signed(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) downto 0);
+	signal s_pixel_input_y       : signed(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) + 1 downto 0);
+	signal s_actual_input_length : signed(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) + 1 downto 0);
 
 	signal s_rd_en      : std_logic;
 	signal s_is_padding : std_logic;
 
+	-- BRAM signals delayed by one cycle
+
 	signal s_pipeline_valid_line : std_logic_vector(0 to 2);
 	signal s_pixel_streams       : std_logic_vector(G_DATA_BYTE_WIDTH * 8 - 1 downto 0);
+	-- array representation of bram signals
+	signal s_pixel_streams_matrix : matrix_1d(0 to G_DATA_BYTE_WIDTH / G_BRAM_BYTE_WIDTH - 1)(G_BRAM_BYTE_WIDTH * 8 - 1 downto 0);
 
 begin
 
@@ -58,8 +62,8 @@ begin
 				s_current_read_id                     <= 0;
 				s_pixel_input_x                       <= (others => '0');
 				s_pixel_input_y                       <= (others => '0');
-				s_pixel_input_y(i_padding_size'range) <= UNSIGNED(i_padding_size);
-				s_actual_input_length                 <= unsigned(i_image_input_length) + shift_left(unsigned(i_padding_size), 1);
+				s_pixel_input_y(i_padding_size'high downto 0) <= signed(i_padding_size);
+				s_actual_input_length                 <= RESIZE(signed(i_image_input_length) + SHIFT_LEFT(signed(i_padding_size), 1), s_actual_input_length'length);
 				--
 				s_rd_en                  <= '0';
 				s_pipeline_valid_line(0) <= '0';
@@ -77,6 +81,11 @@ begin
 				if s_pixel_input_x = s_actual_input_length - 1 then
 					s_pixel_input_x <= (others => '0');
 					s_pixel_input_y <= s_pixel_input_y + 1;
+					-- keep s_pixel_y at s_actual_input_length to always treat it as padding
+					-- -> only 0 will be pipelined at the end, no actual values
+					if s_pixel_input_y = s_actual_input_length then
+						s_pixel_input_y <= s_pixel_input_y;
+					end if;
 				end if;
 			else
 				s_rd_en                  <= '0';
@@ -103,32 +112,34 @@ begin
 
 	end process BRAM_PIPELINE;
 
-	OUTPUT_GEN : for i in 0 to G_INPUT_CHANNEL_PER_ITERATION - 1 generate
-
-	end generate OUTPUT_GEN;
-
 	----------------------------------------
 	-- Asynchrones signals
 	----------------------------------------
-	s_is_padding <= '1' when s_pixel_input_x < unsigned(i_padding_size)
-	                         or s_actual_input_length - s_pixel_input_x < unsigned(i_padding_size)
-	                         or s_actual_input_length - s_pixel_input_y < unsigned(i_padding_size) else
+	s_is_padding <= '1' when s_pixel_input_x < RESIZE(signed(i_padding_size), s_actual_input_length'length)
+	                         or (s_actual_input_length - s_pixel_input_x - 1) < RESIZE(signed(i_padding_size), s_actual_input_length'length)
+	                         or (s_actual_input_length - s_pixel_input_y - 1) < RESIZE(signed(i_padding_size), s_actual_input_length'length) else
 	                '0';
+
+	-- Map pixel stream to matrix to be able to multiplex signal
+	PIXEL_MAP_GEN : for i in s_pixel_streams_matrix'range generate
+		s_pixel_streams_matrix(i) <= s_pixel_streams((i + 1) * (G_BRAM_BYTE_WIDTH * 8) - 1 downto i * (G_BRAM_BYTE_WIDTH * 8));
+	end generate PIXEL_MAP_GEN;
 
 	----------------------------------------
 	-- Set outputs
 	----------------------------------------
 
+	-- Demultiplex rd signal to correct BRAM
 	RD_GEN : for j in o_rd_en'range generate
 		o_rd_en(j) <= s_rd_en when s_current_read_id = (j mod C_BRAM_PER_IC) else '0';
-
-		OUT_GEN : if j mod C_BRAM_PER_IC = s_current_read_id generate
-			o_pixel_streams(j / C_BRAM_PER_IC) <= i_data_stream((j + 1) * (G_BRAM_BYTE_WIDTH * 8) - 1 downto j * (G_BRAM_BYTE_WIDTH * 8));
-		end generate OUT_GEN;
-
 	end generate RD_GEN;
 
-	o_pixel_streams(s_pixel_streams'high downto o_pixel_streams'high / C_BRAM_PER_IC + 1) <= (others => (others => '0'));
-	o_valid_pixel_streams                                                                 <= s_pipeline_valid_line(s_pipeline_valid_line'high);
+	-- Multiplex correct BRAM data to first G_INPUT_CHANNEL_PER_ITERATION slots of output pixel stream
+	OUTPUT_GEN : for i in 0 to G_INPUT_CHANNEL_PER_ITERATION - 1 generate
+		o_pixel_streams(i) <= s_pixel_streams_matrix(s_current_read_id + i * C_BRAM_PER_IC);
+	end generate OUTPUT_GEN;
+
+	o_pixel_streams(G_INPUT_CHANNEL_PER_ITERATION to o_pixel_streams'high) <= (others => (others => '0'));
+	o_valid_pixel_streams                                                      <= s_pipeline_valid_line(s_pipeline_valid_line'high);
 
 end architecture rtl;
