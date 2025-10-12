@@ -56,7 +56,7 @@ package body axis_2_pxs_tc_pkg is
 
 		tc_init(tb_o, tb_i);
 
-		for i in 0 to 99 loop
+		for i in 0 to 109 loop
 
 			push_axi_stream(net, stream,
 	                tdata => tdata,

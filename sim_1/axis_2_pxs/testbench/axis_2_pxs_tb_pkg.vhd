@@ -120,7 +120,7 @@ package body axis_2_pxs_tb_pkg is
 
 		for i in 0 to tb_i.G_INPUT_BYTE_WIDTH - 1 loop
 
-			start_slv := std_logic_vector(to_unsigned((i / px_amount_per_ic + 1) mod tb_i.G_INPUT_CHANNEL_PER_ITERATION, 8)) & start_slv(start_slv'high downto 8);
+			start_slv := std_logic_vector(to_unsigned((i / px_amount_per_ic) mod tb_i.G_INPUT_CHANNEL_PER_ITERATION + 1, 8)) & start_slv(start_slv'high downto 8);
 
 		end loop;
 
@@ -142,7 +142,7 @@ package body axis_2_pxs_tb_pkg is
 			return new_vector;
 		else
 			new_vector                                                          := std_logic_vector(shift_right(unsigned(new_vector), bit_difference));
-			new_vector(new_vector'high downto new_vector'high - bit_difference) := new_vector(new_vector'low + bit_difference downto new_vector'low);
+			new_vector(new_vector'high downto new_vector'high - bit_difference + 1) := new_vector(new_vector'low + bit_difference - 1 downto new_vector'low);
 			return new_vector;
 		end if;
 
