@@ -73,6 +73,9 @@ begin
 					s_rd_en <= '0';
 				elsif i_empty(s_current_read_id) = '0' then
 					s_current_read_id <= s_current_read_id + 1;
+					if s_current_read_id = C_BRAM_PER_IC - 1 then
+						s_current_read_id <= 0;
+					end if;
 					s_rd_en           <= '1';
 				end if;
 				s_pipeline_valid_line(0) <= '1';

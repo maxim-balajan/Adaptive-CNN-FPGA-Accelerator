@@ -48,8 +48,8 @@ package axis_2_pxs_tb_pkg is
 	type t_tb_i is record
 		-- generics
 		g_log_level                   : integer range 0 to 2;
-		G_INPUT_BYTE_WIDTH            : INTEGER range 1 to 128;
-		G_OUTPUT_BYTE_WIDTH           : INTEGER range 1 to 128;
+		G_INPUT_BYTE_WIDTH            : integer range 1 to 128;
+		G_OUTPUT_BYTE_WIDTH           : integer range 1 to 128;
 		G_BRAM_BYTE_WIDTH             : natural;
 		G_INPUT_CHANNEL_PER_ITERATION : natural;
 		G_IMG_MAX_LENGTH              : natural;
@@ -66,6 +66,14 @@ package axis_2_pxs_tb_pkg is
 	-- FUNCTIONs
 	----------------------------------------------------------------------
 
+	function f_create_start_stream (
+		signal tb_i : in t_tb_i
+	) return std_logic_vector;
+
+	function f_create_data_stream (
+		signal tb_i : in t_tb_i;
+		constant start_slv : std_logic_vector
+	) return std_logic_vector;
 	----------------------------------------------------------------------
 	-- PROCEDUREs
 	----------------------------------------------------------------------
@@ -100,6 +108,45 @@ package body axis_2_pxs_tb_pkg is
 	----------------------------------------------------------------------
 	-- FUNCTIONs
 	----------------------------------------------------------------------
+
+	function f_create_start_stream (
+		signal tb_i : in t_tb_i
+	) return std_logic_vector is
+
+		variable start_slv : std_logic_vector(tb_i.G_INPUT_BYTE_WIDTH * 8 - 1 downto 0) := (others => '0');
+		constant px_amount_per_ic : natural                                             := tb_i.G_INPUT_BYTE_WIDTH / tb_i.G_INPUT_CHANNEL_PER_ITERATION;
+
+	begin
+
+		for i in 0 to tb_i.G_INPUT_BYTE_WIDTH - 1 loop
+
+			start_slv := std_logic_vector(to_unsigned((i / px_amount_per_ic + 1) mod tb_i.G_INPUT_CHANNEL_PER_ITERATION, 8)) & start_slv(start_slv'high downto 8);
+
+		end loop;
+
+		return start_slv;
+
+	end function f_create_start_stream;
+
+	function f_create_data_stream (
+		signal tb_i : in t_tb_i;
+		constant start_slv : std_logic_vector
+	) return std_logic_vector is
+
+		variable new_vector : std_logic_vector(tb_i.G_INPUT_BYTE_WIDTH * 8 - 1 downto 0) := start_slv;
+		variable bit_difference : natural                                                := (tb_i.G_INPUT_BYTE_WIDTH - tb_i.G_OUTPUT_BYTE_WIDTH) * 8;
+
+	begin
+
+		if tb_i.G_INPUT_BYTE_WIDTH = tb_i.G_OUTPUT_BYTE_WIDTH then
+			return new_vector;
+		else
+			new_vector                                                          := std_logic_vector(shift_right(unsigned(new_vector), bit_difference));
+			new_vector(new_vector'high downto new_vector'high - bit_difference) := new_vector(new_vector'low + bit_difference downto new_vector'low);
+			return new_vector;
+		end if;
+
+	end function f_create_data_stream;
 
 	----------------------------------------------------------------------
 	-- PROCEDUREs

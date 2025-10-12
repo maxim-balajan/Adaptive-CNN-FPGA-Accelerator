@@ -43,15 +43,39 @@ package body axis_2_pxs_tc_pkg is
 		signal tb_i     : in t_tb_i
 	) is
 
+		variable tdata : std_logic_vector(tb_i.G_INPUT_BYTE_WIDTH * 8 - 1 downto 0) := f_create_start_stream(tb_i);
+
 	begin
+
+		tb_o.i_image_input_length <= std_logic_vector(to_unsigned(10, tb_o.i_image_input_length'length));
+		tb_o.i_padding_size       <= std_logic_vector(to_unsigned(2, tb_o.i_padding_size'length));
+
+		tb_o.i_wt_init <= '0';
+		tb_o.i_cs_init <= '0';
+		tb_o.i_en      <= '1';
 
 		tc_init(tb_o, tb_i);
 
-		check_failed(" # TC not implemented yet!");
+		for i in 0 to 99 loop
+
+			push_axi_stream(net, stream,
+	                tdata => tdata,
+	                tlast => '0',
+	                tkeep => x"FFFF");
+
+			tdata := f_create_data_stream(tb_i, tdata);
+
+			-- Random wait cycle
+			for j in 0 to sv_rnd.RandInt(0, 5) - 1 loop
+
+				wait until rising_edge(tb_i.clk);
+
+			end loop;
+
+		end loop;
 
 		tc_end(tb_o, tb_i);
 
 	end procedure TC_0000;
-
 
 end package body axis_2_pxs_tc_pkg;

@@ -120,8 +120,8 @@ begin
 
 			if run("TC_0000") then
 				TC_0000(net, stream_master, s_tb_o, s_tb_i);
-			elsif run("TC_0001") then
-				TC_0000(net, stream_master, s_tb_o, s_tb_i);
+			--elsif run("TC_0001") then
+			--	TC_0000(net, stream_master, s_tb_o, s_tb_i);
 			else
 				report "main: invalid test case assigned: " & enabled_test_cases(runner_cfg)
 					severity failure;
