@@ -50,37 +50,42 @@ architecture bench of axis_2_configurable_slider_tb is
 	signal tkeep  : std_logic_vector(G_INPUT_BYTE_WIDTH - 1 downto 0);
 
 	signal s_count_valid : integer := 0;
+
 begin
 
-	axis_2_pxs_inst : entity work.axis_2_pxs
+	axis_2_configurable_slider_wrapper_inst : entity work.axis_2_configurable_slider_wrapper
 		generic map (
-			G_INPUT_BYTE_WIDTH            => G_INPUT_BYTE_WIDTH,
-			G_OUTPUT_BYTE_WIDTH           => G_OUTPUT_BYTE_WIDTH,
-			G_BRAM_BYTE_WIDTH             => 1,
-			G_INPUT_CHANNEL_PER_ITERATION => G_INPUT_CHANNEL_PER_ITERATION,
-			G_IMG_MAX_LENGTH              => G_IMG_MAX_LENGTH,
-			G_MAX_FIFO_DEPTH              => G_MAX_FIFO_DEPTH,
-			G_NEAR_FULL_THRESHOLD         => G_NEAR_FULL_THRESHOLD
+			G_VECTOR_BYTE_LENGTH          => 1,
+			G_IMG_MAX_LENGTH              => 300,
+			G_KERNEL_SIZE                 => 5,
+			G_PADDING_SIZE                => 2,
+			G_INPUT_BYTE_WIDTH            => 16,
+			G_OUTPUT_BYTE_WIDTH           => 15,
+			G_INPUT_CHANNEL_PER_ITERATION => 3,
+			G_MAX_FIFO_DEPTH              => 512,
+			G_NEAR_FULL_THRESHOLD         => 0,
+			G_MAX_KERNEL_SIZE             => 11,
+			G_LINE_BUFFER_AMOUNT          => 16 * 5,
+			G_PIPELINE_STEPS              => 1
 		)
 		port map (
-			clk   => s_tb_i.clk,
-			reset => s_tb_o.reset,
-			--
-			i_en => s_tb_i.i_en,
-			--
-			i_s_axis_tdata  => tdata,
-			i_s_axis_tkeep  => tkeep,
-			i_s_axis_tlast  => tlast,
-			o_s_axis_tready => tready,
-			i_s_axis_tvalid => tvalid,
-			--
-			i_image_input_length => s_tb_o.i_image_input_length,
-			i_padding_size       => s_tb_o.i_padding_size,
-			i_wt_init            => s_tb_i.i_wt_init,
-			i_cs_init            => s_tb_i.i_cs_init,
-			--
-			o_valid_pixel_streams => s_tb_i.o_valid_pixel_streams,
-			o_pixel_streams       => s_tb_i.o_pixel_streams
+			clk                        => clk,
+			reset                      => '0',
+			i_en                       => '1',
+			i_s_axis_tdata             => tdata,
+			i_s_axis_tkeep             => tkeep,
+			i_s_axis_tlast             => tlast,
+			o_s_axis_tready            => tready,
+			i_s_axis_tvalid            => tvalid,
+			i_image_input_length       => (others => '0') ,
+			i_image_output_length      => (others => '0') ,
+			i_kernel_size              => (others => '0') ,
+			i_padding_size             => (others => '0') ,
+			i_stride_bit_mask          => (others => '0') ,
+			i_wt_init                  => '0',
+			o_kernel_complete          => open,
+			o_kernel_en                => open,
+			o_kernel_activation_matrix => open
 		);
 
 	axi_stream_master_inst : entity vunit_lib.axi_stream_master
@@ -195,19 +200,24 @@ begin
 	-------------------------------------------
 	-- Monitors
 	-------------------------------------------
+
 	b_valid_count : block is
 	begin
-		process (clk)
+
+		process (clk) is
 		begin
+
 			if rising_edge(clk) then
 				if s_tb_o.reset = '1' then
-					s_count_valid <= 0; 
+					s_count_valid <= 0;
 				elsif s_tb_i.o_valid_pixel_streams = '1' then
 					s_count_valid <= s_count_valid + 1;
 				end if;
 			end if;
+
 		end process;
-	end block;
+
+	end block b_valid_count;
 
 	-------------------------------------------
 	-- misc.

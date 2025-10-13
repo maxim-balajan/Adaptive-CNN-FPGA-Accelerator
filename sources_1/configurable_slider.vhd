@@ -22,12 +22,12 @@ entity configurable_slider is
 		valid_pixel_streams : in std_logic;
 		pixel_streams       : in matrix_1d(0 to G_LINE_BUFFER_AMOUNT - 1)(vector_length - 1 downto 0);
 		--
-		input_image_length  : in std_logic_vector(15 downto 0);
-		output_image_length : in std_logic_vector(15 downto 0);
+		input_image_length  : in std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
+		output_image_length : in std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
 		-- normally padding size would not be necessary, but it enables skipping a lot of initialization
-		kernel_size     : in std_logic_vector(7 downto 0);
-		padding_size    : in std_logic_vector(7 downto 0);
-		stride_bit_mask : in std_logic_vector(7 downto 0);
+		kernel_size     : in std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
+		padding_size    : in std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
+		stride_bit_mask : in std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
 		-- Control Logic
 		init_complete     : out std_logic;
 		init_complete_1ce : out std_logic;
@@ -56,7 +56,7 @@ architecture rtl of configurable_slider is
 	signal s_activation_matrix_nulled : matrix_1d(0 to G_LINE_BUFFER_AMOUNT * G_MAX_KERNEL_SIZE - 1)(vector_length - 1 downto 0);
 	signal s_enable_matrix            : matrix_1d(0 to G_LINE_BUFFER_AMOUNT - 1)(0 to G_MAX_KERNEL_SIZE - 1);
 
-	signal s_actual_image_length : std_logic_vector(15 downto 0);
+	signal s_actual_image_length : std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
 
 begin
 
@@ -129,7 +129,7 @@ begin
 				-- The pipelined steps need to be subtracted in order to get correct timing
 				-- As always Ungabunga -1 to solve the additional timing problem
 				-- And another -1 for the implicit buffering created by the routing unit
-				line_buffer_depth => std_logic_vector(resize(unsigned(input_image_length) + shift_left(unsigned(padding_size), 1) - G_PIPELINE_STEPS - 2, integer(ceil(log2(real(G_IMG_MAX_LENGTH)))))),
+				line_buffer_depth => std_logic_vector(unsigned(input_image_length) + shift_left(unsigned(padding_size), 1) - G_PIPELINE_STEPS - 2),
 				din               => s_line_buffer_streams(i),
 				en                => valid_pixel_streams,
 				wr_en             => s_line_buffer_enables(i) or s_full_stream_line(i),

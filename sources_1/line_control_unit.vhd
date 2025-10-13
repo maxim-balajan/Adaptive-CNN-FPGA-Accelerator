@@ -17,14 +17,14 @@ entity line_control_unit is
 		valid_pixel   : in std_logic;
 		init_complete : in std_logic;
 		--
-		input_image_length  : in std_logic_vector(15 downto 0);
-		output_image_length : in std_logic_vector(15 downto 0);
+		input_image_length  : in std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
+		output_image_length : in std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
 		-- normally padding size would not be necessary, but it enables skipping a lot of initialization
-		kernel_size     : in std_logic_vector(7 downto 0);
-		padding_size    : in std_logic_vector(7 downto 0);
-		stride_bit_mask : in std_logic_vector(7 downto 0);
+		kernel_size     : in std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
+		padding_size    : in std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
+		stride_bit_mask : in std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
 		--
-		actual_image_length : out std_logic_vector(15 downto 0);
+		actual_image_length : out std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
 		kernel_en           : out std_logic;
 		kernel_complete     : out std_logic
 	);

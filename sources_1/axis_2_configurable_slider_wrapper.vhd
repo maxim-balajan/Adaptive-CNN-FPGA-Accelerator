@@ -12,8 +12,8 @@ entity axis_2_configurable_slider_wrapper is
 		G_KERNEL_SIZE        : natural := 5;
 		G_PADDING_SIZE       : natural := 2;
 		-- AXIS_2_PXS Generics
-		G_INPUT_BYTE_WIDTH            : INTEGER range 1 to 128 := 16;
-		G_OUTPUT_BYTE_WIDTH           : INTEGER range 1 to 128 := 15;
+		G_INPUT_BYTE_WIDTH            : integer range 1 to 128 := 16;
+		G_OUTPUT_BYTE_WIDTH           : integer range 1 to 128 := 15;
 		G_INPUT_CHANNEL_PER_ITERATION : natural                := 3;
 		G_MAX_FIFO_DEPTH              : natural                := 512;
 		G_NEAR_FULL_THRESHOLD         : natural                := 0;
@@ -50,12 +50,21 @@ end entity axis_2_configurable_slider_wrapper;
 
 architecture rtl of axis_2_configurable_slider_wrapper is
 
+	-- Necessary for code to be elaborated
+	constant C_IMG_MAX_BIT_LENGTH : natural := integer(ceil(log2(real(G_IMG_MAX_LENGTH))));
+
 	signal s_cs_init     : std_logic;
 	signal s_cs_init_del : std_logic;
 	signal s_wt_init     : std_logic;
 
-    signal s_valid_pixel_streams : std_logic;
-    signal s_pixel_streams : matrix_1d(0 to G_LINE_BUFFER_AMOUNT - 1)(G_VECTOR_BYTE_LENGTH * 8 - 1 downto 0);
+	signal s_valid_pixel_streams : std_logic;
+	signal s_pixel_streams       : matrix_1d(0 to G_LINE_BUFFER_AMOUNT - 1)(G_VECTOR_BYTE_LENGTH * 8 - 1 downto 0);
+
+	signal s_input_image_length  : std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
+	signal s_output_image_length : std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
+	signal s_kernel_size         : std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
+	signal s_padding_size        : std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
+	signal s_stride_bit_mask     : std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
 
 begin
 
@@ -74,7 +83,22 @@ begin
 
 	end process DELAY_PROC;
 
-    s_pixel_streams(G_INPUT_BYTE_WIDTH to s_pixel_streams'high) <= (others => (others => '0') ); 
+	----------------------------------------
+	-- Asynchronous signals
+	----------------------------------------
+
+	-- Set rest of pixel streams that will never be mapped to 0s
+	s_pixel_streams(G_INPUT_BYTE_WIDTH to s_pixel_streams'high) <= (others => (others => '0'));
+	-- Resize all config registers to be fitting for configurable slider
+	s_input_image_length  <= std_logic_vector(resize(unsigned(i_image_input_length), s_input_image_length'length));
+	s_output_image_length <= std_logic_vector(resize(unsigned(i_image_output_length), s_output_image_length'length));
+	s_kernel_size         <= std_logic_vector(resize(unsigned(i_kernel_size), s_kernel_size'length));
+	s_padding_size        <= std_logic_vector(resize(unsigned(i_padding_size), s_padding_size'length));
+	s_stride_bit_mask     <= std_logic_vector(resize(unsigned(i_stride_bit_mask), s_stride_bit_mask'length));
+
+	----------------------------------------
+	-- Instantiation of axis interface
+	----------------------------------------
 
 	axis_2_pxs_inst : entity work.axis_2_pxs
 		generic map (
@@ -108,6 +132,11 @@ begin
 			o_pixel_streams       => s_pixel_streams(0 to G_INPUT_BYTE_WIDTH - 1)
 		);
 
+	----------------------------------------
+	-- Instantiation of configurable
+	-- line buffer structure
+	----------------------------------------
+
 	configurable_slider_inst : entity work.configurable_slider
 		generic map (
 			vector_length        => G_VECTOR_BYTE_LENGTH * 8,
@@ -126,11 +155,11 @@ begin
 			valid_pixel_streams => s_valid_pixel_streams,
 			pixel_streams       => s_pixel_streams,
 			--
-			input_image_length  => i_image_input_length,
-			output_image_length => i_image_output_length,
-			kernel_size         => i_kernel_size,
-			padding_size        => i_padding_size,
-			stride_bit_mask     => i_stride_bit_mask,
+			input_image_length  => s_input_image_length,
+			output_image_length => s_output_image_length,
+			kernel_size         => s_kernel_size,
+			padding_size        => s_padding_size,
+			stride_bit_mask     => s_stride_bit_mask,
 			--
 			init_complete     => open,
 			init_complete_1ce => open,
