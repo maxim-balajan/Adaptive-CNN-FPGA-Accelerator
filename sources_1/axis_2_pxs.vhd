@@ -118,8 +118,6 @@ begin
 			clk   => clk,
 			reset => reset,
 			--
-			i_en => i_en,
-			--
 			i_input_stream  => s_ps_2_bfa_axis_tdata,
 			i_wr_en         => s_bfa_wr_en,
 			i_rd_en         => s_bfa_rd_en,

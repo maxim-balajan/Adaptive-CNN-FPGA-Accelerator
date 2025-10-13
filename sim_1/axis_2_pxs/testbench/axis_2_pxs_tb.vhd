@@ -34,9 +34,12 @@ end entity axis_2_pxs_tb;
 architecture bench of axis_2_pxs_tb is
 
 	-- Clock period
-	signal clk    : std_logic := '0';
-	signal s_tb_i : t_tb_i;
-	signal s_tb_o : t_tb_o;
+	signal clk       : std_logic := '0';
+	signal s_tb_i    : t_tb_i;
+	signal s_tb_o    : t_tb_o;
+	signal s_en      : std_logic := '1';
+	signal s_wt_init : std_logic := '0';
+	signal s_cs_init : std_logic := '0';
 
 	constant stream_master : axi_stream_master_t := new_axi_stream_master(data_length => G_INPUT_BYTE_WIDTH * 8);
 
@@ -46,6 +49,7 @@ architecture bench of axis_2_pxs_tb is
 	signal tlast  : std_logic;
 	signal tkeep  : std_logic_vector(G_INPUT_BYTE_WIDTH - 1 downto 0);
 
+	signal s_count_valid : integer := 0;
 begin
 
 	axis_2_pxs_inst : entity work.axis_2_pxs
@@ -62,7 +66,7 @@ begin
 			clk   => s_tb_i.clk,
 			reset => s_tb_o.reset,
 			--
-			i_en => s_tb_o.i_en,
+			i_en => s_tb_i.i_en,
 			--
 			i_s_axis_tdata  => tdata,
 			i_s_axis_tkeep  => tkeep,
@@ -72,8 +76,8 @@ begin
 			--
 			i_image_input_length => s_tb_o.i_image_input_length,
 			i_padding_size       => s_tb_o.i_padding_size,
-			i_wt_init            => s_tb_o.i_wt_init,
-			i_cs_init            => s_tb_o.i_cs_init,
+			i_wt_init            => s_tb_i.i_wt_init,
+			i_cs_init            => s_tb_i.i_cs_init,
 			--
 			o_valid_pixel_streams => s_tb_i.o_valid_pixel_streams,
 			o_pixel_streams       => s_tb_i.o_pixel_streams
@@ -97,6 +101,61 @@ begin
 			tuser    => open
 		);
 
+	EN_PROC : process is
+	begin
+
+		for i in 0 to sv_rnd.RandInt(0, 4) loop
+
+			wait until rising_edge(s_tb_i.clk);
+
+		end loop;
+
+		s_en <= '1';
+
+		for i in 0 to sv_rnd.RandInt(0, 2) loop
+
+			wait until rising_edge(s_tb_i.clk);
+
+		end loop;
+
+		s_en <= '0';
+
+	end process EN_PROC;
+
+	WT_INIT_PROC : process is
+	begin
+
+		s_wt_init <= '0';
+
+		for i in 0 to sv_rnd.RandInt(43, 188) loop
+
+			wait until rising_edge(s_tb_i.clk) and s_en = '1';
+
+		end loop;
+
+		s_wt_init <= '1';
+
+		wait;
+
+	end process WT_INIT_PROC;
+
+	CS_INIT_PROC : process is
+	begin
+
+		s_cs_init <= '0';
+
+		for i in 0 to sv_rnd.RandInt(23, 57) loop
+
+			wait until rising_edge(s_tb_i.clk) and s_en = '1';
+
+		end loop;
+
+		s_cs_init <= '1';
+
+		wait;
+
+	end process CS_INIT_PROC;
+
 	main : process is
 	begin
 
@@ -119,9 +178,9 @@ begin
 		while test_suite loop
 
 			if run("TC_0000") then
-				TC_0000(net, stream_master, s_tb_o, s_tb_i);
-			--elsif run("TC_0001") then
-			--	TC_0000(net, stream_master, s_tb_o, s_tb_i);
+				TC_0000(net, stream_master, s_tb_o, s_tb_i, s_en);
+			-- elsif run("TC_0001") then
+			--  TC_0000(net, stream_master, s_tb_o, s_tb_i);
 			else
 				report "main: invalid test case assigned: " & enabled_test_cases(runner_cfg)
 					severity failure;
@@ -134,6 +193,23 @@ begin
 	end process main;
 
 	-------------------------------------------
+	-- Monitors
+	-------------------------------------------
+	b_valid_count : block is
+	begin
+		process (clk)
+		begin
+			if rising_edge(clk) then
+				if s_tb_o.reset = '1' then
+					s_count_valid <= 0; 
+				elsif s_tb_i.o_valid_pixel_streams = '1' then
+					s_count_valid <= s_count_valid + 1;
+				end if;
+			end if;
+		end process;
+	end block;
+
+	-------------------------------------------
 	-- misc.
 	-------------------------------------------
 
@@ -142,10 +218,13 @@ begin
 	b_misc : block is
 	begin
 
-		p_clk : process (clk) is
+		p_clk : process (clk, s_en, s_wt_init, s_cs_init) is
 		begin
 
-			s_tb_i.clk <= clk;
+			s_tb_i.clk       <= clk;
+			s_tb_i.i_en      <= s_en;
+			s_tb_i.i_wt_init <= s_wt_init;
+			s_tb_i.i_cs_init <= s_cs_init;
 
 		end process p_clk;
 

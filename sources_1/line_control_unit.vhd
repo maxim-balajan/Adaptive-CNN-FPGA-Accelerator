@@ -17,14 +17,14 @@ entity line_control_unit is
 		valid_pixel   : in std_logic;
 		init_complete : in std_logic;
 		--
-		input_image_length  : in std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
-		output_image_length : in std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
+		input_image_length  : in std_logic_vector(15 downto 0);
+		output_image_length : in std_logic_vector(15 downto 0);
 		-- normally padding size would not be necessary, but it enables skipping a lot of initialization
-		kernel_size     : in std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
-		padding_size    : in std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
-		stride_bit_mask : in std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
+		kernel_size     : in std_logic_vector(7 downto 0);
+		padding_size    : in std_logic_vector(7 downto 0);
+		stride_bit_mask : in std_logic_vector(7 downto 0);
 		--
-		actual_image_length : out std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
+		actual_image_length : out std_logic_vector(15 downto 0);
 		kernel_en           : out std_logic;
 		kernel_complete     : out std_logic
 	);
@@ -44,13 +44,6 @@ architecture rtl of line_control_unit is
 	-- Current pixel to be pipelined
 	signal s_current_pixel : std_logic_vector(vector_length - 1 downto 0);
 	signal s_current_valid : std_logic;
-
-	-- Register for storing meta data
-	signal s_input_image_length  : std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
-	signal s_output_image_length : std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
-	signal s_kernel_size         : std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
-	signal s_padding_size        : std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
-	signal s_stride_bit_mask     : std_logic_vector(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) - 1 downto 0);
 
 	-- Helper signals to determine which kernels are valid and when computation needs to end
 	signal s_valid_kernel    : std_logic;
@@ -72,12 +65,6 @@ begin
 				s_current_pixel                                    <= (others => '0');
 				s_kernel_complete                                  <= '0';
 				s_current_valid                                    <= '0';
-				-- Setting of meta data registers
-				s_input_image_length  <= input_image_length;
-				s_output_image_length <= output_image_length;
-				s_kernel_size         <= kernel_size;
-				s_padding_size        <= padding_size;
-				s_stride_bit_mask     <= stride_bit_mask;
 
 				-- store how large the actual image is
 				s_actual_input_length <= unsigned(input_image_length) + shift_left(unsigned(padding_size), 1);
@@ -100,7 +87,7 @@ begin
 
 				-- after final pixel has been reached, set complete flag;
 				-- This has to be written exactly like this because otherwise undefined behavior of HW after completion will mess with this flag
-				if s_pixel_output_x = unsigned(s_output_image_length) - 1 and s_pixel_output_y = unsigned(s_output_image_length) - 1 then
+				if s_pixel_output_x = unsigned(output_image_length) - 1 and s_pixel_output_y = unsigned(output_image_length) - 1 then
 					s_kernel_complete <= '1';
 				end if;
 			end if;
@@ -112,8 +99,8 @@ begin
 	s_valid_kernel <= '1' when s_pixel_input_x < s_actual_input_length - unsigned(kernel_size) + 1 else '0';
 
 	-- This signal shows wether the correct striding window has been reached or not
-	s_stride_reached <= (not (or (std_logic_vector(s_pixel_input_x) and s_stride_bit_mask)))
-	                    and (not (or (std_logic_vector(s_pixel_input_y(s_pixel_input_y'high - 1 downto 0)) and s_stride_bit_mask)));
+	s_stride_reached <= (not (or (std_logic_vector(s_pixel_input_x) and stride_bit_mask)))
+	                    and (not (or (std_logic_vector(s_pixel_input_y(s_pixel_input_y'high - 1 downto 0)) and stride_bit_mask)));
 
 	s_kernel_en <= '1' when init_complete = '1'
 	                        and s_current_valid = '1'
@@ -133,7 +120,7 @@ begin
 				s_pixel_output_y <= (others => '0');
 			elsif s_kernel_en = '1' then
 				s_pixel_output_x <= s_pixel_output_x + 1;
-				if s_pixel_output_x = unsigned(s_output_image_length) - 1 then
+				if s_pixel_output_x = unsigned(output_image_length) - 1 then
 					s_pixel_output_x <= (others => '0');
 					s_pixel_output_y <= s_pixel_output_y + 1;
 				end if;

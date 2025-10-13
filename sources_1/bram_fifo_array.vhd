@@ -14,8 +14,6 @@ entity bram_fifo_array is
 		clk   : in std_logic;
 		reset : in std_logic;
 		--
-		i_en : in std_logic;
-		--
 		i_input_stream : in std_logic_vector(G_DATA_BYTE_WIDTH * 8 - 1 downto 0);
 		i_wr_en        : in std_logic_vector(G_DATA_BYTE_WIDTH / G_BRAM_BYTE_WIDTH - 1 downto 0);
 		i_rd_en        : in std_logic_vector(G_DATA_BYTE_WIDTH / G_BRAM_BYTE_WIDTH - 1 downto 0);
@@ -52,8 +50,8 @@ begin
 				depth    => C_DEPTH,
 				--
 				din   => i_input_stream((i + 1) * (G_BRAM_BYTE_WIDTH * 8) - 1 downto i * (G_BRAM_BYTE_WIDTH * 8)),
-				wr_en => i_wr_en(i) and i_en,
-				rd_en => i_rd_en(i) and i_en,
+				wr_en => i_wr_en(i),
+				rd_en => i_rd_en(i),
 				--
 				dout      => o_output_stream((i + 1) * (G_BRAM_BYTE_WIDTH * 8) - 1 downto i * (G_BRAM_BYTE_WIDTH * 8)),
 				near_full => open,

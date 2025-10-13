@@ -91,7 +91,7 @@ begin
 				-- Reset of last write value and put on it 0 for now
 				s_last_write <= '0';
 				-- Always write 0 even if no read was performed
-				s_dout <= (others => '0'); 
+				--s_dout <= (others => '0'); 
 				if rd_en = '1' and s_empty = '0' then
 					-- Read from memory
 					-- Only get the actual memory if reset_cycle has been completed

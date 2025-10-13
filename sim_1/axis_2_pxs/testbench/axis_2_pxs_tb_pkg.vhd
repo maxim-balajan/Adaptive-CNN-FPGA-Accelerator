@@ -33,14 +33,9 @@ package axis_2_pxs_tb_pkg is
 
 	type t_tb_o is record
 		reset : std_logic;
-		--
-		i_en : std_logic;
 		-- Control Inputs [REGISTERED after reset]
 		i_image_input_length :std_logic_vector(15 downto 0);
 		i_padding_size       :std_logic_vector(7 downto 0);
-		-- Control Inputs [Not REGISTERED after reset]
-		i_wt_init :std_logic;
-		i_cs_init :std_logic;
 	end record t_tb_o;
 
 	-- TB input record
@@ -60,13 +55,22 @@ package axis_2_pxs_tb_pkg is
 		-- Pixel Stream Output
 		o_valid_pixel_streams : std_logic;
 		o_pixel_streams       : matrix_1d(0 to C_MAX_INPUT_BYTE_WIDTH - 1)(7 downto 0);
+		--
+		i_en : std_logic;
+		-- Control Inputs [Not REGISTERED after reset]
+		i_wt_init :std_logic;
+		i_cs_init :std_logic;
 	end record t_tb_i;
 
 	----------------------------------------------------------------------
 	-- FUNCTIONs
 	----------------------------------------------------------------------
 
-	function f_create_start_stream (
+	function f_create_start_stream_ic_indicator (
+		signal tb_i : in t_tb_i
+	) return std_logic_vector;
+
+		function f_create_start_stream_id_indicator (
 		signal tb_i : in t_tb_i
 	) return std_logic_vector;
 
@@ -109,7 +113,7 @@ package body axis_2_pxs_tb_pkg is
 	-- FUNCTIONs
 	----------------------------------------------------------------------
 
-	function f_create_start_stream (
+	function f_create_start_stream_ic_indicator (
 		signal tb_i : in t_tb_i
 	) return std_logic_vector is
 
@@ -126,7 +130,26 @@ package body axis_2_pxs_tb_pkg is
 
 		return start_slv;
 
-	end function f_create_start_stream;
+	end function f_create_start_stream_ic_indicator;
+
+	function f_create_start_stream_id_indicator (
+		signal tb_i : in t_tb_i
+	) return std_logic_vector is
+
+		variable start_slv : std_logic_vector(tb_i.G_INPUT_BYTE_WIDTH * 8 - 1 downto 0) := (others => '0');
+		constant px_amount_per_ic : natural                                             := tb_i.G_INPUT_BYTE_WIDTH / tb_i.G_INPUT_CHANNEL_PER_ITERATION;
+
+	begin
+
+		for i in 0 to tb_i.G_INPUT_BYTE_WIDTH - 1 loop
+
+			start_slv := std_logic_vector(to_unsigned((i mod px_amount_per_ic) + 1, 8)) & start_slv(start_slv'high downto 8);
+
+		end loop;
+
+		return start_slv;
+
+	end function f_create_start_stream_id_indicator;
 
 	function f_create_data_stream (
 		signal tb_i : in t_tb_i;
@@ -141,7 +164,7 @@ package body axis_2_pxs_tb_pkg is
 		if tb_i.G_INPUT_BYTE_WIDTH = tb_i.G_OUTPUT_BYTE_WIDTH then
 			return new_vector;
 		else
-			new_vector                                                          := std_logic_vector(shift_right(unsigned(new_vector), bit_difference));
+			new_vector                                                              := std_logic_vector(shift_right(unsigned(new_vector), bit_difference));
 			new_vector(new_vector'high downto new_vector'high - bit_difference + 1) := new_vector(new_vector'low + bit_difference - 1 downto new_vector'low);
 			return new_vector;
 		end if;
