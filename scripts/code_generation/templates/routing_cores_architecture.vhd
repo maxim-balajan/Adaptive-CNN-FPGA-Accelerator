@@ -22,9 +22,9 @@ architecture %%ROUTE_ARCHITECTURE_NAME%% of routing_cores is
     SIGNAL s_wm_bias_line     : matrix_1d(i_bias_line'RANGE)(i_bias_line(i_bias_line'LOW)'RANGE);
 
     -- KERNEL CORES OUTPUT SHIFT REGISTERS (delay bounded by C_MAX_PIPELINE_STEPS)
-    SIGNAL s_kc_pixel_line : matrix_2d(0 to C_MAX_PIPELINE_STEPS - 1)(i_pixel_line'RANGE)(i_pixel_line(i_pixel_line'LOW)'RANGE);
-    SIGNAL s_kc_valid_line : matrix_1d(0 to C_MAX_PIPELINE_STEPS - 1)(i_valid_pixel_line'RANGE);
-    SIGNAL s_kc_comp_line  : matrix_1d(0 to C_MAX_PIPELINE_STEPS - 1)(i_comp_complete_line'RANGE);
+    SIGNAL s_kc_pixel_line : matrix_2d(0 to C_MAX_PIPELINE_STEPS)(i_pixel_line'RANGE)(i_pixel_line(i_pixel_line'LOW)'RANGE);
+    SIGNAL s_kc_valid_line : matrix_1d(0 to C_MAX_PIPELINE_STEPS)(i_valid_pixel_line'RANGE);
+    SIGNAL s_kc_comp_line  : matrix_1d(0 to C_MAX_PIPELINE_STEPS)(i_comp_complete_line'RANGE);
 
 begin
 
@@ -63,9 +63,9 @@ begin
                 s_wm_bias_line     <= i_bias_line;
 
                 -- SHIFT REGISTERS for KERNEL CORES OUTPUT
-                s_kc_pixel_line(1 to C_MAX_PIPELINE_STEPS - 1) <= s_kc_pixel_line(0 to C_MAX_PIPELINE_STEPS - 2);
-                s_kc_valid_line(1 to C_MAX_PIPELINE_STEPS - 1) <= s_kc_valid_line(0 to C_MAX_PIPELINE_STEPS - 2);
-                s_kc_comp_line(1 to C_MAX_PIPELINE_STEPS - 1)  <= s_kc_comp_line(0 to C_MAX_PIPELINE_STEPS - 2);
+                s_kc_pixel_line(1 to C_MAX_PIPELINE_STEPS) <= s_kc_pixel_line(0 to C_MAX_PIPELINE_STEPS - 1);
+                s_kc_valid_line(1 to C_MAX_PIPELINE_STEPS) <= s_kc_valid_line(0 to C_MAX_PIPELINE_STEPS - 1);
+                s_kc_comp_line(1 to C_MAX_PIPELINE_STEPS)  <= s_kc_comp_line(0 to C_MAX_PIPELINE_STEPS - 1);
 
             end if;
         end if;

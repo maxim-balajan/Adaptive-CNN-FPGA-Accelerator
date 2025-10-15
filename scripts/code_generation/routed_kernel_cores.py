@@ -18,7 +18,9 @@ class RoutedKernelCores():
         template = template.replace("%%CORE_COMPILE_LIB%%", str(self.kernel_cores.config.compile_lib))
         template = template.replace("%%INPUT_AMOUNT%%", str(self.kernel_cores.config.i_dataline_amount))
         template = template.replace("%%CORE_MAX_INPUT_LENGTH%%", str(self.kernel_cores.config.i_dataline_width))
+        template = template.replace("%%CORE_INPUT_LENGTH%%", str(self.core_tree.input_width))
         template = template.replace("%%CORE_MAX_OUTPUT_LENGTH%%", str(self.kernel_cores.config.o_dataline_width))
+        template = template.replace("%%CORE_OUTPUT_LENGTH%%", str(self.core_tree.output_width))
         template = template.replace("%%MAX_CORE_AMOUNT%%", str(self.kernel_cores.config.max_core_amount))
 
         # Mapping of Routing Core Wildcards

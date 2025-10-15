@@ -46,6 +46,8 @@ begin
                 enable_shift                => 0,
                 enable_bias                 => 0,
                 enable_relu                 => 1,
+                -- Dont sanitize outputs inside of unit, otherwise wont work as expected
+                G_SANITIZE_OUTPUT           => 0,
                 input_length                => 24,
                 output_length               => 24,
                 input_amount                => 4

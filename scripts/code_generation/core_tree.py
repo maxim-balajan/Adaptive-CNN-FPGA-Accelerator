@@ -143,6 +143,7 @@ class CoreTree():
                             for i in range(len(core.children)):
                                 core.children[i] = configurable_slider_input_id
                                 configurable_slider_input_id += 1
+                                self.input_width = core.i_length
 
                     # Identify which port nodes should be empty
                     for i in range(distance):
@@ -166,6 +167,8 @@ class CoreTree():
             except StopIteration as si:
                 print("Resources exhausted! Can't continue the routing")
                 sys.exit(1)
+
+        self.output_width = current_cores[0].i_length
                 
         print(f"Routing for OC {oc_id} finished successfully!")
 
@@ -186,7 +189,9 @@ class CoreTree():
         template = template.replace("%%INPUT_AMOUNT%%", str(self.adder_tree_config.i_dataline_amount))
         template = template.replace("%%MAX_CORE_AMOUNT%%", str(self.adder_tree_config.max_core_amount))
         template = template.replace("%%CORE_MAX_INPUT_LENGTH%%", str(self.adder_tree_config.i_dataline_width))
+        template = template.replace("%%CORE_INPUT_LENGTH%%", str(self.input_width))
         template = template.replace("%%CORE_MAX_OUTPUT_LENGTH%%", str(self.adder_tree_config.o_dataline_width))
+        template = template.replace("%%CORE_OUTPUT_LENGTH%%", str(self.output_width))
         template = template.replace("%%MAX_OUTPUT_CHANNELS%%", str(self.max_output_channels))
         template = template.replace("%%MAX_KERNEL_SIZE%%", str(self.max_kernel_size))
         template = template.replace("%%LINE_BUFFER_AMOUNT%%", str(self.line_buffer_amount))
@@ -224,8 +229,8 @@ class CoreTree():
                         else:
                             # If one child is a configurable slider output, then all children are configurable slider output (or empty...)
                             is_start_node = True 
-                            output_string += f'{f"{C_TAB}o_activation_matrix_line({core_node.in_start_address + cid})".ljust(C_PADDING)} <= s_cs_kernel_matrix({children});\n'
-                            output_string += f'{f"{C_TAB}o_weight_matrix_line({core_node.in_start_address + cid})".ljust(C_PADDING)} <= s_wm_weight_matrix({children});\n'
+                            output_string += f'{f"{C_TAB}o_activation_matrix_line({core_node.in_start_address + cid})".ljust(C_PADDING)} <= std_logic_vector(resize(unsigned(s_cs_kernel_matrix({children})), o_activation_matrix_line({core_node.in_start_address + cid})\'LENGTH));\n'
+                            output_string += f'{f"{C_TAB}o_weight_matrix_line({core_node.in_start_address + cid})".ljust(C_PADDING)} <= std_logic_vector(resize(unsigned(s_wm_weight_matrix({children})), o_weight_matrix_line({core_node.in_start_address + cid})\'LENGTH));\n'
                     else:
                         output_string += f'{f"{C_TAB}o_activation_matrix_line({core_node.in_start_address + cid})".ljust(C_PADDING)} <= s_kc_pixel_line({children.pipeline_steps})({children.out_start_address});\n'
                         output_string += f'{f"{C_TAB}o_weight_matrix_line({core_node.in_start_address + cid})".ljust(C_PADDING)} <= (others => \'0\');\n'
@@ -251,7 +256,7 @@ class CoreTree():
         output_string += f'{C_TAB}o_kernel_complete <= s_kc_comp_line({final_cores[0][1].pipeline_steps})({final_cores[0][1].out_start_address});\n'
         output_string += f'{C_TAB}o_kernel_valid    <= s_kc_valid_line({final_cores[0][1].pipeline_steps})({final_cores[0][1].out_start_address});\n'
         for oc_id, core in final_cores:
-            output_string += f'{C_TAB}o_pixel_line({oc_id})   <= s_kc_pixel_line({core.pipeline_steps})({core.out_start_address});\n'
+            output_string += f'{C_TAB}o_pixel_line({oc_id})   <= std_logic_vector(resize(unsigned(s_kc_pixel_line({core.pipeline_steps})({core.out_start_address})), o_pixel_line({oc_id})\'LENGTH));\n'
 
 
         template = template.replace("%%ROUTE_SIGNAL_FINAL_OUTPUT%%", output_string)
