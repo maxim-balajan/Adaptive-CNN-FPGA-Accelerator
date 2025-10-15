@@ -50,9 +50,6 @@ end entity axis_2_configurable_slider_wrapper;
 
 architecture rtl of axis_2_configurable_slider_wrapper is
 
-	-- Necessary for code to be elaborated
-	constant C_IMG_MAX_BIT_LENGTH : natural := integer(ceil(log2(real(G_IMG_MAX_LENGTH))));
-
 	signal s_cs_init     : std_logic;
 	signal s_cs_init_del : std_logic;
 	signal s_wt_init     : std_logic;

@@ -20,6 +20,7 @@ entity bram_fifo_array is
 		--
 		o_output_stream : out std_logic_vector(G_DATA_BYTE_WIDTH * 8 - 1 downto 0);
 		o_full          : out std_logic_vector(G_DATA_BYTE_WIDTH / G_BRAM_BYTE_WIDTH - 1 downto 0);
+		o_nearly_full   : out std_logic_vector(G_DATA_BYTE_WIDTH / G_BRAM_BYTE_WIDTH - 1 downto 0);
 		o_empty         : out std_logic_vector(G_DATA_BYTE_WIDTH / G_BRAM_BYTE_WIDTH - 1 downto 0)
 	);
 end entity bram_fifo_array;
@@ -54,7 +55,7 @@ begin
 				rd_en => i_rd_en(i),
 				--
 				dout      => o_output_stream((i + 1) * (G_BRAM_BYTE_WIDTH * 8) - 1 downto i * (G_BRAM_BYTE_WIDTH * 8)),
-				near_full => open,
+				near_full => o_nearly_full(i),
 				full      => o_full(i),
 				empty     => o_empty(i)
 			);
