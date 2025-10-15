@@ -39,9 +39,10 @@ my_vunit.add_verification_components()
 
 tb_lib = my_vunit.add_library("tb_lib", vhdl_standard="2008")
 tb_lib.add_source_files(join(source_path, "lib*.vhd"))
+tb_lib.add_source_files(join(source_path, "line*.vhd"))
 tb_lib.add_source_files(join(source_path, "axis*.vhd"))
 tb_lib.add_source_files(join(source_path, "bram_fifo*.vhd"))
-tb_lib.add_source_files(join(source_path, "configurable_slider_input_demux.vhd"))
+tb_lib.add_source_files(join(source_path, "configurable_slider*.vhd"))
 tb_lib.add_source_files(join(cur_path, "testbench", "*.vhd"))
 
 # add test bench configurations

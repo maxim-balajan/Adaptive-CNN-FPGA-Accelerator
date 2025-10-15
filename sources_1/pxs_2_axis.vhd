@@ -18,7 +18,7 @@ entity pxs_2_axis is
 		--
 		o_en : out std_logic;
 		-- ROUTING CORES OUTPUTS
-		i_kernel_complete : out std_logic;
+		i_kernel_complete : in std_logic;
 		i_kernel_valid    : in std_logic;
 		i_pixel_line      : in matrix_1d(0 to G_DATA_BYTE_WIDTH - 1)(G_BRAM_BYTE_WIDTH * 8 - 1 downto 0);
 		-- Control Logic
@@ -67,6 +67,11 @@ architecture rtl of pxs_2_axis is
 
 	signal s_bram_output_stream : std_logic_vector(G_DATA_BYTE_WIDTH * 8 - 1 downto 0);
 
+	-- Helper signals for determining when transfer was finished
+	signal s_px_m_axis_tvalid : std_logic;
+	signal s_px_m_axis_tlast  : std_logic;
+	signal s_accel_finish     : std_logic;
+
 begin
 
 	FLUSH_PROC : process (clk) is
@@ -86,6 +91,19 @@ begin
 		end if;
 
 	end process FLUSH_PROC;
+
+	FINISH_PROC : process (clk) is
+	begin
+
+		if rising_edge(clk) then
+			if reset = '1' then
+				s_accel_finish <= '0';
+			elsif (i_px_m_axis_tready and s_px_m_axis_tvalid and s_px_m_axis_tlast) = '1' then
+				s_accel_finish <= '1';
+			end if;
+		end if;
+
+	end process FINISH_PROC;
 
 	pxs_2_axis_demux_inst : entity work.pxs_2_axis_demux
 		generic map (
@@ -137,7 +155,7 @@ begin
 			reset => reset,
 			-- AXIS INPUT
 			i_s_axis_tdata  => s_bram_output_stream,
-			i_s_axis_tkeep  => s_bram_empty_del,
+			i_s_axis_tkeep  => not s_bram_empty_del,
 			i_s_axis_tlast  => s_flush_line(s_flush_line'high),
 			o_s_axis_tready => open,
 			i_s_axis_tvalid => or s_bram_rd_en_del,
@@ -186,21 +204,23 @@ begin
 			-- AXIS OUTPUT
 			o_m_axis_tdata  => o_px_m_axis_tdata,
 			o_m_axis_tkeep  => o_px_m_axis_tkeep,
-			o_m_axis_tlast  => o_px_m_axis_tlast,
+			o_m_axis_tlast  => s_px_m_axis_tlast,
 			i_m_axis_tready => i_px_m_axis_tready,
-			o_m_axis_tvalid => o_px_m_axis_tvalid
+			o_m_axis_tvalid => s_px_m_axis_tvalid
 		);
 
 	----------------------------------------
 	-- Asynchronous signals
 	----------------------------------------
-	s_bram_rd_en <= (others => s_ps2_2_ps3_axis_tready and (not (and s_bram_empty) or s_flush_line(s_flush_line'high - 1)));
-	s_en         <= not (and s_bram_nearly_full);
+	s_bram_rd_en <= (others => s_ps2_2_ps3_axis_tready and (not (or s_bram_empty) or s_flush_line(s_flush_line'high - 1)));
+	s_en         <= not (and s_bram_nearly_full) or  s_flush_line(s_flush_line'high);
 
 	----------------------------------------
 	-- Set outputs
 	----------------------------------------
-	o_en             <= s_en;
-	o_accel_finished <= (and s_bram_empty) and s_flush_line(s_flush_line'high);
+	o_px_m_axis_tvalid <= s_px_m_axis_tvalid;
+	o_px_m_axis_tlast  <= s_px_m_axis_tlast;
+	o_en               <= s_en;
+	o_accel_finished   <= s_accel_finish;
 
 end architecture rtl;

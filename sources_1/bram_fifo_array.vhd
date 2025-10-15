@@ -27,7 +27,7 @@ end entity bram_fifo_array;
 
 architecture rtl of bram_fifo_array is
 
-	constant C_DEPTH : std_logic_vector := std_logic_vector(to_unsigned(G_MAX_DEPTH, integer(ceil(log2(real(G_MAX_DEPTH))))));
+	constant C_DEPTH : std_logic_vector := std_logic_vector(to_unsigned(G_MAX_DEPTH, 1 + integer(ceil(log2(real(G_MAX_DEPTH))))));
 
 begin
 
@@ -40,7 +40,7 @@ begin
 		bram_fifo_inst : entity work.bram_fifo
 			generic map (
 				vector_length         => G_BRAM_BYTE_WIDTH * 8,
-				G_MAX_DEPTH           => G_MAX_DEPTH,
+				G_MAX_DEPTH           => to_integer(unsigned(C_DEPTH)) + 1,
 				G_NEAR_FULL_THRESHOLD => G_NEAR_FULL_THRESHOLD
 			)
 			port map (

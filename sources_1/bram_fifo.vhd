@@ -56,7 +56,7 @@ begin
 
 	s_empty     <= std_logic_vector(s_read_pointer) ?= std_logic_vector(s_write_pointer) and not s_last_write;
 	s_full      <= std_logic_vector(s_read_pointer) ?= std_logic_vector(s_write_pointer) and s_last_write;
-	s_near_full <= '1' when s_entry_amount > (signed(resize(s_actual_depth, s_entry_amount'length)) - G_NEAR_FULL_THRESHOLD) else '0';
+	s_near_full <= '1' when s_entry_amount >= (signed(resize(s_actual_depth, s_entry_amount'length)) - G_NEAR_FULL_THRESHOLD) else '0';
 
 	empty     <= s_empty;
 	full      <= s_full;
