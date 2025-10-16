@@ -26,6 +26,9 @@ entity axis_2_configurable_slider_wrapper is
 		clk   : in std_logic;
 		reset : in std_logic;
 		--
+		i_rst_axis_2_pxs          : in std_logic;
+		i_rst_configurable_slider : in std_logic;
+		--
 		i_en : in std_logic;
 		-- AXIS INPUT
 		i_s_axis_tdata  : in std_logic_vector(G_INPUT_BYTE_WIDTH * 8 - 1 downto 0);
@@ -109,7 +112,7 @@ begin
 		)
 		port map (
 			clk   => clk,
-			reset => reset,
+			reset => reset or i_rst_axis_2_pxs,
 			--
 			i_en => i_en,
 			-- AXIS INPUT
@@ -147,7 +150,7 @@ begin
 		)
 		port map (
 			clk   => clk,
-			reset => reset,
+			reset => reset or i_rst_configurable_slider,
 			--
 			valid_pixel_streams => s_valid_pixel_streams,
 			pixel_streams       => s_pixel_streams,
