@@ -13,7 +13,8 @@ use work.libmatrix.all;
 
 entity routed_kernel_cores is
 	generic (
-		G_VECTOR_LENGTH             : natural := 8;
+		G_VECTOR_IN_LENGTH          : natural := 8;
+		G_VECTOR_OUT_LENGTH         : natural := 24;
 		G_MAX_KERNEL_SIZE           : natural := 11;
 		G_LINE_BUFFER_AMOUNT        : natural := 180;
 		G_MAX_CORE_AMOUNT           : natural := 300;
@@ -27,16 +28,16 @@ entity routed_kernel_cores is
 		-- CONFIGURABLE SLIDER OUTPUTS
 		i_kernel_complete          : in std_logic;
 		i_kernel_en                : in std_logic;
-		i_kernel_activation_matrix : in matrix_1d(0 to G_MAX_KERNEL_SIZE * G_LINE_BUFFER_AMOUNT - 1)(G_VECTOR_LENGTH - 1 downto 0);
+		i_kernel_activation_matrix : in matrix_1d(0 to G_MAX_KERNEL_SIZE * G_LINE_BUFFER_AMOUNT - 1)(G_VECTOR_IN_LENGTH - 1 downto 0);
 		-- WEIGHT MODULE OUTPUTS
 		i_kernel_weight_en     : in std_logic;
-		i_kernel_weight_matrix : in matrix_1d(0 to G_MAX_KERNEL_SIZE * G_LINE_BUFFER_AMOUNT - 1)(G_VECTOR_LENGTH - 1 downto 0);
-		i_shamt_line           : in matrix_1d(0 to G_MAX_CORE_AMOUNT - 1)(G_VECTOR_LENGTH - 1 downto 0);
-		i_bias_line            : in matrix_1d(0 to G_MAX_CORE_AMOUNT - 1)(G_VECTOR_LENGTH - 1 downto 0);
+		i_kernel_weight_matrix : in matrix_1d(0 to G_MAX_KERNEL_SIZE * G_LINE_BUFFER_AMOUNT - 1)(G_VECTOR_IN_LENGTH - 1 downto 0);
+		i_shamt_line           : in matrix_1d(0 to G_MAX_CORE_AMOUNT - 1)(G_VECTOR_IN_LENGTH - 1 downto 0);
+		i_bias_line            : in matrix_1d(0 to G_MAX_CORE_AMOUNT - 1)(G_VECTOR_IN_LENGTH - 1 downto 0);
 		-- ROUTING CORES OUTPUTS
 		o_kernel_complete : out std_logic;
 		o_kernel_valid    : out std_logic;
-		o_pixel_line      : out matrix_1d(0 to G_MAX_OUTPUT_CHANNEL_AMOUNT - 1)(G_VECTOR_LENGTH - 1 downto 0)
+		o_pixel_line      : out matrix_1d(0 to G_MAX_OUTPUT_CHANNEL_AMOUNT - 1)(G_VECTOR_OUT_LENGTH - 1 downto 0)
 	);
 end entity routed_kernel_cores;
 
