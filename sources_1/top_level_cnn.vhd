@@ -11,6 +11,7 @@ entity top_level_cnn is
 		-- Configurable Generics
 		---------------------------
 		G_VECTOR_IN_LENGTH          : natural := 8;
+		G_WEIGHT_BIT_WIDTH : natural := 8;
 		G_VECTOR_OUT_LENGTH         : natural := 24;
 		G_LINE_BUFFER_AMOUNT        : natural := 180;
 		G_MAX_CORE_AMOUNT           : natural := 300;
@@ -31,9 +32,6 @@ entity top_level_cnn is
 		---------------------------
 		-- Control
 		G_CONTROL_DELAY_CYCLES : natural := 2;
-		-- Weight Generics
-		G_WEIGHT_BIT_WIDTH : natural := 8;
-		G_WEIGHT_AMOUNT    : natural := 512;
 		-- IMG Generics
 		G_IMG_MAX_LENGTH : natural := 300;
 		-- AXIS INPUTS
@@ -91,7 +89,7 @@ architecture rtl of top_level_cnn is
 	-- WEIGHT OUTPUT SIGNALS
 	signal s_kernel_weight_init   : std_logic;
 	signal s_kernel_weight_error  : std_logic;
-	signal s_kernel_weight_matrix : matrix_1d(0 to G_WEIGHT_AMOUNT - 1)(G_WEIGHT_BIT_WIDTH - 1 downto 0);
+	signal s_kernel_weight_matrix : matrix_1d(0 to G_LINE_BUFFER_AMOUNT * G_MAX_KERNEL_SIZE - 1)(G_WEIGHT_BIT_WIDTH - 1 downto 0);
 
 	-- RESET SIGNALS
 	signal s_rst_axis_2_pxs    : std_logic;
@@ -108,7 +106,7 @@ architecture rtl of top_level_cnn is
 	-- ROUTED KERNEL CORES OUTPUT
 	signal s_kernel_complete : std_logic;
 	signal s_kernel_valid    : std_logic;
-	signal s_pixel_line      : matrix_1d(0 to G_MAX_OUTPUT_CHANNEL_AMOUNT - 1)(G_VECTOR_IN_LENGTH - 1 downto 0);
+	signal s_pixel_line      : matrix_1d(0 to G_MAX_OUTPUT_CHANNEL_AMOUNT - 1)(G_VECTOR_OUT_LENGTH - 1 downto 0);
 
 	-- TEMP LAYER ACCUMULATOR OUTPUT
 	signal s_current_ic_amount      : std_logic_vector(15 downto 0);
@@ -151,7 +149,8 @@ begin
 	control_unit_inst : entity work.control_unit
 		generic map (
 			G_WEIGHT_BIT_WIDTH => G_WEIGHT_BIT_WIDTH,
-			G_WEIGHT_AMOUNT    => G_WEIGHT_AMOUNT
+			G_LINE_BUFFER_AMOUNT => G_LINE_BUFFER_AMOUNT,
+			G_MAX_KERNEL_SIZE => G_MAX_KERNEL_SIZE
 		)
 		port map (
 			clk   => clk,

@@ -7,7 +7,8 @@ use work.libmatrix.all;
 entity control_unit is
 	generic (
 		G_WEIGHT_BIT_WIDTH : integer range 2 to 128 := 8;
-		G_WEIGHT_AMOUNT    : natural                := 128
+		G_LINE_BUFFER_AMOUNT    : natural                := 80;
+		G_MAX_KERNEL_SIZE : natural := 11
 	);
 	port (
 		clk   : in std_logic;
@@ -33,7 +34,7 @@ entity control_unit is
 		-- WEIGHT MODULE OUTPUTS
 		o_kernel_weight_init   : out std_logic;
 		o_kernel_weight_error  : out std_logic;
-		o_kernel_weight_matrix : out matrix_1d(0 to G_WEIGHT_AMOUNT - 1)(G_WEIGHT_BIT_WIDTH - 1 downto 0);
+		o_kernel_weight_matrix : out matrix_1d(0 to G_LINE_BUFFER_AMOUNT * G_MAX_KERNEL_SIZE - 1)(G_WEIGHT_BIT_WIDTH - 1 downto 0);
 		-- RESET OUTPUTS
 		o_rst_axis_2_pxs    : out std_logic;
 		o_rst_config_slider : out std_logic;
@@ -342,7 +343,7 @@ begin
 	weight_unit_inst : entity work.weight_unit
 		generic map (
 			g_weight_bit_width => G_WEIGHT_BIT_WIDTH,
-			g_weight_amount    => G_WEIGHT_AMOUNT
+			g_weight_amount    => G_LINE_BUFFER_AMOUNT * G_MAX_KERNEL_SIZE
 		)
 		port map (
 			clk   => clk,

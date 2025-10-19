@@ -21,13 +21,13 @@ entity temp_layer_accumulator is
 		i_kernel_valid    : in std_logic;
 		i_pixel_line      : in matrix_1d(0 to g_oc_amount - 1)(g_vector_length - 1 downto 0);
 		-- Control unit OUTPUT (Registered)
-		i_pixel_amount                : in std_logic_vector(31 downto 0);
+		i_pixel_amount                : in std_logic_vector(15 downto 0);
 		i_pool_or_conv                : in std_logic;
 		i_current_ic_amount           : in std_logic_vector(15 downto 0);
 		i_input_channel_per_iteration : in std_logic_vector(15 downto 0);
 		i_input_channel_size          : in std_logic_vector(15 downto 0);
 		i_enable_relu                 : in std_logic;
-		i_shamt                       : in std_logic_vector(g_vector_length - 1 downto 0);
+		i_shamt                       : in std_logic_vector(7 downto 0);
 		-- Sanitized Outputs
 		o_kernel_complete : out std_logic;
 		o_kernel_valid    : out std_logic;
