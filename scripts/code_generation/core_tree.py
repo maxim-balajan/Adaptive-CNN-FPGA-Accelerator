@@ -18,11 +18,17 @@ class CoreTree():
         self.max_pipeline_steps = safe_read(route_dicts['global'], 'max_pipeline_steps', 1)
         
         self.line_buffer_amount = safe_read(route_dicts['global'], 'line_buffer_amount', 180)
+        self.input_data_byte_width = safe_read(route_dicts['global'], "input_data_byte_width", 16)
+        self.configurable_routing_ps = safe_read(route_dicts['global'], "configurable_routing_ps", 1)
+        
         self.adder_tree_config = adder_tree_config
         self.input_channel = safe_read(route_dict, 'input_channel')
+        self.input_channel_per_iteration = safe_read(route_dict, 'input_channel', self.input_channel)
         self.output_channel = safe_read(route_dict, "output_channel", 1)
         self.input_amount = safe_read(route_dict, "input_amount")
         self.pool_or_conv = safe_read(route_dict, "pool_or_conv", 1)
+        self.padding = safe_read(route_dict, "padding", 0)
+        self.stride = safe_read(route_dict, "stride", 1)
         # Only use cores that are useful
         self.unused_cores = {}
         self.used_cores = {}

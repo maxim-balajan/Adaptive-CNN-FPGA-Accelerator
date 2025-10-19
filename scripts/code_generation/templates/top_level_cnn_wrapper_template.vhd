@@ -15,29 +15,27 @@ entity top_level_cnn_wrapper is
 		-- Configurable Generics
 		---------------------------
 		G_VECTOR_IN_LENGTH          : natural := %%CORE_INPUT_LENGTH%%;
+		G_WEIGHT_BIT_WIDTH 			: natural := %%CORE_INPUT_LENGTH%%;
 		G_VECTOR_OUT_LENGTH         : natural := %%CORE_OUTPUT_LENGTH%%;
 		G_LINE_BUFFER_AMOUNT        : natural := %%LINE_BUFFER_AMOUNT%%;
 		G_MAX_CORE_AMOUNT           : natural := %%MAX_CORE_AMOUNT%%;
-		G_OUTPUT_CHANNEL            : natural := %%XXX_TBD_XXX%%;
-		G_MAX_OUTPUT_CHANNEL_AMOUNT : natural := %%MAX_OUTPUT_CHANNELS%%
+		G_OUTPUT_CHANNEL            : natural := %%OUTPUT_CHANNEL%%;
+		G_MAX_OUTPUT_CHANNEL_AMOUNT : natural := %%INPUT_DATA_BYTE_WIDTH%%;
 		-- AXIS Inputs
-		G_INPUT_DATA_BYTE_WIDTH       : natural                := %%XXX_TBD_XXX%%;
-		G_OUTPUT_BYTE_WIDTH           : integer range 1 to 128 := %%XXX_TBD_XXX%%;
-		G_INPUT_CHANNEL_PER_ITERATION : natural                := %%XXX_TBD_XXX%%;
+		G_INPUT_DATA_BYTE_WIDTH       : natural                := %%INPUT_DATA_BYTE_WIDTH%%;
+		G_OUTPUT_BYTE_WIDTH           : integer range 1 to 128 := %%DWC_OUTPUT_BYTE_WIDTH%%;
+		G_INPUT_CHANNEL_PER_ITERATION : natural                := %%ROUTE_INPUT_CHANNEL_PER_ITERATION%%;
 		-- IMG Generics
-		G_MAX_KERNEL_SIZE : natural := %%XXX_TBD_XXX%%;
-		G_KERNEL_SIZE     : natural := %%XXX_TBD_XXX%%;
-		G_PADDING_SIZE    : natural := %%XXX_TBD_XXX%%;
+		G_MAX_KERNEL_SIZE : natural := %%MAX_KERNEL_SIZE%%;
+		G_KERNEL_SIZE     : natural := %%KERNEL_SIZE%%;
+		G_PADDING_SIZE    : natural := %%PADDING_SIZE%%;
 		-- Configurable Slider
-		G_PIPELINE_STEPS : natural := %%XXX_TBD_XXX%%;
+		G_PIPELINE_STEPS : natural := %%CS_PIPELINE_STEPS%%;
 		---------------------------
 		-- Hard-Coded Generics
 		---------------------------
 		-- Control
 		G_CONTROL_DELAY_CYCLES : natural := 2;
-		-- Weight Generics
-		G_WEIGHT_BIT_WIDTH : natural := 8;
-		G_WEIGHT_AMOUNT    : natural := 512;
 		-- IMG Generics
 		G_IMG_MAX_LENGTH : natural := 300;
 		-- AXIS INPUTS
@@ -98,7 +96,6 @@ begin
 			G_PIPELINE_STEPS                 => G_PIPELINE_STEPS,
 			G_CONTROL_DELAY_CYCLES           => G_CONTROL_DELAY_CYCLES,
 			G_WEIGHT_BIT_WIDTH               => G_WEIGHT_BIT_WIDTH,
-			G_WEIGHT_AMOUNT                  => G_WEIGHT_AMOUNT,
 			G_IMG_MAX_LENGTH                 => G_IMG_MAX_LENGTH,
 			G_MAX_AXIS_2_PXS_FIFO_DEPTH      => G_MAX_AXIS_2_PXS_FIFO_DEPTH,
 			G_MAX_TMP_LAYER_ACCUMULATOR_FIFO => G_MAX_TMP_LAYER_ACCUMULATOR_FIFO,

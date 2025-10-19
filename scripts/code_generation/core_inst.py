@@ -27,6 +27,7 @@ class CoreInst():
         self.max_core_amount = safe_read(global_dict, 'max_core_amount')
         self.max_input_amount = safe_read(global_dict, 'max_input_amount')
         self.max_input_length = safe_read(global_dict, 'max_input_length')
+        
         # only via instantiation_to_string the start_address can be set!
         self.in_start_address = None
         self.out_start_address = None

@@ -3,7 +3,7 @@ from kernel_cores import KernelCores
 from adder_tree_config import AdderTreeConfig
 from core_tree import CoreTree
 from routed_kernel_cores import RoutedKernelCores
-
+from top_cnn_wrapper import TopCNNWrapper
 
 import argparse
 
@@ -52,6 +52,14 @@ def main():
     routed_cores.module_to_file()
 
     print(" # routed_kernel_cores.vhd successfully_generated!")
+
+    top_level = TopCNNWrapper(kernel_cores, core_tree)
+
+    top_level.module_to_file()
+
+    print(" # top_cnn_wrapper.vhd successfully generated!")
+
+    print("\n\n ############################### \n # All files generated successfully! \n ############################### \n\n")
 
     return 0
 

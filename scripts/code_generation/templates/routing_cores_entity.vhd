@@ -22,8 +22,8 @@ entity routing_cores is
         -- KERNEL CORES INPUT PORTS
         o_activation_matrix_line  : OUT matrix_1d(0 to %%INPUT_AMOUNT%% - 1)(%%CORE_MAX_INPUT_LENGTH%% - 1 downto 0);
         o_weight_matrix_line      : OUT matrix_1d(0 to %%INPUT_AMOUNT%% - 1)(%%CORE_MAX_INPUT_LENGTH%% - 1 downto 0);
-        o_shamt_line              : OUT matrix_1d(0 to %%MAX_CORE_AMOUNT%% - 1)(%%CORE_MAX_INPUT_LENGTH%% - 1 downto 0);
-        o_bias_line               : OUT matrix_1d(0 to %%MAX_CORE_AMOUNT%% - 1)(%%CORE_MAX_INPUT_LENGTH%% - 1 downto 0);
+        o_shamt_line              : OUT matrix_1d(0 to %%MAX_CORE_AMOUNT%% - 1)(%%CORE_INPUT_LENGTH%% - 1 downto 0);
+        o_bias_line               : OUT matrix_1d(0 to %%MAX_CORE_AMOUNT%% - 1)(%%CORE_INPUT_LENGTH%% - 1 downto 0);
         o_kernel_en_line          : OUT std_logic_vector(0 to %%MAX_CORE_AMOUNT%% - 1);   
         o_kernel_complete_line    : OUT std_logic_vector(0 to %%MAX_CORE_AMOUNT%% - 1);
         -- KERNEL CORES OUTPUT PORTS
@@ -37,8 +37,8 @@ entity routing_cores is
         -- WEIGHT MODULE OUTPUTS
         i_kernel_weight_en     : IN std_logic;
         i_kernel_weight_matrix : IN matrix_1d(0 to %%MAX_KERNEL_SIZE%% * %%LINE_BUFFER_AMOUNT%% - 1)(%%CORE_INPUT_LENGTH%% - 1 downto 0); 
-        i_shamt_line           : IN matrix_1d(0 to %%MAX_CORE_AMOUNT%% - 1)(%%CORE_MAX_INPUT_LENGTH%% - 1 downto 0);
-        i_bias_line            : IN matrix_1d(0 to %%MAX_CORE_AMOUNT%% - 1)(%%CORE_MAX_INPUT_LENGTH%% - 1 downto 0);
+        i_shamt_line           : IN matrix_1d(0 to %%MAX_CORE_AMOUNT%% - 1)(%%CORE_INPUT_LENGTH%% - 1 downto 0);
+        i_bias_line            : IN matrix_1d(0 to %%MAX_CORE_AMOUNT%% - 1)(%%CORE_INPUT_LENGTH%% - 1 downto 0);
         -- ROUTING CORES OUTPUTS
         o_kernel_complete : OUT std_logic;
         o_kernel_valid    : OUT std_logic;

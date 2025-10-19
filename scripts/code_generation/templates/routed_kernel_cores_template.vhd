@@ -46,8 +46,8 @@ architecture %%ROUTE_ARCHITECTURE_NAME%% of routed_kernel_cores is
 	-- KERNEL CORES INPUT PORTS
 	signal s_activation_matrix_line : matrix_1d(0 to %%INPUT_AMOUNT%% - 1)(%%CORE_MAX_INPUT_LENGTH%% - 1 downto 0);
 	signal s_weight_matrix_line     : matrix_1d(0 to %%INPUT_AMOUNT%% - 1)(%%CORE_MAX_INPUT_LENGTH%% - 1 downto 0);
-	signal s_shamt_line             : matrix_1d(0 to %%MAX_CORE_AMOUNT%% - 1)(%%CORE_MAX_INPUT_LENGTH%% - 1 downto 0);
-	signal s_bias_line              : matrix_1d(0 to %%MAX_CORE_AMOUNT%% - 1)(%%CORE_MAX_INPUT_LENGTH%% - 1 downto 0);
+	signal s_shamt_line             : matrix_1d(0 to %%MAX_CORE_AMOUNT%% - 1)(%%CORE_INPUT_LENGTH%% - 1 downto 0);
+	signal s_bias_line              : matrix_1d(0 to %%MAX_CORE_AMOUNT%% - 1)(%%CORE_INPUT_LENGTH%% - 1 downto 0);
 	signal s_kernel_en_line         : std_logic_vector(0 to %%MAX_CORE_AMOUNT%% - 1);
 	signal s_kernel_complete_line   : std_logic_vector(0 to %%MAX_CORE_AMOUNT%% - 1);
 	-- KERNEL CORES OUTPUT PORTS
@@ -90,6 +90,10 @@ begin
 		);
 
 	KERNEL_CORES_INST : entity %%CORE_COMPILE_LIB%%.kernel_cores
+		generic map (
+			G_SHAMT_AMOUNT => G_VECTOR_IN_LENGTH,
+			G_BIAS_AMOUNT  => G_VECTOR_IN_LENGTH
+		)
 		port map (
 			clk   => clk,
 			reset => reset,
