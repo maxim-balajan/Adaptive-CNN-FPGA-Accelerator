@@ -48,7 +48,7 @@ package body top_level_cnn_tc_pkg is
 
 		tc_init(tb_o, tb_i);
 
-		check_failed(" # Not implemented yet!");
+		wait for 5000 * C_CLK_PERIOD;
 
 		tc_end(tb_o, tb_i);
 

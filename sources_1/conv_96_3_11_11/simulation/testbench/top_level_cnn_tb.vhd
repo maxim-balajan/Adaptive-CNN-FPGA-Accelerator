@@ -104,17 +104,75 @@ begin
 			tuser    => open
 		);
 
-	WEIGHT_PROC: process
-	begin
-		-- TODO
-		wait;
-	end process;
+	WEIGHT_PROC : process is
 
-	PIXEL_PROC: process
+		variable weight_index : natural := 0;
+		variable v_tlast      : std_logic;
+
 	begin
-		-- TODO
+
+		wait until falling_edge(s_tb_o.reset);
+
+		push_axi_stream(net, stream_master_wt,
+	                tdata => x"01010103000B00030BD10003003700e3",
+	                tlast => '1',
+	                tkeep => x"FFFF");
+
+		--wait until rising_edge(s_tb_i.clk) and wt_tready = '1';
+
+		for i in 0 to sv_rnd.RandInt(0, 3) loop
+
+			wait until rising_edge(clk);
+
+		end loop;
+
+		while True loop
+
+			v_tlast := '1' when weight_index = 3 * 11 * 11 * 16 else '0';
+			push_axi_stream(net, stream_master_wt,
+	                tdata => x"01010101010101010101010101010101",
+	                tlast => '1',
+	                tkeep => x"FFFF");
+
+			weight_index := weight_index + 16;
+
+			for i in 0 to sv_rnd.RandInt(0, 3) loop
+
+				wait until rising_edge(clk);
+
+			end loop;
+
+		end loop;
+
 		wait;
-	end process;
+
+	end process WEIGHT_PROC;
+
+	PIXEL_PROC : process is
+	begin
+
+		wait until falling_edge(s_tb_o.reset);
+
+		while True loop
+
+			push_axi_stream(net, stream_master_px,
+	                tdata => x"01010101010101010101010101010101",
+	                tlast => '0',
+	                tkeep => x"FFFF");
+
+			-- wait until rising_edge(s_tb_i.clk) and px_tready = '1';
+
+			for i in 0 to sv_rnd.RandInt(0, 3) loop
+
+				wait until rising_edge(clk);
+
+			end loop;
+
+		end loop;
+
+		wait;
+
+	end process PIXEL_PROC;
 
 	main : process is
 	begin
