@@ -11,7 +11,7 @@ entity top_level_cnn is
 		-- Configurable Generics
 		---------------------------
 		G_VECTOR_IN_LENGTH          : natural := 8;
-		G_WEIGHT_BIT_WIDTH : natural := 8;
+		G_WEIGHT_BIT_WIDTH          : natural := 8;
 		G_VECTOR_OUT_LENGTH         : natural := 24;
 		G_LINE_BUFFER_AMOUNT        : natural := 180;
 		G_MAX_CORE_AMOUNT           : natural := 300;
@@ -148,9 +148,9 @@ begin
 
 	control_unit_inst : entity work.control_unit
 		generic map (
-			G_WEIGHT_BIT_WIDTH => G_WEIGHT_BIT_WIDTH,
+			G_WEIGHT_BIT_WIDTH   => G_WEIGHT_BIT_WIDTH,
 			G_LINE_BUFFER_AMOUNT => G_LINE_BUFFER_AMOUNT,
-			G_MAX_KERNEL_SIZE => G_MAX_KERNEL_SIZE
+			G_MAX_KERNEL_SIZE    => G_MAX_KERNEL_SIZE
 		)
 		port map (
 			clk   => clk,
@@ -164,6 +164,7 @@ begin
 			-- CONFIG REGISTERS
 			o_image_input_length          => s_image_input_length,
 			o_image_output_length         => s_image_output_length,
+			o_output_channel_size         => open,
 			o_input_channel_size          => s_input_channel_size,
 			o_pixel_amount                => s_pixel_amount,
 			o_input_channel_per_iteration => s_input_channel_per_iteration,

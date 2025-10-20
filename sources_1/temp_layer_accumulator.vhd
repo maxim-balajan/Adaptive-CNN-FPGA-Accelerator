@@ -70,7 +70,7 @@ begin
 					-- Note : refactor i_shamt to i_enable_shift if shift unit changes
 					if i_pool_or_conv = '0' then
 						s_pixel_lines(1)(0) <= s_added_temp_layer_pixel;
-					elsif signed(s_shifted_temp_layer_pixel) > 0 or i_enable_relu = '0' then
+					elsif signed(s_shifted_temp_layer_pixel(g_clipped_vector_length - 1 downto 0)) > 0 or i_enable_relu = '0' then
 						s_pixel_lines(1)(0) <= s_shifted_temp_layer_pixel;
 					else
 						s_pixel_lines(1)(0) <= (others => '0');

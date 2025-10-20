@@ -6,9 +6,9 @@ use work.libmatrix.all;
 
 entity control_unit is
 	generic (
-		G_WEIGHT_BIT_WIDTH : integer range 2 to 128 := 8;
-		G_LINE_BUFFER_AMOUNT    : natural                := 80;
-		G_MAX_KERNEL_SIZE : natural := 11
+		G_WEIGHT_BIT_WIDTH   : integer range 2 to 128 := 8;
+		G_LINE_BUFFER_AMOUNT : natural                := 80;
+		G_MAX_KERNEL_SIZE    : natural                := 11
 	);
 	port (
 		clk   : in std_logic;
@@ -23,6 +23,7 @@ entity control_unit is
 		o_image_input_length          : out std_logic_vector(15 downto 0);
 		o_image_output_length         : out std_logic_vector(15 downto 0);
 		o_input_channel_size          : out std_logic_vector(15 downto 0);
+		o_output_channel_size         : out std_logic_vector(15 downto 0);
 		o_pixel_amount                : out std_logic_vector(15 downto 0);
 		o_input_channel_per_iteration : out std_logic_vector(15 downto 0);
 		o_kernel_size                 : out std_logic_vector(7 downto 0);
@@ -89,12 +90,14 @@ architecture rtl of control_unit is
 	-------------------------
 	-- CL of Control Unit
 	signal s_current_ic_amount : unsigned(15 downto 0);
+	signal s_current_oc_amount : unsigned(15 downto 0);
 	signal s_current_state_slv : std_logic_vector(2 downto 0);
 	signal s_overall_done      : std_logic;
 	signal s_overall_error     : std_logic;
 
 	-- CL Weight Unit <-> Control Unit <-> Config Unit
 	signal s_kernel_size                 : std_logic_vector(7 downto 0);
+	signal s_output_channel_size         : std_logic_vector(15 downto 0);
 	signal s_input_channel_size          : std_logic_vector(15 downto 0);
 	signal s_pixel_amount                : std_logic_vector(15 downto 0);
 	signal s_input_channel_per_iteration : std_logic_vector(15 downto 0);
@@ -113,9 +116,6 @@ architecture rtl of control_unit is
 begin
 
 	TRANSITION_PROC : process (clk) is
-
-		variable v_current_ic_amount : unsigned(15 downto 0);
-
 	begin
 
 		if rising_edge(clk) then
@@ -124,6 +124,7 @@ begin
 
 				-- Start at fist iteration
 				s_current_ic_amount <= (others => '0');
+				s_current_oc_amount <= (others => '0'); 
 			else
 				case s_current_state is
 					when e_CONFIG_RETR =>
@@ -146,14 +147,18 @@ begin
 						end if;
 					when e_WT_INIT =>
 						if i_accel_finish = '1' then
-							-- If all values have been read from the BRAM, the unit is finished
-							s_current_state <= e_DONE;
+							-- If all values have been read from the BRAM, the unit is finished for this output channel
+							if s_current_oc_amount >= unsigned(s_output_channel_size) - 1 then
+								s_current_state <= e_DONE;
+							else
+								s_current_oc_amount <= s_current_oc_amount + 1;
+								s_current_ic_amount <= (others => '0');
+								s_current_state     <= e_RST_SUBMODULE;
+							end if;
 						elsif i_temp_comp_complete = '1' then
-							-- Increment the amount of IC calculated
-							v_current_ic_amount := unsigned(s_current_ic_amount);
 							-- Only increment if this is not the last iteration
-							if v_current_ic_amount < unsigned(s_input_channel_size) then
-								v_current_ic_amount := v_current_ic_amount + unsigned(s_input_channel_per_iteration);
+							if s_current_ic_amount < unsigned(s_input_channel_size) then
+								s_current_ic_amount <= s_current_ic_amount + unsigned(s_input_channel_per_iteration);
 							end if;
 						end if;
 					when e_DONE | e_ERROR =>
@@ -199,14 +204,14 @@ begin
 				s_overall_done      <= '0';
 				s_overall_error     <= '0';
 			when e_RST_SUBMODULE =>
-				-- Reset all modules except Config Unit, BRAM FIFO and Weight Unit
+				-- Reset all modules except Config Unit and PXS_2_AXIS
 				-- -> that way configuration values are stored
-				s_rst_axis_2_pxs    <= '0';
+				s_rst_axis_2_pxs    <= '1';
 				s_rst_cfg_unit      <= '0';
 				s_rst_wt_unit       <= '1';
 				s_rst_config_slider <= '1';
 				s_rst_kernel_cores  <= '1';
-				s_rst_accumulator   <= not s_pool_or_conv;
+				s_rst_accumulator   <= '1';
 				s_rst_pxs_2_axis    <= '0';
 
 				-- In this cycle, no values should be read from the weight stream
@@ -381,6 +386,7 @@ begin
 			-- CONFIG Outputs
 			o_image_input_length          => o_image_input_length,
 			o_image_output_length         => o_image_output_length,
+			o_output_channel_size         => s_output_channel_size,
 			o_input_channel_size          => s_input_channel_size,
 			o_pixel_amount                => s_pixel_amount,
 			o_input_channel_per_iteration => s_input_channel_per_iteration,
@@ -397,6 +403,7 @@ begin
 	-------------------------------------------
 
 	o_input_channel_size          <= s_input_channel_size;
+	o_output_channel_size         <= s_output_channel_size;
 	o_pixel_amount                <= s_pixel_amount;
 	o_input_channel_per_iteration <= s_input_channel_per_iteration;
 	o_kernel_size                 <= s_kernel_size;

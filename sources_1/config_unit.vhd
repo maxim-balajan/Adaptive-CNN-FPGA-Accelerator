@@ -22,6 +22,7 @@ entity config_unit is
 		o_image_input_length          : out std_logic_vector(15 downto 0);
 		o_image_output_length         : out std_logic_vector(15 downto 0);
 		o_input_channel_size          : out std_logic_vector(15 downto 0);
+		o_output_channel_size         : out std_logic_vector(15 downto 0);
 		o_pixel_amount                : out std_logic_vector(15 downto 0);
 		o_input_channel_per_iteration : out std_logic_vector(15 downto 0);
 		o_kernel_size                 : out std_logic_vector(7 downto 0);
@@ -39,14 +40,15 @@ architecture rtl of config_unit is
 	alias  a_image_input_length          : std_logic_vector(15 downto 0) is s_config_memory(15 downto 0);
 	alias  a_image_output_length         : std_logic_vector(15 downto 0) is s_config_memory(31 downto 16);
 	alias  a_input_channel_size          : std_logic_vector(15 downto 0) is s_config_memory(47 downto 32);
-	alias  a_pixel_amount                : std_logic_vector(15 downto 0) is s_config_memory(63 downto 48);
-	alias  a_input_channel_per_iteration : std_logic_vector(15 downto 0) is s_config_memory(79 downto 64);
-	alias  a_kernel_size                 : std_logic_vector(7 downto 0) is s_config_memory(87 downto 80);
-	alias  a_padding_size                : std_logic_vector(7 downto 0) is s_config_memory(95 downto 88);
-	alias  a_stride_bit_mask             : std_logic_vector(7 downto 0) is s_config_memory(103 downto 96);
-	alias  a_shamt                       : std_logic_vector(7 downto 0) is s_config_memory(111 downto 104);
-	alias  a_pool_or_conv                : std_logic_vector(7 downto 0) is s_config_memory(119 downto 112);
-	alias  a_enable_relu                 : std_logic_vector(7 downto 0) is s_config_memory(127 downto 120);
+	alias  a_output_channel_size         : std_logic_vector(15 downto 0) is s_config_memory(63 downto 48);
+	alias  a_pixel_amount                : std_logic_vector(15 downto 0) is s_config_memory(79 downto 64);
+	alias  a_input_channel_per_iteration : std_logic_vector(15 downto 0) is s_config_memory(95 downto 80);
+	alias  a_kernel_size                 : std_logic_vector(7 downto 0) is s_config_memory(103 downto 96);
+	alias  a_padding_size                : std_logic_vector(7 downto 0) is s_config_memory(111 downto 104);
+	alias  a_stride_bit_mask             : std_logic_vector(7 downto 0) is s_config_memory(119 downto 112);
+	alias  a_pool_or_conv                : std_logic_vector(0 downto 0) is s_config_memory(120 downto 120);
+	alias  a_enable_relu                 : std_logic_vector(0 downto 0) is s_config_memory(121 downto 121);
+	alias  a_shamt                       : std_logic_vector(5 downto 0) is s_config_memory(127 downto 122);
 
 	signal s_config_valid     : std_logic;
 	signal s_config_valid_1c  : std_logic;
@@ -101,14 +103,15 @@ begin
 	o_image_input_length          <= a_image_input_length;
 	o_image_output_length         <= a_image_output_length;
 	o_input_channel_size          <= a_input_channel_size;
+	o_output_channel_size         <= a_output_channel_size;
 	o_pixel_amount                <= a_pixel_amount;
 	o_input_channel_per_iteration <= a_input_channel_per_iteration;
 	o_kernel_size                 <= a_kernel_size;
 	o_padding_size                <= a_padding_size;
 	o_stride_bit_mask             <= a_stride_bit_mask;
-	o_shamt                       <= a_shamt;
-	o_pool_or_conv                <= or a_pool_or_conv;
-	o_enable_relu                 <= or a_enable_relu;
+	o_shamt                       <= std_logic_vector(resize(unsigned(a_shamt), o_shamt'length));
+	o_pool_or_conv                <= a_pool_or_conv(a_pool_or_conv'low);
+	o_enable_relu                 <= a_enable_relu(a_enable_relu'low);
 
 	-- Output Control Logic
 	o_wt_s_axis_tready <= s_wt_s_axis_tready;
