@@ -14,37 +14,8 @@ entity top_level_cnn_wrapper is
 		---------------------------
 		-- Configurable Generics
 		---------------------------
-		G_VECTOR_IN_LENGTH          : natural := %%CORE_INPUT_LENGTH%%;
-		G_WEIGHT_BIT_WIDTH 			: natural := %%CORE_INPUT_LENGTH%%;
-		G_VECTOR_OUT_LENGTH         : natural := %%CORE_OUTPUT_LENGTH%%;
-		G_LINE_BUFFER_AMOUNT        : natural := %%LINE_BUFFER_AMOUNT%%;
-		G_MAX_CORE_AMOUNT           : natural := %%MAX_CORE_AMOUNT%%;
-		G_OUTPUT_CHANNEL            : natural := %%OUTPUT_CHANNEL%%;
-		G_MAX_OUTPUT_CHANNEL_AMOUNT : natural := %%INPUT_DATA_BYTE_WIDTH%%;
 		-- AXIS Inputs
-		G_INPUT_DATA_BYTE_WIDTH       : natural                := %%INPUT_DATA_BYTE_WIDTH%%;
-		G_OUTPUT_BYTE_WIDTH           : integer range 1 to 128 := %%DWC_OUTPUT_BYTE_WIDTH%%;
-		G_INPUT_CHANNEL_PER_ITERATION : natural                := %%ROUTE_INPUT_CHANNEL_PER_ITERATION%%;
-		-- IMG Generics
-		G_MAX_KERNEL_SIZE : natural := %%MAX_KERNEL_SIZE%%;
-		G_KERNEL_SIZE     : natural := %%KERNEL_SIZE%%;
-		G_PADDING_SIZE    : natural := %%PADDING_SIZE%%;
-		-- Configurable Slider
-		G_PIPELINE_STEPS : natural := %%CS_PIPELINE_STEPS%%;
-		---------------------------
-		-- Hard-Coded Generics
-		---------------------------
-		-- Control
-		G_CONTROL_DELAY_CYCLES : natural := 2;
-		-- IMG Generics
-		G_IMG_MAX_LENGTH : natural := 300;
-		-- AXIS INPUTS
-		G_MAX_AXIS_2_PXS_FIFO_DEPTH : natural := 512;
-		-- TEMP LAYER ACC FIFO
-		G_MAX_TMP_LAYER_ACCUMULATOR_FIFO : natural := 55 ** 2;
-		-- AXIS OUTPUT
-		G_NEAR_FULL_THRESHOLD : natural range 3 to 10 := 5;
-		G_MAX_PXS_2_AXIS      : natural               := 512
+		G_INPUT_DATA_BYTE_WIDTH       : natural                := %%INPUT_DATA_BYTE_WIDTH%%
 	);
 	port (
 		clk   : in std_logic;
@@ -81,26 +52,20 @@ begin
 
 	top_level_cnn_inst : entity %%CORE_COMPILE_LIB%%.top_level_cnn
 		generic map (
-			G_VECTOR_IN_LENGTH               => G_VECTOR_IN_LENGTH,
-			G_VECTOR_OUT_LENGTH              => G_VECTOR_OUT_LENGTH,
-			G_LINE_BUFFER_AMOUNT             => G_LINE_BUFFER_AMOUNT,
-			G_MAX_CORE_AMOUNT                => G_MAX_CORE_AMOUNT,
-			G_OUTPUT_CHANNEL                 => G_OUTPUT_CHANNEL,
-			G_MAX_OUTPUT_CHANNEL_AMOUNT      => G_MAX_OUTPUT_CHANNEL_AMOUNT,
+			G_VECTOR_IN_LENGTH               => %%CORE_INPUT_LENGTH%%,
+			G_WEIGHT_BIT_WIDTH               => %%CORE_INPUT_LENGTH%%,
+			G_VECTOR_OUT_LENGTH              => %%CORE_OUTPUT_LENGTH%%,
+			G_LINE_BUFFER_AMOUNT             => %%LINE_BUFFER_AMOUNT%%,
+			G_MAX_CORE_AMOUNT                => %%MAX_CORE_AMOUNT%%,
+			G_OUTPUT_CHANNEL                 => %%OUTPUT_CHANNEL%%,
+			G_MAX_OUTPUT_CHANNEL_AMOUNT      => %%INPUT_DATA_BYTE_WIDTH%%,
 			G_INPUT_DATA_BYTE_WIDTH          => G_INPUT_DATA_BYTE_WIDTH,
-			G_OUTPUT_BYTE_WIDTH              => G_OUTPUT_BYTE_WIDTH,
-			G_INPUT_CHANNEL_PER_ITERATION    => G_INPUT_CHANNEL_PER_ITERATION,
-			G_MAX_KERNEL_SIZE                => G_MAX_KERNEL_SIZE,
-			G_KERNEL_SIZE                    => G_KERNEL_SIZE,
-			G_PADDING_SIZE                   => G_PADDING_SIZE,
-			G_PIPELINE_STEPS                 => G_PIPELINE_STEPS,
-			G_CONTROL_DELAY_CYCLES           => G_CONTROL_DELAY_CYCLES,
-			G_WEIGHT_BIT_WIDTH               => G_WEIGHT_BIT_WIDTH,
-			G_IMG_MAX_LENGTH                 => G_IMG_MAX_LENGTH,
-			G_MAX_AXIS_2_PXS_FIFO_DEPTH      => G_MAX_AXIS_2_PXS_FIFO_DEPTH,
-			G_MAX_TMP_LAYER_ACCUMULATOR_FIFO => G_MAX_TMP_LAYER_ACCUMULATOR_FIFO,
-			G_NEAR_FULL_THRESHOLD            => G_NEAR_FULL_THRESHOLD,
-			G_MAX_PXS_2_AXIS                 => G_MAX_PXS_2_AXIS
+			G_OUTPUT_BYTE_WIDTH              => %%DWC_OUTPUT_BYTE_WIDTH%%,
+			G_INPUT_CHANNEL_PER_ITERATION    => %%ROUTE_INPUT_CHANNEL_PER_ITERATION%%,
+			G_MAX_KERNEL_SIZE                => %%MAX_KERNEL_SIZE%%,
+			G_KERNEL_SIZE                    => %%KERNEL_SIZE%%,
+			G_PADDING_SIZE                   => %%PADDING_SIZE%%,
+			G_PIPELINE_STEPS                 => %%CS_PIPELINE_STEPS%%
 		)
 		port map (
 			clk                 => clk,
