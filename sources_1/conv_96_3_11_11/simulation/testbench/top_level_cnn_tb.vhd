@@ -114,7 +114,7 @@ begin
 		wait until falling_edge(s_tb_o.reset);
 
 		push_axi_stream(net, stream_master_wt,
-	                tdata => x"01010103000B00030BD10003003700e3",
+	                tdata => x"0B03000B00030BD100020003003700e3",
 	                tlast => '1',
 	                tkeep => x"FFFF");
 

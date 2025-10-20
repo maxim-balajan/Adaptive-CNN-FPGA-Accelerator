@@ -6,7 +6,7 @@ route_configs:
   global:
     max_pipeline_steps: 5
     max_output_channels: 16
-    max_kernel_size: 11
+    max_kernel_size: 12
     line_buffer_amount: 80
     input_data_byte_width : 16
     configurable_routing_ps : 1

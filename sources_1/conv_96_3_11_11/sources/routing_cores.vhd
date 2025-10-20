@@ -33,10 +33,10 @@ entity routing_cores is
         -- CONFIGURABLE SLIDER OUTPUTS
         i_kernel_complete          : IN std_logic;
 		i_kernel_en                : IN std_logic;
-		i_kernel_activation_matrix : IN matrix_1d(0 to 11 * 80 - 1)(8 - 1 downto 0);
+		i_kernel_activation_matrix : IN matrix_1d(0 to 12 * 80 - 1)(8 - 1 downto 0);
         -- WEIGHT MODULE OUTPUTS
         i_kernel_weight_en     : IN std_logic;
-        i_kernel_weight_matrix : IN matrix_1d(0 to 11 * 80 - 1)(8 - 1 downto 0); 
+        i_kernel_weight_matrix : IN matrix_1d(0 to 12 * 80 - 1)(8 - 1 downto 0); 
         i_shamt_line           : IN matrix_1d(0 to 300 - 1)(8 - 1 downto 0);
         i_bias_line            : IN matrix_1d(0 to 300 - 1)(8 - 1 downto 0);
         -- ROUTING CORES OUTPUTS

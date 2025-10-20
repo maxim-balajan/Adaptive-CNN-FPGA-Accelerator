@@ -26,7 +26,7 @@ entity top_level_cnn_wrapper is
 		G_OUTPUT_BYTE_WIDTH           : integer range 1 to 128 := 15;
 		G_INPUT_CHANNEL_PER_ITERATION : natural                := 3;
 		-- IMG Generics
-		G_MAX_KERNEL_SIZE : natural := 11;
+		G_MAX_KERNEL_SIZE : natural := 12;
 		G_KERNEL_SIZE     : natural := 11;
 		G_PADDING_SIZE    : natural := 0;
 		-- Configurable Slider

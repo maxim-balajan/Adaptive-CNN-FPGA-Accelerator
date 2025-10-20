@@ -48,7 +48,11 @@ package body top_level_cnn_tc_pkg is
 
 		tc_init(tb_o, tb_i);
 
-		wait for 5000 * C_CLK_PERIOD;
+		tb_o.i_px_m_axis_tready <= '1';
+
+		wait until rising_edge(tb_i.o_overall_done) or rising_edge(tb_i.o_overall_error) for 200000 * C_CLK_PERIOD;
+
+		wait for 10 * C_CLK_PERIOD;
 
 		tc_end(tb_o, tb_i);
 

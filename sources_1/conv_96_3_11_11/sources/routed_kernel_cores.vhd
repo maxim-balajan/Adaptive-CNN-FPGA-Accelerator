@@ -15,7 +15,7 @@ entity routed_kernel_cores is
 	generic (
 		G_VECTOR_IN_LENGTH          : natural := 8;
 		G_VECTOR_OUT_LENGTH         : natural := 24;
-		G_MAX_KERNEL_SIZE           : natural := 11;
+		G_MAX_KERNEL_SIZE           : natural := 12;
 		G_LINE_BUFFER_AMOUNT        : natural := 80;
 		G_MAX_CORE_AMOUNT           : natural := 300;
 		G_MAX_OUTPUT_CHANNEL_AMOUNT : natural := 16
