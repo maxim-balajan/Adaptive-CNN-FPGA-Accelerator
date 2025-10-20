@@ -212,7 +212,7 @@ begin
 				s_rst_config_slider <= '1';
 				s_rst_kernel_cores  <= '1';
 				s_rst_accumulator   <= '1';
-				s_rst_pxs_2_axis    <= '0';
+				s_rst_pxs_2_axis    <= '1';
 
 				-- In this cycle, no values should be read from the weight stream
 				-- -> ready has to be on Low
