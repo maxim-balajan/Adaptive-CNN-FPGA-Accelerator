@@ -23,7 +23,7 @@ class CoreTree():
         
         self.adder_tree_config = adder_tree_config
         self.input_channel = safe_read(route_dict, 'input_channel')
-        self.input_channel_per_iteration = safe_read(route_dict, 'input_channel', self.input_channel)
+        self.input_channel_per_iteration = safe_read(route_dict, 'input_channel_per_iteration', self.input_channel)
         self.output_channel = safe_read(route_dict, "output_channel", 1)
         self.input_amount = safe_read(route_dict, "input_amount")
         self.pool_or_conv = safe_read(route_dict, "pool_or_conv", 1)
