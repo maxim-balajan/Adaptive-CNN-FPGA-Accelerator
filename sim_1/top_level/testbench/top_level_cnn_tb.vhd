@@ -21,7 +21,8 @@ entity top_level_cnn_tb is
 		stop_level : log_level_t := error;
 		-- TB
 		G_RND_SEED  : STRING               := "xxx";
-		G_LOG_LEVEL : integer range 0 to 2 := 1
+		G_LOG_LEVEL : integer range 0 to 2 := 1;
+		G_CONFIG_STR : string
 	);
 end entity top_level_cnn_tb;
 
@@ -35,6 +36,8 @@ architecture bench of top_level_cnn_tb is
 	constant stream_master_wt : axi_stream_master_t := new_axi_stream_master(data_length => 128);
 	constant stream_master_px : axi_stream_master_t := new_axi_stream_master(data_length => 128);
 
+	--constant c_config_slv : std_logic_vector(127 downto 0) := HEX_READ()
+
 	signal wt_tvalid, px_tvalid : std_logic;
 	signal wt_tready, px_tready : std_logic;
 	signal wt_tdata,  px_tdata  : std_logic_vector(127 downto 0);
@@ -47,21 +50,21 @@ begin
 		port map (
 			clk                 => s_tb_i.clk,
 			reset               => s_tb_o.reset,
-			i_wt_s_axis_tdata   => wt_tdata,
-			i_wt_s_axis_tkeep   => wt_tkeep,
-			i_wt_s_axis_tlast   => wt_tlast,
-			o_wt_s_axis_tready  => wt_tready,
-			i_wt_s_axis_tvalid  => wt_tvalid,
-			i_px_s_axis_tdata   => px_tdata,
-			i_px_s_axis_tkeep   => px_tkeep,
-			i_px_s_axis_tlast   => px_tlast,
-			o_px_s_axis_tready  => px_tready,
-			i_px_s_axis_tvalid  => px_tvalid,
-			o_px_m_axis_tdata   => s_tb_i.o_px_m_axis_tdata,
-			o_px_m_axis_tkeep   => s_tb_i.o_px_m_axis_tkeep,
-			o_px_m_axis_tlast   => s_tb_i.o_px_m_axis_tlast,
-			i_px_m_axis_tready  => s_tb_o.i_px_m_axis_tready,
-			o_px_m_axis_tvalid  => s_tb_i.o_px_m_axis_tvalid,
+			wt_s_axis_tdata   => wt_tdata,
+			wt_s_axis_tkeep   => wt_tkeep,
+			wt_s_axis_tlast   => wt_tlast,
+			wt_s_axis_tready  => wt_tready,
+			wt_s_axis_tvalid  => wt_tvalid,
+			px_s_axis_tdata   => px_tdata,
+			px_s_axis_tkeep   => px_tkeep,
+			px_s_axis_tlast   => px_tlast,
+			px_s_axis_tready  => px_tready,
+			px_s_axis_tvalid  => px_tvalid,
+			px_m_axis_tdata   => s_tb_i.o_px_m_axis_tdata,
+			px_m_axis_tkeep   => s_tb_i.o_px_m_axis_tkeep,
+			px_m_axis_tlast   => s_tb_i.o_px_m_axis_tlast,
+			px_m_axis_tready  => s_tb_o.i_px_m_axis_tready,
+			px_m_axis_tvalid  => s_tb_i.o_px_m_axis_tvalid,
 			o_current_ic_amount => s_tb_i.o_current_ic_amount,
 			o_current_state     => s_tb_i.o_current_state,
 			o_overall_done      => s_tb_i.o_overall_done,
@@ -114,7 +117,7 @@ begin
 		wait until falling_edge(s_tb_o.reset);
 
 		push_axi_stream(net, stream_master_wt,
-	                tdata => x"0B03000B00030BD100020003003700e3",
+	                tdata => hexstr_to_slv(G_CONFIG_STR)(127 downto 0),
 	                tlast => '1',
 	                tkeep => x"FFFF");
 

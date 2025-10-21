@@ -61,6 +61,9 @@ package top_level_cnn_tb_pkg is
 	----------------------------------------------------------------------
 	-- FUNCTIONs
 	----------------------------------------------------------------------
+	impure function hexstr_to_slv (
+		str_i : string
+	) return std_logic_vector;
 
 	----------------------------------------------------------------------
 	-- PROCEDUREs
@@ -96,6 +99,57 @@ package body top_level_cnn_tb_pkg is
 	----------------------------------------------------------------------
 	-- FUNCTIONs
 	----------------------------------------------------------------------
+
+	impure function hexstr_to_slv (
+		str_i : string
+	) return std_logic_vector is
+
+		variable hex_v  : std_logic_vector(3 downto 0);
+		variable vect_v : std_logic_vector(str_i'length * 4 - 1 downto 0);
+
+	begin
+
+		vect_v := (others => '0');
+
+		for i in str_i'range loop
+
+			case str_i(str_i'length - i + 1) is
+				when '0' => hex_v := x"0";
+				when '1' => hex_v := x"1";
+				when '2' => hex_v := x"2";
+				when '3' => hex_v := x"3";
+				when '4' => hex_v := x"4";
+				when '5' => hex_v := x"5";
+				when '6' => hex_v := x"6";
+				when '7' => hex_v := x"7";
+				when '8' => hex_v := x"8";
+				when '9' => hex_v := x"9";
+				when 'a' => hex_v := x"A";
+				when 'A' => hex_v := x"A";
+				when 'b' => hex_v := x"B";
+				when 'B' => hex_v := x"B";
+				when 'c' => hex_v := x"C";
+				when 'C' => hex_v := x"C";
+				when 'd' => hex_v := x"D";
+				when 'D' => hex_v := x"D";
+				when 'e' => hex_v := x"E";
+				when 'E' => hex_v := x"E";
+				when 'f' => hex_v := x"F";
+				when 'F' => hex_v := x"F";
+				when others =>
+					report "hexstr_to_slv_error illegal char"
+						severity ERROR;
+			end case;
+
+			vect_v(3 + (i - 1) * 4 downto 0 + (i - 1) * 4) := hex_v;
+
+		end loop;
+
+		
+
+		return vect_v;
+
+	end function hexstr_to_slv;
 
 	----------------------------------------------------------------------
 	-- PROCEDUREs
