@@ -51,19 +51,23 @@ package body pxs_2_axis_tc_pkg is
 
 		wait for 3 ps; -- wait some time
 
+		--for i in 0 to 10000 loop 
+		--	wait until rising_edge(tb_i.clk) and tb_i.o_en = '1';
+		--end loop;
+
 		for i in 0 to 99 loop
 
 			tb_o.i_kernel_complete <= '0' when i /= 99 else '1';
 			tb_o.i_kernel_valid <= '1';
 			tb_o.i_pixel_line   <= (others => std_logic_vector(data));
 
-			wait until rising_edge(tb_i.clk) and tb_i.o_en = '1';
+			wait until rising_edge(tb_i.clk) and tb_i.o_en = '1' for 5 * C_CLK_PERIOD;
 			tb_o.i_kernel_valid <= '0';
 
 			-- Invalid delay cycles
 			for i in 0 to sv_rnd.RandInt(0, 3) - 1 loop
 				
-				wait until rising_edge(tb_i.clk) and tb_i.o_en = '1';
+				wait until rising_edge(tb_i.clk) and tb_i.o_en = '1' for 5 * C_CLK_PERIOD;
 
 			end loop;
 

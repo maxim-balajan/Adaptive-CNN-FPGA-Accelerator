@@ -24,8 +24,8 @@ entity pxs_2_axis_tb is
 		-- DUT
 		G_OUTPUT_CHANNELS     : natural                := 2;
 		G_DATA_BYTE_WIDTH     : integer range 1 to 128 := 16;
-		G_BRAM_MAX_DEPTH      : natural                := 2;
-		G_NEAR_FULL_THRESHOLD : natural                := 1
+		G_BRAM_MAX_DEPTH      : natural                := 16;
+		G_NEAR_FULL_THRESHOLD : natural                := 3
 	);
 end entity pxs_2_axis_tb;
 
