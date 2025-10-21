@@ -19,6 +19,7 @@ entity configurable_slider_input_demux is
 		-- Control Inputs [REGISTERED after reset]
 		i_image_input_length : in std_logic_vector(15 downto 0);
 		i_padding_size       : in std_logic_vector(7 downto 0);
+		i_pool_or_conv : in std_logic;
 		-- Control Inputs [Not REGISTERED after reset]
 		i_wt_init : in std_logic;
 		i_cs_init : in std_logic;
@@ -37,10 +38,10 @@ architecture rtl of configurable_slider_input_demux is
 	-- Constant for knowing range of demultiplexers
 	constant C_BRAM_PER_IC : natural := G_DATA_BYTE_WIDTH / (G_INPUT_CHANNEL_PER_ITERATION * G_BRAM_BYTE_WIDTH);
 
-	signal s_current_read_id : unsigned(integer(ceil(log2(real(C_BRAM_PER_IC)))) - 1 downto 0);
+	signal s_current_read_id : unsigned(integer(ceil(log2(real(C_BRAM_PER_IC)))) downto 0);
 	-- Necessary because read signal is delayed by one cycle for the initial pipeline introduced by CONTROL_PROC
 	-- by one cycle for the bram and by one more cycle for last pipeline step
-	signal s_current_read_id_line : matrix_1d(0 to 2)(integer(ceil(log2(real(C_BRAM_PER_IC)))) - 1 downto 0);
+	signal s_current_read_id_line : matrix_1d(0 to 2)(integer(ceil(log2(real(C_BRAM_PER_IC)))) downto 0);
 	signal s_pixel_input_x        : signed(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) downto 0);
 	signal s_pixel_input_y        : signed(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) + 1 downto 0);
 	signal s_actual_input_length  : signed(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) + 1 downto 0);
@@ -136,7 +137,7 @@ begin
 	                         or (s_actual_input_length - s_pixel_input_y - 1) < RESIZE(signed(i_padding_size), s_actual_input_length'length) else
 	                '0';
 
-	s_let_pipeline_pass <= i_en and (s_is_padding or not i_empty(to_integer(s_current_read_id))) and (i_wt_init or not i_cs_init);
+	s_let_pipeline_pass <= i_en and (s_is_padding or not i_empty(to_integer(s_current_read_id))) and ((i_wt_init or not i_pool_or_conv) or not i_cs_init);
 
 	-- Map pixel stream to matrix to be able to multiplex signal
 

@@ -51,7 +51,7 @@ architecture route_a of routing_cores is
     -------------------------------------------
     -- CONSTANTs
     -------------------------------------------
-    CONSTANT C_MAX_PIPELINE_STEPS : POSITIVE := 5;
+    CONSTANT C_MAX_PIPELINE_STEPS : POSITIVE := 2;
 
     -------------------------------------------
     -- SIGNALs
@@ -91,12 +91,23 @@ begin
                 s_wm_shamt_line    <= (others => (others => '0'));
                 s_wm_bias_line     <= (others => (others => '0'));
 
+                s_kc_pixel_line(s_kc_pixel_line'LOW) <= (others => (others => '0') ) ;
+                s_kc_valid_line(s_kc_valid_line'LOW) <= (others => '0') ;
+                s_kc_comp_line(s_kc_comp_line'LOW)   <= (others => '0') ; 
+
                 -- Reset of KERNEL CORES OUTPUT SHIFT REGISTERS
                 s_kc_pixel_line(1 to C_MAX_PIPELINE_STEPS - 1) <= (others => (others => (others => '0')));
                 s_kc_valid_line(1 to C_MAX_PIPELINE_STEPS - 1) <= (others => (others => '0'));
                 s_kc_comp_line(1 to C_MAX_PIPELINE_STEPS - 1)  <= (others => (others => '0'));
 
             elsif i_en = '1' then
+
+                -------------------------------------------
+                -- Pipeline start
+                -------------------------------------------
+                s_kc_pixel_line(s_kc_pixel_line'LOW) <= i_pixel_line;
+                s_kc_valid_line(s_kc_valid_line'LOW) <= i_valid_pixel_line;
+                s_kc_comp_line(s_kc_comp_line'LOW)   <= i_comp_complete_line; 
 
                 -- 1 cycle delay for CONFIGURABLE SLIDER OUTPUT
                 s_cs_kernel_matrix   <= i_kernel_activation_matrix;
@@ -117,13 +128,6 @@ begin
             end if;
         end if;
     end process DELAY_PROC;
-
-    -------------------------------------------
-    -- Pipeline start
-    -------------------------------------------
-    s_kc_pixel_line(s_kc_pixel_line'LOW) <= i_pixel_line;
-    s_kc_valid_line(s_kc_valid_line'LOW) <= i_valid_pixel_line;
-    s_kc_comp_line(s_kc_comp_line'LOW)   <= i_comp_complete_line; 
 
     -------------------------------------------
     -- INTERMEDIATE OUTPUTs

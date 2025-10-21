@@ -41,6 +41,7 @@ entity axis_2_configurable_slider_wrapper is
 		i_image_output_length : in std_logic_vector(15 downto 0);
 		i_kernel_size         : in std_logic_vector(7 downto 0);
 		i_padding_size        : in std_logic_vector(7 downto 0);
+		i_pool_or_conv : in std_logic;
 		i_stride_bit_mask     : in std_logic_vector(7 downto 0);
 		-- Control Inputs [Not REGISTERED after reset]
 		i_wt_init : in std_logic;
@@ -124,6 +125,7 @@ begin
 			-- Control Inputs [REGISTERED after reset]
 			i_image_input_length => i_image_input_length,
 			i_padding_size       => i_padding_size,
+			i_pool_or_conv => i_pool_or_conv,
 			-- Control Inputs [Not REGISTERED after reset]
 			i_wt_init => s_wt_init,
 			i_cs_init => s_cs_init_del,

@@ -40,7 +40,7 @@ entity top_level_cnn is
 		G_MAX_TMP_LAYER_ACCUMULATOR_FIFO : natural := 55 ** 2;
 		-- AXIS OUTPUT
 		G_NEAR_FULL_THRESHOLD : natural range 3 to 10 := 5;
-		G_MAX_PXS_2_AXIS      : natural               := 512
+		G_MAX_PXS_2_AXIS      : natural               := 500
 	);
 	port (
 		clk   : in std_logic;
@@ -226,6 +226,7 @@ begin
 			-- CONFIG REGISTERS
 			i_image_input_length  => s_image_input_length,
 			i_image_output_length => s_image_output_length,
+			i_pool_or_conv        => s_pool_or_conv,
 			i_kernel_size         => s_kernel_size,
 			i_padding_size        => s_padding_size,
 			i_stride_bit_mask     => s_stride_bit_mask,

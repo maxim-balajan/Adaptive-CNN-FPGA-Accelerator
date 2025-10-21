@@ -6,9 +6,10 @@ use work.libmatrix.all;
 
 entity bram_fifo is
 	generic (
-		vector_length         : natural := 8;
-		G_MAX_DEPTH           : natural := 227;
-		G_NEAR_FULL_THRESHOLD : natural := 3
+		vector_length          : natural := 8;
+		G_MAX_DEPTH            : natural := 227;
+		G_NEAR_FULL_THRESHOLD  : natural := 3;
+		G_NEAR_EMPTY_THRESHOLD : natural := 1
 	);
 	port (
 		clk   : in std_logic;
@@ -21,10 +22,11 @@ entity bram_fifo is
 		wr_en : in std_logic;
 		rd_en : in std_logic;
 		--
-		dout      : out std_logic_vector(vector_length - 1 downto 0);
-		near_full : out std_logic;
-		full      : out std_logic;
-		empty     : out std_logic
+		dout       : out std_logic_vector(vector_length - 1 downto 0);
+		near_full  : out std_logic;
+		near_empty : out std_logic;
+		full       : out std_logic;
+		empty      : out std_logic
 	);
 end entity bram_fifo;
 
@@ -46,22 +48,24 @@ architecture rtl of bram_fifo is
 	signal s_read_pointer  : unsigned(integer(ceil(log2(real(G_MAX_DEPTH)))) - 1 downto 0);
 	signal s_write_pointer : unsigned(integer(ceil(log2(real(G_MAX_DEPTH)))) - 1 downto 0);
 
-	signal s_empty             : std_logic;
-	signal s_full, s_near_full : std_logic;
+	signal s_empty, s_near_empty : std_logic;
+	signal s_full,  s_near_full  : std_logic;
 
 	signal s_last_write : std_logic;
 	signal s_dout       : std_logic_vector(vector_length - 1 downto 0);
 
 begin
 
-	s_empty     <= std_logic_vector(s_read_pointer) ?= std_logic_vector(s_write_pointer) and not s_last_write;
-	s_full      <= std_logic_vector(s_read_pointer) ?= std_logic_vector(s_write_pointer) and s_last_write;
-	s_near_full <= '1' when s_entry_amount >= (signed(resize(s_actual_depth, s_entry_amount'length)) - G_NEAR_FULL_THRESHOLD) else '0';
+	s_empty      <= std_logic_vector(s_read_pointer) ?= std_logic_vector(s_write_pointer) and not s_last_write;
+	s_full       <= std_logic_vector(s_read_pointer) ?= std_logic_vector(s_write_pointer) and s_last_write;
+	s_near_full  <= '1' when s_entry_amount >= (signed(resize(s_actual_depth, s_entry_amount'length)) - G_NEAR_FULL_THRESHOLD) else '0';
+	s_near_empty <= '1' when s_entry_amount <= G_NEAR_EMPTY_THRESHOLD else '0';
 
-	empty     <= s_empty;
-	full      <= s_full;
-	near_full <= s_near_full;
-	dout      <= s_dout;
+	empty      <= s_empty;
+	full       <= s_full;
+	near_full  <= s_near_full;
+	near_empty <= s_near_empty;
+	dout       <= s_dout;
 
 	process (clk, reset) is
 
@@ -91,7 +95,7 @@ begin
 				-- Reset of last write value and put on it 0 for now
 				s_last_write <= '0';
 				-- Always write 0 even if no read was performed
-				--s_dout <= (others => '0'); 
+				-- s_dout <= (others => '0');
 				if rd_en = '1' and s_empty = '0' then
 					-- Read from memory
 					-- Only get the actual memory if reset_cycle has been completed

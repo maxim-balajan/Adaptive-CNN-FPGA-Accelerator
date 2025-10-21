@@ -56,7 +56,7 @@ end entity control_unit;
 architecture rtl of control_unit is
 
 	type control_state_t is (
-		e_CONFIG_RETR, e_RST_SUBMODULE,
+		e_CONFIG_RETR, e_1st_RST_SUBMODULE, e_2nd_RST_SUBMODULE,
 		e_WT_RETR, e_WT_INIT, e_DONE, e_ERROR
 	);
 
@@ -129,11 +129,13 @@ begin
 				case s_current_state is
 					when e_CONFIG_RETR =>
 						if s_config_valid = '1' then
-							s_current_state <= e_RST_SUBMODULE;
+							s_current_state <= e_1st_RST_SUBMODULE;
 						elsif s_config_error = '1' then
 							s_current_state <= e_ERROR;
 						end if;
-					when e_RST_SUBMODULE =>
+					when e_1st_RST_SUBMODULE =>
+						s_current_state <= e_2nd_RST_SUBMODULE;
+					when e_2nd_RST_SUBMODULE =>
 						if s_pool_or_conv = '1' then
 							s_current_state <= e_WT_RETR;
 						else
@@ -153,7 +155,7 @@ begin
 							else
 								s_current_oc_amount <= s_current_oc_amount + 1;
 								s_current_ic_amount <= (others => '0');
-								s_current_state     <= e_RST_SUBMODULE;
+								s_current_state     <= e_1st_RST_SUBMODULE;
 							end if;
 						elsif i_temp_comp_complete = '1' then
 							-- Only increment if this is not the last iteration
@@ -203,7 +205,7 @@ begin
 				s_current_state_slv <= "000";
 				s_overall_done      <= '0';
 				s_overall_error     <= '0';
-			when e_RST_SUBMODULE =>
+			when e_1st_RST_SUBMODULE | e_2nd_RST_SUBMODULE =>
 				-- Reset all modules except Config Unit and PXS_2_AXIS
 				-- -> that way configuration values are stored
 				s_rst_axis_2_pxs    <= '1';

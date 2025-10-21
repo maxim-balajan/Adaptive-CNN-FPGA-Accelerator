@@ -28,6 +28,7 @@ entity axis_2_pxs is
 		-- Control Inputs [REGISTERED after reset]
 		i_image_input_length : in std_logic_vector(15 downto 0);
 		i_padding_size       : in std_logic_vector(7 downto 0);
+		i_pool_or_conv : in std_logic;
 		-- Control Inputs [Not REGISTERED after reset]
 		i_wt_init : in std_logic;
 		i_cs_init : in std_logic;
@@ -141,6 +142,7 @@ begin
 			--
 			i_image_input_length => i_image_input_length,
 			i_padding_size       => i_padding_size,
+			i_pool_or_conv => i_pool_or_conv,
 			i_wt_init            => i_wt_init,
 			i_cs_init            => i_cs_init,
 			--
