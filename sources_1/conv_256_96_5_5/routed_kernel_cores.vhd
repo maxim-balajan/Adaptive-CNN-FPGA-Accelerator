@@ -17,7 +17,7 @@ entity routed_kernel_cores is
 		G_VECTOR_OUT_LENGTH         : natural := 24;
 		G_MAX_KERNEL_SIZE           : natural := 12;
 		G_LINE_BUFFER_AMOUNT        : natural := 80;
-		G_MAX_CORE_AMOUNT           : natural := 300;
+		G_MAX_CORE_AMOUNT           : natural := 100;
 		G_MAX_OUTPUT_CHANNEL_AMOUNT : natural := 16
 	);
 	port (
@@ -44,16 +44,16 @@ end entity routed_kernel_cores;
 architecture route_a of routed_kernel_cores is
 
 	-- KERNEL CORES INPUT PORTS
-	signal s_activation_matrix_line : matrix_1d(0 to 6000 - 1)(24 - 1 downto 0);
-	signal s_weight_matrix_line     : matrix_1d(0 to 6000 - 1)(24 - 1 downto 0);
-	signal s_shamt_line             : matrix_1d(0 to 300 - 1)(8 - 1 downto 0);
-	signal s_bias_line              : matrix_1d(0 to 300 - 1)(8 - 1 downto 0);
-	signal s_kernel_en_line         : std_logic_vector(0 to 300 - 1);
-	signal s_kernel_complete_line   : std_logic_vector(0 to 300 - 1);
+	signal s_activation_matrix_line : matrix_1d(0 to 500 - 1)(24 - 1 downto 0);
+	signal s_weight_matrix_line     : matrix_1d(0 to 500 - 1)(24 - 1 downto 0);
+	signal s_shamt_line             : matrix_1d(0 to 100 - 1)(8 - 1 downto 0);
+	signal s_bias_line              : matrix_1d(0 to 100 - 1)(8 - 1 downto 0);
+	signal s_kernel_en_line         : std_logic_vector(0 to 100 - 1);
+	signal s_kernel_complete_line   : std_logic_vector(0 to 100 - 1);
 	-- KERNEL CORES OUTPUT PORTS
-	signal s_pixel_line         : matrix_1d(0 to 300 - 1)(24 - 1 downto 0);
-	signal s_valid_pixel_line   : std_logic_vector(0 to 300 - 1);
-	signal s_comp_complete_line : std_logic_vector(0 to 300 - 1);
+	signal s_pixel_line         : matrix_1d(0 to 100 - 1)(24 - 1 downto 0);
+	signal s_valid_pixel_line   : std_logic_vector(0 to 100 - 1);
+	signal s_comp_complete_line : std_logic_vector(0 to 100 - 1);
 
 begin
 

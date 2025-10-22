@@ -20,23 +20,23 @@ entity Four_adder_no_mult is
         -- Global enable: If set to 0, stall entire unit and set outputs to low 
         i_en  : in std_logic;
         --
-        i_activation_matrix_line  : in matrix_1d(0 to 100 * 20 - 1)(24 - 1 downto 0);
-        i_weight_matrix_line      : in matrix_1d(0 to 100 * 20 - 1)(24 - 1 downto 0);
-        i_shamt_line              : in matrix_1d(0 to 100 - 1)(24 - 1 downto 0);
-        i_bias_line               : in matrix_1d(0 to 100 - 1)(24 - 1 downto 0);
-        i_kernel_en_line          : in std_logic_vector(0 to 100 - 1);   
-        i_kernel_complete_line    : in std_logic_vector(0 to 100 - 1);
+        i_activation_matrix_line  : in matrix_1d(0 to 15 * 5 - 1)(24 - 1 downto 0);
+        i_weight_matrix_line      : in matrix_1d(0 to 15 * 5 - 1)(24 - 1 downto 0);
+        i_shamt_line              : in matrix_1d(0 to 15 - 1)(24 - 1 downto 0);
+        i_bias_line               : in matrix_1d(0 to 15 - 1)(24 - 1 downto 0);
+        i_kernel_en_line          : in std_logic_vector(0 to 15 - 1);   
+        i_kernel_complete_line    : in std_logic_vector(0 to 15 - 1);
         --
-        o_pixel_line         : out matrix_1d(0 to 100 - 1)(24 - 1 downto 0);
-        o_valid_pixel_line   : out std_logic_vector(0 to 100 - 1);
-        o_comp_complete_line : out std_logic_vector(0 to 100 - 1)
+        o_pixel_line         : out matrix_1d(0 to 15 - 1)(24 - 1 downto 0);
+        o_valid_pixel_line   : out std_logic_vector(0 to 15 - 1);
+        o_comp_complete_line : out std_logic_vector(0 to 15 - 1)
     );
 end entity Four_adder_no_mult;
 
 architecture Four_adder_no_mult_rtl of Four_adder_no_mult is
 begin
 
-    Four_adder_no_mult_GEN : for i in 0 to 15 - 1 generate
+    Four_adder_no_mult_GEN : for i in 0 to 10 - 1 generate
         
         KERNEL_COMPUTATION_INST : entity work.kernel_computation_unit
             generic map (

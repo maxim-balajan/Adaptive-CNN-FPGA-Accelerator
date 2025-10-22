@@ -56,7 +56,7 @@ begin
 			G_WEIGHT_BIT_WIDTH            => 8,
 			G_VECTOR_OUT_LENGTH           => 24,
 			G_LINE_BUFFER_AMOUNT          => 80,
-			G_MAX_CORE_AMOUNT             => 300,
+			G_MAX_CORE_AMOUNT             => 100,
 			G_OUTPUT_CHANNEL              => 1,
 			G_MAX_OUTPUT_CHANNEL_AMOUNT   => 16,
 			G_INPUT_DATA_BYTE_WIDTH       => G_INPUT_DATA_BYTE_WIDTH,
