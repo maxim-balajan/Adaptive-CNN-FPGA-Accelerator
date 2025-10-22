@@ -180,7 +180,7 @@ begin
 	----------------------------------------
 	-- Asynchronous signals
 	----------------------------------------
-	s_bram_rd_en <= (others => (i_kernel_complete or not (or s_bram_nearly_empty)) and s_ps_axis_tready);
+	s_bram_rd_en <= (others => ((i_kernel_complete and not (or s_bram_empty)) or not (or s_bram_nearly_empty)) and s_ps_axis_tready);
 	s_en         <= not (and s_bram_nearly_full);
 
 	----------------------------------------

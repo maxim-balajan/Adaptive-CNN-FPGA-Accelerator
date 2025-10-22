@@ -15,11 +15,14 @@ entity configurable_slider_input_demux is
 		clk   : in std_logic;
 		reset : in std_logic;
 		--
+		i_rst_cfg_slider : in std_logic;
+		i_rst_axis_2_pxs : in std_logic;
+		--
 		i_en : in std_logic;
 		-- Control Inputs [REGISTERED after reset]
 		i_image_input_length : in std_logic_vector(15 downto 0);
 		i_padding_size       : in std_logic_vector(7 downto 0);
-		i_pool_or_conv : in std_logic;
+		i_pool_or_conv       : in std_logic;
 		-- Control Inputs [Not REGISTERED after reset]
 		i_wt_init : in std_logic;
 		i_cs_init : in std_logic;
@@ -63,27 +66,12 @@ begin
 	begin
 
 		if rising_edge(clk) then
-			if reset = '1' then
-				s_current_read_id                             <= (others => '0');
+			if reset = '1' or i_rst_cfg_slider = '1' then
 				s_pixel_input_x                               <= (others => '0');
 				s_pixel_input_y                               <= (others => '0');
 				s_pixel_input_y(i_padding_size'high downto 0) <= signed(i_padding_size);
 				s_actual_input_length                         <= RESIZE(signed(i_image_input_length) + SHIFT_LEFT(signed(i_padding_size), 1), s_actual_input_length'length);
-				--
-				s_rd_en_line(0)          <= '0';
-				s_pipeline_valid_line(0) <= '0';
 			elsif s_let_pipeline_pass = '1' then
-				if s_is_padding = '1' then
-					-- If no padding, don't read from bram, but pipeline valid
-					s_rd_en_line(0) <= '0';
-				elsif i_empty(to_integer(s_current_read_id)) = '0' then
-					s_current_read_id <= s_current_read_id + 1;
-					if s_current_read_id = C_BRAM_PER_IC - 1 then
-						s_current_read_id <= (others => '0');
-					end if;
-					s_rd_en_line(0) <= '1';
-				end if;
-				s_pipeline_valid_line(0) <= '1';
 				-- Increment pixel address after pipeline was started
 				s_pixel_input_x <= s_pixel_input_x + 1;
 				if s_pixel_input_x = s_actual_input_length - 1 then
@@ -104,13 +92,27 @@ begin
 	begin
 
 		if rising_edge(clk) then
-			if reset = '1' then
-				s_pipeline_valid_line(1 to 2) <= (others => '0');
-				s_pixel_streams               <= (others => '0');
-				s_current_read_id_line        <= (others => (others => '0'));
+			if reset = '1' or i_rst_axis_2_pxs = '1' then
+				s_pipeline_valid_line  <= (others => '0');
+				s_rd_en_line           <= (others => '0');
+				s_pixel_streams        <= (others => '0');
+				s_current_read_id_line <= (others => (others => '0'));
 				--
-				s_rd_en_line(1) <= '0';
+				s_current_read_id <= (others => '0');
+			--
 			elsif s_let_pipeline_pass = '1' then
+				if s_is_padding = '1' then
+					-- If no padding, don't read from bram, but pipeline valid
+					s_rd_en_line(0) <= '0';
+				elsif i_empty(to_integer(s_current_read_id)) = '0' then
+					s_current_read_id <= s_current_read_id + 1;
+					if s_current_read_id = C_BRAM_PER_IC - 1 then
+						s_current_read_id <= (others => '0');
+					end if;
+					s_rd_en_line(0) <= '1';
+				end if;
+				s_pipeline_valid_line(0) <= '1';
+
 				-- Delay read en to know whether 0 or i_data_stream should be pipelined
 				s_rd_en_line(1) <= s_rd_en_line(0);
 				-- Delay current read id because of read delay

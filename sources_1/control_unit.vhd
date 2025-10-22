@@ -57,6 +57,7 @@ architecture rtl of control_unit is
 
 	type control_state_t is (
 		e_CONFIG_RETR, e_1st_RST_SUBMODULE, e_2nd_RST_SUBMODULE,
+		e_1st_WT_RST, e_2nd_WT_RST,
 		e_WT_RETR, e_WT_INIT, e_DONE, e_ERROR
 	);
 
@@ -124,7 +125,7 @@ begin
 
 				-- Start at fist iteration
 				s_current_ic_amount <= (others => '0');
-				s_current_oc_amount <= (others => '0'); 
+				s_current_oc_amount <= (others => '0');
 			else
 				case s_current_state is
 					when e_CONFIG_RETR =>
@@ -135,7 +136,9 @@ begin
 						end if;
 					when e_1st_RST_SUBMODULE =>
 						s_current_state <= e_2nd_RST_SUBMODULE;
-					when e_2nd_RST_SUBMODULE =>
+					when e_1st_WT_RST =>
+						s_current_state <= e_2nd_WT_RST;
+					when e_2nd_RST_SUBMODULE | e_2nd_WT_RST =>
 						if s_pool_or_conv = '1' then
 							s_current_state <= e_WT_RETR;
 						else
@@ -148,21 +151,20 @@ begin
 							s_current_state <= e_ERROR;
 						end if;
 					when e_WT_INIT =>
-						if i_accel_finish = '1' then
-							-- If all values have been read from the BRAM, the unit is finished for this output channel
+						if s_current_ic_amount + unsigned(s_input_channel_per_iteration) < unsigned(s_input_channel_size) then
+							if i_temp_comp_complete = '1' then
+								s_current_ic_amount <= s_current_ic_amount + unsigned(s_input_channel_per_iteration);
+								s_current_state     <= e_1st_WT_RST;
+							end if;
+						elsif i_accel_finish = '1' then
+							s_current_ic_amount <= (others => '0');
+							s_current_oc_amount <= s_current_oc_amount + 1;
 							if s_current_oc_amount >= unsigned(s_output_channel_size) - 1 then
 								s_current_state <= e_DONE;
 							else
-								s_current_oc_amount <= s_current_oc_amount + 1;
-								s_current_ic_amount <= (others => '0');
-								s_current_state     <= e_1st_RST_SUBMODULE;
+								s_current_state <= e_1st_RST_SUBMODULE;
 							end if;
-						elsif i_temp_comp_complete = '1' then
-							-- Only increment if this is not the last iteration
-							if s_current_ic_amount < unsigned(s_input_channel_size) then
-								s_current_ic_amount <= s_current_ic_amount + unsigned(s_input_channel_per_iteration);
-							end if;
-						end if;
+						end if; 
 					when e_DONE | e_ERROR =>
 						-- If done, reset everything and go back to CFG_RETR
 						s_current_state <= e_CONFIG_RETR;
@@ -173,7 +175,7 @@ begin
 	end process TRANSITION_PROC;
 
 	OUTPUT_PROC : process (s_current_state, i_wt_s_axis_tdata, i_wt_s_axis_tkeep, i_wt_s_axis_tlast,
-	                       i_wt_s_axis_tvalid, s_wt_2_cfg_s_axis_tready, s_wt_2_wt_s_axis_tready, s_pool_or_conv) is
+	                       i_wt_s_axis_tvalid, s_wt_2_cfg_s_axis_tready, s_wt_2_wt_s_axis_tready) is
 	begin
 
 		case s_current_state is
@@ -232,6 +234,35 @@ begin
 
 				-- set overall control signals signal
 				s_current_state_slv <= "001";
+				s_overall_done      <= '0';
+				s_overall_error     <= '0';
+			when e_1st_WT_RST | e_2nd_WT_RST =>
+				-- Reset all modules except Config Unit and PXS_2_AXIS
+				-- -> that way configuration values are stored
+				s_rst_axis_2_pxs    <= '0';
+				s_rst_cfg_unit      <= '0';
+				s_rst_wt_unit       <= '1';
+				s_rst_config_slider <= '1';
+				s_rst_kernel_cores  <= '1';
+				s_rst_accumulator   <= '0';
+				s_rst_pxs_2_axis    <= '0';
+
+				-- In this cycle, no values should be read from the weight stream
+				-- -> ready has to be on Low
+				o_wt_s_axis_tready <= '0';
+
+				s_wt_2_cfg_s_axis_tdata  <= (others => '0');
+				s_wt_2_cfg_s_axis_tkeep  <= (others => '0');
+				s_wt_2_cfg_s_axis_tlast  <= '0';
+				s_wt_2_cfg_s_axis_tvalid <= '0';
+
+				s_wt_2_wt_s_axis_tdata  <= (others => '0');
+				s_wt_2_wt_s_axis_tkeep  <= (others => '0');
+				s_wt_2_wt_s_axis_tlast  <= '0';
+				s_wt_2_wt_s_axis_tvalid <= '0';
+
+				-- set overall control signals signal
+				s_current_state_slv <= "101";
 				s_overall_done      <= '0';
 				s_overall_error     <= '0';
 			when e_WT_RETR =>

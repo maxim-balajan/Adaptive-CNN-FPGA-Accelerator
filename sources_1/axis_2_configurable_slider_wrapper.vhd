@@ -113,7 +113,10 @@ begin
 		)
 		port map (
 			clk   => clk,
-			reset => reset or i_rst_axis_2_pxs,
+			reset => reset,
+			--
+			i_rst_cfg_slider => i_rst_configurable_slider,
+			i_rst_axis_2_pxs => i_rst_axis_2_pxs,
 			--
 			i_en => i_en,
 			-- AXIS INPUT

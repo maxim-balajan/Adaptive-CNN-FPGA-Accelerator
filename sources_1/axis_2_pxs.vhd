@@ -18,6 +18,9 @@ entity axis_2_pxs is
 		clk   : in std_logic;
 		reset : in std_logic;
 		--
+		i_rst_axis_2_pxs          : in std_logic;
+		i_rst_cfg_slider : in std_logic;
+		--
 		i_en : in std_logic;
 		-- AXIS INPUT
 		i_s_axis_tdata  : in std_logic_vector(G_INPUT_BYTE_WIDTH * 8 - 1 downto 0);
@@ -28,7 +31,7 @@ entity axis_2_pxs is
 		-- Control Inputs [REGISTERED after reset]
 		i_image_input_length : in std_logic_vector(15 downto 0);
 		i_padding_size       : in std_logic_vector(7 downto 0);
-		i_pool_or_conv : in std_logic;
+		i_pool_or_conv       : in std_logic;
 		-- Control Inputs [Not REGISTERED after reset]
 		i_wt_init : in std_logic;
 		i_cs_init : in std_logic;
@@ -69,7 +72,7 @@ begin
 		)
 		port map (
 			clk   => clk,
-			reset => reset,
+			reset => reset or i_rst_axis_2_pxs,
 			--
 			i_s_axis_tdata  => i_s_axis_tdata,
 			i_s_axis_tkeep  => i_s_axis_tkeep,
@@ -90,7 +93,7 @@ begin
 		)
 		port map (
 			clk   => clk,
-			reset => reset,
+			reset => reset or i_rst_axis_2_pxs,
 			-- AXIS INPUT
 			i_s_axis_tdata  => s_dwc_2_ps_axis_tdata,
 			i_s_axis_tkeep  => s_dwc_2_ps_axis_tkeep,
@@ -117,7 +120,7 @@ begin
 		)
 		port map (
 			clk   => clk,
-			reset => reset,
+			reset => reset or i_rst_axis_2_pxs,
 			--
 			i_input_stream  => s_ps_2_bfa_axis_tdata,
 			i_wr_en         => s_bfa_wr_en,
@@ -138,11 +141,14 @@ begin
 			clk   => clk,
 			reset => reset,
 			--
+			i_rst_cfg_slider => i_rst_cfg_slider,
+			i_rst_axis_2_pxs => i_rst_axis_2_pxs,
+			--
 			i_en => i_en,
 			--
 			i_image_input_length => i_image_input_length,
 			i_padding_size       => i_padding_size,
-			i_pool_or_conv => i_pool_or_conv,
+			i_pool_or_conv       => i_pool_or_conv,
 			i_wt_init            => i_wt_init,
 			i_cs_init            => i_cs_init,
 			--
