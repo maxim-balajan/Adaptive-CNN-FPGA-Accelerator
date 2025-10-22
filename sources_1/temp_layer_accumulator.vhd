@@ -68,12 +68,14 @@ begin
 				if unsigned(i_current_ic_amount) + unsigned(i_input_channel_per_iteration) >= unsigned(i_input_channel_size) or i_pool_or_conv = '0' then
 					s_valid_pixel_line(1) <= s_valid_pixel_line(0);
 					-- Note : refactor i_shamt to i_enable_shift if shift unit changes
-					if i_pool_or_conv = '0' then
-						s_pixel_lines(1)(0) <= s_added_temp_layer_pixel;
-					elsif signed(s_shifted_temp_layer_pixel(g_clipped_vector_length - 1 downto 0)) > 0 or i_enable_relu = '0' then
-						s_pixel_lines(1)(0) <= s_shifted_temp_layer_pixel;
-					else
+					if signed(s_shifted_temp_layer_pixel) < 0 and i_enable_relu = '1' then
 						s_pixel_lines(1)(0) <= (others => '0');
+					elsif signed(s_shifted_temp_layer_pixel) < to_signed(-2 ** (g_clipped_vector_length - 1), s_shifted_temp_layer_pixel'length) then
+						s_pixel_lines(1)(0) <= std_logic_vector(to_signed(-2 ** (g_clipped_vector_length - 1), s_shifted_temp_layer_pixel'length));
+					elsif signed(s_shifted_temp_layer_pixel) > to_signed(2 ** (g_clipped_vector_length - 1) - 1, s_shifted_temp_layer_pixel'length) then
+						s_pixel_lines(1)(0) <= std_logic_vector(to_signed(2 ** (g_clipped_vector_length - 1) - 1, s_shifted_temp_layer_pixel'length));
+					else
+						s_pixel_lines(1)(0) <= s_shifted_temp_layer_pixel;
 					end if;
 				else
 					s_valid_pixel_line(1) <= '0';

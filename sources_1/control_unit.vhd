@@ -272,7 +272,7 @@ begin
 				s_rst_wt_unit       <= '0';
 				s_rst_config_slider <= '0';
 				s_rst_kernel_cores  <= '1';
-				s_rst_accumulator   <= '1';
+				s_rst_accumulator   <= '0';
 				s_rst_pxs_2_axis    <= '0';
 
 				-- Route all AXIS Interfaces IN to Weight Unit
