@@ -6,7 +6,7 @@ AlexNet-Accelerator
 *.str
 .Xil
 sources_1/old_sources
-sources_1/*/sources/vunit_out
+sources_1/alex_net_layers/*/vunit_out
 sources_1/*/vunit_out
 data
 verification
