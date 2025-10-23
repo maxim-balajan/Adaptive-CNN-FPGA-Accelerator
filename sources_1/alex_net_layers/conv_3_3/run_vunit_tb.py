@@ -46,8 +46,11 @@ tb_lib.add_source_files(join(sim_path, "top_level", "testbench", "*.vhd"))
 # add test bench configurations
 
 test_bench = tb_lib.test_bench("top_level_cnn_tb")
-test_bench.add_config(name="tb_cfg_0", #
-                      generics=dict(G_CONFIG_STR='000100030010000000060010001b0037'))
+
+# TODO: when using as actual cfg string, change output_channel_size and input_channel_per_iteration (if needed)
+test_bench.add_config(name="tb_conv_384_256_3_3", generics=dict(G_CONFIG_STR='07000103000800a900020100000d000d'))
+test_bench.add_config(name="tb_conv_384_384_3_3", generics=dict(G_CONFIG_STR='07000103000800a900020180000d000d'))
+test_bench.add_config(name="tb_conv_256_384_3_3", generics=dict(G_CONFIG_STR='07000103000800a900020180000d000d'))
 
 ################
 ## execute TB ##
