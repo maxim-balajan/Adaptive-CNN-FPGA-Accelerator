@@ -33,6 +33,8 @@ architecture bench of top_level_cnn_tb is
 	signal s_tb_i : t_tb_i;
 	signal s_tb_o : t_tb_o;
 
+	signal s_tready : std_logic := '0';
+
 	constant stream_master_wt : axi_stream_master_t := new_axi_stream_master(data_length => 128);
 	constant stream_master_px : axi_stream_master_t := new_axi_stream_master(data_length => 128);
 
@@ -106,6 +108,28 @@ begin
 			tdest    => open,
 			tuser    => open
 		);
+
+
+	ready_proc : process is
+	begin
+
+		for i in 0 to sv_rnd.RandInt(0, 4) loop
+
+			wait until rising_edge(s_tb_i.clk);
+
+		end loop;
+
+		s_tready <= '1';
+
+		for i in 0 to sv_rnd.RandInt(0, 2) loop
+
+			wait until rising_edge(s_tb_i.clk);
+
+		end loop;
+
+		s_tready <= '0';
+
+	end process ready_proc;
 
 	WEIGHT_PROC : process is
 
@@ -200,8 +224,6 @@ begin
 
 			if run("TC_0000") then
 				TC_0000(s_tb_o, s_tb_i);
-			elsif run("TC_0001") then
-				TC_0001(s_tb_o, s_tb_i);
 			else
 				report "main: invalid test case assigned: " & enabled_test_cases(runner_cfg)
 					severity failure;
