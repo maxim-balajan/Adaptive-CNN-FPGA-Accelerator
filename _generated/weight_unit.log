@@ -1,0 +1,106 @@
+[mCompiling into tb_lib:    testbench/weight_unit_tc_pkg.vhd                                                                          [0m[32;1mpassed[0m[m
+[0m[m[0m[mCompiling into tb_lib:    testbench/weight_unit_tb.vhd                                                                              [0m[32;1mpassed[0m[m
+[0m[m[0m[mCompiling into vunit_lib: ../../.venv/lib/python3.10/site-packages/vunit/vhdl/verification_components/src/axi_slave_private_pkg.vhd [0m[32;1mpassed[0m[m
+[0m[m[0m[mCompiling into vunit_lib: ../../.venv/lib/python3.10/site-packages/vunit/vhdl/verification_components/src/axi_write_slave.vhd       [0m[32;1mpassed[0m[m
+[0m[m[0m[mCompiling into vunit_lib: ../../.venv/lib/python3.10/site-packages/vunit/vhdl/verification_components/src/axi_lite_master.vhd       [0m[32;1mpassed[0m[m
+[0m[m[0m[mCompiling into vunit_lib: ../../.venv/lib/python3.10/site-packages/vunit/vhdl/verification_components/src/axi_read_slave.vhd        [0m[32;1mpassed[0m[m
+[0m[m[0m[mCompiling into vunit_lib: ../../.venv/lib/python3.10/site-packages/vunit/vhdl/verification_components/src/avalon_slave.vhd          [0m[32;1mpassed[0m[m
+[0m[m/home/maxim/Documents/Uni/BA/bachelor-thesis/.venv/lib/python3.10/site-packages/vunit/vhdl/verification_components/src/avalon_slave.vhd:24:5:warning: declaration of "avalon_slave" hides entity "avalon_slave" [-Whide]
+    avalon_slave : avalon_slave_t
+    ^
+[0m[mCompiling into vunit_lib: ../../.venv/lib/python3.10/site-packages/vunit/vhdl/verification_components/src/avalon_master.vhd         [0m[32;1mpassed[0m[m
+[0m[m[0m[mCompiling into vunit_lib: ../../.venv/lib/python3.10/site-packages/vunit/vhdl/com/src/com.vhd                                       [0m[32;1mpassed[0m[m
+[0m[m/home/maxim/Documents/Uni/BA/bachelor-thesis/.venv/lib/python3.10/site-packages/vunit/vhdl/com/src/com.vhd:32:5:warning: declaration of "name" hides function "name" [-Whide]
+    name        : string   := "";
+    ^
+/home/maxim/Documents/Uni/BA/bachelor-thesis/.venv/lib/python3.10/site-packages/vunit/vhdl/com/src/com.vhd:49:25:warning: declaration of "name" hides function "name" [-Whide]
+  impure function find (name : string; enable_deferred_creation : boolean := true) return actor_t is
+                        ^
+/home/maxim/Documents/Uni/BA/bachelor-thesis/.venv/lib/python3.10/site-packages/vunit/vhdl/com/src/com.vhd:126:12:warning: declaration of "net" hides signal "net" [-Whide]
+    signal net          : inout network_t;
+           ^
+/home/maxim/Documents/Uni/BA/bachelor-thesis/.venv/lib/python3.10/site-packages/vunit/vhdl/com/src/com.vhd:166:12:warning: declaration of "net" hides signal "net" [-Whide]
+    signal net        : inout network_t;
+           ^
+/home/maxim/Documents/Uni/BA/bachelor-thesis/.venv/lib/python3.10/site-packages/vunit/vhdl/com/src/com.vhd:175:12:warning: declaration of "net" hides signal "net" [-Whide]
+    signal net         : inout network_t;
+           ^
+/home/maxim/Documents/Uni/BA/bachelor-thesis/.venv/lib/python3.10/site-packages/vunit/vhdl/com/src/com.vhd:199:12:warning: declaration of "net" hides signal "net" [-Whide]
+    signal net        : inout network_t;
+           ^
+/home/maxim/Documents/Uni/BA/bachelor-thesis/.venv/lib/python3.10/site-packages/vunit/vhdl/com/src/com.vhd:208:12:warning: declaration of "net" hides signal "net" [-Whide]
+    signal net         : inout network_t;
+           ^
+/home/maxim/Documents/Uni/BA/bachelor-thesis/.venv/lib/python3.10/site-packages/vunit/vhdl/com/src/com.vhd:231:12:warning: declaration of "net" hides signal "net" [-Whide]
+    signal net           : inout network_t;
+           ^
+/home/maxim/Documents/Uni/BA/bachelor-thesis/.venv/lib/python3.10/site-packages/vunit/vhdl/com/src/com.vhd:248:12:warning: declaration of "net" hides signal "net" [-Whide]
+    signal net           : inout network_t;
+           ^
+/home/maxim/Documents/Uni/BA/bachelor-thesis/.venv/lib/python3.10/site-packages/vunit/vhdl/com/src/com.vhd:266:12:warning: declaration of "net" hides signal "net" [-Whide]
+    signal net       : inout network_t;
+           ^
+/home/maxim/Documents/Uni/BA/bachelor-thesis/.venv/lib/python3.10/site-packages/vunit/vhdl/com/src/com.vhd:298:12:warning: declaration of "net" hides signal "net" [-Whide]
+    signal net           : inout network_t;
+           ^
+/home/maxim/Documents/Uni/BA/bachelor-thesis/.venv/lib/python3.10/site-packages/vunit/vhdl/com/src/com.vhd:311:12:warning: declaration of "net" hides signal "net" [-Whide]
+    signal net            : inout network_t;
+           ^
+/home/maxim/Documents/Uni/BA/bachelor-thesis/.venv/lib/python3.10/site-packages/vunit/vhdl/com/src/com.vhd:324:12:warning: declaration of "net" hides signal "net" [-Whide]
+    signal net            : inout network_t;
+           ^
+/home/maxim/Documents/Uni/BA/bachelor-thesis/.venv/lib/python3.10/site-packages/vunit/vhdl/com/src/com.vhd:336:12:warning: declaration of "net" hides signal "net" [-Whide]
+    signal net            : inout network_t;
+           ^
+/home/maxim/Documents/Uni/BA/bachelor-thesis/.venv/lib/python3.10/site-packages/vunit/vhdl/com/src/com.vhd:351:12:warning: declaration of "net" hides signal "net" [-Whide]
+    signal net        : in  network_t;
+           ^
+/home/maxim/Documents/Uni/BA/bachelor-thesis/.venv/lib/python3.10/site-packages/vunit/vhdl/com/src/com.vhd:360:12:warning: declaration of "net" hides signal "net" [-Whide]
+    signal net         : in  network_t;
+           ^
+/home/maxim/Documents/Uni/BA/bachelor-thesis/.venv/lib/python3.10/site-packages/vunit/vhdl/com/src/com.vhd:387:12:warning: declaration of "net" hides signal "net" [-Whide]
+    signal net   : inout network_t;
+           ^
+/home/maxim/Documents/Uni/BA/bachelor-thesis/.venv/lib/python3.10/site-packages/vunit/vhdl/com/src/com.vhd:405:33:warning: declaration of "net" hides signal "net" [-Whide]
+  procedure get_message (signal net : inout network_t; receiver : actor_t; variable msg : inout msg_t) is
+                                ^
+/home/maxim/Documents/Uni/BA/bachelor-thesis/.venv/lib/python3.10/site-packages/vunit/vhdl/com/src/com.vhd:412:12:warning: declaration of "net" hides signal "net" [-Whide]
+    signal net          : inout network_t;
+           ^
+/home/maxim/Documents/Uni/BA/bachelor-thesis/.venv/lib/python3.10/site-packages/vunit/vhdl/com/src/com.vhd:432:12:warning: declaration of "net" hides signal "net" [-Whide]
+    signal net           : inout network_t;
+           ^
+/home/maxim/Documents/Uni/BA/bachelor-thesis/.venv/lib/python3.10/site-packages/vunit/vhdl/com/src/com.vhd:446:12:warning: declaration of "net" hides signal "net" [-Whide]
+    signal net           : inout network_t;
+           ^
+[0m[32;1mCompile passed
+[0m
+Starting tb_lib.weight_unit_tb.tb_cfg_0.TC_0000
+Output file: /home/maxim/Documents/Uni/BA/bachelor-thesis/sim_1/weight_unit/vunit_out/test_output/tb_lib.weight_unit_tb.tb_cfg_0.TC_0000_1c7676a429299abd65dff84512cc46bfba137ea6/output.txt
+               0 fs - default                      -    INFO - Testbench directory..: /home/maxim/Documents/Uni/BA/bachelor-thesis/sim_1/weight_unit/testbench/
+               0 fs - default                      -    INFO - Output    directory..: /home/maxim/Documents/Uni/BA/bachelor-thesis/sim_1/weight_unit/vunit_out/test_output/tb_lib.weight_unit_tb.tb_cfg_0.TC_0000_1c7676a429299abd65dff84512cc46bfba137ea6/
+               0 fs - default                      -    INFO - Active test case.....: TC_0000
+%% Log   ALWAYS  Simple push of weight data at 35 ns
+        35000000 fs - check                        -   ERROR - Check Kernel Weight was initialized
+/home/maxim/Documents/Uni/BA/bachelor-thesis/.venv/lib/python3.10/site-packages/vunit/vhdl/core/src/core_pkg.vhd:84:7:@35ns:(report failure): Stop simulation on log level error
+/home/maxim/Documents/Uni/BA/bachelor-thesis/sim_1/weight_unit/vunit_out/test_output/tb_lib.weight_unit_tb.tb_cfg_0.TC_0000_1c7676a429299abd65dff84512cc46bfba137ea6/ghdl/weight_unit_tb-bench:error: report failed
+in process .weight_unit_tb(bench).main
+/home/maxim/Documents/Uni/BA/bachelor-thesis/sim_1/weight_unit/vunit_out/test_output/tb_lib.weight_unit_tb.tb_cfg_0.TC_0000_1c7676a429299abd65dff84512cc46bfba137ea6/ghdl/weight_unit_tb-bench:error: simulation failed
+[31;1mfail[0m[m (P=0 S=0 F=1 T=2) tb_lib.weight_unit_tb.tb_cfg_0.TC_0000 (1.6 seconds)
+[0m
+Starting tb_lib.weight_unit_tb.tb_cfg_0.TC_0001
+Output file: /home/maxim/Documents/Uni/BA/bachelor-thesis/sim_1/weight_unit/vunit_out/test_output/tb_lib.weight_unit_tb.tb_cfg_0.TC_0001_653a0e98dbf53dcae55edaad40044230eb329301/output.txt
+[32;1mpass[0m[m (P=1 S=0 F=1 T=2) tb_lib.weight_unit_tb.tb_cfg_0.TC_0001 (1.4 seconds)
+[0m
+[m==== Summary ==================================================
+[0m[32;1mpass[0m[m [0m[mtb_lib.weight_unit_tb.tb_cfg_0.TC_0001 (1.4 seconds)
+[0m[31;1mfail[0m[m [0m[mtb_lib.weight_unit_tb.tb_cfg_0.TC_0000 (1.6 seconds)
+[0m[m===============================================================
+[0m[32;1mpass[0m[m 1 of 2
+[0m[31;1mfail[0m[m 1 of 2
+[0m[m===============================================================
+[0m[mTotal time was 3.0 seconds
+[0m[mElapsed time was 3.0 seconds
+[0m[m===============================================================
+[0m[31;1mSome failed![0m[m
+[0m

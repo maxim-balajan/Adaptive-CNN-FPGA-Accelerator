@@ -1,0 +1,82 @@
+# Logging Directory at /home/maxim/Documents/Uni/BA/bachelor-thesis/_generated already exists!
+
+####################################################################
+# Start INIT Script...:
+####################################################################
+
+
+####################################################################
+# All required packages installed!
+####################################################################
+
+####################################################################
+# Version checks skipped!
+####################################################################
+
+####################################################################
+# Virtual environment '.venv' is ready with Packages installed.
+####################################################################
+
+####################################################################
+# Environmental variables...:
+####################################################################
+# PRJ_ROOT_PATH......: /home/maxim/Documents/Uni/BA/bachelor-thesis
+# PRJ_TRAIN_PATH.....: /home/maxim/Documents/Uni/BA/bachelor-thesis/reference/training
+# PRJ_SIM_PATH.......: /home/maxim/Documents/Uni/BA/bachelor-thesis/reference/simulation
+# PRJ_WAVE_CFG.......: /home/maxim/Documents/Uni/BA/bachelor-thesis/wave_config
+# PRJ_SCRIPTS........: /home/maxim/Documents/Uni/BA/bachelor-thesis/scripts
+# PRJ_HW_SOURCES_PATH: /home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1
+# PRJ_HW_SIMS_PATH...: /home/maxim/Documents/Uni/BA/bachelor-thesis/sim_1
+####################################################################
+
+
+###########################################################################
+# Environmental aliases...:
+###########################################################################
+# prj_train...........: Run the Training Script of the AlexNet Model
+# prj_build_simulation: Run the building process for the
+#                       C++ reference implementation
+# prj_adder_gen.......: Run the generation of the Adder/Comparator Trees
+# prj_adder_gen_sim...: Run the generation of the Adder/Comparator Trees
+#                       (only used for the TB)
+# prj_run_simulation..: Run the C++ reference implementation
+###########################################################################
+# Simulation Tools...:
+###########################################################################
+# prj_simulate_help...............: Print all possible simulation runs
+# prj_simulate_bram_fifo..........: Run TB for BRAM FIFO
+# prj_simulate_line_buffer........: Run TB for a Line Buffer
+# prj_simulate_kernel_slider......: Run TB for a Kernel Slider
+# prj_simulate_generic_slider.....: Run TB for a Kernel Slider with CL
+# prj_simulate_line_unit..........: Run TB for a Line Unit
+# prj_simulate_line_control_unit..: Run TB for the Line Unit CL
+# prj_simulate_configurable_slider: Run TB for new configurable sliders
+# prj_simulate_memory_test........: Run TB for the AXI memory test
+# prj_simulate_temp_layer_acc.....: Run TB for Temporary Layer Storage
+# prj_simulate_kernel_comp_unit...: Run TB for Kernel Computation Unit
+# prj_simulate_lenet_accel........: Run TB for LeNet-5 Top Level
+# prj_simulate_config_unit........: Run TB for Configuration Unit
+###########################################################################
+# Vivado Tools...:
+###########################################################################
+# prj_vivado_init...: Creates Vivado Project
+###########################################################################
+# cd_root.............: Change CWD to project root:
+#                       [/home/maxim/Documents/Uni/BA/bachelor-thesis]
+# cd_train............: Change CWD to path of training folder:
+#                       [/home/maxim/Documents/Uni/BA/bachelor-thesis/reference/training]
+# cd_sim..............: Change CWD to path of simulation folder:
+#                       [/home/maxim/Documents/Uni/BA/bachelor-thesis/reference/simulation]
+# cd_scripts..........: Change CWD to path of scripts folder:
+#                       [/home/maxim/Documents/Uni/BA/bachelor-thesis/scripts]
+# cd_hw_sources.......: Change CWD to path containing VHDL sources:
+#                       [/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1]
+# cd_hw_sims..........: Change CWD to path containing test benches:
+#                       [/home/maxim/Documents/Uni/BA/bachelor-thesis/sim_1]
+###########################################################################
+
+
+####################################################################
+# Initialization result...: SUCCESS
+####################################################################
+

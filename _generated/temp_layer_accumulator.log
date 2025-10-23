@@ -7,7 +7,7 @@
 
 ####################################################################
 # Removed older tmp projects at: /tmp/vivado_sim.temp_layer_accumulator.*
-# Using temporary path.........: /tmp/vivado_sim.temp_layer_accumulator.bfBW5M
+# Using temporary path.........: /tmp/vivado_sim.temp_layer_accumulator.Si0KVc
 # Using config (if exists).....: /home/maxim/Documents/Uni/BA/bachelor-thesis/wave_config/temp_layer_accumulator_tb.wcfg
 ####################################################################
 
@@ -43,9 +43,9 @@ Compiling package std.standard
 Compiling package std.textio
 Compiling package ieee.std_logic_1164
 Compiling package ieee.numeric_std
-Compiling package ieee.math_real
 Compiling package work.libmatrix
 Compiling package std.env
+Compiling package ieee.math_real
 Compiling architecture rtl of entity work.bram_fifo [\bram_fifo(vector_length=24,g_ma...]
 Compiling architecture rtl of entity work.clip_adder [\clip_adder(vector_length=24)\]
 Compiling architecture rtl of entity work.temp_layer_accumulator [temp_layer_accumulator_default]
@@ -64,4 +64,4 @@ Built simulation snapshot temp_layer_accumulator_tb_sim
     ** Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
 
 start_gui
-INFO: [Common 17-206] Exiting xsim at Wed Oct  1 16:41:24 2025...
+INFO: [Common 17-206] Exiting xsim at Sun Oct  5 17:23:24 2025...
