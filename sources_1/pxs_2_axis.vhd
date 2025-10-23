@@ -98,8 +98,8 @@ begin
 
 					if s_bram_rd_en(s_bram_rd_en'low) = '1' then
 						s_ps_axis_tvalid <= '1';
-						s_ps_axis_tkeep  <= not s_bram_nearly_empty;
-						if i_kernel_complete = '1' then
+						s_ps_axis_tkeep  <= not s_bram_empty;
+						if i_kernel_complete = '1' and or s_bram_nearly_empty = '1' then
 							s_ps_axis_tlast <= '1';
 						end if;
 					end if;
@@ -180,7 +180,7 @@ begin
 	----------------------------------------
 	-- Asynchronous signals
 	----------------------------------------
-	s_bram_rd_en <= (others => ((i_kernel_complete and not (or s_bram_empty)) or not (or s_bram_nearly_empty)) and s_ps_axis_tready);
+	s_bram_rd_en <= (others => ( not (or s_bram_empty)) and s_ps_axis_tready);
 	s_en         <= not (and s_bram_nearly_full);
 
 	----------------------------------------
