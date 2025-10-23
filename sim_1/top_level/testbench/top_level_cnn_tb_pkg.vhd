@@ -35,6 +35,8 @@ package top_level_cnn_tb_pkg is
 		reset : std_logic;
 		-- Control Logic
 		i_px_m_axis_tready : std_logic;
+		--
+		i_use_rnd : boolean;
 	end record t_tb_o;
 
 	-- TB input record
@@ -61,6 +63,7 @@ package top_level_cnn_tb_pkg is
 	----------------------------------------------------------------------
 	-- FUNCTIONs
 	----------------------------------------------------------------------
+
 	impure function hexstr_to_slv (
 		str_i : string
 	) return std_logic_vector;
@@ -124,28 +127,20 @@ package body top_level_cnn_tb_pkg is
 				when '7' => hex_v := x"7";
 				when '8' => hex_v := x"8";
 				when '9' => hex_v := x"9";
-				when 'a' => hex_v := x"A";
-				when 'A' => hex_v := x"A";
-				when 'b' => hex_v := x"B";
-				when 'B' => hex_v := x"B";
-				when 'c' => hex_v := x"C";
-				when 'C' => hex_v := x"C";
-				when 'd' => hex_v := x"D";
-				when 'D' => hex_v := x"D";
-				when 'e' => hex_v := x"E";
-				when 'E' => hex_v := x"E";
-				when 'f' => hex_v := x"F";
-				when 'F' => hex_v := x"F";
+				when 'a' | 'A' => hex_v := x"A";
+				when 'b' | 'B' => hex_v := x"B";
+				when 'c' | 'C' => hex_v := x"C";
+				when 'd' | 'D' => hex_v := x"D";
+				when 'e' | 'E' => hex_v := x"E";
+				when 'f' | 'F' => hex_v := x"F";
 				when others =>
-					report "hexstr_to_slv_error illegal char"
-						severity ERROR;
+					report "hexstr_to_slv_error: Configuration string contains illegal char! Change and retry again..."
+						severity FAILURE;
 			end case;
 
 			vect_v(3 + (i - 1) * 4 downto 0 + (i - 1) * 4) := hex_v;
 
 		end loop;
-
-		
 
 		return vect_v;
 
@@ -167,6 +162,7 @@ package body top_level_cnn_tb_pkg is
 		wait for 2 * C_CLK_PERIOD;
 
 		tb_o.i_px_m_axis_tready <= '0';
+		tb_o.i_use_rnd          <= False;
 
 		if do_dut_init then
 			-- wait until rising_edge(tb_i.clk);

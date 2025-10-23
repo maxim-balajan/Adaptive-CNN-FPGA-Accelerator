@@ -20,8 +20,8 @@ entity top_level_cnn_tb is
 		runner_cfg : string      := runner_cfg_default;
 		stop_level : log_level_t := error;
 		-- TB
-		G_RND_SEED  : STRING               := "xxx";
-		G_LOG_LEVEL : integer range 0 to 2 := 1;
+		G_RND_SEED   : STRING               := "xxx";
+		G_LOG_LEVEL  : integer range 0 to 2 := 1;
 		G_CONFIG_STR : string
 	);
 end entity top_level_cnn_tb;
@@ -35,10 +35,12 @@ architecture bench of top_level_cnn_tb is
 
 	signal s_tready : std_logic := '0';
 
+	signal s_actual_tready : std_logic;
+
 	constant stream_master_wt : axi_stream_master_t := new_axi_stream_master(data_length => 128);
 	constant stream_master_px : axi_stream_master_t := new_axi_stream_master(data_length => 128);
 
-	--constant c_config_slv : std_logic_vector(127 downto 0) := HEX_READ()
+	-- constant c_config_slv : std_logic_vector(127 downto 0) := HEX_READ()
 
 	signal wt_tvalid, px_tvalid : std_logic;
 	signal wt_tready, px_tready : std_logic;
@@ -48,25 +50,27 @@ architecture bench of top_level_cnn_tb is
 
 begin
 
+	s_actual_tready <= s_tready when s_tb_o.i_use_rnd else s_tb_o.i_px_m_axis_tready;
+
 	top_level_cnn_wrapper_inst : entity work.top_level_cnn_wrapper
 		port map (
 			clk                 => s_tb_i.clk,
 			reset               => s_tb_o.reset,
-			wt_s_axis_tdata   => wt_tdata,
-			wt_s_axis_tkeep   => wt_tkeep,
-			wt_s_axis_tlast   => wt_tlast,
-			wt_s_axis_tready  => wt_tready,
-			wt_s_axis_tvalid  => wt_tvalid,
-			px_s_axis_tdata   => px_tdata,
-			px_s_axis_tkeep   => px_tkeep,
-			px_s_axis_tlast   => px_tlast,
-			px_s_axis_tready  => px_tready,
-			px_s_axis_tvalid  => px_tvalid,
-			px_m_axis_tdata   => s_tb_i.o_px_m_axis_tdata,
-			px_m_axis_tkeep   => s_tb_i.o_px_m_axis_tkeep,
-			px_m_axis_tlast   => s_tb_i.o_px_m_axis_tlast,
-			px_m_axis_tready  => s_tb_o.i_px_m_axis_tready,
-			px_m_axis_tvalid  => s_tb_i.o_px_m_axis_tvalid,
+			wt_s_axis_tdata     => wt_tdata,
+			wt_s_axis_tkeep     => wt_tkeep,
+			wt_s_axis_tlast     => wt_tlast,
+			wt_s_axis_tready    => wt_tready,
+			wt_s_axis_tvalid    => wt_tvalid,
+			px_s_axis_tdata     => px_tdata,
+			px_s_axis_tkeep     => px_tkeep,
+			px_s_axis_tlast     => px_tlast,
+			px_s_axis_tready    => px_tready,
+			px_s_axis_tvalid    => px_tvalid,
+			px_m_axis_tdata     => s_tb_i.o_px_m_axis_tdata,
+			px_m_axis_tkeep     => s_tb_i.o_px_m_axis_tkeep,
+			px_m_axis_tlast     => s_tb_i.o_px_m_axis_tlast,
+			px_m_axis_tready    => s_actual_tready,
+			px_m_axis_tvalid    => s_tb_i.o_px_m_axis_tvalid,
 			o_current_ic_amount => s_tb_i.o_current_ic_amount,
 			o_current_state     => s_tb_i.o_current_state,
 			o_overall_done      => s_tb_i.o_overall_done,
@@ -109,7 +113,6 @@ begin
 			tuser    => open
 		);
 
-
 	ready_proc : process is
 	begin
 
@@ -145,7 +148,7 @@ begin
 	                tlast => '1',
 	                tkeep => x"FFFF");
 
-		--wait until rising_edge(s_tb_i.clk) and wt_tready = '1';
+		-- wait until rising_edge(s_tb_i.clk) and wt_tready = '1';
 
 		for i in 0 to sv_rnd.RandInt(0, 3) loop
 
@@ -224,6 +227,8 @@ begin
 
 			if run("TC_0000") then
 				TC_0000(s_tb_o, s_tb_i);
+			elsif run("TC_0010") then
+				TC_0010(s_tb_o, s_tb_i);
 			else
 				report "main: invalid test case assigned: " & enabled_test_cases(runner_cfg)
 					severity failure;

@@ -43,19 +43,19 @@ architecture rtl of configurable_slider_input_demux is
 
 	signal s_current_read_id : unsigned(integer(ceil(log2(real(C_BRAM_PER_IC)))) downto 0);
 	-- Necessary because read signal is delayed by one cycle for the initial pipeline introduced by CONTROL_PROC
-	-- by one cycle for the bram and by one more cycle for last pipeline step
-	signal s_current_read_id_line : matrix_1d(0 to 2)(integer(ceil(log2(real(C_BRAM_PER_IC)))) downto 0);
+	-- by one cycle for the bram, one by the register after the bram and by one more cycle for last pipeline step
+	signal s_current_read_id_line : matrix_1d(0 to 3)(integer(ceil(log2(real(C_BRAM_PER_IC)))) downto 0);
 	signal s_pixel_input_x        : signed(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) downto 0);
 	signal s_pixel_input_y        : signed(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) + 1 downto 0);
 	signal s_actual_input_length  : signed(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) + 1 downto 0);
 
-	signal s_rd_en_line        : std_logic_vector(0 to 1);
+	signal s_rd_en_line        : std_logic_vector(0 to 2);
 	signal s_let_pipeline_pass : std_logic;
 	signal s_is_padding        : std_logic;
 
 	-- BRAM signals delayed by one cycle
 
-	signal s_pipeline_valid_line : std_logic_vector(0 to 2);
+	signal s_pipeline_valid_line : std_logic_vector(0 to 3);
 	signal s_pixel_streams       : std_logic_vector(G_DATA_BYTE_WIDTH * 8 - 1 downto 0);
 	-- array representation of bram signals
 	signal s_pixel_streams_matrix : matrix_1d(0 to G_DATA_BYTE_WIDTH / G_BRAM_BYTE_WIDTH - 1)(G_BRAM_BYTE_WIDTH * 8 - 1 downto 0);
@@ -114,14 +114,14 @@ begin
 				s_pipeline_valid_line(0) <= '1';
 
 				-- Delay read en to know whether 0 or i_data_stream should be pipelined
-				s_rd_en_line(1) <= s_rd_en_line(0);
+				s_rd_en_line(1 to 2) <= s_rd_en_line(0 to 1);
 				-- Delay current read id because of read delay
 				s_current_read_id_line(0)      <= std_logic_vector(s_current_read_id);
-				s_current_read_id_line(1 to 2) <= s_current_read_id_line(0 to 1);
-				-- shift valid by two cycles to conform bram delay
-				s_pipeline_valid_line(1 to 2) <= s_pipeline_valid_line(0 to 1);
+				s_current_read_id_line(1 to 3) <= s_current_read_id_line(0 to 2);
+				-- shift valid by three cycles to conform bram + register delay
+				s_pipeline_valid_line(1 to 3) <= s_pipeline_valid_line(0 to 2);
 				-- delay bram output by one cycle
-				if s_rd_en_line(1) = '1' then
+				if s_rd_en_line(2) = '1' then
 					s_pixel_streams <= i_data_stream;
 				else
 					s_pixel_streams <= (others => '0');
@@ -160,7 +160,7 @@ begin
 	-- Multiplex correct BRAM data to first G_INPUT_CHANNEL_PER_ITERATION slots of output pixel stream
 
 	OUTPUT_GEN : for i in 0 to G_INPUT_CHANNEL_PER_ITERATION - 1 generate
-		o_pixel_streams(i) <= s_pixel_streams_matrix(to_integer(unsigned(s_current_read_id_line(2))) + i * C_BRAM_PER_IC) when s_let_pipeline_pass = '1' else (others => '0');
+		o_pixel_streams(i) <= s_pixel_streams_matrix(to_integer(unsigned(s_current_read_id_line(3))) + i * C_BRAM_PER_IC) when s_let_pipeline_pass = '1' else (others => '0');
 	end generate OUTPUT_GEN;
 
 	o_pixel_streams(G_INPUT_CHANNEL_PER_ITERATION to o_pixel_streams'high) <= (others => (others => '0'));

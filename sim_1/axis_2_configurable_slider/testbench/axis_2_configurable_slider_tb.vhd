@@ -70,7 +70,12 @@ begin
 		)
 		port map (
 			clk                        => clk,
-			reset                      => '0',
+			reset                      => s_tb_o.reset,
+			--
+			i_rst_axis_2_pxs => s_tb_o.reset,
+			i_rst_configurable_slider => s_tb_o.reset,
+			--
+			i_pool_or_conv => '1',
 			i_en                       => '1',
 			i_s_axis_tdata             => tdata,
 			i_s_axis_tkeep             => tkeep,
