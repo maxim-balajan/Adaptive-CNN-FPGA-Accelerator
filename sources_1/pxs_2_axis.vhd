@@ -60,6 +60,8 @@ architecture rtl of pxs_2_axis is
 	signal s_px_m_axis_tvalid  : std_logic;
 	signal s_px_m_axis_tlast   : std_logic;
 	signal s_accel_finish      : std_logic;
+	signal s_flush             : std_logic;
+	signal s_transfer_started : std_logic;
 	signal s_transfer_finished : std_logic;
 
 begin
@@ -85,12 +87,17 @@ begin
 				s_ps_axis_tvalid    <= '0';
 				s_ps_axis_tlast     <= '0';
 				s_ps_axis_tkeep     <= (others => '0');
+				s_transfer_started <= '0';
 				s_transfer_finished <= '0';
 			else
+				if (i_kernel_valid and not i_kernel_complete) = '1' then 
+					s_transfer_started <= '1';
+				end if;
+
 				if s_ps_axis_tlast = '1' and s_ps_axis_tready = '1' and s_ps_axis_tvalid = '1' then
 					s_transfer_finished <= '1';
 				end if;
-				if s_transfer_finished = '0' and not (s_ps_axis_tlast = '1' and s_ps_axis_tready = '1' and s_ps_axis_tvalid = '1') then 
+				if s_transfer_finished = '0' and not (s_ps_axis_tlast = '1' and s_ps_axis_tready = '1' and s_ps_axis_tvalid = '1') then
 					if s_ps_axis_tready = '1' then
 						s_ps_axis_tvalid <= '0';
 						s_ps_axis_tkeep  <= (others => '0');
@@ -99,15 +106,15 @@ begin
 					if s_bram_rd_en(s_bram_rd_en'low) = '1' then
 						s_ps_axis_tvalid <= '1';
 						s_ps_axis_tkeep  <= not s_bram_empty;
-						if i_kernel_complete = '1' and or s_bram_nearly_empty = '1' then
+						if s_flush = '1' then
 							s_ps_axis_tlast <= '1';
 						end if;
 					end if;
 				else
 					s_ps_axis_tvalid <= '0';
-					s_ps_axis_tlast <= '0';
-					s_ps_axis_tkeep <= (others => '0');
-				end if; 
+					s_ps_axis_tlast  <= '0';
+					s_ps_axis_tkeep  <= (others => '0');
+				end if;
 			end if;
 		end if;
 
@@ -180,7 +187,8 @@ begin
 	----------------------------------------
 	-- Asynchronous signals
 	----------------------------------------
-	s_bram_rd_en <= (others => ( not (or s_bram_empty)) and s_ps_axis_tready);
+	s_bram_rd_en <= (others => s_transfer_started and (not (or s_bram_empty) or s_flush) and s_ps_axis_tready);
+	s_flush      <= i_kernel_complete and (and s_bram_nearly_empty or or s_bram_empty);
 	s_en         <= not (and s_bram_nearly_full);
 
 	----------------------------------------
