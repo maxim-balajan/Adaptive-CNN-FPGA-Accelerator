@@ -22,13 +22,13 @@ architecture bench of temp_layer_accumulator_tb is
 	signal i_kernel_complete             : std_logic;
 	signal i_kernel_valid                : std_logic;
 	signal i_pixel_line, s_pixel_line    : matrix_1d(0 to g_oc_amount - 1)(g_vector_length - 1 downto 0);
-	signal i_pixel_amount                : std_logic_vector(31 downto 0);
+	signal i_pixel_amount                : std_logic_vector(15 downto 0);
 	signal i_pool_or_conv                : std_logic;
 	signal i_current_ic_amount           : std_logic_vector(15 downto 0);
 	signal i_input_channel_per_iteration : std_logic_vector(15 downto 0);
 	signal i_input_channel_size          : std_logic_vector(15 downto 0);
 	signal i_enable_relu                 : std_logic;
-	signal i_shamt                       : std_logic_vector(g_vector_length - 1 downto 0);
+	signal i_shamt                       : std_logic_vector(7 downto 0);
 	signal o_kernel_complete             : std_logic;
 	signal o_kernel_valid                : std_logic;
 	signal o_pixel_line                  : matrix_1d(0 to g_oc_amount - 1)(g_clipped_vector_length - 1 downto 0);
@@ -69,7 +69,7 @@ begin
 		reset <= '1';
 		-- half end-result
 		i_shamt(1 downto 0)                   <= "01";
-		i_shamt(g_vector_length - 1 downto 2) <= (others => '0');
+		i_shamt(i_shamt'high downto 2) <= (others => '0');
 		i_enable_relu                         <= '1';
 		i_pool_or_conv                        <= '1';
 		-- 4 pixel per iteration
