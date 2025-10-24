@@ -40,13 +40,13 @@ architecture rtl of temp_layer_accumulator is
 	signal s_valid_pixel_line     : std_logic_vector(0 to 3);
 	signal s_kernel_complete_line : std_logic_vector(0 to 3);
 
-	signal s_pixel_lines : matrix_2d(0 to 2)(0 to g_oc_amount  - 1)(g_vector_length - 1 downto 0);
+	signal s_pixel_lines : matrix_2d(0 to 3)(0 to g_oc_amount  - 1)(g_vector_length - 1 downto 0);
 
 	-- FIFO signals
 
-	signal s_temp_layer_pixel_line       : matrix_1d(0 to 1)(g_vector_length - 1 downto 0);
-	signal s_added_temp_layer_pixel_line : matrix_1d(0 to 1)(g_vector_length - 1 downto 0);
-	signal s_shifted_temp_layer_pixel    : std_logic_vector(g_vector_length - 1 downto 0);
+	signal s_temp_layer_pixel_line    : matrix_1d(0 to 1)(g_vector_length - 1 downto 0);
+	signal s_added_temp_layer_pixel   : std_logic_vector(g_vector_length - 1 downto 0);
+	signal s_shifted_temp_layer_pixel : std_logic_vector(g_vector_length - 1 downto 0);
 
 begin
 
@@ -60,48 +60,47 @@ begin
 				--
 				s_pixel_lines <= (others => (others => (others => '0')));
 				--
-				s_added_temp_layer_pixel_line(1) <= (others => '0');
-				s_temp_layer_pixel_line(1)       <= (others => '0');
+				s_temp_layer_pixel_line(1) <= (others => '0');
 			elsif i_en = '1' then
 				-- set first constant delays of three cycles
 				s_valid_pixel_line(0)          <= i_kernel_valid;
 				s_valid_pixel_line(1 to 2)     <= s_valid_pixel_line(0 to 1);
 				s_kernel_complete_line(0)      <= i_kernel_complete;
 				s_kernel_complete_line(1 to 3) <= s_kernel_complete_line(0 to 2);
+				-- delay pixel line for adder
 				s_pixel_lines(0)               <= i_pixel_line;
-				s_pixel_lines(1)          	   <= s_pixel_lines(0);
+				s_pixel_lines(1)               <= s_pixel_lines(0);
+				-- delay pixel line to time outputs
+				s_pixel_lines(2)(0)                    <= s_added_temp_layer_pixel;
+				s_pixel_lines(2)(1 to g_oc_amount - 1) <= s_pixel_lines(1)(1 to g_oc_amount - 1);
+				s_pixel_lines(3)(1 to g_oc_amount - 1) <= s_pixel_lines(2)(1 to g_oc_amount - 1);
 
 				-- delay temp_layer output from bram to have better timing
 				s_temp_layer_pixel_line(1) <= s_temp_layer_pixel_line(0);
-
-				-- delay s_added_temp_layer_pixel input to bram to have better timing
-				s_added_temp_layer_pixel_line(1) <= s_added_temp_layer_pixel_line(0);
 
 				-- delay other pixel lines and enable lines
 				if unsigned(i_current_ic_amount) + unsigned(i_input_channel_per_iteration) >= unsigned(i_input_channel_size) or i_pool_or_conv = '0' then
 					s_valid_pixel_line(3) <= s_valid_pixel_line(2);
 
 					if signed(s_shifted_temp_layer_pixel) < 0 and i_enable_relu = '1' then
-						s_pixel_lines(2)(0) <= (others => '0');
+						s_pixel_lines(3)(0) <= (others => '0');
 					elsif signed(s_shifted_temp_layer_pixel) < to_signed(-2 ** (g_clipped_vector_length - 1), s_shifted_temp_layer_pixel'length) then
-						s_pixel_lines(2)(0) <= std_logic_vector(to_signed(-2 ** (g_clipped_vector_length - 1), s_shifted_temp_layer_pixel'length));
+						s_pixel_lines(3)(0) <= std_logic_vector(to_signed(-2 ** (g_clipped_vector_length - 1), s_shifted_temp_layer_pixel'length));
 					elsif signed(s_shifted_temp_layer_pixel) > to_signed(2 ** (g_clipped_vector_length - 1) - 1, s_shifted_temp_layer_pixel'length) then
-						s_pixel_lines(2)(0) <= std_logic_vector(to_signed(2 ** (g_clipped_vector_length - 1) - 1, s_shifted_temp_layer_pixel'length));
+						s_pixel_lines(3)(0) <= std_logic_vector(to_signed(2 ** (g_clipped_vector_length - 1) - 1, s_shifted_temp_layer_pixel'length));
 					else
-						s_pixel_lines(2)(0) <= s_shifted_temp_layer_pixel;
+						s_pixel_lines(3)(0) <= s_shifted_temp_layer_pixel;
 					end if;
 				else
 					s_valid_pixel_line(3) <= '0';
-					s_pixel_lines(2)(0)   <= (others => '0');
+					s_pixel_lines(3)(0)   <= (others => '0');
 				end if;
-
-				s_pixel_lines(2)(1 to g_oc_amount - 1) <= s_pixel_lines(1)(1 to g_oc_amount - 1);
 			end if;
 		end if;
 
 	end process DELAY_PROC;
 
-	s_shifted_temp_layer_pixel <= std_logic_vector(shift_right(signed(s_added_temp_layer_pixel_line(1)), to_integer(unsigned(i_shamt))));
+	s_shifted_temp_layer_pixel <= std_logic_vector(shift_right(signed(s_pixel_lines(2)(0)), to_integer(unsigned(i_shamt))));
 
 	bram_fifo_inst : entity work.bram_fifo
 		generic map (
@@ -115,7 +114,7 @@ begin
 			set_full => '1',
 			depth    => i_pixel_amount(integer(ceil(log2(real(g_max_fifo_depth)))) - 1 downto 0),
 			--
-			din   => s_added_temp_layer_pixel_line(1),
+			din   => s_pixel_lines(2)(0),
 			wr_en => (s_valid_pixel_line(2) and not s_kernel_complete_line(2)) and i_en,
 			rd_en => (i_kernel_valid and not i_kernel_complete) and i_en,
 			--
@@ -131,7 +130,7 @@ begin
 		port map (
 			din0 => s_pixel_lines(1)(0),
 			din1 => s_temp_layer_pixel_line(1),
-			dout => s_added_temp_layer_pixel_line(0)
+			dout => s_added_temp_layer_pixel
 		);
 
 	-------------------------------------------

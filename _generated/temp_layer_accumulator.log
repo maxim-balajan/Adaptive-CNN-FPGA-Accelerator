@@ -7,7 +7,7 @@
 
 ####################################################################
 # Removed older tmp projects at: /tmp/vivado_sim.temp_layer_accumulator.*
-# Using temporary path.........: /tmp/vivado_sim.temp_layer_accumulator.Si0KVc
+# Using temporary path.........: /tmp/vivado_sim.temp_layer_accumulator.52k1U4
 # Using config (if exists).....: /home/maxim/Documents/Uni/BA/bachelor-thesis/wave_config/temp_layer_accumulator_tb.wcfg
 ####################################################################
 
@@ -64,4 +64,4 @@ Built simulation snapshot temp_layer_accumulator_tb_sim
     ** Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
 
 start_gui
-INFO: [Common 17-206] Exiting xsim at Sun Oct  5 17:23:24 2025...
+INFO: [Common 17-206] Exiting xsim at Fri Oct 24 16:03:58 2025...
