@@ -61,9 +61,24 @@ architecture rtl of axis_2_pxs is
 	-- BRAM FIFO Array <-> DEMUX Unit
 	signal s_bfa_rd_en       : std_logic_vector(G_INPUT_BYTE_WIDTH / G_BRAM_BYTE_WIDTH - 1 downto 0);
 	signal s_bfa_empty       : std_logic_vector(G_INPUT_BYTE_WIDTH / G_BRAM_BYTE_WIDTH - 1 downto 0);
+	signal s_bfa_empty_del   : std_logic_vector(G_INPUT_BYTE_WIDTH / G_BRAM_BYTE_WIDTH - 1 downto 0);
 	signal s_bfa_data_stream : std_logic_vector(G_INPUT_BYTE_WIDTH * 8 - 1 downto 0);
+	signal s_bfa_data_stream_del : std_logic_vector(G_INPUT_BYTE_WIDTH * 8 - 1 downto 0);
 
 begin
+
+	DELAY_PROC : process (clk)
+	begin
+		if rising_edge(clk) then
+			if reset = '1' then
+				s_bfa_empty_del <= (others => '0');
+				s_bfa_data_stream_del <= (others => '0');  
+			else
+				s_bfa_empty_del <= s_bfa_empty;
+				s_bfa_data_stream_del <= s_bfa_data_stream;
+			end if;
+		end if;
+	end process;
 
 	axis_data_width_converter_inst : entity work.axis_data_width_converter
 		generic map (
@@ -153,8 +168,8 @@ begin
 			i_cs_init            => i_cs_init,
 			--
 			o_rd_en       => s_bfa_rd_en,
-			i_data_stream => s_bfa_data_stream,
-			i_empty       => s_bfa_empty,
+			i_data_stream => s_bfa_data_stream_del,
+			i_empty       => s_bfa_empty_del,
 			--
 			o_valid_pixel_streams => o_valid_pixel_streams,
 			o_pixel_streams       => o_pixel_streams
