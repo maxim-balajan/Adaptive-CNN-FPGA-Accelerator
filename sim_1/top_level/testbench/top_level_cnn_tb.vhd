@@ -148,23 +148,29 @@ begin
 	                tlast => '1',
 	                tkeep => x"FFFF");
 
-		-- wait until rising_edge(s_tb_i.clk) and wt_tready = '1';
-
 		for i in 0 to sv_rnd.RandInt(0, 3) loop
 
 			wait until rising_edge(clk);
 
 		end loop;
 
+		report " # Weight amount per iteration: " & INTEGER'image(get_weight_per_iteration(G_CONFIG_STR));
+
 		while True loop
 
-			v_tlast := '1' when weight_index = 3 * 11 * 11 * 16 else '0';
+			if weight_index + 16 >= get_weight_per_iteration(G_CONFIG_STR) then
+				v_tlast := '1';
+				weight_index := 0;
+			else
+				v_tlast := '0';
+				weight_index := weight_index + 16;
+			end if;
+
 			push_axi_stream(net, stream_master_wt,
 	                tdata => x"01010101010101010101010101010101",
-	                tlast => '1',
+	                tlast => v_tlast,
 	                tkeep => x"FFFF");
 
-			weight_index := weight_index + 16;
 
 			for i in 0 to sv_rnd.RandInt(0, 3) loop
 

@@ -68,6 +68,10 @@ package top_level_cnn_tb_pkg is
 		str_i : string
 	) return std_logic_vector;
 
+	impure function get_weight_per_iteration (
+		str_i : string
+	) return integer;
+
 	----------------------------------------------------------------------
 	-- PROCEDUREs
 	----------------------------------------------------------------------
@@ -103,6 +107,13 @@ package body top_level_cnn_tb_pkg is
 	-- FUNCTIONs
 	----------------------------------------------------------------------
 
+	impure function get_weight_per_iteration (
+		str_i : string
+	) return integer is
+	begin
+		return to_integer(unsigned(hexstr_to_slv(str_i(9 to 12)))) * to_integer(unsigned(hexstr_to_slv(str_i(7 to 8)))) * to_integer(unsigned(hexstr_to_slv(str_i(7 to 8))));
+	end function;
+
 	impure function hexstr_to_slv (
 		str_i : string
 	) return std_logic_vector is
@@ -114,9 +125,9 @@ package body top_level_cnn_tb_pkg is
 
 		vect_v := (others => '0');
 
-		for i in str_i'range loop
+		for i in 1 to str_i'length loop
 
-			case str_i(str_i'length - i + 1) is
+			case str_i(str_i'length - i + str_i'low) is
 				when '0' => hex_v := x"0";
 				when '1' => hex_v := x"1";
 				when '2' => hex_v := x"2";
