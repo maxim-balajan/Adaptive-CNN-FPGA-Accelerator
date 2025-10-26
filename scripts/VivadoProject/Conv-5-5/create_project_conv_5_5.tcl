@@ -5,8 +5,8 @@ if {![info exists ::env(PRJ_ROOT_PATH)]} {
 }
 set PRJ_ROOT_PATH $::env(PRJ_ROOT_PATH)
 set HOME $::env(HOME)
-set PROJECT_NAME "Conv-256-96-5-5"
-set PROJECT_DIR "${PRJ_ROOT_PATH}/${PROJECT_NAME}"
+set PROJECT_NAME "Conv-5-5"
+set PROJECT_DIR "${PRJ_ROOT_PATH}/AlexNet-Layers/${PROJECT_NAME}"
 
 create_project $PROJECT_NAME $PROJECT_DIR -part xczu3eg-sbva484-1-i -force
 
@@ -18,7 +18,6 @@ set_property -name "board_part" -value "avnet.com:ultra96v2:part0:1.2" -objects 
 set_property target_language VHDL -objects $obj
 set_property simulator_language VHDL -objects $obj
 
-#add_files {"${PRJ_ROOT_PATH}/bd/Memory_Retrival/Memory_Retrival.bd"}
 
 # Add all source files from $PRJ_ROOT_PATH/sources_1
 set SOURCE_DIR "$PRJ_ROOT_PATH/sources_1"
@@ -37,7 +36,7 @@ if {[file exists $SOURCE_DIR]} {
 }
 
 # Add all source files from $PRJ_ROOT_PATH/sources_1/conv_256_96_5_5
-set SOURCE_DIR "$PRJ_ROOT_PATH/sources_1/conv_256_96_5_5"
+set SOURCE_DIR "$PRJ_ROOT_PATH/sources_1/alex_net_layers/conv_5_5"
 if {[file exists $SOURCE_DIR]} {
     set sources [glob -nocomplain -directory $SOURCE_DIR -types f *.{vhd}]
     if {[llength $sources] > 0} {
@@ -52,44 +51,37 @@ if {[file exists $SOURCE_DIR]} {
     puts "WARNING: Source directory $SOURCE_DIR does not exist."
 }
 
-set_property file_type "VHDL" [get_files "${PRJ_ROOT_PATH}/sources_1/conv_256_96_5_5/top_level_cnn_wrapper.vhd"]
+set_property file_type "VHDL" [get_files "${PRJ_ROOT_PATH}/sources_1/alex_net_layers/conv_5_5/top_level_cnn_wrapper.vhd"]
+set_property file_type "VHDL" [get_files "${PRJ_ROOT_PATH}/sources_1/memory_test_wrapper.vhd"]
 
 # ============================================================
 # Include the Block Design TCL script
 # ============================================================
-#source ./Memory_Retrieval_with_fixed_reset.tcl
+source "$PRJ_ROOT_PATH/scripts/VivadoProject/$PROJECT_NAME/top_level_bd.tcl"
 
 # Validate and Save the block design
-#validate_bd_design
-#save_bd_design
+validate_bd_design
+save_bd_design
 
 # ============================================================
 # Generate wrapper from the BD and set it as top
 # ============================================================
-#set bd_path "$PROJECT_DIR/${PROJECT_NAME}.srcs/sources_1/bd/Memory_Retrieval/Memory_Retrieval.bd"
+set bd_path "$PROJECT_DIR/${PROJECT_NAME}.srcs/sources_1/bd/Top_Level/Top_Level.bd"
 
 # Generate HDL wrapper
-#make_wrapper -files [get_files $bd_path] -top
+make_wrapper -files [get_files $bd_path] -top
 
 # Add the generated wrapper to the project
-#add_files "$PROJECT_DIR/${PROJECT_NAME}.srcs/sources_1/bd/Memory_Retrieval/hdl/Memory_Retrieval_wrapper.vhd"
+add_files "$PROJECT_DIR/${PROJECT_NAME}.srcs/sources_1/bd/Top_Level/hdl/top_level_bd_wrapper.vhd"
 
 # Set the wrapper as the top module
-#set_property top Memory_Retrieval_wrapper [current_fileset]
-
-# Update compile order
-#update_compile_order -fileset sources_1
-
-puts "Project $PROJECT_NAME created successfully at $PROJECT_DIR"
-
-# Set the wrapper as the top module
-set_property top top_level_cnn_wrapper [current_fileset]
+set_property top top_level_bd_wrapper [current_fileset]
 
 # Update compile order
 update_compile_order -fileset sources_1
 
-# Run synthesis
-launch_runs synth_1
-wait_on_run synth_1
+puts "Project $PROJECT_NAME created successfully at $PROJECT_DIR"
 
-puts "Synthesis finished!"
+puts "Starting Synthesis and Implementation Runs for $PROJECT_NAME"
+
+source "$PRJ_ROOT_PATH/scripts/VivadoProject/synth.tcl"

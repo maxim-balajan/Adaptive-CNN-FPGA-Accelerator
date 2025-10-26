@@ -11,3 +11,4 @@ sources_1/*/vunit_out
 data
 verification
 sim_1/*/vunit_out
+AlexNet-Layers/*

@@ -1,9 +1,3 @@
-# Set the wrapper as the top module
-set_property top Memory_Retrieval_wrapper [current_fileset]
-
-# Update compile order
-update_compile_order -fileset sources_1
-
 # Run synthesis
 launch_runs synth_1
 wait_on_run synth_1
@@ -16,5 +10,5 @@ wait_on_run impl_1
 set BIT_FILE "${PROJECT_DIR}/${PROJECT_NAME}.runs/impl_1/${PROJECT_NAME}.bit"
 puts "Bitstream generated at: $BIT_FILE"
 
-write_hw_platform -include_bit -fixed -force "${PROJECT_DIR}/Memory_Retrieval_wrapper_with_big_ILA.xsa"
-puts "Hardware platform was created at ${PROJECT_DIR}/Memory_Retrieval_wrapper_with_big_ILA.xsa"
+write_hw_platform -include_bit -fixed -force "${PROJECT_DIR}/${PROJECT_NAME}.xsa"
+puts "Hardware platform was created at ${PROJECT_DIR}/${PROJECT_NAME}.xsa"
