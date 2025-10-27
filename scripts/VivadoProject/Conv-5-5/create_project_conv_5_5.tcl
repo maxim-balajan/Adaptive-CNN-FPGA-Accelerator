@@ -72,10 +72,10 @@ set bd_path "$PROJECT_DIR/${PROJECT_NAME}.srcs/sources_1/bd/Top_Level/Top_Level.
 make_wrapper -files [get_files $bd_path] -top
 
 # Add the generated wrapper to the project
-add_files "$PROJECT_DIR/${PROJECT_NAME}.srcs/sources_1/bd/Top_Level/hdl/top_level_bd_wrapper.vhd"
+add_files "$PROJECT_DIR/${PROJECT_NAME}.gen/sources_1/bd/Top_Level/hdl/Top_Level_wrapper.vhd"
 
 # Set the wrapper as the top module
-set_property top top_level_bd_wrapper [current_fileset]
+set_property top Top_Level_wrapper [current_fileset]
 
 # Update compile order
 update_compile_order -fileset sources_1
