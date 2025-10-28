@@ -57,7 +57,7 @@ set_property file_type "VHDL" [get_files "${PRJ_ROOT_PATH}/sources_1/memory_test
 # ============================================================
 # Include the Block Design TCL script
 # ============================================================
-source "$PRJ_ROOT_PATH/scripts/VivadoProject/$PROJECT_NAME/top_level_bd.tcl"
+source "$PRJ_ROOT_PATH/scripts/VivadoProject/$PROJECT_NAME/top_level_old_with_ila.tcl"
 
 # Validate and Save the block design
 validate_bd_design
