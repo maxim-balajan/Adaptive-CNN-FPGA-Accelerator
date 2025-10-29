@@ -64,6 +64,18 @@ entity top_level_cnn is
 		i_px_m_axis_tready : in std_logic;
 		o_px_m_axis_tvalid : out std_logic;
 		-- Control OUTPUT PORTS
+		o_image_input_length          : out std_logic_vector(15 downto 0);
+		o_image_output_length         : out std_logic_vector(15 downto 0);
+		o_input_channel_size          : out std_logic_vector(15 downto 0);
+		o_pixel_amount                : out std_logic_vector(15 downto 0);
+		o_input_channel_per_iteration : out std_logic_vector(15 downto 0);
+		o_kernel_size                 : out std_logic_vector(7 downto 0);
+		o_padding_size                : out std_logic_vector(7 downto 0);
+		o_stride_bit_mask             : out std_logic_vector(7 downto 0);
+		o_shamt                       : out std_logic_vector(7 downto 0);
+		o_pool_or_conv                : out std_logic;
+		o_enable_relu                 : out std_logic;
+		--
 		o_current_ic_amount : out std_logic_vector(15 downto 0);
 		o_current_state     : out std_logic_vector(2 downto 0);
 		o_overall_done      : out std_logic;
@@ -323,5 +335,17 @@ begin
 			i_px_m_axis_tready => i_px_m_axis_tready,
 			o_px_m_axis_tvalid => o_px_m_axis_tvalid
 		);
+
+		o_image_input_length          <= s_image_input_length         ;
+		o_image_output_length         <= s_image_output_length        ;
+		o_input_channel_size          <= s_input_channel_size         ;
+		o_pixel_amount                <= s_pixel_amount               ;
+		o_input_channel_per_iteration <= s_input_channel_per_iteration;
+		o_kernel_size                 <= s_kernel_size                ;
+		o_padding_size                <= s_padding_size               ;
+		o_stride_bit_mask             <= s_stride_bit_mask            ;
+		o_shamt                       <= s_shamt                      ;
+		o_pool_or_conv                <= s_pool_or_conv               ;
+		o_enable_relu                 <= s_enable_relu                ;
 
 end architecture rtl;

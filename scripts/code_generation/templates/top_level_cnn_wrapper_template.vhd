@@ -39,6 +39,18 @@ entity top_level_cnn_wrapper is
 		px_m_axis_tready : in std_logic;
 		px_m_axis_tvalid : out std_logic;
 		-- Control OUTPUT PORTS
+		o_image_input_length          : out std_logic_vector(15 downto 0);
+		o_image_output_length         : out std_logic_vector(15 downto 0);
+		o_input_channel_size          : out std_logic_vector(15 downto 0);
+		o_pixel_amount                : out std_logic_vector(15 downto 0);
+		o_input_channel_per_iteration : out std_logic_vector(15 downto 0);
+		o_kernel_size                 : out std_logic_vector(7 downto 0);
+		o_padding_size                : out std_logic_vector(7 downto 0);
+		o_stride_bit_mask             : out std_logic_vector(7 downto 0);
+		o_shamt                       : out std_logic_vector(7 downto 0);
+		o_pool_or_conv                : out std_logic;
+		o_enable_relu                 : out std_logic;
+		--
 		o_current_ic_amount : out std_logic_vector(15 downto 0);
 		o_current_state     : out std_logic_vector(2 downto 0);
 		o_overall_done      : out std_logic;
@@ -68,23 +80,37 @@ begin
 			G_PIPELINE_STEPS              => %%CS_PIPELINE_STEPS%%
 		)
 		port map (
-			clk                 => clk,
-			reset               => reset,
-			i_wt_s_axis_tdata   => wt_s_axis_tdata,
-			i_wt_s_axis_tkeep   => wt_s_axis_tkeep,
-			i_wt_s_axis_tlast   => wt_s_axis_tlast,
-			o_wt_s_axis_tready  => wt_s_axis_tready,
-			i_wt_s_axis_tvalid  => wt_s_axis_tvalid,
-			i_px_s_axis_tdata   => px_s_axis_tdata,
-			i_px_s_axis_tkeep   => px_s_axis_tkeep,
-			i_px_s_axis_tlast   => px_s_axis_tlast,
-			o_px_s_axis_tready  => px_s_axis_tready,
-			i_px_s_axis_tvalid  => px_s_axis_tvalid,
-			o_px_m_axis_tdata   => px_m_axis_tdata,
-			o_px_m_axis_tkeep   => px_m_axis_tkeep,
-			o_px_m_axis_tlast   => px_m_axis_tlast,
-			i_px_m_axis_tready  => px_m_axis_tready,
-			o_px_m_axis_tvalid  => px_m_axis_tvalid,
+			clk                => clk,
+			reset              => reset,
+			--
+			i_wt_s_axis_tdata  => wt_s_axis_tdata,
+			i_wt_s_axis_tkeep  => wt_s_axis_tkeep,
+			i_wt_s_axis_tlast  => wt_s_axis_tlast,
+			o_wt_s_axis_tready => wt_s_axis_tready,
+			i_wt_s_axis_tvalid => wt_s_axis_tvalid,
+			i_px_s_axis_tdata  => px_s_axis_tdata,
+			i_px_s_axis_tkeep  => px_s_axis_tkeep,
+			i_px_s_axis_tlast  => px_s_axis_tlast,
+			o_px_s_axis_tready => px_s_axis_tready,
+			i_px_s_axis_tvalid => px_s_axis_tvalid,
+			o_px_m_axis_tdata  => px_m_axis_tdata,
+			o_px_m_axis_tkeep  => px_m_axis_tkeep,
+			o_px_m_axis_tlast  => px_m_axis_tlast,
+			i_px_m_axis_tready => px_m_axis_tready,
+			o_px_m_axis_tvalid => px_m_axis_tvalid,
+			--
+			o_image_input_length          => o_image_input_length,
+			o_image_output_length         => o_image_output_length,
+			o_input_channel_size          => o_input_channel_size,
+			o_pixel_amount                => o_pixel_amount,
+			o_input_channel_per_iteration => o_input_channel_per_iteration,
+			o_kernel_size                 => o_kernel_size,
+			o_padding_size                => o_padding_size,
+			o_stride_bit_mask             => o_stride_bit_mask,
+			o_shamt                       => o_shamt,
+			o_pool_or_conv                => o_pool_or_conv,
+			o_enable_relu                 => o_enable_relu,
+			--
 			o_current_ic_amount => o_current_ic_amount,
 			o_current_state     => o_current_state,
 			o_overall_done      => o_overall_done,

@@ -63,8 +63,8 @@ begin
 			o_s_axis_tready => tready,
 			i_s_axis_tvalid => tvalid,
 			-- AXIS OUTPUT
-			o_m_axis_tdata  => s_tb_i.o_m_axis_tdata(G_OUTPUT_BYTE_WIDTH * 8 - 1 downto 0),
-			o_m_axis_tkeep  => s_tb_i.o_m_axis_tkeep(G_OUTPUT_BYTE_WIDTH - 1 downto 0),
+			o_m_axis_tdata  => s_tb_i.o_m_axis_tdata(G_INPUT_BYTE_WIDTH * 8 - 1 downto 0),
+			o_m_axis_tkeep  => s_tb_i.o_m_axis_tkeep(G_INPUT_BYTE_WIDTH - 1 downto 0),
 			o_m_axis_tlast  => s_tb_i.o_m_axis_tlast,
 			i_m_axis_tready => m_axis_tready,
 			o_m_axis_tvalid => s_tb_i.o_m_axis_tvalid
