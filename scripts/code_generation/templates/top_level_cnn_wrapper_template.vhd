@@ -51,6 +51,7 @@ entity top_level_cnn_wrapper is
 		o_pool_or_conv                : out std_logic;
 		o_enable_relu                 : out std_logic;
 		--
+		o_current_oc_amount : out std_logic_vector(15 downto 0);
 		o_current_ic_amount : out std_logic_vector(15 downto 0);
 		o_current_state     : out std_logic_vector(2 downto 0);
 		o_overall_done      : out std_logic;
