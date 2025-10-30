@@ -110,6 +110,7 @@ begin
 			o_pool_or_conv                => o_pool_or_conv,
 			o_enable_relu                 => o_enable_relu,
 			--
+			o_current_oc_amount => o_current_oc_amount,
 			o_current_ic_amount => o_current_ic_amount,
 			o_current_state     => o_current_state,
 			o_overall_done      => o_overall_done,

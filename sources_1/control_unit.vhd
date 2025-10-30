@@ -47,6 +47,7 @@ entity control_unit is
 		i_accel_finish       : in std_logic;
 		--
 		o_current_ic_amount : out std_logic_vector(15 downto 0);
+		o_current_oc_amount : out std_logic_vector(15 downto 0);
 		o_current_state     : out std_logic_vector(2 downto 0);
 		o_overall_done      : out std_logic;
 		o_overall_error     : out std_logic
@@ -448,6 +449,7 @@ begin
 	o_rst_kernel_cores            <= s_rst_kernel_cores;
 	o_rst_accumulator             <= s_rst_accumulator;
 	o_rst_pxs_2_axis              <= s_rst_pxs_2_axis;
+	o_current_oc_amount <= std_logic_vector(s_current_oc_amount);
 	o_current_ic_amount           <= std_logic_vector(s_current_ic_amount);
 	o_current_state               <= s_current_state_slv;
 	o_overall_done                <= s_overall_done;

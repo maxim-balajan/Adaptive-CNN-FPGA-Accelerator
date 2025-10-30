@@ -76,6 +76,7 @@ entity top_level_cnn is
 		o_pool_or_conv                : out std_logic;
 		o_enable_relu                 : out std_logic;
 		--
+		o_current_oc_amount : out std_logic_vector(15 downto 0);
 		o_current_ic_amount : out std_logic_vector(15 downto 0);
 		o_current_state     : out std_logic_vector(2 downto 0);
 		o_overall_done      : out std_logic;
@@ -200,6 +201,7 @@ begin
 			i_temp_comp_complete => s_temp_comp_line(s_temp_comp_line'high),
 			i_accel_finish       => s_accel_finish_line(s_accel_finish_line'high),
 			-- DEBUG OUTPUT PORTS
+			o_current_oc_amount => o_current_oc_amount,
 			o_current_ic_amount => s_current_ic_amount,
 			o_current_state     => o_current_state,
 			o_overall_done      => o_overall_done,
