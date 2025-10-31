@@ -125,7 +125,7 @@ begin
 		);
 
 	-- Only be ready if all brams have atleast one slot or if all will have at least one slot after the read
-	s_ps_2_bfa_axis_tready <= not (or s_bfa_full) or (or (not (s_bfa_full xor s_bfa_rd_en)));
+	s_ps_2_bfa_axis_tready <= not (or s_bfa_full) or (not (or (not (s_bfa_full xor s_bfa_rd_en))));
 	-- make a vector out of bit value to conform bram fifo array inst
 	-- only read if axi handshake was performed
 	s_bfa_wr_en <= (others => s_ps_2_bfa_axis_tvalid and s_ps_2_bfa_axis_tready);
