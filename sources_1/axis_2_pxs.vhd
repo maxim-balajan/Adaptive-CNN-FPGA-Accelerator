@@ -57,6 +57,7 @@ architecture rtl of axis_2_pxs is
 	signal s_bfa_wr_en            : std_logic_vector(G_INPUT_BYTE_WIDTH / G_BRAM_BYTE_WIDTH - 1 downto 0);
 	signal s_bfa_full             : std_logic_vector(G_INPUT_BYTE_WIDTH / G_BRAM_BYTE_WIDTH - 1 downto 0);
 	signal s_ps_2_bfa_axis_tvalid : std_logic;
+	signal s_ps_2_bfa_axis_tready : std_logic;
 
 	-- BRAM FIFO Array <-> DEMUX Unit
 	signal s_bfa_rd_en       : std_logic_vector(G_INPUT_BYTE_WIDTH / G_BRAM_BYTE_WIDTH - 1 downto 0);
@@ -119,12 +120,15 @@ begin
 			o_m_axis_tdata  => s_ps_2_bfa_axis_tdata,
 			o_m_axis_tkeep  => s_ps_2_bfa_axis_tkeep,
 			o_m_axis_tlast  => s_ps_2_bfa_axis_tlast,
-			i_m_axis_tready => not (or s_bfa_full),
+			i_m_axis_tready => s_ps_2_bfa_axis_tready,
 			o_m_axis_tvalid => s_ps_2_bfa_axis_tvalid
 		);
 
+	-- Only be ready if all brams have atleast one slot or if all will have at least one slot after the read
+	s_ps_2_bfa_axis_tready <= not (or s_bfa_full) or (or (not (s_bfa_full xor s_bfa_rd_en)));
 	-- make a vector out of bit value to conform bram fifo array inst
-	s_bfa_wr_en <= (others => s_ps_2_bfa_axis_tvalid);
+	-- only read if axi handshake was performed
+	s_bfa_wr_en <= (others => s_ps_2_bfa_axis_tvalid and s_ps_2_bfa_axis_tready);
 
 	bram_fifo_array_inst : entity work.bram_fifo_array
 		generic map (

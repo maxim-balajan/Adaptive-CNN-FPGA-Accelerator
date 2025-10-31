@@ -49,9 +49,8 @@ architecture rtl of configurable_slider_input_demux is
 	signal s_pixel_input_y        : signed(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) + 1 downto 0);
 	signal s_actual_input_length  : signed(integer(ceil(log2(real(G_IMG_MAX_LENGTH)))) + 1 downto 0);
 
-	signal s_rd_en_line        : std_logic_vector(0 to 2);
-	signal s_let_pipeline_pass : std_logic;
-	signal s_is_padding        : std_logic;
+	signal s_rd_en_line : std_logic_vector(0 to 2);
+	signal s_is_padding : std_logic;
 
 	-- BRAM signals delayed by one cycle
 
@@ -71,7 +70,7 @@ begin
 				s_pixel_input_y                               <= (others => '0');
 				s_pixel_input_y(i_padding_size'high downto 0) <= signed(i_padding_size);
 				s_actual_input_length                         <= RESIZE(signed(i_image_input_length) + SHIFT_LEFT(signed(i_padding_size), 1), s_actual_input_length'length);
-			elsif s_let_pipeline_pass = '1' then
+			elsif i_en = '1' and ((i_wt_init or not i_pool_or_conv) or not i_cs_init) = '1' then
 				-- Increment pixel address after pipeline was started
 				s_pixel_input_x <= s_pixel_input_x + 1;
 				if s_pixel_input_x = s_actual_input_length - 1 then
@@ -99,19 +98,27 @@ begin
 				s_current_read_id_line <= (others => (others => '0'));
 				--
 				s_current_read_id <= (others => '0');
-			--
-			elsif s_let_pipeline_pass = '1' then
-				if s_is_padding = '1' then
-					-- If no padding, don't read from bram, but pipeline valid
-					s_rd_en_line(0) <= '0';
-				elsif i_empty(to_integer(s_current_read_id)) = '0' then
-					s_current_read_id <= s_current_read_id + 1;
-					if s_current_read_id = C_BRAM_PER_IC - 1 then
-						s_current_read_id <= (others => '0');
+			elsif i_en = '1' then
+				if (i_wt_init or not i_pool_or_conv) or not i_cs_init then
+					if s_is_padding = '1' then
+						-- If no padding, don't read from bram, but pipeline valid
+						s_rd_en_line(0)          <= '0';
+						s_pipeline_valid_line(0) <= '1';
+					elsif i_empty(to_integer(s_current_read_id)) = '0' then
+						s_current_read_id <= s_current_read_id + 1;
+						if s_current_read_id = C_BRAM_PER_IC - 1 then
+							s_current_read_id <= (others => '0');
+						end if;
+						s_rd_en_line(0)          <= '1';
+						s_pipeline_valid_line(0) <= '1';
+					else
+						s_rd_en_line(0)          <= '0';
+						s_pipeline_valid_line(0) <= '0';
 					end if;
-					s_rd_en_line(0) <= '1';
+				else
+					s_rd_en_line(0)          <= '0';
+					s_pipeline_valid_line(0) <= '0';
 				end if;
-				s_pipeline_valid_line(0) <= '1';
 
 				-- Delay read en to know whether 0 or i_data_stream should be pipelined
 				s_rd_en_line(1 to 2) <= s_rd_en_line(0 to 1);
@@ -139,8 +146,6 @@ begin
 	                         or (s_actual_input_length - s_pixel_input_y - 1) < RESIZE(signed(i_padding_size), s_actual_input_length'length) else
 	                '0';
 
-	s_let_pipeline_pass <= i_en and (s_is_padding or not i_empty(to_integer(s_current_read_id))) and ((i_wt_init or not i_pool_or_conv) or not i_cs_init);
-
 	-- Map pixel stream to matrix to be able to multiplex signal
 
 	PIXEL_MAP_GEN : for i in s_pixel_streams_matrix'range generate
@@ -154,16 +159,16 @@ begin
 	-- Demultiplex rd signal to correct BRAM
 
 	RD_GEN : for j in o_rd_en'range generate
-		o_rd_en(j) <= s_rd_en_line(0) when s_let_pipeline_pass = '1' and unsigned(s_current_read_id_line(0)) = (j mod C_BRAM_PER_IC) else '0';
+		o_rd_en(j) <= s_rd_en_line(0) when i_en = '1' and unsigned(s_current_read_id_line(0)) = (j mod C_BRAM_PER_IC) else '0';
 	end generate RD_GEN;
 
 	-- Multiplex correct BRAM data to first G_INPUT_CHANNEL_PER_ITERATION slots of output pixel stream
 
 	OUTPUT_GEN : for i in 0 to G_INPUT_CHANNEL_PER_ITERATION - 1 generate
-		o_pixel_streams(i) <= s_pixel_streams_matrix(to_integer(unsigned(s_current_read_id_line(3))) + i * C_BRAM_PER_IC) when s_let_pipeline_pass = '1' else (others => '0');
+		o_pixel_streams(i) <= s_pixel_streams_matrix(to_integer(unsigned(s_current_read_id_line(3))) + i * C_BRAM_PER_IC) when i_en = '1' else (others => '0');
 	end generate OUTPUT_GEN;
 
 	o_pixel_streams(G_INPUT_CHANNEL_PER_ITERATION to o_pixel_streams'high) <= (others => (others => '0'));
-	o_valid_pixel_streams                                                  <= s_pipeline_valid_line(s_pipeline_valid_line'high) when s_let_pipeline_pass = '1' else '0';
+	o_valid_pixel_streams                                                  <= s_pipeline_valid_line(s_pipeline_valid_line'high) when i_en = '1' else '0';
 
 end architecture rtl;
