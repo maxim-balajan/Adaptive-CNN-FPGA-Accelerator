@@ -4,7 +4,7 @@ input_max_bit_width : 24
 output_max_bit_width : 24
 route_configs:
   global:
-    max_pipeline_steps: 2 # This has to be atleast 2!!!
+    max_pipeline_steps: 2 # This has to be at least 2!!!
     max_output_channels: 16
     max_kernel_size: 12
     line_buffer_amount: 80
@@ -12,9 +12,9 @@ route_configs:
     configurable_routing_ps : 1
   route_a:
     pool_or_conv: 0
-    input_channel: 96
-    input_channel_per_iteration: 16
-    output_channel: 16
+    input_channel: 96               # for pooling this doesn't matter
+    input_channel_per_iteration: 16 # for pooling this doesn't matter
+    output_channel: 16              # this is the concurrent pooling amount, the actual iteration amount is provided by the config string sent by the software
     input_amount: 9
     padding : 0
     stride : 2

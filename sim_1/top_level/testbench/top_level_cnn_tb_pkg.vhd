@@ -54,6 +54,7 @@ package top_level_cnn_tb_pkg is
 		o_px_m_axis_tlast  :  std_logic;
 		o_px_m_axis_tvalid :  std_logic;
 		-- Control OUTPUT PORTS
+		o_pool_or_conv 		: std_logic;
 		o_current_ic_amount :  std_logic_vector(15 downto 0);
 		o_current_oc_amount :  std_logic_vector(15 downto 0);
 		o_current_state     :  std_logic_vector(2 downto 0);

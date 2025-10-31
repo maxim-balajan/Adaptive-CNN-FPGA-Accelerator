@@ -71,6 +71,9 @@ begin
 			px_m_axis_tlast     => s_tb_i.o_px_m_axis_tlast,
 			px_m_axis_tready    => s_actual_tready,
 			px_m_axis_tvalid    => s_tb_i.o_px_m_axis_tvalid,
+			--
+			o_pool_or_conv => s_tb_i.o_pool_or_conv,
+			--
 			o_current_ic_amount => s_tb_i.o_current_ic_amount,
 			o_current_oc_amount => s_tb_i.o_current_oc_amount,
 			o_current_state     => s_tb_i.o_current_state,
@@ -156,8 +159,10 @@ begin
 
 		end loop;
 
-		report " # Weight amount per iteration: " & INTEGER'image(get_weight_per_iteration(G_CONFIG_STR));
-		report " # Total packages amount: " & INTEGER'image(get_output_channel_amount(G_CONFIG_STR) * (get_input_channel_amount(G_CONFIG_STR) / get_ic_per_iteration_amount(G_CONFIG_STR)));
+		-- If compututing a convolution, dont sent any weight data
+		if s_tb_i.o_pool_or_conv = '0' then
+			wait;
+		end if;
 
 		while v_weight_packages < (get_output_channel_amount(G_CONFIG_STR) * (get_input_channel_amount(G_CONFIG_STR) / get_ic_per_iteration_amount(G_CONFIG_STR))) loop
 
@@ -174,7 +179,6 @@ begin
 	                tdata => x"01010101010101010101010101010101",
 	                tlast => v_tlast,
 	                tkeep => x"FFFF");
-
 
 			for i in 0 to sv_rnd.RandInt(0, 3) loop
 
@@ -200,13 +204,25 @@ begin
 
 		while v_current_oc < get_output_channel_amount(G_CONFIG_STR) loop
 
-			if v_pixel_amount + 16 >= get_input_channel_amount(G_CONFIG_STR) * get_input_length(G_CONFIG_STR) * get_input_length(G_CONFIG_STR) then
-				v_tlast        := '1';
-				v_current_oc   := v_current_oc + 1;
-				v_pixel_amount := 0;
+			-- differentiate between pooling and convolution phases
+			if s_tb_i.o_pool_or_conv = '1' then
+				if v_pixel_amount + 16 >= get_input_channel_amount(G_CONFIG_STR) * get_input_length(G_CONFIG_STR) * get_input_length(G_CONFIG_STR) then
+					v_tlast        := '1';
+					v_current_oc   := v_current_oc + 1;
+					v_pixel_amount := 0;
+				else
+					v_pixel_amount := v_pixel_amount + 16;
+					v_tlast        := '0';
+				end if;
 			else
-				v_pixel_amount := v_pixel_amount + 16;
-				v_tlast        := '0';
+				if v_pixel_amount + 1 >= get_output_length(G_CONFIG_STR) * get_output_length(G_CONFIG_STR) then
+					v_tlast        := '1';
+					v_current_oc   := v_current_oc + 1;
+					v_pixel_amount := 0;
+				else
+					v_pixel_amount := v_pixel_amount + 1;
+					v_tlast        := '0';
+				end if;
 			end if;
 
 			push_axi_stream(net, stream_master_px,
@@ -218,7 +234,6 @@ begin
 			if v_tlast = '1' then
 				wait until s_tb_i.o_current_oc_amount'event;
 			end if;
-
 
 			for i in 0 to sv_rnd.RandInt(0, 3) loop
 
