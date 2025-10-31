@@ -5,33 +5,384 @@
 ##############################
 
 Iteration: 0
-8 Cores of bundle 'bundle_0'
+3 Cores of bundle 'bundle_0'
 0 Child Cores
 Bundle Meta:
-   Multplication: 1
-   Input-Amount.: 9
+   Multplication: 0
+   Input-Amount.: 4
    Input-Width..: 8
-   Output-Width.: 24
+   Output-Width.: 8
 
 Iteration: 1
-2 Cores of bundle 'bundle_1'
-8 Child Cores
+1 Cores of bundle 'bundle_0'
+3 Child Cores
 Bundle Meta:
    Multplication: 0
    Input-Amount.: 4
-   Input-Width..: 24
-   Output-Width.: 24
-
-Iteration: 2
-1 Cores of bundle 'bundle_1'
-2 Child Cores
-Bundle Meta:
-   Multplication: 0
-   Input-Amount.: 4
-   Input-Width..: 24
-   Output-Width.: 24
+   Input-Width..: 8
+   Output-Width.: 8
 
 Routing for OC 0 finished successfully!
+
+##############################
+### Start of Routing of OC 1:
+##############################
+
+Iteration: 0
+3 Cores of bundle 'bundle_0'
+0 Child Cores
+Bundle Meta:
+   Multplication: 0
+   Input-Amount.: 4
+   Input-Width..: 8
+   Output-Width.: 8
+
+Iteration: 1
+1 Cores of bundle 'bundle_0'
+3 Child Cores
+Bundle Meta:
+   Multplication: 0
+   Input-Amount.: 4
+   Input-Width..: 8
+   Output-Width.: 8
+
+Routing for OC 1 finished successfully!
+
+##############################
+### Start of Routing of OC 2:
+##############################
+
+Iteration: 0
+3 Cores of bundle 'bundle_0'
+0 Child Cores
+Bundle Meta:
+   Multplication: 0
+   Input-Amount.: 4
+   Input-Width..: 8
+   Output-Width.: 8
+
+Iteration: 1
+1 Cores of bundle 'bundle_0'
+3 Child Cores
+Bundle Meta:
+   Multplication: 0
+   Input-Amount.: 4
+   Input-Width..: 8
+   Output-Width.: 8
+
+Routing for OC 2 finished successfully!
+
+##############################
+### Start of Routing of OC 3:
+##############################
+
+Iteration: 0
+3 Cores of bundle 'bundle_0'
+0 Child Cores
+Bundle Meta:
+   Multplication: 0
+   Input-Amount.: 4
+   Input-Width..: 8
+   Output-Width.: 8
+
+Iteration: 1
+1 Cores of bundle 'bundle_0'
+3 Child Cores
+Bundle Meta:
+   Multplication: 0
+   Input-Amount.: 4
+   Input-Width..: 8
+   Output-Width.: 8
+
+Routing for OC 3 finished successfully!
+
+##############################
+### Start of Routing of OC 4:
+##############################
+
+Iteration: 0
+3 Cores of bundle 'bundle_0'
+0 Child Cores
+Bundle Meta:
+   Multplication: 0
+   Input-Amount.: 4
+   Input-Width..: 8
+   Output-Width.: 8
+
+Iteration: 1
+1 Cores of bundle 'bundle_0'
+3 Child Cores
+Bundle Meta:
+   Multplication: 0
+   Input-Amount.: 4
+   Input-Width..: 8
+   Output-Width.: 8
+
+Routing for OC 4 finished successfully!
+
+##############################
+### Start of Routing of OC 5:
+##############################
+
+Iteration: 0
+3 Cores of bundle 'bundle_0'
+0 Child Cores
+Bundle Meta:
+   Multplication: 0
+   Input-Amount.: 4
+   Input-Width..: 8
+   Output-Width.: 8
+
+Iteration: 1
+1 Cores of bundle 'bundle_0'
+3 Child Cores
+Bundle Meta:
+   Multplication: 0
+   Input-Amount.: 4
+   Input-Width..: 8
+   Output-Width.: 8
+
+Routing for OC 5 finished successfully!
+
+##############################
+### Start of Routing of OC 6:
+##############################
+
+Iteration: 0
+3 Cores of bundle 'bundle_0'
+0 Child Cores
+Bundle Meta:
+   Multplication: 0
+   Input-Amount.: 4
+   Input-Width..: 8
+   Output-Width.: 8
+
+Iteration: 1
+1 Cores of bundle 'bundle_0'
+3 Child Cores
+Bundle Meta:
+   Multplication: 0
+   Input-Amount.: 4
+   Input-Width..: 8
+   Output-Width.: 8
+
+Routing for OC 6 finished successfully!
+
+##############################
+### Start of Routing of OC 7:
+##############################
+
+Iteration: 0
+3 Cores of bundle 'bundle_0'
+0 Child Cores
+Bundle Meta:
+   Multplication: 0
+   Input-Amount.: 4
+   Input-Width..: 8
+   Output-Width.: 8
+
+Iteration: 1
+1 Cores of bundle 'bundle_0'
+3 Child Cores
+Bundle Meta:
+   Multplication: 0
+   Input-Amount.: 4
+   Input-Width..: 8
+   Output-Width.: 8
+
+Routing for OC 7 finished successfully!
+
+##############################
+### Start of Routing of OC 8:
+##############################
+
+Iteration: 0
+3 Cores of bundle 'bundle_0'
+0 Child Cores
+Bundle Meta:
+   Multplication: 0
+   Input-Amount.: 4
+   Input-Width..: 8
+   Output-Width.: 8
+
+Iteration: 1
+1 Cores of bundle 'bundle_0'
+3 Child Cores
+Bundle Meta:
+   Multplication: 0
+   Input-Amount.: 4
+   Input-Width..: 8
+   Output-Width.: 8
+
+Routing for OC 8 finished successfully!
+
+##############################
+### Start of Routing of OC 9:
+##############################
+
+Iteration: 0
+3 Cores of bundle 'bundle_0'
+0 Child Cores
+Bundle Meta:
+   Multplication: 0
+   Input-Amount.: 4
+   Input-Width..: 8
+   Output-Width.: 8
+
+Iteration: 1
+1 Cores of bundle 'bundle_0'
+3 Child Cores
+Bundle Meta:
+   Multplication: 0
+   Input-Amount.: 4
+   Input-Width..: 8
+   Output-Width.: 8
+
+Routing for OC 9 finished successfully!
+
+##############################
+### Start of Routing of OC 10:
+##############################
+
+Iteration: 0
+3 Cores of bundle 'bundle_0'
+0 Child Cores
+Bundle Meta:
+   Multplication: 0
+   Input-Amount.: 4
+   Input-Width..: 8
+   Output-Width.: 8
+
+Iteration: 1
+1 Cores of bundle 'bundle_0'
+3 Child Cores
+Bundle Meta:
+   Multplication: 0
+   Input-Amount.: 4
+   Input-Width..: 8
+   Output-Width.: 8
+
+Routing for OC 10 finished successfully!
+
+##############################
+### Start of Routing of OC 11:
+##############################
+
+Iteration: 0
+3 Cores of bundle 'bundle_0'
+0 Child Cores
+Bundle Meta:
+   Multplication: 0
+   Input-Amount.: 4
+   Input-Width..: 8
+   Output-Width.: 8
+
+Iteration: 1
+1 Cores of bundle 'bundle_0'
+3 Child Cores
+Bundle Meta:
+   Multplication: 0
+   Input-Amount.: 4
+   Input-Width..: 8
+   Output-Width.: 8
+
+Routing for OC 11 finished successfully!
+
+##############################
+### Start of Routing of OC 12:
+##############################
+
+Iteration: 0
+3 Cores of bundle 'bundle_0'
+0 Child Cores
+Bundle Meta:
+   Multplication: 0
+   Input-Amount.: 4
+   Input-Width..: 8
+   Output-Width.: 8
+
+Iteration: 1
+1 Cores of bundle 'bundle_0'
+3 Child Cores
+Bundle Meta:
+   Multplication: 0
+   Input-Amount.: 4
+   Input-Width..: 8
+   Output-Width.: 8
+
+Routing for OC 12 finished successfully!
+
+##############################
+### Start of Routing of OC 13:
+##############################
+
+Iteration: 0
+3 Cores of bundle 'bundle_0'
+0 Child Cores
+Bundle Meta:
+   Multplication: 0
+   Input-Amount.: 4
+   Input-Width..: 8
+   Output-Width.: 8
+
+Iteration: 1
+1 Cores of bundle 'bundle_0'
+3 Child Cores
+Bundle Meta:
+   Multplication: 0
+   Input-Amount.: 4
+   Input-Width..: 8
+   Output-Width.: 8
+
+Routing for OC 13 finished successfully!
+
+##############################
+### Start of Routing of OC 14:
+##############################
+
+Iteration: 0
+3 Cores of bundle 'bundle_0'
+0 Child Cores
+Bundle Meta:
+   Multplication: 0
+   Input-Amount.: 4
+   Input-Width..: 8
+   Output-Width.: 8
+
+Iteration: 1
+1 Cores of bundle 'bundle_0'
+3 Child Cores
+Bundle Meta:
+   Multplication: 0
+   Input-Amount.: 4
+   Input-Width..: 8
+   Output-Width.: 8
+
+Routing for OC 14 finished successfully!
+
+##############################
+### Start of Routing of OC 15:
+##############################
+
+Iteration: 0
+3 Cores of bundle 'bundle_0'
+0 Child Cores
+Bundle Meta:
+   Multplication: 0
+   Input-Amount.: 4
+   Input-Width..: 8
+   Output-Width.: 8
+
+Iteration: 1
+1 Cores of bundle 'bundle_0'
+3 Child Cores
+Bundle Meta:
+   Multplication: 0
+   Input-Amount.: 4
+   Input-Width..: 8
+   Output-Width.: 8
+
+Routing for OC 15 finished successfully!
 Entire Routing finished successfully!
  # routing_cores.vhd successfully generated!
  # routed_kernel_cores.vhd successfully_generated!

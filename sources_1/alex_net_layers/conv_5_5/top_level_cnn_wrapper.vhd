@@ -83,6 +83,7 @@ begin
 		port map (
 			clk                => clk,
 			reset              => reset,
+			--
 			i_wt_s_axis_tdata  => wt_s_axis_tdata,
 			i_wt_s_axis_tkeep  => wt_s_axis_tkeep,
 			i_wt_s_axis_tlast  => wt_s_axis_tlast,
