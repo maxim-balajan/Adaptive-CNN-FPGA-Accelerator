@@ -72,6 +72,7 @@ begin
 			px_m_axis_tready    => s_actual_tready,
 			px_m_axis_tvalid    => s_tb_i.o_px_m_axis_tvalid,
 			o_current_ic_amount => s_tb_i.o_current_ic_amount,
+			o_current_oc_amount => s_tb_i.o_current_oc_amount,
 			o_current_state     => s_tb_i.o_current_state,
 			o_overall_done      => s_tb_i.o_overall_done,
 			o_overall_error     => s_tb_i.o_overall_error
@@ -136,8 +137,9 @@ begin
 
 	WEIGHT_PROC : process is
 
-		variable weight_index : natural := 0;
-		variable v_tlast      : std_logic;
+		variable weight_index      : natural := 0;
+		variable v_tlast           : std_logic;
+		variable v_weight_packages : natural := 0;
 
 	begin
 
@@ -155,14 +157,16 @@ begin
 		end loop;
 
 		report " # Weight amount per iteration: " & INTEGER'image(get_weight_per_iteration(G_CONFIG_STR));
+		report " # Total packages amount: " & INTEGER'image(get_output_channel_amount(G_CONFIG_STR) * (get_input_channel_amount(G_CONFIG_STR) / get_ic_per_iteration_amount(G_CONFIG_STR)));
 
-		while True loop
+		while v_weight_packages < (get_output_channel_amount(G_CONFIG_STR) * (get_input_channel_amount(G_CONFIG_STR) / get_ic_per_iteration_amount(G_CONFIG_STR))) loop
 
 			if weight_index + 16 >= get_weight_per_iteration(G_CONFIG_STR) then
-				v_tlast := '1';
-				weight_index := 0;
+				v_tlast           := '1';
+				weight_index      := 0;
+				v_weight_packages := v_weight_packages + 1;
 			else
-				v_tlast := '0';
+				v_tlast      := '0';
 				weight_index := weight_index + 16;
 			end if;
 
@@ -185,18 +189,36 @@ begin
 	end process WEIGHT_PROC;
 
 	PIXEL_PROC : process is
+
+		variable v_pixel_amount : natural   := 0;
+		variable v_current_oc   : natural   := 0;
+		variable v_tlast        : std_logic := '0';
+
 	begin
 
 		wait until falling_edge(s_tb_o.reset);
 
-		while True loop
+		while v_current_oc < get_output_channel_amount(G_CONFIG_STR) loop
+
+			if v_pixel_amount + 16 >= get_input_channel_amount(G_CONFIG_STR) * get_input_length(G_CONFIG_STR) * get_input_length(G_CONFIG_STR) then
+				v_tlast        := '1';
+				v_current_oc   := v_current_oc + 1;
+				v_pixel_amount := 0;
+			else
+				v_pixel_amount := v_pixel_amount + 16;
+				v_tlast        := '0';
+			end if;
 
 			push_axi_stream(net, stream_master_px,
 	                tdata => x"01010101010101010101010101010101",
-	                tlast => '0',
+	                tlast => v_tlast,
 	                tkeep => x"FFFF");
 
-			-- wait until rising_edge(s_tb_i.clk) and px_tready = '1';
+			-- simulate behaviour of software when oc has finished, dont send anything anymore
+			if v_tlast = '1' then
+				wait until s_tb_i.o_current_oc_amount'event;
+			end if;
+
 
 			for i in 0 to sv_rnd.RandInt(0, 3) loop
 

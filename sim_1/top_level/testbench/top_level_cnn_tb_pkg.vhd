@@ -55,6 +55,7 @@ package top_level_cnn_tb_pkg is
 		o_px_m_axis_tvalid :  std_logic;
 		-- Control OUTPUT PORTS
 		o_current_ic_amount :  std_logic_vector(15 downto 0);
+		o_current_oc_amount :  std_logic_vector(15 downto 0);
 		o_current_state     :  std_logic_vector(2 downto 0);
 		o_overall_done      :  std_logic;
 		o_overall_error     :  std_logic;
@@ -67,6 +68,42 @@ package top_level_cnn_tb_pkg is
 	impure function hexstr_to_slv (
 		str_i : string
 	) return std_logic_vector;
+
+	impure function get_input_length (
+		str_i : string
+	) return integer;
+
+	impure function get_output_length (
+		str_i : string
+	) return integer;
+
+	impure function get_input_channel_amount (
+		str_i : string
+	) return integer;
+
+	impure function get_output_channel_amount (
+		str_i : string
+	) return integer;
+
+	impure function get_pixel_amount (
+		str_i : string
+	) return integer;
+
+	impure function get_ic_per_iteration_amount (
+		str_i : string
+	) return integer;
+
+	impure function get_kernel_size (
+		str_i : string
+	) return integer;
+
+	impure function get_padding_size (
+		str_i : string
+	) return integer;
+
+	impure function get_stride_bit_mask (
+		str_i : string
+	) return integer;
 
 	impure function get_weight_per_iteration (
 		str_i : string
@@ -107,12 +144,95 @@ package body top_level_cnn_tb_pkg is
 	-- FUNCTIONs
 	----------------------------------------------------------------------
 
+	impure function get_input_length (
+		str_i : string
+	) return integer is
+	begin
+
+		return to_integer(unsigned(hexstr_to_slv(str_i(29 to 32))));
+
+	end function get_input_length;
+
+	impure function get_output_length (
+		str_i : string
+	) return integer is
+	begin
+
+		return to_integer(unsigned(hexstr_to_slv(str_i(25 to 28))));
+
+	end function get_output_length;
+
+	impure function get_input_channel_amount (
+		str_i : string
+	) return integer is
+	begin
+
+		return to_integer(unsigned(hexstr_to_slv(str_i(21 to 24))));
+
+	end function get_input_channel_amount;
+
+	impure function get_output_channel_amount (
+		str_i : string
+	) return integer is
+	begin
+
+		return to_integer(unsigned(hexstr_to_slv(str_i(17 to 20))));
+
+	end function get_output_channel_amount;
+
+	impure function get_pixel_amount (
+		str_i : string
+	) return integer is
+	begin
+
+		return to_integer(unsigned(hexstr_to_slv(str_i(13 to 16))));
+
+	end function get_pixel_amount;
+
+	impure function get_ic_per_iteration_amount (
+		str_i : string
+	) return integer is
+	begin
+
+		return to_integer(unsigned(hexstr_to_slv(str_i(9 to 12))));
+
+	end function get_ic_per_iteration_amount;
+
+	impure function get_kernel_size (
+		str_i : string
+	) return integer is
+	begin
+
+		return to_integer(unsigned(hexstr_to_slv(str_i(7 to 8))));
+
+	end function get_kernel_size;
+
+	impure function get_padding_size (
+		str_i : string
+	) return integer is
+	begin
+
+		return to_integer(unsigned(hexstr_to_slv(str_i(5 to 6))));
+
+	end function get_padding_size;
+
+	impure function get_stride_bit_mask (
+		str_i : string
+	) return integer is
+	begin
+
+		return to_integer(unsigned(hexstr_to_slv(str_i(3 to 4))));
+
+	end function get_stride_bit_mask;
+
 	impure function get_weight_per_iteration (
 		str_i : string
 	) return integer is
 	begin
+
 		return to_integer(unsigned(hexstr_to_slv(str_i(9 to 12)))) * to_integer(unsigned(hexstr_to_slv(str_i(7 to 8)))) * to_integer(unsigned(hexstr_to_slv(str_i(7 to 8))));
-	end function;
+
+	end function get_weight_per_iteration;
 
 	impure function hexstr_to_slv (
 		str_i : string
