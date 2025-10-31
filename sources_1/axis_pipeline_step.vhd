@@ -88,7 +88,7 @@ begin
 
 	-- selecting the expansion register if it has valid data
 	o_m_axis_tvalid <= expansion_valid_reg or primary_valid_reg;
-	o_m_axis_tlast  <= expansion_tlast_reg or primary_tlast_reg;
+	o_m_axis_tlast  <= expansion_tlast_reg when expansion_valid_reg else primary_tlast_reg;
 	o_m_axis_tdata  <= expansion_data_reg when expansion_valid_reg else primary_data_reg;
 	o_m_axis_tkeep  <= expansion_tkeep_reg when expansion_valid_reg else primary_tkeep_reg;
 
