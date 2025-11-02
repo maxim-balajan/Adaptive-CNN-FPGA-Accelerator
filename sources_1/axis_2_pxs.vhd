@@ -18,7 +18,7 @@ entity axis_2_pxs is
 		clk   : in std_logic;
 		reset : in std_logic;
 		--
-		i_rst_axis_2_pxs          : in std_logic;
+		i_rst_axis_2_pxs : in std_logic;
 		i_rst_cfg_slider : in std_logic;
 		--
 		i_en : in std_logic;
@@ -60,26 +60,36 @@ architecture rtl of axis_2_pxs is
 	signal s_ps_2_bfa_axis_tready : std_logic;
 
 	-- BRAM FIFO Array <-> DEMUX Unit
-	signal s_bfa_rd_en       : std_logic_vector(G_INPUT_BYTE_WIDTH / G_BRAM_BYTE_WIDTH - 1 downto 0);
-	signal s_bfa_empty       : std_logic_vector(G_INPUT_BYTE_WIDTH / G_BRAM_BYTE_WIDTH - 1 downto 0);
-	signal s_bfa_empty_del   : std_logic_vector(G_INPUT_BYTE_WIDTH / G_BRAM_BYTE_WIDTH - 1 downto 0);
-	signal s_bfa_data_stream : std_logic_vector(G_INPUT_BYTE_WIDTH * 8 - 1 downto 0);
-	signal s_bfa_data_stream_del : std_logic_vector(G_INPUT_BYTE_WIDTH * 8 - 1 downto 0);
+	signal s_bfa_rd_en              : std_logic_vector(G_INPUT_BYTE_WIDTH / G_BRAM_BYTE_WIDTH - 1 downto 0);
+	signal s_bfa_empty              : std_logic_vector(G_INPUT_BYTE_WIDTH / G_BRAM_BYTE_WIDTH - 1 downto 0);
+	signal s_bfa_nearly_empty       : std_logic_vector(G_INPUT_BYTE_WIDTH / G_BRAM_BYTE_WIDTH - 1 downto 0);
+	signal s_bfa_nearly_empty_del   : std_logic_vector(G_INPUT_BYTE_WIDTH / G_BRAM_BYTE_WIDTH - 1 downto 0);
+	signal s_bfa_nearly_empty_2     : std_logic_vector(G_INPUT_BYTE_WIDTH / G_BRAM_BYTE_WIDTH - 1 downto 0);
+	signal s_bfa_nearly_empty_2_del : std_logic_vector(G_INPUT_BYTE_WIDTH / G_BRAM_BYTE_WIDTH - 1 downto 0);
+	signal s_bfa_empty_del          : std_logic_vector(G_INPUT_BYTE_WIDTH / G_BRAM_BYTE_WIDTH - 1 downto 0);
+	signal s_bfa_data_stream        : std_logic_vector(G_INPUT_BYTE_WIDTH * 8 - 1 downto 0);
+	signal s_bfa_data_stream_del    : std_logic_vector(G_INPUT_BYTE_WIDTH * 8 - 1 downto 0);
 
 begin
 
-	DELAY_PROC : process (clk)
+	DELAY_PROC : process (clk) is
 	begin
+
 		if rising_edge(clk) then
 			if reset = '1' then
-				s_bfa_empty_del <= (others => '0');
-				s_bfa_data_stream_del <= (others => '0');  
+				s_bfa_empty_del          <= (others => '0');
+				s_bfa_data_stream_del    <= (others => '0');
+				s_bfa_nearly_empty_del   <= (others => '0');
+				s_bfa_nearly_empty_2_del <= (others => '0');
 			else
-				s_bfa_empty_del <= s_bfa_empty;
-				s_bfa_data_stream_del <= s_bfa_data_stream;
+				s_bfa_empty_del          <= s_bfa_empty;
+				s_bfa_data_stream_del    <= s_bfa_data_stream;
+				s_bfa_nearly_empty_del   <= s_bfa_nearly_empty_del;
+				s_bfa_nearly_empty_2_del <= s_bfa_nearly_empty_2;
 			end if;
 		end if;
-	end process;
+
+	end process DELAY_PROC;
 
 	axis_data_width_converter_inst : entity work.axis_data_width_converter
 		generic map (
@@ -124,8 +134,8 @@ begin
 			o_m_axis_tvalid => s_ps_2_bfa_axis_tvalid
 		);
 
-	-- Only be ready if all brams have atleast one slot or if all will have at least one slot after the read
-	s_ps_2_bfa_axis_tready <= not (or s_bfa_full) or (not (or (not (s_bfa_full xor s_bfa_rd_en))));
+	-- Only be ready if all brams have atleast one slot
+	s_ps_2_bfa_axis_tready <= not (or s_bfa_full);
 	-- make a vector out of bit value to conform bram fifo array inst
 	-- only read if axi handshake was performed
 	s_bfa_wr_en <= (others => s_ps_2_bfa_axis_tvalid and s_ps_2_bfa_axis_tready);
@@ -135,18 +145,23 @@ begin
 			G_DATA_BYTE_WIDTH     => G_INPUT_BYTE_WIDTH,
 			G_BRAM_BYTE_WIDTH     => G_BRAM_BYTE_WIDTH,
 			G_MAX_DEPTH           => G_MAX_FIFO_DEPTH,
-			G_NEAR_FULL_THRESHOLD => G_NEAR_FULL_THRESHOLD
+			G_NEAR_FULL_THRESHOLD => G_NEAR_FULL_THRESHOLD,
+			-- has to bee one because of one additional delay by read
+			G_NEAR_EMPTY_THRESHOLD   => 1,
+			G_NEAR_EMPTY_THRESHOLD_2 => 2
 		)
 		port map (
 			clk   => clk,
 			reset => reset or i_rst_axis_2_pxs,
 			--
-			i_input_stream  => s_ps_2_bfa_axis_tdata,
-			i_wr_en         => s_bfa_wr_en,
-			i_rd_en         => s_bfa_rd_en,
-			o_output_stream => s_bfa_data_stream,
-			o_full          => s_bfa_full,
-			o_empty         => s_bfa_empty
+			i_input_stream   => s_ps_2_bfa_axis_tdata,
+			i_wr_en          => s_bfa_wr_en,
+			i_rd_en          => s_bfa_rd_en,
+			o_output_stream  => s_bfa_data_stream,
+			o_full           => s_bfa_full,
+			o_empty          => s_bfa_empty,
+			o_nearly_empty   => s_bfa_nearly_empty,
+			o_nearly_empty_2 => s_bfa_nearly_empty_2
 		);
 
 	configurable_slider_input_demux_inst : entity work.configurable_slider_input_demux
@@ -154,7 +169,8 @@ begin
 			G_DATA_BYTE_WIDTH             => G_INPUT_BYTE_WIDTH,
 			G_BRAM_BYTE_WIDTH             => G_BRAM_BYTE_WIDTH,
 			G_INPUT_CHANNEL_PER_ITERATION => G_INPUT_CHANNEL_PER_ITERATION,
-			G_IMG_MAX_LENGTH              => G_IMG_MAX_LENGTH
+			G_IMG_MAX_LENGTH              => G_IMG_MAX_LENGTH,
+			G_NEARLY_EMPTY_THRESHOLD      => 2
 		)
 		port map (
 			clk   => clk,
@@ -171,9 +187,11 @@ begin
 			i_wt_init            => i_wt_init,
 			i_cs_init            => i_cs_init,
 			--
-			o_rd_en       => s_bfa_rd_en,
-			i_data_stream => s_bfa_data_stream_del,
-			i_empty       => s_bfa_empty_del,
+			o_rd_en          => s_bfa_rd_en,
+			i_data_stream    => s_bfa_data_stream_del,
+			i_empty          => s_bfa_empty_del,
+			i_nearly_empty   => s_bfa_nearly_empty_del,
+			i_nearly_empty_2 => s_bfa_nearly_empty_2_del,
 			--
 			o_valid_pixel_streams => o_valid_pixel_streams,
 			o_pixel_streams       => o_pixel_streams

@@ -68,6 +68,8 @@ begin
 		signal s_m_axis_tlast  : std_logic;
 		signal s_m_axis_tvalid : std_logic;
 
+		signal s_flush_memory : std_logic;
+
 		signal s_internal_memory : std_logic_vector(G_INPUT_BYTE_WIDTH * 8 + G_OUTPUT_BYTE_WIDTH * 8 - 1 downto 0);
 
 		signal s_barrel_shifted_internal_memory : matrix_1d(0 to G_OUTPUT_BYTE_WIDTH)(s_internal_memory'range);
@@ -93,6 +95,7 @@ begin
 
 			variable v_tmp_internal_memory : std_logic_vector(s_internal_memory'range);
 			variable v_tmp_element_count   : natural range 0 to s_internal_memory'length - 1;
+			variable v_tmp_flush_memory    : std_logic := '0';
 
 		begin
 
@@ -100,20 +103,26 @@ begin
 				if reset = '1' then
 					s_internal_memory <= (others => '0');
 					s_s_axis_tready   <= '0';
-					-- Note: tlast is always at '0' because its not necessary for the top level currently
-					s_m_axis_tlast <= '0';
+					s_m_axis_tlast    <= '0';
 
 					s_m_axis_tdata  <= (others => '0');
 					s_m_axis_tkeep  <= (others => '0');
 					s_m_axis_tvalid <= '0';
 
 					s_element_count <= (others => '0');
+					s_flush_memory  <= '0';
 				else
 					v_tmp_element_count := to_integer(s_element_count);
 					-- Mux incoming data into temporary buffer
 					v_tmp_internal_memory := s_internal_memory;
+					v_tmp_flush_memory    := s_flush_memory;
+					-- Reset tlast signal to if flush is enabled
+					s_m_axis_tlast <= v_tmp_flush_memory;
 
 					if i_m_axis_tready = '1' and (v_tmp_element_count >= G_OUTPUT_BYTE_WIDTH) then
+						if s_m_axis_tlast = '1' then
+							v_tmp_flush_memory := '0';
+						end if;
 						s_m_axis_tvalid <= '0';
 						s_m_axis_tlast  <= '0';
 					end if;
@@ -125,6 +134,10 @@ begin
 						-- Mux incoming data into temporary buffer
 						v_tmp_internal_memory := s_barrel_shifted_internal_memory(v_tmp_element_count);
 						v_tmp_element_count   := v_tmp_element_count + G_INPUT_BYTE_WIDTH;
+
+						if i_s_axis_tlast = '1' then
+							v_tmp_flush_memory := '1';
+						end if;
 					end if;
 
 					-- Write data to master
@@ -132,22 +145,35 @@ begin
 						-- Consume data
 						v_tmp_internal_memory := (G_OUTPUT_BYTE_WIDTH * 8 - 1 downto 0 => 'U') & v_tmp_internal_memory(v_tmp_internal_memory'length - 1 downto G_OUTPUT_BYTE_WIDTH * 8);
 						s_m_axis_tkeep        <= (others => '0');
-						v_tmp_element_count   := v_tmp_element_count - G_OUTPUT_BYTE_WIDTH;
+
+						-- Clear up for the next frame
+						if o_m_axis_tlast = '1' then
+							v_tmp_element_count := 0;
+							v_tmp_flush_memory  := '0';
+						else
+							v_tmp_element_count := v_tmp_element_count - G_OUTPUT_BYTE_WIDTH;
+						end if;
 					end if;
 
-					if v_tmp_element_count >= G_OUTPUT_BYTE_WIDTH then
+					if v_tmp_element_count >= G_OUTPUT_BYTE_WIDTH or v_tmp_flush_memory = '1' then
 						s_m_axis_tvalid <= '1';
 						s_m_axis_tdata  <= v_tmp_internal_memory(G_OUTPUT_BYTE_WIDTH * 8 - 1 downto 0);
-						s_m_axis_tkeep  <= (others => '1');
+						-- Dont handle tkeep, because it is not needed by the design
+						s_m_axis_tkeep <= (others => '1');
+
+						if v_tmp_element_count <= G_OUTPUT_BYTE_WIDTH and v_tmp_flush_memory = '1' then
+							s_m_axis_tlast <= '1';
+						end if;
 					end if;
 
-					if (v_tmp_internal_memory'length) / 8 - v_tmp_element_count >= G_INPUT_BYTE_WIDTH then
+					if (v_tmp_internal_memory'length) / 8 - v_tmp_element_count >= G_INPUT_BYTE_WIDTH and v_tmp_flush_memory = '0' then
 						s_s_axis_tready <= '1';
 					end if;
 
 					-- Write back internal variables
 					s_element_count   <= to_unsigned(v_tmp_element_count, s_element_count'length);
 					s_internal_memory <= v_tmp_internal_memory;
+					s_flush_memory    <= v_tmp_flush_memory;
 				end if;
 			end if;
 
@@ -165,7 +191,7 @@ begin
 		o_m_axis_tkeep(s_m_axis_tkeep'range)                             <= s_m_axis_tkeep;
 		o_m_axis_tkeep(o_m_axis_tkeep'high downto s_m_axis_tkeep'length) <= (others => '0');
 		o_m_axis_tvalid                                                  <= s_m_axis_tvalid;
-		o_m_axis_tlast                                                   <= s_m_axis_tlast;
+		o_m_axis_tlast                                                   <= s_m_axis_tlast and s_m_axis_tvalid;
 	end generate DOWNSIZE_GEN;
 
 	UPSIZE_GEN : if G_INPUT_BYTE_WIDTH < G_OUTPUT_BYTE_WIDTH generate

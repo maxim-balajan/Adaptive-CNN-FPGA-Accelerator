@@ -5,11 +5,12 @@ use ieee.math_real.all;
 
 entity bram_fifo_array is
 	generic (
-		G_DATA_BYTE_WIDTH      : integer range 1 to 128 := 16;
-		G_BRAM_BYTE_WIDTH      : integer range 1 to 128 := 1;
-		G_MAX_DEPTH            : natural                := 512;
-		G_NEAR_FULL_THRESHOLD  : natural                := 0;
-		G_NEAR_EMPTY_THRESHOLD : natural                := 1
+		G_DATA_BYTE_WIDTH        : integer range 1 to 128 := 16;
+		G_BRAM_BYTE_WIDTH        : integer range 1 to 128 := 1;
+		G_MAX_DEPTH              : natural                := 512;
+		G_NEAR_FULL_THRESHOLD    : natural                := 0;
+		G_NEAR_EMPTY_THRESHOLD   : natural                := 1;
+		G_NEAR_EMPTY_THRESHOLD_2 : natural                := 2
 	);
 	port (
 		clk   : in std_logic;
@@ -19,11 +20,12 @@ entity bram_fifo_array is
 		i_wr_en        : in std_logic_vector(G_DATA_BYTE_WIDTH / G_BRAM_BYTE_WIDTH - 1 downto 0);
 		i_rd_en        : in std_logic_vector(G_DATA_BYTE_WIDTH / G_BRAM_BYTE_WIDTH - 1 downto 0);
 		--
-		o_output_stream : out std_logic_vector(G_DATA_BYTE_WIDTH * 8 - 1 downto 0);
-		o_full          : out std_logic_vector(G_DATA_BYTE_WIDTH / G_BRAM_BYTE_WIDTH - 1 downto 0);
-		o_nearly_full   : out std_logic_vector(G_DATA_BYTE_WIDTH / G_BRAM_BYTE_WIDTH - 1 downto 0);
-		o_empty         : out std_logic_vector(G_DATA_BYTE_WIDTH / G_BRAM_BYTE_WIDTH - 1 downto 0);
-		o_nearly_empty  : out std_logic_vector(G_DATA_BYTE_WIDTH / G_BRAM_BYTE_WIDTH - 1 downto 0)
+		o_output_stream  : out std_logic_vector(G_DATA_BYTE_WIDTH * 8 - 1 downto 0);
+		o_full           : out std_logic_vector(G_DATA_BYTE_WIDTH / G_BRAM_BYTE_WIDTH - 1 downto 0);
+		o_nearly_full    : out std_logic_vector(G_DATA_BYTE_WIDTH / G_BRAM_BYTE_WIDTH - 1 downto 0);
+		o_empty          : out std_logic_vector(G_DATA_BYTE_WIDTH / G_BRAM_BYTE_WIDTH - 1 downto 0);
+		o_nearly_empty   : out std_logic_vector(G_DATA_BYTE_WIDTH / G_BRAM_BYTE_WIDTH - 1 downto 0);
+		o_nearly_empty_2 : out std_logic_vector(G_DATA_BYTE_WIDTH / G_BRAM_BYTE_WIDTH - 1 downto 0)
 	);
 end entity bram_fifo_array;
 
@@ -86,6 +88,7 @@ begin
 				dout       => o_output_stream((i + 1) * (G_BRAM_BYTE_WIDTH * 8) - 1 downto i * (G_BRAM_BYTE_WIDTH * 8)),
 				near_full  => o_nearly_full(i),
 				near_empty => o_nearly_empty(i),
+				near_empty_2 => o_nearly_empty_2(i),
 				full       => o_full(i),
 				empty      => o_empty(i)
 			);

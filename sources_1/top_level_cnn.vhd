@@ -40,7 +40,7 @@ entity top_level_cnn is
 		G_MAX_TMP_LAYER_ACCUMULATOR_FIFO : natural := 55 ** 2;
 		-- AXIS OUTPUT
 		G_NEAR_FULL_THRESHOLD : natural range 3 to 10 := 5;
-		G_MAX_PXS_2_AXIS      : natural               := 512
+		G_MAX_PXS_2_AXIS      : natural               := 512 
 	);
 	port (
 		clk   : in std_logic;
@@ -110,6 +110,7 @@ architecture rtl of top_level_cnn is
 	signal s_rst_kernel_cores  : std_logic;
 	signal s_rst_accumulator   : std_logic;
 	signal s_rst_pxs_2_axis    : std_logic;
+	signal s_rst_global        : std_logic;
 
 	-- CONFIGURABLE SLIDER OUTPUTS
 	signal s_cfg_slider_complete          : std_logic;
@@ -140,7 +141,7 @@ begin
 	begin
 
 		if rising_edge(clk) then
-			if reset = '1' then
+			if reset = '1' or s_rst_global = '1' then
 				s_en_line(s_en_line'low + 1 to s_en_line'high)                               <= (others => '0');
 				s_temp_comp_line(s_temp_comp_line'low + 1 to s_temp_comp_line'high)          <= (others => '0');
 				s_accel_finish_line(s_accel_finish_line'low + 1 to s_accel_finish_line'high) <= (others => '0');
@@ -197,6 +198,7 @@ begin
 			o_rst_kernel_cores  => s_rst_kernel_cores,
 			o_rst_accumulator   => s_rst_accumulator,
 			o_rst_pxs_2_axis    => s_rst_pxs_2_axis,
+			o_rst_global        => s_rst_global,
 			-- CONTROL INPUT SIGNALS
 			i_temp_comp_complete => s_temp_comp_line(s_temp_comp_line'high),
 			i_accel_finish       => s_accel_finish_line(s_accel_finish_line'high),
@@ -225,7 +227,7 @@ begin
 		)
 		port map (
 			clk   => clk,
-			reset => reset,
+			reset => reset or s_rst_global,
 			-- RESET SIGNALS
 			i_rst_axis_2_pxs          => s_rst_axis_2_pxs,
 			i_rst_configurable_slider => s_rst_config_slider,
@@ -263,7 +265,7 @@ begin
 		)
 		port map (
 			clk   => clk,
-			reset => reset or s_rst_kernel_cores,
+			reset => reset or s_rst_kernel_cores or s_rst_global,
 			--
 			i_en => s_en_line(s_en_line'high),
 			-- Configurable Slider Outputs
@@ -290,7 +292,7 @@ begin
 		)
 		port map (
 			clk   => clk,
-			reset => reset or s_rst_accumulator,
+			reset => reset or s_rst_accumulator or s_rst_global,
 			--
 			i_en => s_en_line(s_en_line'high),
 			-- OUTPUT of ROUTING CORES
@@ -321,7 +323,7 @@ begin
 		)
 		port map (
 			clk   => clk,
-			reset => reset or s_rst_pxs_2_axis,
+			reset => reset or s_rst_pxs_2_axis or s_rst_global,
 			--
 			o_en => s_en_line(s_en_line'low),
 			-- TEMP LAYER ACC OUTPUTS
@@ -338,16 +340,16 @@ begin
 			o_px_m_axis_tvalid => o_px_m_axis_tvalid
 		);
 
-		o_image_input_length          <= s_image_input_length         ;
-		o_image_output_length         <= s_image_output_length        ;
-		o_input_channel_size          <= s_input_channel_size         ;
-		o_pixel_amount                <= s_pixel_amount               ;
-		o_input_channel_per_iteration <= s_input_channel_per_iteration;
-		o_kernel_size                 <= s_kernel_size                ;
-		o_padding_size                <= s_padding_size               ;
-		o_stride_bit_mask             <= s_stride_bit_mask            ;
-		o_shamt                       <= s_shamt                      ;
-		o_pool_or_conv                <= s_pool_or_conv               ;
-		o_enable_relu                 <= s_enable_relu                ;
+	o_image_input_length          <= s_image_input_length;
+	o_image_output_length         <= s_image_output_length;
+	o_input_channel_size          <= s_input_channel_size;
+	o_pixel_amount                <= s_pixel_amount;
+	o_input_channel_per_iteration <= s_input_channel_per_iteration;
+	o_kernel_size                 <= s_kernel_size;
+	o_padding_size                <= s_padding_size;
+	o_stride_bit_mask             <= s_stride_bit_mask;
+	o_shamt                       <= s_shamt;
+	o_pool_or_conv                <= s_pool_or_conv;
+	o_enable_relu                 <= s_enable_relu;
 
 end architecture rtl;

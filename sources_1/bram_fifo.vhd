@@ -6,10 +6,11 @@ use work.libmatrix.all;
 
 entity bram_fifo is
 	generic (
-		vector_length          : natural := 8;
-		G_MAX_DEPTH            : natural := 227;
-		G_NEAR_FULL_THRESHOLD  : natural := 3;
-		G_NEAR_EMPTY_THRESHOLD : natural := 1
+		vector_length            : natural := 8;
+		G_MAX_DEPTH              : natural := 227;
+		G_NEAR_FULL_THRESHOLD    : natural := 3;
+		G_NEAR_EMPTY_THRESHOLD   : natural := 1;
+		G_NEAR_EMPTY_THRESHOLD_2 : natural := 2
 	);
 	port (
 		clk   : in std_logic;
@@ -22,11 +23,12 @@ entity bram_fifo is
 		wr_en : in std_logic;
 		rd_en : in std_logic;
 		--
-		dout       : out std_logic_vector(vector_length - 1 downto 0);
-		near_full  : out std_logic;
-		near_empty : out std_logic;
-		full       : out std_logic;
-		empty      : out std_logic
+		dout         : out std_logic_vector(vector_length - 1 downto 0);
+		near_full    : out std_logic;
+		near_empty   : out std_logic;
+		near_empty_2 : out std_logic;
+		full         : out std_logic;
+		empty        : out std_logic
 	);
 end entity bram_fifo;
 
@@ -48,24 +50,28 @@ architecture rtl of bram_fifo is
 	signal s_read_pointer  : unsigned(integer(ceil(log2(real(G_MAX_DEPTH)))) - 1 downto 0);
 	signal s_write_pointer : unsigned(integer(ceil(log2(real(G_MAX_DEPTH)))) - 1 downto 0);
 
-	signal s_empty, s_near_empty : std_logic;
-	signal s_full,  s_near_full  : std_logic;
+	signal s_empty             : std_logic;
+	signal s_near_empty        : std_logic;
+	signal s_near_empty_2      : std_logic;
+	signal s_full, s_near_full : std_logic;
 
 	signal s_last_write : std_logic;
 	signal s_dout       : std_logic_vector(vector_length - 1 downto 0);
 
 begin
 
-	s_empty      <= std_logic_vector(s_read_pointer) ?= std_logic_vector(s_write_pointer) and not s_last_write;
-	s_full       <= std_logic_vector(s_read_pointer) ?= std_logic_vector(s_write_pointer) and s_last_write;
-	s_near_full  <= '1' when s_entry_amount >= (signed(resize(s_actual_depth, s_entry_amount'length)) - G_NEAR_FULL_THRESHOLD) else '0';
-	s_near_empty <= '1' when s_entry_amount <= G_NEAR_EMPTY_THRESHOLD else '0';
+	s_empty        <= std_logic_vector(s_read_pointer) ?= std_logic_vector(s_write_pointer) and not s_last_write;
+	s_full         <= std_logic_vector(s_read_pointer) ?= std_logic_vector(s_write_pointer) and s_last_write;
+	s_near_full    <= '1' when s_entry_amount >= (signed(resize(s_actual_depth, s_entry_amount'length)) - G_NEAR_FULL_THRESHOLD) else '0';
+	s_near_empty   <= '1' when s_entry_amount <= G_NEAR_EMPTY_THRESHOLD else '0';
+	s_near_empty_2 <= '1' when s_entry_amount <= G_NEAR_EMPTY_THRESHOLD_2 else '0';
 
-	empty      <= s_empty;
-	full       <= s_full;
-	near_full  <= s_near_full;
-	near_empty <= s_near_empty;
-	dout       <= s_dout;
+	empty        <= s_empty;
+	full         <= s_full;
+	near_full    <= s_near_full;
+	near_empty   <= s_near_empty;
+	near_empty_2 <= s_near_empty_2;
+	dout         <= s_dout;
 
 	process (clk, reset) is
 
