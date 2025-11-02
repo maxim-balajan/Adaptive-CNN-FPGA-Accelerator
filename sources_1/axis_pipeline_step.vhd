@@ -83,7 +83,7 @@ begin
 	end process;
 
 	-- ready as long as there is nothing in the expansion register
-	s_s_axis_tready <= not expansion_valid_reg;
+	s_s_axis_tready <= not expansion_valid_reg and not reset;
 	o_s_axis_tready <= s_s_axis_tready;
 
 	-- selecting the expansion register if it has valid data
