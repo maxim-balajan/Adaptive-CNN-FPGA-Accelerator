@@ -46,7 +46,7 @@ tb_lib.add_source_files(join(sim_path, "top_level", "testbench", "*.vhd"))
 # add test bench configurations
 
 test_bench = tb_lib.test_bench("top_level_cnn_tb")
-test_bench.add_config(name="tb_cfg_0", generics=dict(G_CONFIG_STR='0B03000B00030BD100020003003700e3'))
+test_bench.add_config(name="tb_cfg_0", generics=dict(G_CONFIG_STR='0B03000B00030BD100010003003700e3'))
 
 ################
 ## execute TB ##

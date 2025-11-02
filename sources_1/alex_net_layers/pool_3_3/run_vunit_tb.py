@@ -48,7 +48,7 @@ tb_lib.add_source_files(join(sim_path, "top_level", "testbench", "*.vhd"))
 test_bench = tb_lib.test_bench("top_level_cnn_tb")
 test_bench.add_config(name="tb_pool_96_96_3_3",         generics=dict(G_CONFIG_STR='000100030010000000060010001b0037'))
 test_bench.add_config(name="tb_pool_256_256_27_13_3_3", generics=dict(G_CONFIG_STR='000100030010000000100010000d001b'))
-test_bench.add_config(name="tb_pool_256_256_13_6_3_3",  generics=dict(G_CONFIG_STR='0001000300100000001000100006001b'))
+test_bench.add_config(name="tb_pool_256_256_13_6_3_3",  generics=dict(G_CONFIG_STR='0001000300100000001000100006000d'))
 
 ################
 ## execute TB ##
