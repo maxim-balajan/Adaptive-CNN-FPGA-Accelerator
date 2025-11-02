@@ -77,6 +77,10 @@ package body top_level_cnn_tc_pkg is
 		wait until rising_edge(tb_i.o_overall_done) or rising_edge(tb_i.o_overall_error) for 200000 * C_CLK_PERIOD;
 
 		wait for 10 * C_CLK_PERIOD;
+		
+		--wait until rising_edge(tb_i.o_overall_done) or rising_edge(tb_i.o_overall_error) for 200000 * C_CLK_PERIOD;
+		
+		--wait for 10 * C_CLK_PERIOD;
 
 		tc_end(tb_o, tb_i);
 
