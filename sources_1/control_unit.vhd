@@ -42,6 +42,7 @@ entity control_unit is
 		o_rst_kernel_cores  : out std_logic;
 		o_rst_accumulator   : out std_logic;
 		o_rst_pxs_2_axis    : out std_logic;
+		o_rst_global        : out std_logic;
 		-- Control Signals
 		i_temp_comp_complete : in std_logic;
 		i_accel_finish       : in std_logic;
@@ -86,6 +87,7 @@ architecture rtl of control_unit is
 	signal s_rst_kernel_cores  : std_logic;
 	signal s_rst_accumulator   : std_logic;
 	signal s_rst_pxs_2_axis    : std_logic;
+	signal s_rst_global        : std_logic;
 
 	-------------------------
 	-- Control signals
@@ -161,11 +163,12 @@ begin
 							s_current_ic_amount <= (others => '0');
 							s_current_oc_amount <= s_current_oc_amount + 1;
 							if s_current_oc_amount >= unsigned(s_output_channel_size) - 1 then
-								s_current_state <= e_DONE;
+								s_current_oc_amount <= (others => '0');
+								s_current_state     <= e_DONE;
 							else
 								s_current_state <= e_1st_RST_SUBMODULE;
 							end if;
-						end if; 
+						end if;
 					when e_DONE | e_ERROR =>
 						-- If done, reset everything and go back to CFG_RETR
 						s_current_state <= e_CONFIG_RETR;
@@ -189,6 +192,7 @@ begin
 				s_rst_kernel_cores  <= '1';
 				s_rst_accumulator   <= '1';
 				s_rst_pxs_2_axis    <= '1';
+				s_rst_global        <= '0';
 
 				-- Route all AXIS Interfaces IN to Config Unit
 				o_wt_s_axis_tready <= s_wt_2_cfg_s_axis_tready;
@@ -218,6 +222,7 @@ begin
 				s_rst_kernel_cores  <= '1';
 				s_rst_accumulator   <= '1';
 				s_rst_pxs_2_axis    <= '1';
+				s_rst_global        <= '0';
 
 				-- In this cycle, no values should be read from the weight stream
 				-- -> ready has to be on Low
@@ -247,6 +252,7 @@ begin
 				s_rst_kernel_cores  <= '1';
 				s_rst_accumulator   <= '0';
 				s_rst_pxs_2_axis    <= '0';
+				s_rst_global        <= '0';
 
 				-- In this cycle, no values should be read from the weight stream
 				-- -> ready has to be on Low
@@ -275,6 +281,7 @@ begin
 				s_rst_kernel_cores  <= '1';
 				s_rst_accumulator   <= '0';
 				s_rst_pxs_2_axis    <= '0';
+				s_rst_global        <= '0';
 
 				-- Route all AXIS Interfaces IN to Weight Unit
 				o_wt_s_axis_tready <= s_wt_2_wt_s_axis_tready;
@@ -303,6 +310,7 @@ begin
 				s_rst_kernel_cores  <= '0';
 				s_rst_accumulator   <= '0';
 				s_rst_pxs_2_axis    <= '0';
+				s_rst_global        <= '0';
 
 				-- Don't accept incomming weight/configuration values anymore
 				o_wt_s_axis_tready <= '0';
@@ -330,6 +338,7 @@ begin
 				s_rst_kernel_cores  <= '1';
 				s_rst_accumulator   <= '1';
 				s_rst_pxs_2_axis    <= '1';
+				s_rst_global        <= '1';
 
 				-- Don't accept incomming weight/configuration when unit was finished
 				o_wt_s_axis_tready <= '0';
@@ -357,6 +366,7 @@ begin
 				s_rst_kernel_cores  <= '1';
 				s_rst_accumulator   <= '1';
 				s_rst_pxs_2_axis    <= '1';
+				s_rst_global        <= '1';
 
 				-- Don't accept incomming weight/configuration when unit was finished
 				o_wt_s_axis_tready <= '0';
@@ -449,7 +459,8 @@ begin
 	o_rst_kernel_cores            <= s_rst_kernel_cores;
 	o_rst_accumulator             <= s_rst_accumulator;
 	o_rst_pxs_2_axis              <= s_rst_pxs_2_axis;
-	o_current_oc_amount <= std_logic_vector(s_current_oc_amount);
+	o_rst_global                  <= s_rst_global;
+	o_current_oc_amount           <= std_logic_vector(s_current_oc_amount);
 	o_current_ic_amount           <= std_logic_vector(s_current_ic_amount);
 	o_current_state               <= s_current_state_slv;
 	o_overall_done                <= s_overall_done;
