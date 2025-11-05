@@ -40,6 +40,14 @@ architecture rtl of weight_unit is
 	signal s_weight_amount      : unsigned(31 downto 0);
 	signal s_init_weight_amount : unsigned(31 downto 0);
 
+	-- signals for delaying calculation of weight amount by x cycles
+	constant c_wt_amount_retrieval_delay          : natural := 2;
+	signal   s_kernel_size                        : matrix_1d(0 to c_wt_amount_retrieval_delay - 1)(i_kernel_size'range);
+	signal   s_input_channel_per_iteration_amount : matrix_1d(0 to c_wt_amount_retrieval_delay)(i_input_channel_per_iteration'range);
+	signal   s_weight_amount_retrieved_line       : STD_LOGIC_VECTOR(0 to c_wt_amount_retrieval_delay + 1);
+
+	signal s_kernel_size_squared : unsigned(15 downto 0);
+
 begin
 
 	----------------------------------------
@@ -51,6 +59,30 @@ begin
 	                    when i_wt_s_axis_tkeep(i) = '1' else
 	                    (others => '0');
 	end generate TDATA_MAP_GEN;
+
+	WEIGHT_AMOUNT_RETRIEVAL : process (clk) is
+	begin
+
+		if rising_edge(clk) then
+			if reset = '1' then
+				s_input_channel_per_iteration_amount    <= (others => (others => '0'));
+				s_input_channel_per_iteration_amount(0) <= i_input_channel_per_iteration;
+				s_kernel_size                           <= (others => (others => '0'));
+				s_kernel_size(0)                        <= i_kernel_size;
+				s_weight_amount_retrieved_line          <= (others => '0');
+				s_weight_amount_retrieved_line(0)       <= '1';
+			else
+				-- delay register values
+				s_input_channel_per_iteration_amount(1 to s_input_channel_per_iteration_amount'high) <= s_input_channel_per_iteration_amount(0 to s_input_channel_per_iteration_amount'high - 1);
+				s_kernel_size(1 to s_kernel_size'high)                                               <= s_kernel_size(0 to s_kernel_size'high - 1);
+				s_weight_amount_retrieved_line(1 to s_weight_amount_retrieved_line'high)             <= s_weight_amount_retrieved_line(0 to s_weight_amount_retrieved_line'high - 1);
+				--
+				s_kernel_size_squared <= unsigned(s_kernel_size(s_kernel_size'high)) * unsigned(s_kernel_size(s_kernel_size'high));
+				s_weight_amount       <= s_kernel_size_squared * unsigned(s_input_channel_per_iteration_amount(s_input_channel_per_iteration_amount'high));
+			end if;
+		end if;
+
+	end process WEIGHT_AMOUNT_RETRIEVAL;
 
 	WEIGHT_PROC : process (clk) is
 
@@ -64,17 +96,9 @@ begin
 				s_wt_s_axis_tready <= '0';
 				s_weight_init      <= '0';
 
-				-- Amount of weights needed to be stored by the unit
-				v_weight_amount := UNSIGNED(i_input_channel_per_iteration) * UNSIGNED(i_kernel_size) * UNSIGNED(i_kernel_size);
-				s_weight_amount <= v_weight_amount;
-
-				if v_weight_amount <= g_weight_amount then
-					s_weight_error <= '0';
-				else
-					s_weight_error <= '1';
-				end if;
+				s_weight_error       <= '0';
 				s_init_weight_amount <= (others => '0');
-			else
+			elsif s_weight_amount_retrieved_line(s_weight_amount_retrieved_line'high) = '1' then
 				----------------------------------------
 				-- Weight Retrieval
 				----------------------------------------

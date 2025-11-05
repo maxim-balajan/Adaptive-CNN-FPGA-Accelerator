@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.123 (w)1999-2025 BSI
-[*] Sat Nov  1 22:45:18 2025
+[*] Sun Nov  2 14:09:44 2025
 [*]
-[dumpfile] "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/alex_net_layers/conv_11_11/vunit_out/test_output/tb_lib.top_level_cnn_tb.tb_cfg_0.TC_0010_144373e6f0cd92e1ca6f8c8718d25f4c2f8ba8eb/ghdl/wave.ghw"
-[dumpfile_mtime] "Sat Nov  1 22:04:34 2025"
-[dumpfile_size] 740941478
+[dumpfile] "/home/maxim/Documents/Uni/BA/bachelor-thesis/sources_1/alex_net_layers/conv_3_3/vunit_out/test_output/tb_lib.top_level_cnn_tb.tb_conv_384_256_3_3.TC_0010_fbc7b29bc116fe4c3658b5dc5a0b801b78dc6128/ghdl/wave.ghw"
+[dumpfile_mtime] "Sun Nov  2 14:09:15 2025"
+[dumpfile_size] 155344626
 [savefile] "/home/maxim/Documents/Uni/BA/bachelor-thesis/sim_1/top_level/top_level_cfg.gtkw"
-[timestart] 514904000000
+[timestart] 0
 [size] 1670 848
 [pos] -27 -24
-*-27.874092 515425000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-35.281425 515425000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] top.
 [treeopen] top.top_level_cnn_tb.
 [treeopen] top.top_level_cnn_tb.top_level_cnn_wrapper_inst.

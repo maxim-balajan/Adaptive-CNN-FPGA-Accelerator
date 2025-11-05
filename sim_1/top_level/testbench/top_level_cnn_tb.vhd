@@ -159,16 +159,22 @@ begin
 	                tlast => '1',
 	                tkeep => x"FFFF");
 
+			-- wait until config is retrieved
+			wait until s_tb_i.o_current_state /= "000"; 
+
 			for i in 0 to sv_rnd.RandInt(0, 3) loop
 
 				wait until rising_edge(clk);
 
 			end loop;
 
+			report "sdfsdf";
 			-- If compututing a convolution, dont sent any weight data
 			if s_tb_i.o_pool_or_conv = '0' then
 				wait;
 			end if;
+
+			report "sdfsdf2";
 
 			while v_weight_packages < (get_output_channel_amount(G_CONFIG_STR) * (get_input_channel_amount(G_CONFIG_STR) / get_ic_per_iteration_amount(G_CONFIG_STR))) loop
 
@@ -181,6 +187,8 @@ begin
 					weight_index := weight_index + 16;
 				end if;
 
+				report "sdfsdf3";
+
 				push_axi_stream(net, stream_master_wt,
 	                tdata => x"01010101010101010101010101010101",
 	                tlast => v_tlast,
@@ -192,7 +200,10 @@ begin
 
 				end loop;
 
+				report "sdfsdf4";
 			end loop;
+
+				report "sdfsdf5";
 
 			wait until (or s_tb_i.o_current_oc_amount) = '0';
 
@@ -216,6 +227,9 @@ begin
 			v_pixel_amount := 0;
 			v_current_oc   := 0;
 			v_tlast        := '0';
+
+			-- wait until config is retrieveed
+			wait until s_tb_i.o_current_state /= "000"; 
 
 			while v_current_oc < get_output_channel_amount(G_CONFIG_STR) loop
 
