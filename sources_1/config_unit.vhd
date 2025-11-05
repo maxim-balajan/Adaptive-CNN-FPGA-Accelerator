@@ -99,25 +99,55 @@ begin
 	-- Set Outputs
 	----------------------------------------
 
-	-- Output Config Data
-	o_image_input_length          <= a_image_input_length;
-	o_image_output_length         <= a_image_output_length;
-	o_input_channel_size          <= a_input_channel_size;
-	o_output_channel_size         <= a_output_channel_size;
-	o_pixel_amount                <= a_pixel_amount;
-	o_input_channel_per_iteration <= a_input_channel_per_iteration;
-	o_kernel_size                 <= a_kernel_size;
-	o_padding_size                <= a_padding_size;
-	o_stride_bit_mask             <= a_stride_bit_mask;
-	o_shamt                       <= std_logic_vector(resize(unsigned(a_shamt), o_shamt'length));
-	o_pool_or_conv                <= a_pool_or_conv(a_pool_or_conv'low);
-	o_enable_relu                 <= a_enable_relu(a_enable_relu'low);
+	-- Output delayed by one cycle
+	OUTPUT_PROC : process (clk) is
+	begin
+
+		if rising_edge(clk) then
+			if reset = '1' then
+				-- reset registers
+				o_image_input_length          <= (others => '0');
+				o_image_output_length         <= (others => '0');
+				o_input_channel_size          <= (others => '0');
+				o_output_channel_size         <= (others => '0');
+				o_pixel_amount                <= (others => '0');
+				o_input_channel_per_iteration <= (others => '0');
+				o_kernel_size                 <= (others => '0');
+				o_padding_size                <= (others => '0');
+				o_stride_bit_mask             <= (others => '0');
+				o_shamt                       <= (others => '0');
+				o_pool_or_conv                <= '0';
+				o_enable_relu                 <= '0';
+				-- reset control data
+				o_config_valid    <= '0';
+				o_config_valid_1c <= '0';
+				o_config_error    <= '0';
+				o_config_error_1c <= '0';
+			else
+				-- set registers
+				o_image_input_length          <= a_image_input_length;
+				o_image_output_length         <= a_image_output_length;
+				o_input_channel_size          <= a_input_channel_size;
+				o_output_channel_size         <= a_output_channel_size;
+				o_pixel_amount                <= a_pixel_amount;
+				o_input_channel_per_iteration <= a_input_channel_per_iteration;
+				o_kernel_size                 <= a_kernel_size;
+				o_padding_size                <= a_padding_size;
+				o_stride_bit_mask             <= a_stride_bit_mask;
+				o_shamt                       <= std_logic_vector(resize(unsigned(a_shamt), o_shamt'length));
+				o_pool_or_conv                <= a_pool_or_conv(a_pool_or_conv'low);
+				o_enable_relu                 <= a_enable_relu(a_enable_relu'low);
+				-- set control data
+				o_config_valid    <= s_config_valid;
+				o_config_valid_1c <= s_config_valid_1c;
+				o_config_error    <= s_config_error;
+				o_config_error_1c <= s_config_error_1c;
+			end if;
+		end if;
+
+	end process OUTPUT_PROC;
 
 	-- Output Control Logic
 	o_wt_s_axis_tready <= s_wt_s_axis_tready;
-	o_config_valid     <= s_config_valid;
-	o_config_valid_1c  <= s_config_valid_1c;
-	o_config_error     <= s_config_error;
-	o_config_error_1c  <= s_config_error_1c;
 
 end architecture rtl;

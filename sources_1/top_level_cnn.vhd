@@ -40,7 +40,7 @@ entity top_level_cnn is
 		G_MAX_TMP_LAYER_ACCUMULATOR_FIFO : natural := 55 ** 2;
 		-- AXIS OUTPUT
 		G_NEAR_FULL_THRESHOLD : natural range 3 to 10 := 5;
-		G_MAX_PXS_2_AXIS      : natural               := 512 
+		G_MAX_PXS_2_AXIS      : natural               := 512
 	);
 	port (
 		clk   : in std_logic;
@@ -104,6 +104,12 @@ architecture rtl of top_level_cnn is
 	signal s_kernel_weight_error  : std_logic;
 	signal s_kernel_weight_matrix : matrix_1d(0 to G_LINE_BUFFER_AMOUNT * G_MAX_KERNEL_SIZE - 1)(G_WEIGHT_BIT_WIDTH - 1 downto 0);
 
+	-- delayed AXIS Interface for weight for improved timing
+	signal s_wt_axis_tdata  : std_logic_vector(G_INPUT_DATA_BYTE_WIDTH * 8 - 1 downto 0);
+	signal s_wt_axis_tkeep  : std_logic_vector(G_INPUT_DATA_BYTE_WIDTH - 1 downto 0);
+	signal s_wt_axis_tlast  : std_logic;
+	signal s_wt_axis_tready : std_logic;
+	signal s_wt_axis_tvalid : std_logic;
 	-- RESET SIGNALS
 	signal s_rst_axis_2_pxs    : std_logic;
 	signal s_rst_config_slider : std_logic;
@@ -160,6 +166,27 @@ begin
 	-- Current IC Amount also needed by accumulator
 	o_current_ic_amount <= s_current_ic_amount;
 
+	control_unit_axis_pipeline_step : entity work.axis_pipeline_step
+		generic map (
+			G_BYTE_WIDTH => G_INPUT_DATA_BYTE_WIDTH
+		)
+		port map (
+			clk   => clk,
+			reset => reset,
+			--
+			i_s_axis_tdata  => i_wt_s_axis_tdata,
+			i_s_axis_tkeep  => i_wt_s_axis_tkeep,
+			i_s_axis_tlast  => i_wt_s_axis_tlast,
+			o_s_axis_tready => o_wt_s_axis_tready,
+			i_s_axis_tvalid => i_wt_s_axis_tvalid,
+			--
+			o_m_axis_tdata  => s_wt_axis_tdata,
+			o_m_axis_tkeep  => s_wt_axis_tkeep,
+			o_m_axis_tlast  => s_wt_axis_tlast,
+			i_m_axis_tready => s_wt_axis_tready,
+			o_m_axis_tvalid => s_wt_axis_tvalid
+		);
+
 	control_unit_inst : entity work.control_unit
 		generic map (
 			G_WEIGHT_BIT_WIDTH   => G_WEIGHT_BIT_WIDTH,
@@ -170,11 +197,11 @@ begin
 			clk   => clk,
 			reset => reset,
 			-- AXIS WEIGHT INPUT
-			i_wt_s_axis_tdata  => i_wt_s_axis_tdata,
-			i_wt_s_axis_tkeep  => i_wt_s_axis_tkeep,
-			i_wt_s_axis_tlast  => i_wt_s_axis_tlast,
-			o_wt_s_axis_tready => o_wt_s_axis_tready,
-			i_wt_s_axis_tvalid => i_wt_s_axis_tvalid,
+			i_wt_s_axis_tdata  => s_wt_axis_tdata,
+			i_wt_s_axis_tkeep  => s_wt_axis_tkeep,
+			i_wt_s_axis_tlast  => s_wt_axis_tlast,
+			o_wt_s_axis_tready => s_wt_axis_tready,
+			i_wt_s_axis_tvalid => s_wt_axis_tvalid,
 			-- CONFIG REGISTERS
 			o_image_input_length          => s_image_input_length,
 			o_image_output_length         => s_image_output_length,

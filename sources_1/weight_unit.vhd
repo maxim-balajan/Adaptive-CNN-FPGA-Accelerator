@@ -5,7 +5,6 @@ use ieee.math_real.all;
 use work.libmatrix.all;
 use work.libutil.f_sum_bits_slv;
 
-
 entity weight_unit is
 	generic (
 		g_weight_bit_width : integer range 2 to 128 := 8;
@@ -30,7 +29,6 @@ entity weight_unit is
 	);
 end entity weight_unit;
 
-
 architecture rtl of weight_unit is
 
 	signal s_sa_wt_tdata      : matrix_1d(0 to 128 / g_weight_bit_width - 1)(g_weight_bit_width - 1 downto 0);
@@ -50,8 +48,8 @@ begin
 
 	TDATA_MAP_GEN : for i in s_sa_wt_tdata'range generate
 		s_sa_wt_tdata(i) <= i_wt_s_axis_tdata((i + 1) * g_weight_bit_width - 1 downto i * g_weight_bit_width)
-	                                               when i_wt_s_axis_tkeep(i) = '1' else
-	                                               (others => '0');
+	                    when i_wt_s_axis_tkeep(i) = '1' else
+	                    (others => '0');
 	end generate TDATA_MAP_GEN;
 
 	WEIGHT_PROC : process (clk) is
@@ -86,9 +84,12 @@ begin
 					if s_wt_s_axis_tready = '1' and i_wt_s_axis_tvalid = '1' then
 						-- Retrieve Memory with indexer
 						for i in 0 to 128 / g_weight_bit_width - 1 loop
+
 							s_weight_mem(to_integer(s_init_weight_amount + i)) <= s_sa_wt_tdata(i);
+
 						end loop;
-						--s_weight_mem <=  s_sa_wt_tdata & s_weight_mem(0 to s_weight_mem'high - s_sa_wt_tdata'length);
+
+						-- s_weight_mem <=  s_sa_wt_tdata & s_weight_mem(0 to s_weight_mem'high - s_sa_wt_tdata'length);
 						-- Increment amount of weights received, take tkeep into account!
 						-- TODO: change to add 0xFFFF always because the unit will break if tkeep is not 0xFFFF during tlast=1
 						v_weight_amount := s_init_weight_amount + 16;
@@ -100,8 +101,8 @@ begin
 							else
 								s_weight_error <= '1';
 							end if;
-							-- All weights received (or error) 
-                            -- -> Module is finished and shouldn't assert ready anymore
+							-- All weights received (or error)
+							-- -> Module is finished and shouldn't assert ready anymore
 							s_wt_s_axis_tready <= '0';
 						end if;
 						s_init_weight_amount <= v_weight_amount;
@@ -119,11 +120,26 @@ begin
 	----------------------------------------
 
 	-- Output Control Logic
-	o_wt_s_axis_tready    <= s_wt_s_axis_tready;
-	o_kernel_weight_init  <= s_weight_init;
-	o_kernel_weight_error <= s_weight_error;
+	OUTPUT_PROC : process (clk) is
+	begin
 
-	-- Output actual memory
-	o_kernel_weight_matrix <= s_weight_mem;
+		if rising_edge(clk) then
+			if reset = '1' then
+				o_kernel_weight_init  <= '0';
+				o_kernel_weight_error <= '0';
+				--
+				o_kernel_weight_matrix <= (others => (others => '0'));
+			else
+				o_kernel_weight_init  <= s_weight_init;
+				o_kernel_weight_error <= s_weight_error;
+
+				-- Output actual memory
+				o_kernel_weight_matrix <= s_weight_mem;
+			end if;
+		end if;
+
+	end process OUTPUT_PROC;
+
+	o_wt_s_axis_tready <= s_wt_s_axis_tready;
 
 end architecture rtl;
