@@ -5,7 +5,7 @@ if {![info exists ::env(PRJ_ROOT_PATH)]} {
 }
 set PRJ_ROOT_PATH $::env(PRJ_ROOT_PATH)
 set HOME $::env(HOME)
-set PROJECT_NAME "Conv-5-5"
+set PROJECT_NAME "Conv-5-5-8"
 set PROJECT_DIR "${PRJ_ROOT_PATH}/AlexNet-Layers/${PROJECT_NAME}"
 
 create_project $PROJECT_NAME $PROJECT_DIR -part xczu3eg-sbva484-1-i -force
@@ -35,8 +35,8 @@ if {[file exists $SOURCE_DIR]} {
     puts "WARNING: Source directory $SOURCE_DIR does not exist."
 }
 
-# Add all source files from $PRJ_ROOT_PATH/sources_1/conv_256_96_5_5
-set SOURCE_DIR "$PRJ_ROOT_PATH/sources_1/alex_net_layers/conv_5_5"
+# Add all source files from this conv/pool phase
+set SOURCE_DIR "$PRJ_ROOT_PATH/sources_1/alex_net_layers/conv_5_5_8"
 if {[file exists $SOURCE_DIR]} {
     set sources [glob -nocomplain -directory $SOURCE_DIR -types f *.{vhd}]
     if {[llength $sources] > 0} {
@@ -51,13 +51,12 @@ if {[file exists $SOURCE_DIR]} {
     puts "WARNING: Source directory $SOURCE_DIR does not exist."
 }
 
-set_property file_type "VHDL" [get_files "${PRJ_ROOT_PATH}/sources_1/alex_net_layers/conv_5_5/top_level_cnn_wrapper.vhd"]
-set_property file_type "VHDL" [get_files "${PRJ_ROOT_PATH}/sources_1/memory_test_wrapper.vhd"]
+set_property file_type "VHDL" [get_files "${PRJ_ROOT_PATH}/sources_1/alex_net_layers/conv_5_5_8/top_level_cnn_wrapper.vhd"]
 
 # ============================================================
 # Include the Block Design TCL script
 # ============================================================
-source "$PRJ_ROOT_PATH/scripts/VivadoProject/$PROJECT_NAME/Top_Level_bd_300MHz.tcl"
+source "$PRJ_ROOT_PATH/scripts/VivadoProject/Top_Level_bd_300MHz.tcl"
 
 # Validate and Save the block design
 validate_bd_design
