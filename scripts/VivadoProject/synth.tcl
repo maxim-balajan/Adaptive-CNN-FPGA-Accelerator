@@ -13,7 +13,3 @@ puts "Bitstream generated at: $BIT_FILE"
 write_hw_platform -include_bit -fixed -force "${PROJECT_DIR}/${PROJECT_NAME}.xsa"
 puts "Hardware platform was created at ${PROJECT_DIR}/${PROJECT_NAME}.xsa"
 
-puts "Closing Project $PROJECT_NAME ..."
-
-close_project
-

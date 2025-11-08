@@ -56,7 +56,7 @@ set_property file_type "VHDL" [get_files "${PRJ_ROOT_PATH}/sources_1/alex_net_la
 # ============================================================
 # Include the Block Design TCL script
 # ============================================================
-source "$PRJ_ROOT_PATH/scripts/VivadoProject/Top_Level_bd_300MHz.tcl"
+source "$PRJ_ROOT_PATH/scripts/VivadoProject/Top_Level_bd_250MHz.tcl"
 
 # Validate and Save the block design
 validate_bd_design
