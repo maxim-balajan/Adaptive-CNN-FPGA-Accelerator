@@ -84,3 +84,4 @@ puts "Project $PROJECT_NAME created successfully at $PROJECT_DIR"
 puts "Starting Synthesis and Implementation Runs for $PROJECT_NAME"
 
 source "$PRJ_ROOT_PATH/scripts/VivadoProject/synth.tcl"
+

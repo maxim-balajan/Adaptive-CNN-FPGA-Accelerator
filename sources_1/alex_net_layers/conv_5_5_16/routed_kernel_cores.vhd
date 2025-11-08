@@ -44,8 +44,8 @@ end entity routed_kernel_cores;
 architecture route_a of routed_kernel_cores is
 
 	-- KERNEL CORES INPUT PORTS
-	signal s_activation_matrix_line : matrix_1d(0 to 500 - 1)(24 - 1 downto 0);
-	signal s_weight_matrix_line     : matrix_1d(0 to 500 - 1)(24 - 1 downto 0);
+	signal s_activation_matrix_line : matrix_1d(0 to 700 - 1)(24 - 1 downto 0);
+	signal s_weight_matrix_line     : matrix_1d(0 to 700 - 1)(24 - 1 downto 0);
 	signal s_shamt_line             : matrix_1d(0 to 100 - 1)(8 - 1 downto 0);
 	signal s_bias_line              : matrix_1d(0 to 100 - 1)(8 - 1 downto 0);
 	signal s_kernel_en_line         : std_logic_vector(0 to 100 - 1);

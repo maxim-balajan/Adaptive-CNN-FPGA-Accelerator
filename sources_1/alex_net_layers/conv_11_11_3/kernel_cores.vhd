@@ -81,26 +81,5 @@ begin
             o_comp_complete_line              => o_comp_complete_line(100 TO 199)
 		);
 
-	-- Comparator Core Bundle with 20 Cores
-
-	Nine_pooling_inst : entity work.Nine_pooling(Nine_pooling_rtl)
-		port map (
-			clk   => clk,
-			reset => reset,
-			--
-			i_en  => i_en,
-			--
-            i_activation_matrix_line          => i_activation_matrix_line(4000 TO 5999),
-            i_weight_matrix_line              => (others => (others => '0')),
-            i_shamt_line                      => (others => (others => '0')),
-            i_bias_line                       => (others => (others => '0')),
-            i_kernel_en_line                  => i_kernel_en_line(200 TO 299),
-            i_kernel_complete_line            => i_kernel_complete_line(200 TO 299),
-			--
-            o_pixel_line                      => o_pixel_line(200 TO 299),
-            o_valid_pixel_line                => o_valid_pixel_line(200 TO 299),
-            o_comp_complete_line              => o_comp_complete_line(200 TO 299)
-		);
-
 
 end architecture rtl;

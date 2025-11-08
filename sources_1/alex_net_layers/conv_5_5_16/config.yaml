@@ -1,4 +1,4 @@
-matrix_input_amount: 500
+matrix_input_amount: 700
 max_core_amount: 100
 input_max_bit_width : 24
 output_max_bit_width : 24
@@ -21,7 +21,7 @@ route_configs:
 cores:
   Nine_adder_plus_mult:
     global:
-      max_core_amount: 40
+      max_core_amount: 50
       max_input_amount: 10
       max_input_length: 24
     Nine_adder_plus_mult_rlt:
@@ -38,7 +38,7 @@ cores:
 
   Four_adder_no_mult:
     global:
-      max_core_amount: 15
+      max_core_amount: 20
       max_input_amount: 5
       max_input_length: 24
     Four_adder_no_mult_rtl:

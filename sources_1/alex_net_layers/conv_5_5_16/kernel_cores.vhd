@@ -22,8 +22,8 @@ entity kernel_cores is
 		-- Global enable: If set to 0, stall entire unit and set outputs to low
 		i_en : in std_logic;
 		-- KERNEL_CORES_INPUT PORTS
-		i_activation_matrix_line : in matrix_1d(0 to 500 - 1)(24 - 1 downto 0);
-		i_weight_matrix_line     : in matrix_1d(0 to 500 - 1)(24 - 1 downto 0);
+		i_activation_matrix_line : in matrix_1d(0 to 700 - 1)(24 - 1 downto 0);
+		i_weight_matrix_line     : in matrix_1d(0 to 700 - 1)(24 - 1 downto 0);
 		i_shamt_line             : in matrix_1d(0 to 100 - 1)(G_SHAMT_AMOUNT - 1 downto 0);
 		i_bias_line              : in matrix_1d(0 to 100 - 1)(G_BIAS_AMOUNT - 1 downto 0);
 		i_kernel_en_line         : in std_logic_vector(0 to 100 - 1);
@@ -48,16 +48,16 @@ begin
 			--
 			i_en  => i_en,
 			--
-            i_activation_matrix_line          => i_activation_matrix_line(0 TO 399),
-            i_weight_matrix_line              => i_weight_matrix_line(0 TO 399),
+            i_activation_matrix_line          => i_activation_matrix_line(0 TO 499),
+            i_weight_matrix_line              => i_weight_matrix_line(0 TO 499),
             i_shamt_line                      => (others => (others => '0')),
             i_bias_line                       => (others => (others => '0')),
-            i_kernel_en_line                  => i_kernel_en_line(0 TO 39),
-            i_kernel_complete_line            => i_kernel_complete_line(0 TO 39),
+            i_kernel_en_line                  => i_kernel_en_line(0 TO 49),
+            i_kernel_complete_line            => i_kernel_complete_line(0 TO 49),
 			--
-            o_pixel_line                      => o_pixel_line(0 TO 39),
-            o_valid_pixel_line                => o_valid_pixel_line(0 TO 39),
-            o_comp_complete_line              => o_comp_complete_line(0 TO 39)
+            o_pixel_line                      => o_pixel_line(0 TO 49),
+            o_valid_pixel_line                => o_valid_pixel_line(0 TO 49),
+            o_comp_complete_line              => o_comp_complete_line(0 TO 49)
 		);
 
 	-- Adder Core Bundle with 16 Cores
@@ -69,16 +69,16 @@ begin
 			--
 			i_en  => i_en,
 			--
-            i_activation_matrix_line          => i_activation_matrix_line(400 TO 474),
-            i_weight_matrix_line              => i_weight_matrix_line(400 TO 474),
+            i_activation_matrix_line          => i_activation_matrix_line(500 TO 599),
+            i_weight_matrix_line              => i_weight_matrix_line(500 TO 599),
             i_shamt_line                      => (others => (others => '0')),
             i_bias_line                       => (others => (others => '0')),
-            i_kernel_en_line                  => i_kernel_en_line(40 TO 54),
-            i_kernel_complete_line            => i_kernel_complete_line(40 TO 54),
+            i_kernel_en_line                  => i_kernel_en_line(50 TO 69),
+            i_kernel_complete_line            => i_kernel_complete_line(50 TO 69),
 			--
-            o_pixel_line                      => o_pixel_line(40 TO 54),
-            o_valid_pixel_line                => o_valid_pixel_line(40 TO 54),
-            o_comp_complete_line              => o_comp_complete_line(40 TO 54)
+            o_pixel_line                      => o_pixel_line(50 TO 69),
+            o_valid_pixel_line                => o_valid_pixel_line(50 TO 69),
+            o_comp_complete_line              => o_comp_complete_line(50 TO 69)
 		);
 
 

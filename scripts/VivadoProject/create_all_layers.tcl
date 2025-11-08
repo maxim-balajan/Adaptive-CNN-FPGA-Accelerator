@@ -33,6 +33,9 @@ foreach dir $subdirs {
     if {[file exists $script_file]} {
         puts "\n--- Running $script_file of $dir ---"
         source $script_file
+
+	puts "\n--- Closing Project inside of $dir ---"
+	close_project
     }
 }
 
