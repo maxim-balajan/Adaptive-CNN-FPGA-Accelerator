@@ -1423,7 +1423,7 @@ Port;FD4A0000;FD4AFFFF;1|FPD;DPDMA;FD4C0000;FD4CFFFF;1|FPD;DDR_XMPU5_CFG;FD05000
     CONFIG.c_m_axi_mm2s_data_width {128} \
     CONFIG.c_m_axis_mm2s_tdata_width {128} \
     CONFIG.c_mm2s_burst_size {16} \
-    CONFIG.c_sg_length_width {8} \
+    CONFIG.c_sg_length_width {9} \
   ] $axi_dma_1
 
 
