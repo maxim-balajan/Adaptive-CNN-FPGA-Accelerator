@@ -169,7 +169,7 @@ begin
 	-- Buffer should never reach empty state, otherwise reading would break
 	-- but with that logic, it would keep G_NEARLY_EMPTY_THRESHOLD many bytes
 	-- because of that there needs to be a flush signal at the end of the iteration
-	s_flush_buffer <= '1' when s_pixel_input_x >= resize(signed(i_image_input_length) + signed(i_padding_size) - G_NEARLY_EMPTY_THRESHOLD - 1, s_pixel_input_x'length)
+	s_flush_buffer <= '1' when s_pixel_input_x >= resize(signed(i_image_input_length) + signed(i_padding_size) - G_NEARLY_EMPTY_THRESHOLD * C_BRAM_PER_IC - 1, s_pixel_input_x'length)
 	                           and  (s_actual_input_length - s_pixel_input_y - 1) <= RESIZE(signed(i_padding_size), s_actual_input_length'length) else
 	                  '0';
 
