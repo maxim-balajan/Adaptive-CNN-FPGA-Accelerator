@@ -401,7 +401,7 @@ begin
 		)
 		port map (
 			clk   => clk,
-			reset => reset or s_rst_wt_unit,
+			reset => reset or s_rst_wt_unit or s_rst_global,
 			-- AXIS Interface
 			i_wt_s_axis_tdata  => s_wt_2_wt_s_axis_tdata,
 			i_wt_s_axis_tkeep  => s_wt_2_wt_s_axis_tkeep,
@@ -420,7 +420,7 @@ begin
 	config_unit_inst : entity work.config_unit
 		port map (
 			clk   => clk,
-			reset => reset or s_rst_cfg_unit,
+			reset => reset or s_rst_cfg_unit or s_rst_global,
 			-- AXIS Interface
 			i_wt_s_axis_tdata  => s_wt_2_cfg_s_axis_tdata,
 			i_wt_s_axis_tkeep  => s_wt_2_cfg_s_axis_tkeep,

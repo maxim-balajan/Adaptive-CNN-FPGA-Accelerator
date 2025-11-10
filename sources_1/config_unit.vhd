@@ -148,6 +148,6 @@ begin
 	end process OUTPUT_PROC;
 
 	-- Output Control Logic
-	o_wt_s_axis_tready <= s_wt_s_axis_tready;
+	o_wt_s_axis_tready <= s_wt_s_axis_tready when reset = '0' else '0';
 
 end architecture rtl;
