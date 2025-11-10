@@ -110,9 +110,7 @@ architecture rtl of control_unit is
 
 	-- CL Config Unit
 	signal s_config_valid    : std_logic;
-	signal s_config_valid_1c : std_logic;
 	signal s_config_error    : std_logic;
-	signal s_config_error_1c : std_logic;
 
 	-- CL Weight Unit
 	signal s_kernel_weight_init  : std_logic;
@@ -429,9 +427,9 @@ begin
 			i_wt_s_axis_tvalid => s_wt_2_cfg_s_axis_tvalid,
 			-- Control Outputs
 			o_config_valid    => s_config_valid,
-			o_config_valid_1c => s_config_valid_1c,
+			o_config_valid_1c => open,
 			o_config_error    => s_config_error,
-			o_config_error_1c => s_config_error_1c,
+			o_config_error_1c => open,
 			-- CONFIG Outputs
 			o_image_input_length          => o_image_input_length,
 			o_image_output_length         => o_image_output_length,

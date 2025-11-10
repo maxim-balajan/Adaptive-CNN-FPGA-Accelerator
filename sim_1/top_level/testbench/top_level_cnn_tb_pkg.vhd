@@ -106,6 +106,10 @@ package top_level_cnn_tb_pkg is
 		str_i : string
 	) return integer;
 
+		impure function get_pool_or_conv (
+		str_i : string
+	) return integer;
+
 	impure function get_weight_per_iteration (
 		str_i : string
 	) return integer;
@@ -234,6 +238,15 @@ package body top_level_cnn_tb_pkg is
 		return to_integer(unsigned(hexstr_to_slv(str_i(9 to 12)))) * to_integer(unsigned(hexstr_to_slv(str_i(7 to 8)))) * to_integer(unsigned(hexstr_to_slv(str_i(7 to 8))));
 
 	end function get_weight_per_iteration;
+
+	impure function get_pool_or_conv (
+		str_i : string
+	) return integer is
+	begin
+
+		return to_integer(unsigned(hexstr_to_slv(str_i(1 to 2)) and x"01"));
+
+	end function get_pool_or_conv;
 
 	impure function hexstr_to_slv (
 		str_i : string

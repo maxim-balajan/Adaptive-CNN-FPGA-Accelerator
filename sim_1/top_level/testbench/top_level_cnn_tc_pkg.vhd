@@ -31,6 +31,11 @@ package top_level_cnn_tc_pkg is
 		signal tb_i : in t_tb_i
 	);
 
+	procedure TC_0020 (
+		signal tb_o : out t_tb_o;
+		signal tb_i : in t_tb_i
+	);
+
 end package top_level_cnn_tc_pkg;
 
 package body top_level_cnn_tc_pkg is
@@ -85,5 +90,32 @@ package body top_level_cnn_tc_pkg is
 		tc_end(tb_o, tb_i);
 
 	end procedure TC_0010;
+
+		------------------------------------------------------------------
+	-- test-case
+	------------------------------------------------------------------
+
+	procedure TC_0020 (
+		signal tb_o : out t_tb_o;
+		signal tb_i : in t_tb_i
+	) is
+
+	begin
+
+		tc_init(tb_o, tb_i);
+
+		tb_o.i_use_rnd <= TRUE;
+
+		wait until rising_edge(tb_i.o_overall_done) or rising_edge(tb_i.o_overall_error) for 200000 * C_CLK_PERIOD;
+
+		wait for 10 * C_CLK_PERIOD;
+		
+		wait until rising_edge(tb_i.o_overall_done) or rising_edge(tb_i.o_overall_error) for 200000 * C_CLK_PERIOD;
+		
+		wait for 10 * C_CLK_PERIOD;
+
+		tc_end(tb_o, tb_i);
+
+	end procedure TC_0020;
 
 end package body top_level_cnn_tc_pkg;

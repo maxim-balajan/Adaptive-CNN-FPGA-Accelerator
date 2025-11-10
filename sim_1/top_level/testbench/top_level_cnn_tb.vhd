@@ -154,13 +154,16 @@ begin
 			v_tlast           := '0';
 			v_weight_packages := 0;
 
+			-- wait until config can be retrieved retrieved
+			if  s_tb_i.o_current_state /= "000" then
+				wait until s_tb_i.o_current_state = "000";
+			end if;
+
 			push_axi_stream(net, stream_master_wt,
 	                tdata => hexstr_to_slv(G_CONFIG_STR)(127 downto 0),
 	                tlast => '1',
 	                tkeep => x"FFFF");
 
-			-- wait until config is retrieved
-			wait until s_tb_i.o_current_state /= "000"; 
 
 			for i in 0 to sv_rnd.RandInt(0, 3) loop
 
@@ -168,13 +171,13 @@ begin
 
 			end loop;
 
-			report "sdfsdf";
 			-- If compututing a convolution, dont sent any weight data
-			if s_tb_i.o_pool_or_conv = '0' then
-				wait;
+			if get_pool_or_conv(G_CONFIG_STR) = 0 then
+				if  s_tb_i.o_current_state = "000" then
+					wait until s_tb_i.o_current_state /= "000";
+				end if;
+				next;
 			end if;
-
-			report "sdfsdf2";
 
 			while v_weight_packages < (get_output_channel_amount(G_CONFIG_STR) * (get_input_channel_amount(G_CONFIG_STR) / get_ic_per_iteration_amount(G_CONFIG_STR))) loop
 
@@ -187,8 +190,6 @@ begin
 					weight_index := weight_index + 16;
 				end if;
 
-				report "sdfsdf3";
-
 				push_axi_stream(net, stream_master_wt,
 	                tdata => x"01010101010101010101010101010101",
 	                tlast => v_tlast,
@@ -200,12 +201,11 @@ begin
 
 				end loop;
 
-				report "sdfsdf4";
 			end loop;
 
-				report "sdfsdf5";
-
-			wait until (or s_tb_i.o_current_oc_amount) = '0';
+			if (or s_tb_i.o_current_oc_amount) /= '0' then
+				wait until (or s_tb_i.o_current_oc_amount) = '0';
+			end if;
 
 		end loop;
 
@@ -213,28 +213,32 @@ begin
 
 	PIXEL_PROC : process is
 
-		variable v_pixel_amount : natural   := 0;
-		variable v_current_oc   : natural   := 0;
-		variable v_tlast        : std_logic := '0';
-		variable v_tdata : unsigned(127 DOWNTO 0) := x"01010101010101010101010101010101";
+		variable v_pixel_amount : natural                := 0;
+		variable v_current_oc   : natural                := 0;
+		variable v_tlast        : std_logic              := '0';
+		variable v_tdata        : unsigned(127 downto 0) := x"01010101010101010101010101010101";
 
 	begin
 
 		wait until falling_edge(s_tb_o.reset);
+
+		-- wait until config is retrieveed
+		if s_tb_i.o_current_state = "000" then 
+			wait until s_tb_i.o_current_state /= "000";
+		end if;
 
 		while true loop
 
 			v_pixel_amount := 0;
 			v_current_oc   := 0;
 			v_tlast        := '0';
-
-			-- wait until config is retrieveed
-			wait until s_tb_i.o_current_state /= "000"; 
+			v_tdata        := x"01010101010101010101010101010101";
 
 			while v_current_oc < get_output_channel_amount(G_CONFIG_STR) loop
 
 				-- differentiate between pooling and convolution phases
-				if s_tb_i.o_pool_or_conv = '1' then
+				if get_pool_or_conv(G_CONFIG_STR) = 1 then
+					report " # Input Length squared: " & Integer'image(get_input_length(G_CONFIG_STR));
 					if v_pixel_amount + 16 >= get_input_channel_amount(G_CONFIG_STR) * get_input_length(G_CONFIG_STR) * get_input_length(G_CONFIG_STR) then
 						v_tlast        := '1';
 						v_current_oc   := v_current_oc + 1;
@@ -255,34 +259,38 @@ begin
 					end if;
 				end if;
 
-				push_axi_stream(net, stream_master_px,
-	                tdata => std_logic_vector(v_tdata),
-	                tlast => v_tlast,
-	                tkeep => x"FFFF"
-				);
-
-				wait for 0 ns;
-
 				for i in 0 to sv_rnd.RandInt(0, 3) loop
 
 					wait until rising_edge(clk);
 
 				end loop;
 
-				if v_tdata = x"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF" then 
+				push_axi_stream(net, stream_master_px,
+	                tdata => std_logic_vector(v_tdata),
+	                tlast => v_tlast,
+	                tkeep => x"FFFF"
+	              );
+
+				if v_tdata = x"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF" then
 					v_tdata := x"01010101010101010101010101010101";
 				else
 					v_tdata := v_tdata + x"01010101010101010101010101010101";
 				end if;
+
 				-- simulate behaviour of software when oc has finished, dont send anything anymore
 				if v_tlast = '1' then
-					wait until s_tb_i.o_current_oc_amount'event;
+					report "reached tlast";
+					wait until s_tb_i.o_current_state'event;
+					report "escaped tlast";
+					v_tlast := '0';
 				end if;
 
 			end loop;
 
-			if (or s_tb_i.o_current_oc_amount) /= '0' then 
-				wait until (or s_tb_i.o_current_oc_amount) = '0';
+			if unsigned(s_tb_i.o_current_state) > 3 then
+				report "reached oc check...";
+				wait until unsigned(s_tb_i.o_current_state) <= 3;
+				report "escaped oc check";
 			end if;
 
 		end loop;
@@ -314,6 +322,8 @@ begin
 				TC_0000(s_tb_o, s_tb_i);
 			elsif run("TC_0010") then
 				TC_0010(s_tb_o, s_tb_i);
+			elsif run("TC_0020") then
+				TC_0020(s_tb_o, s_tb_i);
 			else
 				report "main: invalid test case assigned: " & enabled_test_cases(runner_cfg)
 					severity failure;
