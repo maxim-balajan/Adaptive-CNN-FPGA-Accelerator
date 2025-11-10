@@ -1,0 +1,26 @@
+[...]
+route_configs:
+ global:
+  [...]
+ conv_5x5:
+  pool_or_conv:     1
+  ic_per_iteration: 8
+  oc_per_iteration: 1
+  input_amount:    25
+  padding :         2
+  stride :          0
+
+  
+cores:
+ Nine_adder_plus_mult:
+  global:
+   [...]
+  Nine_adder_plus_mult_rlt:
+   amount:          30
+    pool_or_conv :   1
+    en_clip_adder :  1
+    en_mult_line :   1
+    input_length :   8
+    output_length : 24
+    input_amount:    9
+[...]

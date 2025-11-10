@@ -60,7 +60,8 @@ architecture rtl of control_unit is
 	type control_state_t is (
 		e_CONFIG_RETR, e_1st_RST_SUBMODULE, e_2nd_RST_SUBMODULE,
 		e_1st_WT_RST, e_2nd_WT_RST,
-		e_WT_RETR, e_WT_INIT, e_DONE, e_ERROR
+		e_WT_RETR, e_WT_INIT, e_DONE, e_ERROR,
+		e_DONE_2, e_ERROR_2
 	);
 
 	signal s_current_state : control_state_t;
@@ -169,7 +170,11 @@ begin
 								s_current_state <= e_1st_RST_SUBMODULE;
 							end if;
 						end if;
-					when e_DONE | e_ERROR =>
+					when e_DONE =>
+						s_current_state <= e_DONE_2;
+					when e_ERROR =>
+						s_current_state <= e_ERROR_2;
+					when e_DONE_2 | e_ERROR_2 =>
 						-- If done, reset everything and go back to CFG_RETR
 						s_current_state <= e_CONFIG_RETR;
 				end case;
@@ -329,7 +334,7 @@ begin
 				s_current_state_slv <= "011";
 				s_overall_done      <= '0';
 				s_overall_error     <= '0';
-			when e_DONE =>
+			when e_DONE | e_DONE_2 =>
 				-- Hold all units on reset until overall reset occures
 				s_rst_axis_2_pxs    <= '1';
 				s_rst_cfg_unit      <= '1';
@@ -357,7 +362,7 @@ begin
 				s_current_state_slv <= "100";
 				s_overall_done      <= '1';
 				s_overall_error     <= '0';
-			when e_ERROR =>
+			when e_ERROR | e_ERROR_2 =>
 				-- Hold all units on reset until overall reset occures
 				s_rst_axis_2_pxs    <= '1';
 				s_rst_cfg_unit      <= '1';

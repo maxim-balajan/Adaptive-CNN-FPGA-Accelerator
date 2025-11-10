@@ -135,10 +135,10 @@ begin
 		);
 
 	-- Only be ready if all brams have atleast one slot
-	s_ps_2_bfa_axis_tready <= not (or s_bfa_full);
+	s_ps_2_bfa_axis_tready <= not (or s_bfa_full) when (reset or i_rst_axis_2_pxs) = '0' else '0';
 	-- make a vector out of bit value to conform bram fifo array inst
 	-- only read if axi handshake was performed
-	s_bfa_wr_en <= (others => s_ps_2_bfa_axis_tvalid and s_ps_2_bfa_axis_tready);
+	s_bfa_wr_en <= (others => s_ps_2_bfa_axis_tvalid and s_ps_2_bfa_axis_tready and not (reset or i_rst_axis_2_pxs) );
 
 	bram_fifo_array_inst : entity work.bram_fifo_array
 		generic map (

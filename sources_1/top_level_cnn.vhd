@@ -161,7 +161,7 @@ begin
 	end process DELAY_PROC;
 
 	-- Map Accumulator kernel_comp to temp_comp_line start
-	s_temp_comp_line(s_temp_comp_line'low) <= s_actual_kernel_complete;
+	s_temp_comp_line(s_temp_comp_line'low) <= s_actual_kernel_complete when (reset or s_rst_global) = '0' else '0';
 
 	-- Current IC Amount also needed by accumulator
 	o_current_ic_amount <= s_current_ic_amount;
@@ -172,7 +172,7 @@ begin
 		)
 		port map (
 			clk   => clk,
-			reset => reset,
+			reset => reset or s_rst_global,
 			--
 			i_s_axis_tdata  => i_wt_s_axis_tdata,
 			i_s_axis_tkeep  => i_wt_s_axis_tkeep,

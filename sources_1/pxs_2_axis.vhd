@@ -189,7 +189,7 @@ begin
 	----------------------------------------
 	s_bram_rd_en <= (others => s_transfer_started and (not (or s_bram_empty) or s_flush) and s_ps_axis_tready);
 	s_flush      <= i_kernel_complete and (and s_bram_nearly_empty or or s_bram_empty);
-	s_en         <= not (and s_bram_nearly_full);
+	s_en         <= not (and s_bram_nearly_full) when reset = '0' else '0';
 
 	----------------------------------------
 	-- Set outputs
