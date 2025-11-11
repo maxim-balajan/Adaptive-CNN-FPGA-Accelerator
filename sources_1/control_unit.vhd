@@ -50,6 +50,7 @@ entity control_unit is
 		o_current_ic_amount : out std_logic_vector(15 downto 0);
 		o_current_oc_amount : out std_logic_vector(15 downto 0);
 		o_current_state     : out std_logic_vector(2 downto 0);
+		o_current_iteration : out std_logic_vector(15 downto 0);
 		o_overall_done      : out std_logic;
 		o_overall_error     : out std_logic
 	);
@@ -64,7 +65,8 @@ architecture rtl of control_unit is
 		e_DONE_2, e_ERROR_2
 	);
 
-	signal s_current_state : control_state_t;
+	signal s_current_state     : control_state_t;
+	signal s_current_iteration : unsigned(15 downto 0);
 
 	-- AXIS Interfaces routed to Config Unit
 	signal s_wt_2_cfg_s_axis_tdata  : std_logic_vector(127 downto 0);
@@ -109,8 +111,8 @@ architecture rtl of control_unit is
 	signal s_pool_or_conv                : std_logic;
 
 	-- CL Config Unit
-	signal s_config_valid    : std_logic;
-	signal s_config_error    : std_logic;
+	signal s_config_valid : std_logic;
+	signal s_config_error : std_logic;
 
 	-- CL Weight Unit
 	signal s_kernel_weight_init  : std_logic;
@@ -128,6 +130,7 @@ begin
 				-- Start at fist iteration
 				s_current_ic_amount <= (others => '0');
 				s_current_oc_amount <= (others => '0');
+				s_current_iteration <= (others => '0');
 			else
 				case s_current_state is
 					when e_CONFIG_RETR =>
@@ -169,7 +172,8 @@ begin
 							end if;
 						end if;
 					when e_DONE =>
-						s_current_state <= e_DONE_2;
+						s_current_iteration <= s_current_iteration + 1;
+						s_current_state     <= e_DONE_2;
 					when e_ERROR =>
 						s_current_state <= e_ERROR_2;
 					when e_DONE_2 | e_ERROR_2 =>
@@ -465,6 +469,7 @@ begin
 	o_rst_global                  <= s_rst_global;
 	o_current_oc_amount           <= std_logic_vector(s_current_oc_amount);
 	o_current_ic_amount           <= std_logic_vector(s_current_ic_amount);
+	o_current_iteration           <= std_logic_vector(s_current_iteration);
 	o_current_state               <= s_current_state_slv;
 	o_overall_done                <= s_overall_done;
 	o_overall_error               <= s_overall_error;

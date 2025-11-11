@@ -78,6 +78,7 @@ entity top_level_cnn is
 		--
 		o_current_oc_amount : out std_logic_vector(15 downto 0);
 		o_current_ic_amount : out std_logic_vector(15 downto 0);
+		o_current_iteration : out std_logic_vector(15 downto 0);
 		o_current_state     : out std_logic_vector(2 downto 0);
 		o_overall_done      : out std_logic;
 		o_overall_error     : out std_logic
@@ -232,6 +233,7 @@ begin
 			-- DEBUG OUTPUT PORTS
 			o_current_oc_amount => o_current_oc_amount,
 			o_current_ic_amount => s_current_ic_amount,
+			o_current_iteration => o_current_iteration,
 			o_current_state     => o_current_state,
 			o_overall_done      => o_overall_done,
 			o_overall_error     => o_overall_error
