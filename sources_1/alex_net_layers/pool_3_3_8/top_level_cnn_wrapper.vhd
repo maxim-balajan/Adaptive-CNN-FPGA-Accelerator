@@ -53,6 +53,7 @@ entity top_level_cnn_wrapper is
 		--
 		o_current_oc_amount : out std_logic_vector(15 downto 0);
 		o_current_ic_amount : out std_logic_vector(15 downto 0);
+		o_current_iteration : out std_logic_vector(15 downto 0);
 		o_current_state     : out std_logic_vector(2 downto 0);
 		o_overall_done      : out std_logic;
 		o_overall_error     : out std_logic
@@ -74,7 +75,7 @@ begin
 			G_MAX_OUTPUT_CHANNEL_AMOUNT   => 16,
 			G_INPUT_DATA_BYTE_WIDTH       => G_INPUT_DATA_BYTE_WIDTH,
 			G_OUTPUT_BYTE_WIDTH           => 16,
-			G_INPUT_CHANNEL_PER_ITERATION => 16,
+			G_INPUT_CHANNEL_PER_ITERATION => 8,
 			G_MAX_KERNEL_SIZE             => 12,
 			G_KERNEL_SIZE                 => 3,
 			G_PADDING_SIZE                => 0,
@@ -114,6 +115,7 @@ begin
 			--
 			o_current_oc_amount => o_current_oc_amount,
 			o_current_ic_amount => o_current_ic_amount,
+			o_current_iteration => o_current_iteration,
 			o_current_state     => o_current_state,
 			o_overall_done      => o_overall_done,
 			o_overall_error     => o_overall_error
