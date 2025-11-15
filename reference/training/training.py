@@ -138,7 +138,7 @@ def train(model, args, training_loader, validation_loader):
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=0.001)
 
-    use_gpu = torch.cuda.is_available()
+    use_gpu = False
 
     def train_one_epoch(epoch_index, training_loader, use_gpu):
         running_loss = 0.
@@ -216,7 +216,7 @@ def train(model, args, training_loader, validation_loader):
         epoch_number += 1
 
 def inference(model, args, validation_loader, batch_amount):
-    use_gpu = torch.cuda.is_available()
+    use_gpu = False
     latency = 0.0
 
     total_correct = 0
@@ -257,7 +257,15 @@ def inference(model, args, validation_loader, batch_amount):
  
  
 def export_model(model, args):
-    return bo.export_qonnx(model, args=torch.randn(1, 3, 227, 227).to('cuda:0' if torch.cuda.is_available() else 'cpu'), export_path=args.output, opset_version=13)
+    try:
+        return bo.export_qonnx(model, args=torch.randn(1, 3, 227, 227).to('cuda:0' if False else 'cpu'), export_path=args.output, opset_version=13)
+    except Exception:
+        out = ""
+        while (not os.path.isfile):
+            print("Directory given is not a file path!")
+            out = input("Input new output path")
+        return bo.export_qonnx(model, args=torch.randn(1, 3, 227, 227).to('cuda:0' if False else 'cpu'), export_path=out, opset_version=13)
+
 
 
 def export_datasets(training_set, validation_set):
@@ -311,7 +319,7 @@ def main():
 
     model = QuantAlexNet(args.groups)
 
-    use_gpu = torch.cuda.is_available()
+    use_gpu = False
     if use_gpu:
         model = model.cuda()
         print("USE GPU")

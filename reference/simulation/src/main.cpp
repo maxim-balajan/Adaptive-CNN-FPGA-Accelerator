@@ -10,13 +10,19 @@ using namespace std;
 using namespace ParsingUtil;
 
 template<typename T, typename ACC>
-const Matrix<T>& inference(const vector<unique_ptr<Layer<T, ACC>>>& layers, const Matrix<T>& input) {
+const Matrix<T>& inference(const vector<unique_ptr<Layer<T, ACC>>>& layers, const Matrix<T>& input, uint64_t **latency_us) {
     const Matrix<T> *curr_input = &input;
+
+    *latency_us = new uint64_t[layers.size()];
+    int i = 0;
     for (auto& layer : layers) {
-        //std::cout << "Input image:" << endl;
-        //std::cout << *curr_input << endl;
-        //std::cout << layer.get()->name() << "\n";
+        chrono::steady_clock::time_point begin = chrono::steady_clock::now();
+
         curr_input = &layer.get()->calc(*curr_input);
+
+        chrono::steady_clock::time_point end = chrono::steady_clock::now();
+
+        (*latency_us)[i++] = chrono::duration_cast<chrono::microseconds>(end - begin).count();
     }
 
     return *curr_input;
@@ -25,20 +31,24 @@ const Matrix<T>& inference(const vector<unique_ptr<Layer<T, ACC>>>& layers, cons
 struct InferenceStats {
     unsigned long latency_us;
     unsigned int correct;
+    uint64_t *latencies_layers;
 };
 
 template<typename T, typename ACC>
 InferenceStats test_inference(const vector<unique_ptr<Layer<T, ACC>>>& layers, const Matrix<T>& input, const Matrix<T>& excepted_output, bool verbose) {
 
+    uint64_t *latencies = NULL;
+
     chrono::steady_clock::time_point begin = chrono::steady_clock::now();
 
-    const Matrix<T>& output = inference(layers, input);
+    const Matrix<T>& output = inference(layers, input, &latencies);
 
     chrono::steady_clock::time_point end = chrono::steady_clock::now();
 
     InferenceStats stats;
     stats.latency_us = chrono::duration_cast<chrono::microseconds>(end - begin).count();
     stats.correct = 0;
+    stats.latencies_layers = latencies;
 
     if (verbose) {
         cout << "Expected output " << excepted_output << "\n";
@@ -111,9 +121,12 @@ int run_benchmark(RunBenchmarkOptions options) {
     cout << input_data.shape()[0] <<","<< input_data.shape()[1] <<","<< input_data.shape()[2] << endl;
     cout << "Starting Bachelor Thesis CIFAR-10 Simulation with " << image_count << " images to process (batch_size=" << batching << ")..." << endl;
 
+    uint64_t latencies[layers.size()] = {0};
+
     InferenceStats total_stats {
         .latency_us = 0,
-        .correct = 0
+        .correct = 0,
+        .latencies_layers = latencies
     };
     // Print doubles with two subdigits
     std::cout << std::setprecision(2) << std::fixed;
@@ -123,6 +136,9 @@ int run_benchmark(RunBenchmarkOptions options) {
         InferenceStats stats = test_inference<TargetType, AccumulatorType>(layers, input_data_view.get_current(), output_data_view.get_current(), verbose);
         total_stats.latency_us += stats.latency_us;
         total_stats.correct += stats.correct;
+        for (size_t k = 0; k < layers.size(); k++) {
+            total_stats.latencies_layers[k] += stats.latencies_layers[k];
+        }
 
         i++;
         if (!options.verbose) {
@@ -155,6 +171,9 @@ int run_benchmark(RunBenchmarkOptions options) {
     // cout << "Accumulator-Type: FPInt24<0>" << endl;
     cout << "Total inference duration: " << ((1.0*total_stats.latency_us)/(1000 * 1000)) << "s\n";
     cout << "Avg inference duration: " << ((1.0*total_stats.latency_us)/image_count) << "us\n";
+    for (size_t k = 0; k < layers.size(); k++) {
+        cout << "Avg Latency of Layer " << layers[k].get()->name() << ": " << ((1.0 * total_stats.latencies_layers[k])/image_count) << "us\n";
+    }
     cout << "Total misses: " << image_count - total_stats.correct << " of " << image_count << " images" << endl;
     cout << "Avg accuracy: " << ((100 * ((double) total_stats.correct))/image_count) << "%" << endl;
 
