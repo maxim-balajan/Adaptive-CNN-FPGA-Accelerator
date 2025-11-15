@@ -13,7 +13,7 @@
 -- Detecting CXX compile features
 -- Detecting CXX compile features - done
 -- Found Protobuf: /usr/lib/libprotobuf.so (found version "3.20.1")
--- Configuring done (0.8s)
+-- Configuring done (0.7s)
 -- Generating done (0.0s)
 -- Build files have been written to: /home/maxim/Documents/Uni/BA/bachelor-thesis/reference/simulation/build
 [  6%] Running cpp protocol buffer compiler on /home/maxim/Documents/Uni/BA/bachelor-thesis/reference/simulation/onnx_parser/src/onnx.proto
