@@ -355,6 +355,8 @@ begin
 			reset => reset or s_rst_pxs_2_axis or s_rst_global,
 			--
 			o_en => s_en_line(s_en_line'low),
+			--
+			i_pool_or_conv => s_pool_or_conv,
 			-- TEMP LAYER ACC OUTPUTS
 			i_kernel_complete => s_actual_kernel_complete,
 			i_kernel_valid    => s_actual_kernel_valid,

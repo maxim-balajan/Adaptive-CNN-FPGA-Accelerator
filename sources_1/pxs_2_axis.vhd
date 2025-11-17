@@ -18,6 +18,8 @@ entity pxs_2_axis is
 		reset : in std_logic;
 		--
 		o_en : out std_logic;
+		--
+		i_pool_or_conv : in std_logic := '1';
 		-- ROUTING CORES OUTPUTS
 		i_kernel_complete : in std_logic;
 		i_kernel_valid    : in std_logic;
@@ -105,7 +107,13 @@ begin
 
 					if s_bram_rd_en(s_bram_rd_en'low) = '1' then
 						s_ps_axis_tvalid <= '1';
-						s_ps_axis_tkeep  <= not s_bram_empty;
+						-- If pooling is performed, make sure tkeep is valid (meaning just set it to 1s)
+						if i_pool_or_conv = '1' then
+							s_ps_axis_tkeep  <= not s_bram_empty;
+						else
+							s_ps_axis_tkeep <= (others => '1'); 
+						end if;
+						
 						if s_flush = '1' then
 							s_ps_axis_tlast <= '1';
 						end if;
