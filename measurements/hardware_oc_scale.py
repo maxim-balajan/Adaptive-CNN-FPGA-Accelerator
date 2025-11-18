@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Read CSV (adjust filename as needed)
-df = pd.read_csv("./hardware_ic_scale_benchemark.csv", header=None, names=["Index", "Mean", "STD"])
+df = pd.read_csv("./hardware_oc_scale_benchmark.csv", header=None, names=["Index", "Mean", "STD"])
 
 # Slice and clean data
 df = df.iloc[256:280].copy()
