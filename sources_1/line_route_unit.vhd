@@ -117,8 +117,16 @@ begin
 	s_tp_enable_matrix <= transpose_matrix1d(enable_matrix);
 	-- get actual init complete and a one and a two cycle earlier init complete
 	init_complete     <= and s_tp_enable_matrix(G_KERNEL_SIZE - 1);
-	init_complete_1ce <= and s_tp_enable_matrix(G_KERNEL_SIZE - 2);
-	init_complete_2ce <= and s_tp_enable_matrix(G_KERNEL_SIZE - 3);
+	init_complete_1ce_gen : if G_KERNEL_SIZE > 1 generate
+		init_complete_1ce <= and s_tp_enable_matrix(G_KERNEL_SIZE - 2);
+	else generate
+		init_complete_1ce <= init_complete;
+	end generate;
+	init_complete_2ce_gen : if G_KERNEL_SIZE > 2 generate
+		init_complete_2ce <= and s_tp_enable_matrix(G_KERNEL_SIZE - 3);
+	else generate
+		init_complete_2ce <= init_complete;
+	end generate;
 	pixel_streams_out <= s_pixel_streams_out(s_pixel_streams_out'high);
 	enable_stream_out <= s_enable_stream_out(s_enable_stream_out'high);
 
