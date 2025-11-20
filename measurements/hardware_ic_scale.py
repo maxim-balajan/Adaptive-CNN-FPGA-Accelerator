@@ -2,6 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.lines import Line2D
+plt.rcParams['figure.dpi'] = 300
 
 # Read CSV
 df = pd.read_csv("./hardware_ic_scale_benchmark.csv", header=None,
@@ -35,7 +36,7 @@ leg1_label = f"Maximum Standard Deviation:\n≈{max_std:.2f} µs"
 leg1 = ax.legend(
     handles=[Line2D([], [], color='none')],
     labels=[leg1_label],
-    loc="upper left",
+    loc="lower right",
     frameon=True,
     handlelength=0,
     handletextpad=0
@@ -48,8 +49,7 @@ raw_params = {
     "Input Length": 13,
     "Output Channel": 384,
     "Padding Size": 1,
-    "Stride Length": 1,
-    "Concurrent Channel": 8
+    "Stride Length": 1
 }
 
 label_width = max(len(k) for k in raw_params.keys())
@@ -66,7 +66,7 @@ handles = [Line2D([], [], color="none")] * len(formatted_params)
 leg2 = ax.legend(
     handles,
     formatted_params,
-    loc="lower right",
+    loc="upper left",
     frameon=True,
     handlelength=0,
     handletextpad=0,
