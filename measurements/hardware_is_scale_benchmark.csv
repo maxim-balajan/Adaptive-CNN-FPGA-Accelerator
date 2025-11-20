@@ -1,4 +1,4 @@
-ic=256,oc=384,padding=1,stride=1,
+ic=256, oc=384, padding = 0, stride = 1, concurrent_channel_amount = 8
 13,16501.248us,5.835us
 14,16574.241us,4.815us
 15,16629.539us,7.958us

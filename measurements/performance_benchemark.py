@@ -16,7 +16,7 @@ for col in ["HW_Fast_Mean", "HW_Fast_STD",
     df[col] = df[col].str.replace("us", "", regex=False).astype(float) / 1000.0  # -> ms
 
 # Plot setup
-methods = ["HW_Fast", "HW_Slow", "SW"]
+methods = ["Faster Hardware Configuration", "Slower Hardware Configuration", "Software (x86-Architecture)"]
 means = [df["HW_Fast_Mean"], df["HW_Slow_Mean"], df["SW_Mean"]]
 stds  = [df["HW_Fast_STD"],  df["HW_Slow_STD"],  df["SW_STD"]]
 
@@ -40,7 +40,7 @@ for i, method in enumerate(methods):
 plt.yticks(indices + bar_height, df["Identifier"])
 
 plt.xlabel("Latency (ms)")
-plt.title("HW Fast vs HW Slow vs SW Latencies")
+plt.title("Hardware vs Software Latency Comparison\nof AlexNet Layers")
 plt.grid(axis="x", linestyle="--", alpha=0.4)
 plt.legend()
 
