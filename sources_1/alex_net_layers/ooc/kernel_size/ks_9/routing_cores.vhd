@@ -22,14 +22,14 @@ entity routing_cores is
         -- KERNEL CORES INPUT PORTS
         o_activation_matrix_line  : OUT matrix_1d(0 to 2000 - 1)(24 - 1 downto 0);
         o_weight_matrix_line      : OUT matrix_1d(0 to 2000 - 1)(24 - 1 downto 0);
-        o_shamt_line              : OUT matrix_1d(0 to 100 - 1)(8 - 1 downto 0);
-        o_bias_line               : OUT matrix_1d(0 to 100 - 1)(8 - 1 downto 0);
-        o_kernel_en_line          : OUT std_logic_vector(0 to 100 - 1);   
-        o_kernel_complete_line    : OUT std_logic_vector(0 to 100 - 1);
+        o_shamt_line              : OUT matrix_1d(0 to 200 - 1)(8 - 1 downto 0);
+        o_bias_line               : OUT matrix_1d(0 to 200 - 1)(8 - 1 downto 0);
+        o_kernel_en_line          : OUT std_logic_vector(0 to 200 - 1);   
+        o_kernel_complete_line    : OUT std_logic_vector(0 to 200 - 1);
         -- KERNEL CORES OUTPUT PORTS
-        i_pixel_line         : IN matrix_1d(0 to 100 - 1)(24 - 1 downto 0);
-        i_valid_pixel_line   : IN std_logic_vector(0 to 100 - 1);
-        i_comp_complete_line : IN std_logic_vector(0 to 100 - 1);
+        i_pixel_line         : IN matrix_1d(0 to 200 - 1)(24 - 1 downto 0);
+        i_valid_pixel_line   : IN std_logic_vector(0 to 200 - 1);
+        i_comp_complete_line : IN std_logic_vector(0 to 200 - 1);
         -- CONFIGURABLE SLIDER OUTPUTS
         i_kernel_complete          : IN std_logic;
 		i_kernel_en                : IN std_logic;
@@ -37,8 +37,8 @@ entity routing_cores is
         -- WEIGHT MODULE OUTPUTS
         i_kernel_weight_en     : IN std_logic;
         i_kernel_weight_matrix : IN matrix_1d(0 to 12 * 80 - 1)(8 - 1 downto 0); 
-        i_shamt_line           : IN matrix_1d(0 to 100 - 1)(8 - 1 downto 0);
-        i_bias_line            : IN matrix_1d(0 to 100 - 1)(8 - 1 downto 0);
+        i_shamt_line           : IN matrix_1d(0 to 200 - 1)(8 - 1 downto 0);
+        i_bias_line            : IN matrix_1d(0 to 200 - 1)(8 - 1 downto 0);
         -- ROUTING CORES OUTPUTS
         o_kernel_complete : OUT std_logic;
         o_kernel_valid    : OUT std_logic;

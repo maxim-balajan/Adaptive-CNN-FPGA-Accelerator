@@ -1,5 +1,5 @@
 matrix_input_amount: 2000
-max_core_amount: 100
+max_core_amount: 200
 input_max_bit_width : 24
 output_max_bit_width : 24
 route_configs:

@@ -24,14 +24,14 @@ entity kernel_cores is
 		-- KERNEL_CORES_INPUT PORTS
 		i_activation_matrix_line : in matrix_1d(0 to 2000 - 1)(24 - 1 downto 0);
 		i_weight_matrix_line     : in matrix_1d(0 to 2000 - 1)(24 - 1 downto 0);
-		i_shamt_line             : in matrix_1d(0 to 100 - 1)(G_SHAMT_AMOUNT - 1 downto 0);
-		i_bias_line              : in matrix_1d(0 to 100 - 1)(G_BIAS_AMOUNT - 1 downto 0);
-		i_kernel_en_line         : in std_logic_vector(0 to 100 - 1);
-		i_kernel_complete_line   : in std_logic_vector(0 to 100 - 1);
+		i_shamt_line             : in matrix_1d(0 to 200 - 1)(G_SHAMT_AMOUNT - 1 downto 0);
+		i_bias_line              : in matrix_1d(0 to 200 - 1)(G_BIAS_AMOUNT - 1 downto 0);
+		i_kernel_en_line         : in std_logic_vector(0 to 200 - 1);
+		i_kernel_complete_line   : in std_logic_vector(0 to 200 - 1);
 		-- KERNEL CORES OUTPUT PORTS
-		o_pixel_line         : out matrix_1d(0 to 100 - 1)(24 - 1 downto 0);
-		o_valid_pixel_line   : out std_logic_vector(0 to 100 - 1);
-		o_comp_complete_line : out std_logic_vector(0 to 100 - 1)
+		o_pixel_line         : out matrix_1d(0 to 200 - 1)(24 - 1 downto 0);
+		o_valid_pixel_line   : out std_logic_vector(0 to 200 - 1);
+		o_comp_complete_line : out std_logic_vector(0 to 200 - 1)
 	);
 end entity kernel_cores;
 
