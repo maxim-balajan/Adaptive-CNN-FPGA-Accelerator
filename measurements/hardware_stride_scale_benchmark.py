@@ -2,6 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.lines import Line2D
+plt.rcParams['figure.dpi'] = 300
 
 # Read CSV
 df = pd.read_csv("./hardware_stride_scale_benchmark.csv", header=None,
@@ -16,7 +17,7 @@ plt.figure()
 ax = plt.gca()
 
 # Plot mean line
-line_mean, = ax.plot(df["Index"], df["Mean"], 'x-', label="Mean Latency (ms)")
+line_mean, = ax.plot(df["Index"], df["Mean"], 'o-')
 
 # Shade ± STD
 std_area = ax.fill_between(
@@ -27,6 +28,10 @@ std_area = ax.fill_between(
     color="red",
     label="Standard Deviation (ms)"
 )
+
+ymin = df["Mean"].min() - df["STD"].max() * 22
+ymax = df["Mean"].max() + df["STD"].max() * 22
+ax.set_ylim(ymin, ymax)
 
 plt.xlabel("Stride Length")
 plt.ylabel("Mean Latency (ms)")
@@ -45,8 +50,7 @@ raw_params = {
     "Input Length": 35,
     "Input Channel": 256,
     "Output Channel": 384,
-    "Padding Size": 0,
-    "Concurrent Channel": 8
+    "Padding Size": 0
 }
 
 label_width = max(len(k) for k in raw_params.keys())
