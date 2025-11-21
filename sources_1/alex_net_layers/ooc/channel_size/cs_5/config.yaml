@@ -1,0 +1,54 @@
+matrix_input_amount: 1000
+max_core_amount: 100
+input_max_bit_width : 24
+output_max_bit_width : 24
+route_configs:
+  global:
+    max_pipeline_steps: 2
+    max_output_channels: 16
+    max_kernel_size: 12
+    line_buffer_amount: 80
+    input_data_byte_width : 16
+    configurable_routing_ps : 1
+  route_a:
+    pool_or_conv: 1
+    input_channel: 5
+    input_channel_per_iteration: 5
+    output_channel: 1
+    input_amount: 9
+    padding : 1
+    stride : 0
+cores:
+  Three_adder_plus_mult:
+    global:
+      max_core_amount: 40
+      max_input_amount: 10
+      max_input_length: 24
+    Three_adder_plus_mult_rlt:
+      amount: 15
+      pool_or_conv : 1
+      enable_clip_adder : 1
+      enable_multiplication_line : 1
+      enable_shift: 0
+      enable_bias: 0
+      enable_relu : 0
+      input_length : 8
+      output_length : 24
+      input_amount: 3
+
+  Three_adder_no_mult:
+    global:
+      max_core_amount: 20
+      max_input_amount: 5
+      max_input_length: 24
+    Three_adder_no_mult_rlt:
+      amount: 8
+      pool_or_conv : 1
+      enable_clip_adder : 1
+      enable_multiplication_line : 0
+      enable_shift: 0
+      enable_bias: 0
+      enable_relu : 0
+      input_length : 24
+      output_length : 24
+      input_amount: 3
