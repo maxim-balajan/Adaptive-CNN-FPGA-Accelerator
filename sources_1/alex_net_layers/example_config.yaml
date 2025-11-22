@@ -15,7 +15,7 @@ cores:
  Nine_adder_plus_mult:
   global:
    [...]
-  Nine_adder_plus_mult_rlt:
+  Nine_adder_plus_mult_rtl:
    amount:          30
     pool_or_conv :   1
     en_clip_adder :  1
