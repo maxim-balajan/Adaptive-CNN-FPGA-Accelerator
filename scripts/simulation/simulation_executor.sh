@@ -108,40 +108,7 @@ elif [ "$TB" == "kernel_comp_unit" ]; then
 elif [ "$TB" == "config_unit" ]; then
     $PRJ_SCRIPTS/simulation/generic_simulation_run.sh ${GUI} config_unit \
         $PRJ_HW_SOURCES_PATH/config_unit.vhd \
-        $PRJ_HW_SIMS_PATH/config_unit_tb.vhd  
-elif [ "$TB" == "weight_unit" ]; then
-    CWD="$PWD"
-    cd $PRJ_HW_SIMS_PATH/weight_unit/
-    python run_vunit_tb.py     
-    cd $CWD    
-elif [ "$TB" == "lenet_accel" ]; then
-    $PRJ_SCRIPTS/simulation/generic_simulation_run.sh ${GUI} lenet_accel \
-        $PRJ_HW_SOURCES_PATH/old_sources/lib*.vhd              \
-        $PRJ_HW_SOURCES_PATH/old_sources/clip_adder.vhd             \
-        $PRJ_HW_SOURCES_PATH/old_sources/bram_single_port.vhd             \
-        $PRJ_HW_SOURCES_PATH/old_sources/bram_fifo.vhd             \
-        $PRJ_HW_SOURCES_PATH/old_sources/bram_streaming_fifo.vhd             \
-        $PRJ_HW_SOURCES_PATH/old_sources/line_buffer.vhd \
-        $PRJ_HW_SOURCES_PATH/old_sources/kernel_slider.vhd             \
-        $PRJ_HW_SOURCES_PATH/old_sources/convolution_slider.vhd \
-        $PRJ_HW_SOURCES_PATH/old_sources/pooling_slider.vhd \
-        $PRJ_HW_SOURCES_PATH/old_sources/matrix_vector_mac_unit.vhd \
-        $PRJ_HW_SOURCES_PATH/old_sources/matrix_vector_mem_interconnect.vhd \
-        $PRJ_HW_SOURCES_PATH/old_sources/matrix_vector_unit.vhd \
-        $PRJ_HW_SOURCES_PATH/old_sources/dense_layer.vhd \
-        $PRJ_HW_SOURCES_PATH/old_sources/dense_layer_combined.vhd \
-        $PRJ_HW_SOURCES_PATH/old_sources/softmax_layer.vhd \
-        $PRJ_HW_SOURCES_PATH/old_sources/softmax_unit.vhd \
-        $PRJ_HW_SOURCES_PATH/kernel_computation_step.vhd              \
-        $PRJ_HW_SOURCES_PATH/kernel_computation_unit.vhd \
-        $PRJ_HW_SOURCES_PATH/old_sources/conv_weight_memory.vhd             \
-        $PRJ_HW_SOURCES_PATH/old_sources/conv_pool_pipeline.vhd \
-        $PRJ_HW_SOURCES_PATH/old_sources/conv_pipeline.vhd \
-        $PRJ_HW_SOURCES_PATH/old_sources/conv_seq.vhd             \
-        $PRJ_HW_SOURCES_PATH/old_sources/conv_par.vhd             \
-        $PRJ_HW_SOURCES_PATH/old_sources/conv_combined.vhd             \
-        $PRJ_HW_SOURCES_PATH/old_sources/lenet_accel.vhd \
-        $PRJ_HW_SIMS_PATH/lenet_accel_tb.vhd          
+        $PRJ_HW_SIMS_PATH/config_unit_tb.vhd    
 else
     echo "Unknown Testbench: $TB"
     echo "Usage: $0 [Top-Unit] [Source-Files...]"
