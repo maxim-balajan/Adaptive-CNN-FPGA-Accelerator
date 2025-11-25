@@ -40,7 +40,6 @@ alias prj_simulate_adder_tree_gen="'$PRJ_SCRIPTS/simulation/simulation_executor.
 alias prj_simulate_memory_test="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g memory_test                 | tee '$PRJ_GENERATED_PATH/memory_test_tb.log'"
 alias prj_simulate_temp_layer_acc="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g temp_layer_accumulator   | tee '$PRJ_GENERATED_PATH/temp_layer_accumulator.log'"
 alias prj_simulate_kernel_comp_unit="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g kernel_comp_unit       | tee '$PRJ_GENERATED_PATH/kernel_comp_unit.log'"
-alias prj_simulate_lenet_accel="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g lenet_accel                 | tee '$PRJ_GENERATED_PATH/lenet_accel.log'"
 alias prj_simulate_config_unit="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g config_unit                 | tee '$PRJ_GENERATED_PATH/config_unit.log'" 
 alias prj_simulate_weight_unit="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g weight_unit                 | tee '$PRJ_GENERATED_PATH/weight_unit.log'" 
 
@@ -57,7 +56,6 @@ prj_simulate_help() {
     echo "# prj_simulate_memory_test........: Run TB for the AXI memory test"
     echo "# prj_simulate_temp_layer_acc.....: Run TB for Temporary Layer Storage"
     echo "# prj_simulate_kernel_comp_unit...: Run TB for Kernel Computation Unit"
-    echo "# prj_simulate_lenet_accel........: Run TB for LeNet-5 Top Level"
     echo "# prj_simulate_config_unit........: Run TB for Configuration Unit"
     echo "###########################################################################"
 }
