@@ -1,2 +1,0 @@
-aarch64-none-elf-ar qc libxilfpga.a CMakeFiles/xilfpga.dir/interface/zynqmp/xilfpga_pcap.c.obj CMakeFiles/xilfpga.dir/xilfpga.c.obj
-/home/maxim/Xillinx/Vitis/2023.2/gnu/aarch64/lin/aarch64-none/bin/aarch64-none-elf-ranlib libxilfpga.a

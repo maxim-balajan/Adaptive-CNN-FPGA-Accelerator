@@ -1,3 +1,0 @@
-domain_path: /home/maxim/Documents/Uni/BA/bachelor-thesis/SW-Integration/Vitis/plat_fixed_reset/zynqmp_fsbl/zynqmp_fsbl_bsp
-app_src_dir: /home/maxim/Xillinx/Vitis/2023.2/data/embeddedsw/lib/sw_apps/zynqmp_fsbl
-template: zynqmp_fsbl
