@@ -11,7 +11,6 @@ df = df.apply(lambda col: col.astype(str).str.strip() if col.dtype == object els
 df = df.apply(pd.to_numeric, errors="coerce")
 df = df.dropna(subset=["KS", "LUTs", "FFs", "BRAM", "DSPs"]).reset_index(drop=True)
 
-# Explicit colors requested
 color_luts  = 'tab:blue'
 color_ffs   = 'tab:orange'
 color_bram  = 'tab:green'
@@ -19,37 +18,30 @@ color_dsps  = 'tab:red'
 
 fig, ax_left = plt.subplots(figsize=(6, 3))
 
-# ===============================
-# LEFT AXIS: LUTs + FFs (left axis)
-# ===============================
-line_luts, = ax_left.plot(df["KS"], df["LUTs"], marker="o",   # circle
+
+line_luts, = ax_left.plot(df["KS"], df["LUTs"], marker="o",   
                           color=color_luts, label="LUTs")
-line_ffs,  = ax_left.plot(df["KS"], df["FFs"], marker="s",    # square
+line_ffs,  = ax_left.plot(df["KS"], df["FFs"], marker="s",    
                           color=color_ffs, label="FFs")
 
 ax_left.set_xlabel("Kernel Size")
 ax_left.grid(True, linestyle="--", linewidth=0.5)
 
-# X-axis ticks in steps of 2 from 1 to 16
+
 ax_left.set_xticks(range(1, 17, 2))
 
-# ===============================
-# RIGHT AXIS: BRAM + DSPs (right axis)
-# ===============================
+
 ax_right = ax_left.twinx()
 
-line_bram, = ax_right.plot(df["KS"], df["BRAM"], marker="^",   # triangle
+line_bram, = ax_right.plot(df["KS"], df["BRAM"], marker="^",   
                            color=color_bram, label="BRAM")
-line_dsps, = ax_right.plot(df["KS"], df["DSPs"], marker="D",   # diamond
+line_dsps, = ax_right.plot(df["KS"], df["DSPs"], marker="D",  
                            color=color_dsps, label="DSPs")
 
-# remove the default single ylabels and add colored per-metric labels using offset points
-ax_left.set_ylabel("")   # clear default
+
+ax_left.set_ylabel("")   
 ax_right.set_ylabel("")
 
-# ===============================
-# Colored axis labels (no overlap)
-# ===============================
 
 # Vertical positions that won't overlap
 y_lut  = 0.73
@@ -84,9 +76,7 @@ ax_left.tick_params(axis='y', labelcolor='black')
 ax_right.tick_params(axis='y', labelcolor='black')
 ax_right.set_yticks(range(0, 41, 10))
 
-# ===============================
-# Combined Legend (2x2)
-# ===============================
+
 lines = [line_luts, line_ffs, line_bram, line_dsps]
 labels = [l.get_label() for l in lines]
 plt.legend(lines, labels, loc="upper left", ncol=2)

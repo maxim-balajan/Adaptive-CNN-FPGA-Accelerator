@@ -23,14 +23,10 @@ plt.ylabel("Mean Latency (ms)")
 plt.title("Latency Variance for different Input Image Length\n[Conv (3x3)]")
 plt.grid(True)
 
-# ───────────────────────────────────────────────
-#  FIRST LEGEND: Show max STD, no indent
-# ───────────────────────────────────────────────
 max_std = df["STD"].max()
 
 leg1_label = f"Max. Standard Deviation:\n≈{max_std:.2f} µs"
 
-# text-only legend, no indent because handlelength=0 AND using no dummy handle marker
 leg1 = ax.legend(
     handles=[Line2D([], [], color='none')],
     labels=[leg1_label],
@@ -40,9 +36,6 @@ leg1 = ax.legend(
     handletextpad=0
 )
 
-# ───────────────────────────────────────────────
-# SECOND LEGEND: Parameter block (aligned)
-# ───────────────────────────────────────────────
 raw_params = {
     "Input Channel": 256,
     "Output Channel": 384,

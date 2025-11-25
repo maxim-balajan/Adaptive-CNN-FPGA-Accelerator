@@ -24,13 +24,9 @@ plt.ylabel("Mean Latency (ms)")
 plt.title("Latency Variance for different Padding Sizes\n[Conv (3x3)]")
 plt.grid(True)
 
-# ───────────────────────────────────────────────
-# FIRST LEGEND: Max STD, no indent
-# ───────────────────────────────────────────────
 max_std = df["STD"].max()
 
 leg1_label = f"Max. Standard Deviation:\n≈{max_std:.2f} µs"
-
 leg1 = ax.legend(
     handles=[Line2D([], [], color='none')],
     labels=[leg1_label],
@@ -40,9 +36,6 @@ leg1 = ax.legend(
     handletextpad=0
 )
 
-# ───────────────────────────────────────────────
-# SECOND LEGEND: Parameter block (bottom-right, aligned)
-# ───────────────────────────────────────────────
 raw_params = {
     "Input Length": 13,
     "Input Channel": 256,

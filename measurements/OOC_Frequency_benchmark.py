@@ -2,10 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 plt.rcParams['figure.dpi'] = 300
 
-# Define correct column names (first column is CS)
 cols = ["CS", "LUTs", "FFs", "BRAM", "DSPs", "Frequency"]
-
-# Load CSV files, skip first row, assign headers manually
 cs_df = pd.read_csv("OOC_CS_benchmark.csv", skiprows=1, names=cols)
 ks_df = pd.read_csv("OOC_KS_benchmark.csv", skiprows=1, names=cols)
 

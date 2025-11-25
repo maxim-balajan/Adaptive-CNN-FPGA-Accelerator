@@ -38,14 +38,9 @@ plt.ylabel("Mean Latency (ms)")
 plt.title("Latency Variance for different Stride Lengths\n[Conv (3x3)]")
 plt.grid(True)
 
-# ───────────────────────────────────────────────
-# FIRST LEGEND: classic (points + shaded area)
-# ───────────────────────────────────────────────
+
 leg1 = ax.legend(loc="upper left")
 
-# ───────────────────────────────────────────────
-# SECOND LEGEND: parameter block (bottom-right, aligned)
-# ───────────────────────────────────────────────
 raw_params = {
     "Input Length": 35,
     "Input Channel": 256,

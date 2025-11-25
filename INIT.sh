@@ -7,7 +7,9 @@ ENV_NAME=".venv"
 PYTHON_VER="3.10.16"
 PYTHON_BIN="$HOME/.pyenv/versions/$PYTHON_VER/bin/python"
 
+# change your VUNIT simulator here (e.g. if you use questa)
 export VUNIT_SIMULATOR=ghdl
+
 export PRJ_ROOT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export PRJ_GENERATED_PATH="$PRJ_ROOT_PATH/_generated"
 export PRJ_TRAIN_PATH="$PRJ_ROOT_PATH/reference/training"
@@ -41,22 +43,6 @@ alias prj_simulate_kernel_comp_unit="'$PRJ_SCRIPTS/simulation/simulation_executo
 alias prj_simulate_lenet_accel="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g lenet_accel                 | tee '$PRJ_GENERATED_PATH/lenet_accel.log'"
 alias prj_simulate_config_unit="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g config_unit                 | tee '$PRJ_GENERATED_PATH/config_unit.log'" 
 alias prj_simulate_weight_unit="'$PRJ_SCRIPTS/simulation/simulation_executor.sh' -g weight_unit                 | tee '$PRJ_GENERATED_PATH/weight_unit.log'" 
-
-# Vivado Project Aliases
-prj_vivado_init() {
-    local mode="$1"
-    [[ -z $mode ]] && mode=batch
-    vivado -nolog -nojournal -mode "$1" -source "$PRJ_SCRIPTS/create_project.tcl" | tee $PRJ_GENERATED_PATH/vivado_project_init.log || {
-        echo "# The command 'vivado' is not set in the PATH! Change this and try again..." | tee $PRJ_GENERATED_PATH/vivado_project_init.log
-        return 1
-    }
-}
-
-prj_vivado_help() {
-    echo "###########################################################################"
-    echo "# prj_vivado_init...: Creates Vivado Project"
-    echo "###########################################################################"    
-}
 
 prj_simulate_help() {
     echo "###########################################################################"
@@ -275,8 +261,6 @@ echo "# prj_run_simulation..: Run the C++ reference implementation"
 echo "###########################################################################"
 echo "# Simulation Tools...:"
 prj_simulate_help
-echo "# Vivado Tools...:"
-prj_vivado_help
 echo "# cd_root.............: Change CWD to project root:"
 echo "#                       [$PRJ_ROOT_PATH]"
 echo "# cd_train............: Change CWD to path of training folder:"
