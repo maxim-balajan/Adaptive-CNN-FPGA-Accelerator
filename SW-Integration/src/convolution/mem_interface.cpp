@@ -42,7 +42,7 @@ DEFAULT SET TO 0x01000000
 #define DMA_WT_RX_INTR_ID XPAR_FABRIC_AXI_DMA_1_INTR     // S2MM only
 
 
-#define TX_CFG_BUFFER_BASE (MEM_BASE_ADDR + 0x00050000)
+#define TX_CFG_BUFFER_BASE (MEM_BASE_ADDR + 0x00600000)
 #define TX_WT_BUFFER_BASE (MEM_BASE_ADDR + 0x00100000)
 #define TX_PX_BUFFER_BASE (MEM_BASE_ADDR + 0x00200000)
 #define RX_PX_BUFFER_BASE (MEM_BASE_ADDR + 0x00300000)
@@ -58,7 +58,8 @@ DEFAULT SET TO 0x01000000
 #define POLL_TIMEOUT_COUNTER 100U
 #define NUMBER_OF_EVENTS 1
 
-static void tx_intr_handler(void *callback);
+static void tx_wt_intr_handler(void *callback);
+static void tx_px_intr_handler(void *callback);
 static void rx_intr_handler(void *callback);
 
 // uncomment to enable debug
@@ -152,18 +153,16 @@ MemInterface::MemInterface() {
 
 }
 
-struct MemResult MemInterface::run(u8 *tx_buffer_cfg, u8 *tx_buffer_wt, u8 *tx_buffer_px) {
+struct MemResult MemInterface::run() {
 #ifdef ACC_INTERFACE_DBG
     xil_printf("MemInterface run\r\n");
 #endif
 
     int status;
+    u8 *cfg_ptr = reinterpret_cast<u8*>(TX_CFG_BUFFER_BASE);
+    u8 *wt_ptr = reinterpret_cast<u8*>(TX_WT_BUFFER_BASE);
+    u8 *px_ptr = reinterpret_cast<u8*>(TX_PX_BUFFER_BASE);
     u8 *result_ptr_px = reinterpret_cast<u8*>(RX_PX_BUFFER_BASE);
-
-    for (size_t i = 0; i < ((u16 *)tx_buffer_cfg)[4] * ((u16 *)tx_buffer_cfg)[3]; i++) {
-        result_ptr_px[i] = 0xFF;
-    }
-    //*result_ptr_px = 0;
 
     tx_wt_iteration = 0;
     tx_px_iteration = 0;
@@ -176,10 +175,13 @@ struct MemResult MemInterface::run(u8 *tx_buffer_cfg, u8 *tx_buffer_wt, u8 *tx_b
     
     error = 0;
 
+    int result_length = ((u32)((u16 *)cfg_ptr)[1]) * ((u16 *)cfg_ptr)[1] * ((u16 *)cfg_ptr)[3];
+
     // Flush the buffers before the DMA transfer, in case the Data Cache is enabled
-    Xil_DCacheFlushRange(reinterpret_cast<UINTPTR>(tx_buffer_px), sizeof(u8) * 16 * 40);
-    Xil_DCacheFlushRange(reinterpret_cast<UINTPTR>(tx_buffer_wt), sizeof(u8) * 16 * 40);
-    Xil_DCacheFlushRange(reinterpret_cast<UINTPTR>(result_ptr_px), sizeof(u8) * 16 * 80);
+    Xil_DCacheFlushRange(reinterpret_cast<UINTPTR>(cfg_ptr), 128);
+    Xil_DCacheFlushRange(reinterpret_cast<UINTPTR>(px_ptr), ((u32)((u16 *)cfg_ptr)[0]) * ((u16 *)cfg_ptr)[0] * ((u16 *)cfg_ptr)[2]);
+    Xil_DCacheFlushRange(reinterpret_cast<UINTPTR>(wt_ptr), ((u32)cfg_ptr[12]) * cfg_ptr[12] * ((u16 *)cfg_ptr)[2] * ((u16 *)cfg_ptr)[3]);
+    Xil_DCacheFlushRange(reinterpret_cast<UINTPTR>(result_ptr_px), result_length);
 
 #ifdef ACC_INTERFACE_DBG
     xil_printf("MemInterface GetTime start\r\n");
@@ -189,43 +191,28 @@ struct MemResult MemInterface::run(u8 *tx_buffer_cfg, u8 *tx_buffer_wt, u8 *tx_b
     XTime_GetTime(&start_time);
 
     // start receive of first output channel
-    status = XAxiDma_SimpleTransfer(&axi_dma_px, reinterpret_cast<UINTPTR>(result_ptr_px), ((u16 *)tx_buffer_cfg)[4],
+    status = XAxiDma_SimpleTransfer(&axi_dma_px, reinterpret_cast<UINTPTR>(result_ptr_px), ((u16 *)cfg_ptr)[4],
                                     XAXIDMA_DEVICE_TO_DMA);
 
     if (status != XST_SUCCESS) {
 #ifdef ACC_INTERFACE_DBG
-        xil_printf("rx_buffer transfer was not successful for pixels %d\r\n", status);
+        xil_printf("rx_buffer init transfer was not successful for pixels %d\r\n", status);
 #endif
         struct MemResult res = {
             true,  // error
             0,     // time_ns
-        sizeof(u8) * 16 * 80,  // length
-        result_ptr_px           // result
+            result_length,
+            result_ptr_px           // result
         };
 
         return res;
     }
 
-    // send configuration string
-    status = XAxiDma_SimpleTransfer(&axi_dma_wt, reinterpret_cast<UINTPTR>(tx_buffer_cfg), 16 * sizeof(u8),
-                                    XAXIDMA_DEVICE_TO_DMA);
-
-    if (status != XST_SUCCESS) {
+        // send pixel data
 #ifdef ACC_INTERFACE_DBG
-        xil_printf("tx_buffer_cfg transfer was not successful for config string %d\r\n", status);
-#endif
-        struct MemResult res = {
-            true,  // error
-            0,     // time_ns
-        sizeof(u8) * 16 * 80,  // length
-        result_ptr_px           // result
-        };
-
-        return res;
-    }
-
-    // send pixel data
-    status = XAxiDma_SimpleTransfer(&axi_dma_px, reinterpret_cast<UINTPTR>(tx_buffer_px), sizeof(u8) * 16 * 40,
+        xil_printf("Amount of Pixel data to be send %d\r\n", ((u32)((u16 *)cfg_ptr)[0]) * ((u16 *)cfg_ptr)[0] * ((u16 *)cfg_ptr)[2]);
+#endif    
+    status = XAxiDma_SimpleTransfer(&axi_dma_px, reinterpret_cast<UINTPTR>(px_ptr), ((u32)((u16 *)cfg_ptr)[0]) * ((u16 *)cfg_ptr)[0] * ((u16 *)cfg_ptr)[2],
                                     XAXIDMA_DMA_TO_DEVICE);
 
     if (status != XST_SUCCESS) {
@@ -235,8 +222,26 @@ struct MemResult MemInterface::run(u8 *tx_buffer_cfg, u8 *tx_buffer_wt, u8 *tx_b
         struct MemResult res = {
             true,  // error
             0,     // time_ns
-        sizeof(u8) * 16 * 80,  // length
-        result_ptr_px           // result
+            result_length,
+            result_ptr_px           // result
+        };
+
+        return res;
+    }
+
+    // send configuration string
+    status = XAxiDma_SimpleTransfer(&axi_dma_wt, reinterpret_cast<UINTPTR>(cfg_ptr), 16 * sizeof(u8),
+                                    XAXIDMA_DMA_TO_DEVICE);
+
+    if (status != XST_SUCCESS) {
+#ifdef ACC_INTERFACE_DBG
+        xil_printf("tx_buffer_cfg transfer was not successful for config string %d\r\n", status);
+#endif
+        struct MemResult res = {
+            true,  // error
+            0,     // time_ns
+            result_length,
+            result_ptr_px           // result
         };
 
         return res;
@@ -244,11 +249,11 @@ struct MemResult MemInterface::run(u8 *tx_buffer_cfg, u8 *tx_buffer_wt, u8 *tx_b
 
     status = Xil_WaitForEventSet(POLL_TIMEOUT_COUNTER, NUMBER_OF_EVENTS, &error);
     if (status == XST_SUCCESS) {
-        if (tx_done != 2) {
+        if (!tx_wt_done || !tx_px_done) {
 #ifdef ACC_INTERFACE_DBG
             xil_printf("Transmit error %d\r\n", status);
 #endif
-        } else if (status == XST_SUCCESS && !rx_done) {
+        } else if (!rx_done) {
 #ifdef ACC_INTERFACE_DBG
             xil_printf("Receive error %d\r\n", status);
 #endif
@@ -257,24 +262,8 @@ struct MemResult MemInterface::run(u8 *tx_buffer_cfg, u8 *tx_buffer_wt, u8 *tx_b
         struct MemResult res = {
             true,  // error
             0,     // time_ns
-        sizeof(u8) * 16 * 80,  // length
-        result_ptr_px           // result
-        };
-
-        return res;
-    }
-
-    // Wait for TX of weights done or time_out
-    status = Xil_WaitForEventSet(POLL_TIMEOUT_COUNTER, 2, &tx_done);
-    if (status != XST_SUCCESS) {
-#ifdef ACC_INTERFACE_DBG
-        xil_printf("Transmit failed %d\r\n", status);
-#endif
-        struct MemResult res = {
-            true,  // error
-            0,     // time_ns
-        sizeof(u8) * 16 * 80,  // length
-        result_ptr_px           // result
+            result_length,
+            result_ptr_px           // result
         };
 
         return res;
@@ -283,15 +272,15 @@ struct MemResult MemInterface::run(u8 *tx_buffer_cfg, u8 *tx_buffer_wt, u8 *tx_b
     // Wait for RX done or time_out
     status = Xil_WaitForEventSet(POLL_TIMEOUT_COUNTER * 80 * 128, NUMBER_OF_EVENTS, &rx_done);
     if (status != XST_SUCCESS) {
-#ifdef ACC_INTERFACE_DBG
+//#ifdef ACC_INTERFACE_DBG
         xil_printf("Receive failed %d\r\n", status);
-#endif
+//#endif
 
         struct MemResult res = {
             true,  // error
             0,     // time_ns
-        sizeof(u8) * 16 * 80,  // length
-        result_ptr_px           // result
+            result_length,
+            result_ptr_px           // result
         };
 
         return res;
@@ -307,7 +296,7 @@ struct MemResult MemInterface::run(u8 *tx_buffer_cfg, u8 *tx_buffer_wt, u8 *tx_b
     struct MemResult res = {
         false,                  // error
         time_ns,                // time_ns
-        sizeof(u8) * 16 * 80,   // length
+        result_length,
         result_ptr_px           // result
     };
 
@@ -337,6 +326,10 @@ MemInterface::~MemInterface() {
  *
  ******************************************************************************/
 static void tx_wt_intr_handler(void *callback) {
+
+#ifdef ACC_INTERFACE_DBG
+    xil_printf("MemInterface tx_wt_intr_handler\r\n");
+#endif
     u32 irq_status;
     int time_out;
     XAxiDma *axi_dma_inst = (XAxiDma *)callback;
@@ -382,12 +375,16 @@ static void tx_wt_intr_handler(void *callback) {
         // Config or weight data has been sent and received by unit, start sending next weight data
         u8 *cfg_ptr = reinterpret_cast<u8*>(TX_CFG_BUFFER_BASE);
         u8 *wt_ptr = reinterpret_cast<u8*>(TX_WT_BUFFER_BASE);
-        u8 *rx_ptr = reinterpret_cast<u8*>(RX_PX_BUFFER_BASE);
+        
         size_t iter_id = MemInterface::instance.tx_wt_iteration;
         if (iter_id <= ((u16 *)cfg_ptr)[3] * (((u16 *)cfg_ptr)[2] / ((u16 *)cfg_ptr)[5])) {
+#ifdef ACC_INTERFACE_DBG
+            xil_printf("tx_wt_intr_handler iteration %d : successful!\r\n", MemInterface::instance.tx_wt_iteration);
+#endif
+        
             u32 weight_amount_per_iteration = ((u32)cfg_ptr[12]) * cfg_ptr[12] * ((u16 *)cfg_ptr)[5];
-            int status = XAxiDma_SimpleTransfer(&MemInterface::instance.axi_dma_wt, reinterpret_cast<UINTPTR>(wt_ptr + iter_id * weight_amount_per_iteration), weight_amount_per_iteration,
-                        XAXIDMA_DEVICE_TO_DMA);
+            int status = XAxiDma_SimpleTransfer(&MemInterface::instance.axi_dma_wt, reinterpret_cast<UINTPTR>(wt_ptr), weight_amount_per_iteration,
+                        XAXIDMA_DMA_TO_DEVICE);
 
             if (status != XST_SUCCESS) {
 #ifdef ACC_INTERFACE_DBG
@@ -400,6 +397,9 @@ static void tx_wt_intr_handler(void *callback) {
             MemInterface::instance.tx_wt_iteration++;
         } else {
             // all weight data has been sent
+#ifdef ACC_INTERFACE_DBG
+            xil_printf("tx_wt_intr_handler iteration FINAL : finished successfully!\r\n");
+#endif
             MemInterface::instance.tx_wt_done = 1;
         }
     }
@@ -422,7 +422,11 @@ static void tx_wt_intr_handler(void *callback) {
  *
  ******************************************************************************/
 static void tx_px_intr_handler(void *callback) {
-    // TODO: add debug prints
+
+#ifdef ACC_INTERFACE_DBG
+    xil_printf("MemInterface tx_px_intr_handler\r\n");
+#endif
+
     u32 irq_status;
     int time_out;
     XAxiDma *axi_dma_inst = (XAxiDma *)callback;
@@ -469,9 +473,16 @@ static void tx_px_intr_handler(void *callback) {
         u8 *cfg_ptr = reinterpret_cast<u8*>(TX_CFG_BUFFER_BASE);
 
         size_t iter_id = MemInterface::instance.tx_px_iteration;
-        if (iter_id < ((u16 *)cfg_ptr)[3]) {
+
+        if (iter_id < ((u16 *)cfg_ptr)[3] - 1) {
+#ifdef ACC_INTERFACE_DBG
+            xil_printf("tx_px_intr_handler iteration %d : successful!\r\n", MemInterface::instance.tx_px_iteration);
+#endif
             MemInterface::instance.tx_px_iteration++;
         } else {
+#ifdef ACC_INTERFACE_DBG
+            xil_printf("tx_px_intr_handler iteration FINAL : finished successfully!\r\n");
+#endif
             // the pixel data has been sent output channel many times
             MemInterface::instance.tx_px_done = 1;
         }
@@ -495,7 +506,11 @@ static void tx_px_intr_handler(void *callback) {
  *
  ******************************************************************************/
 static void rx_intr_handler(void *callback) {
-    // TODO: add debug prints
+
+#ifdef ACC_INTERFACE_DBG
+    xil_printf("MemInterface rx_intr_handler\r\n");
+#endif
+
     u32 irq_status;
     int time_out;
     XAxiDma *axi_dma_inst = (XAxiDma *)callback;
@@ -535,16 +550,47 @@ static void rx_intr_handler(void *callback) {
 
     // If completion interrupt is asserted, then set RxDone flag
     if ((irq_status & XAXIDMA_IRQ_IOC_MASK)) {
+        // Config or weight data has been sent and received by unit, start sending next weight data
+        u8 *cfg_ptr = reinterpret_cast<u8*>(TX_CFG_BUFFER_BASE);
+        u8 *px_ptr = reinterpret_cast<u8*>(TX_PX_BUFFER_BASE);
+        u8 *rx_ptr = reinterpret_cast<u8*>(RX_PX_BUFFER_BASE);
+        size_t iter_id = MemInterface::instance.rx_iteration;
 #ifdef ACC_INTERFACE_DBG
-        xil_printf("MemInterface GetTime end\r\n");
+        xil_printf("rx_intr_handler iteration %d : successful!\r\n", MemInterface::instance.rx_iteration);
 #endif
+        if (iter_id < ((u16 *)cfg_ptr)[3] - 1) {
+            MemInterface::instance.rx_iteration++;
+            // start receive of next output channel
+            int status = XAxiDma_SimpleTransfer(&MemInterface::instance.axi_dma_px, reinterpret_cast<UINTPTR>(rx_ptr), ((u16 *)cfg_ptr)[4],
+                                    XAXIDMA_DEVICE_TO_DMA);
 
-        // TODO
-        // Get time in two steps because of volatile qualifier of end_time
-        XTime tmp;
-        XTime_GetTime(&tmp);
-        MemInterface::instance.end_time = tmp;
+            if (status != XST_SUCCESS) {
+#ifdef ACC_INTERFACE_DBG
+            xil_printf("Iteration %d : tx_buffer Pixels RX could not be received with status %d\r\n", MemInterface::instance.rx_iteration, status);
+#endif
+            }
 
-        MemInterface::instance.rx_done = 1;
+            // send pixel data again
+            status = XAxiDma_SimpleTransfer(&MemInterface::instance.axi_dma_px, reinterpret_cast<UINTPTR>(px_ptr), ((u16 *)cfg_ptr)[0] * ((u16 *)cfg_ptr)[0] * ((u16 *)cfg_ptr)[2],
+                                    XAXIDMA_DMA_TO_DEVICE);
+
+            if (status != XST_SUCCESS) {
+#ifdef ACC_INTERFACE_DBG
+            xil_printf("Iteration %d : tx_buffer Pixels TX could not be send with status %d\r\n", MemInterface::instance.rx_iteration, status);
+#endif
+            }
+
+        }
+        else {
+#ifdef ACC_INTERFACE_DBG
+            xil_printf("rx_intr_handler iteration FINAL : finished successfully!\r\n");
+#endif
+            // Get time in two steps because of volatile qualifier of end_time
+            XTime tmp;
+            XTime_GetTime(&tmp);
+            MemInterface::instance.end_time = tmp;
+
+            MemInterface::instance.rx_done = 1;
+        }
     }
 }

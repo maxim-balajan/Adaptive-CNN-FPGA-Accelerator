@@ -43,5 +43,5 @@ class MemInterface {
     MemInterface(MemInterface &other) = delete;
     void operator=(const MemInterface &) = delete;
 
-    struct MemResult run(u8 *tx_buffer_wt, u8 *tx_buffer_px);
+    struct MemResult run();
 };
