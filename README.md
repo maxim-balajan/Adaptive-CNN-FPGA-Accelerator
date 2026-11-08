@@ -4,16 +4,20 @@ This repository contains all code and evaluation results for a hardware accelera
 
 The partially reconfigurable CNN design is integrated in such a way that it can be controlled via the Processing System (PS) of the target FPGA, where the PS manages the pixel and weight streams sent to the Programmable Logic (PL). The PL sends the new calculated stream back to the PS. The design was prototyped on the Ultra96-v2 evaluation platform.
 
+This project is a continuation of the advances made over the course of the project [RADL](https://github.com/maxim-balajan/LeNet-5-FPGA-Accelerator) (aka. Computer Architectures for Deep-Learning Applications). 
+
 The overall design of the integrated accelerator looks like the following:
 
-![Accelerator Overview](doc/dpr_accelerator_overview.png)
+![Accelerator Overview](doc/assets/dpr_accelerator_overview.png)
 
 This repository is structured as follows:
 
 ```bash
 ├── _generated                      # Logging of various utilities
 ├── bdf                             # Bord definition files for the Ultra96-v2 board
-├── doc                             # Images for this ReadMe
+├── doc                             
+│   ├── assets                      # Images for this ReadMe
+│   └── report                      # Report and Presentation Slides for the project
 ├── measurements                    # Evaluation data and helper scripts
 ├── reference
 │   ├── simulation                  # The reference implementation of the AlexNet architecture
@@ -35,7 +39,7 @@ This repository is structured as follows:
 
 ## Author
 
-* Maxim Balajan
+* Maxim Balajan ([Github Profile](https://github.com/maxim-balajan))
 
 ## Adaptive CNN Accelerator Usage
 
@@ -123,7 +127,7 @@ Vivado% source ./create_project.tcl
 
 The Adaptive CNN hardware accelerator is implemented as follows:
 
-![Accelerator Architecture](doc/top_level.png)
+![Accelerator Architecture](doc/assets/top_level.png)
 
 For more information, please have a look at the [sources_1/](sources_1/) directory.
 
@@ -196,3 +200,7 @@ $ source ./INIT.sh
 $ prj_build_simulation
 $ prj_run_simulation --help
 ```
+
+## License
+
+Distributed under the GNU GPL v3 License. See LICENSE for more information.
